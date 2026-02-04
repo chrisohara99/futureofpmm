@@ -13,11 +13,15 @@ Jasper released dedicated product marketing templates — positioning statements
 
 **Best for:** Teams drowning in launch content.
 
+→ [Jasper AI](https://www.jasper.ai)
+
 ## 2. Klue + GPT Integration
 
 Klue's competitive intelligence platform now auto-summarizes competitor moves. Feed it a press release, get a battle card update in seconds.
 
 **Best for:** CI-heavy orgs tired of manual tracking.
+
+→ [Klue](https://klue.com)
 
 ## 3. Notion AI for Product Briefs
 
@@ -25,17 +29,23 @@ Notion's AI can now generate product brief drafts from bullet points. Write your
 
 **Best for:** Solo PMMs who need to move fast.
 
+→ [Notion AI](https://www.notion.so/product/ai)
+
 ## 4. Descript for Demo Videos
 
 AI-powered video editing that lets you edit video by editing text. Record a rough demo, fix mistakes by retyping words.
 
 **Best for:** PMMs who create their own demo content.
 
+→ [Descript](https://www.descript.com)
+
 ## 5. ChatGPT + Custom Instructions
 
 Still underrated: a well-tuned ChatGPT with your product context, ICP, and messaging pillars as custom instructions. Free and flexible.
 
 **Best for:** Everyone — it's table stakes now.
+
+→ [ChatGPT](https://chat.openai.com)
 
 ---
 
