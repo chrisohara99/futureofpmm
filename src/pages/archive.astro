@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const sortedPosts = posts.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// Group by year
+const postsByYear = sortedPosts.reduce((acc, post) => {
+  const year = new Date(post.data.date).getFullYear();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(post);
+  return acc;
+}, {} as Record<number, typeof posts>);
+---
+
+<Base title="Archive">
+  <h1 style="font-size: 2rem; margin-bottom: 2rem;">Archive</h1>
+  
+  {Object.entries(postsByYear)
+    .sort(([a], [b]) => Number(b) - Number(a))
+    .map(([year, posts]) => (
+      <section style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.25rem; color: var(--color-text-muted); margin-bottom: 1rem;">{year}</h2>
+        <ul style="list-style: none; padding: 0;">
+          {posts.map((post) => (
+            <li style="margin-bottom: 0.75rem; display: flex; gap: 1rem; align-items: baseline;">
+              <span style="color: var(--color-text-muted); font-size: 0.85rem; min-width: 80px;">
+                {new Date(post.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </span>
+              <a href={`/posts/${post.slug}`} style="color: var(--color-text); text-decoration: none;">
+                {post.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Base>
