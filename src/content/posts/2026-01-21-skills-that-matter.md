@@ -53,4 +53,12 @@ The PMMs who thrive will be **AI-augmented strategists**, not content factories.
 
 ---
 
+## 📎 Further Reading
+
+- [The Marketing AI Institute's State of AI Report](https://www.marketingaiinstitute.com/resources) — Industry benchmarks
+- [Product Marketing Alliance](https://www.productmarketingalliance.com) — PMM community & resources
+- [Lenny's Newsletter on PMM](https://www.lennysnewsletter.com) — Product/PMM insights
+
+---
+
 *Disagree? Hit reply — we'd love to debate this.*

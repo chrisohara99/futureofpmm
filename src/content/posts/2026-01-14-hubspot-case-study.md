@@ -11,8 +11,6 @@ We talked to a PMM at HubSpot about how their team is actually using AI. No hype
 
 HubSpot's product marketing team has ~40 people across segments. They've been experimenting with AI tools for 18 months.
 
-→ [HubSpot](https://www.hubspot.com)
-
 ## What They Automated
 
 ### Competitive Updates
@@ -29,8 +27,6 @@ For a single launch, they need messaging for: website, email, sales deck, social
 AI scans Gong calls and G2 reviews to surface customer quotes for specific use cases. PMMs validate and curate, but the sourcing is automated.
 
 **Time saved:** ~4 hours/week.
-
-→ [Gong](https://www.gong.io) | [G2](https://www.g2.com)
 
 ## What They Kept Human
 
@@ -50,6 +46,17 @@ The biggest win wasn't efficiency — it was **quality**. With more time freed u
 ## The Takeaway
 
 AI isn't replacing HubSpot's PMMs. It's making them more strategic by eating the grunt work. The team that figures this balance out wins.
+
+---
+
+## 📎 Sources & Related
+
+- [HubSpot](https://www.hubspot.com) — CRM & Marketing Platform
+- [HubSpot Blog: AI in Marketing](https://blog.hubspot.com/marketing/ai-marketing) — HubSpot's official take
+- [Gong](https://www.gong.io) — Revenue intelligence platform
+- [G2](https://www.g2.com) — Software reviews
+
+*Note: This case study is based on conversations and publicly available information about HubSpot's AI adoption.*
 
 ---
 
