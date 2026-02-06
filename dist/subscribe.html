@@ -193,11 +193,11 @@
             </script>
             
             <!-- Tool Request -->
-            <div class="form-section">
+            <div class="form-section" id="tool-section">
                 <h2>🛠️ Request a Tool Review</h2>
                 <p class="subtitle">Want us to cover a specific AI tool? Let us know!</p>
                 
-                <form name="tool-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                <form name="tool-request" id="tool-form" method="POST" data-netlify="true" netlify-honeypot="bot-field">
                     <input type="hidden" name="form-name" value="tool-request">
                     <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
                     
@@ -218,14 +218,17 @@
                     
                     <button type="submit" class="btn btn-secondary">Submit Request</button>
                 </form>
+                <div id="tool-success" style="display: none; background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 1rem; border-radius: 8px; text-align: center;">
+                    ✅ <strong>Thanks!</strong> We'll review your suggestion.
+                </div>
             </div>
             
             <!-- Content Suggestion -->
-            <div class="form-section">
+            <div class="form-section" id="suggest-section">
                 <h2>💡 Suggest Content</h2>
                 <p class="subtitle">Have an idea for an article or topic we should cover?</p>
                 
-                <form name="suggestions" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                <form name="suggestions" id="suggest-form" method="POST" data-netlify="true" netlify-honeypot="bot-field">
                     <input type="hidden" name="form-name" value="suggestions">
                     <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
                     
@@ -241,7 +244,48 @@
                     
                     <button type="submit" class="btn btn-secondary">Submit Suggestion</button>
                 </form>
+                <div id="suggest-success" style="display: none; background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 1rem; border-radius: 8px; text-align: center;">
+                    ✅ <strong>Thanks!</strong> We appreciate your input.
+                </div>
             </div>
+            
+            <script>
+            // Handle Tool Request form
+            document.getElementById('tool-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var form = e.target;
+                var formData = new FormData(form);
+                
+                fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                }).then(function() {
+                    form.style.display = 'none';
+                    document.getElementById('tool-success').style.display = 'block';
+                }).catch(function(err) {
+                    alert('Error submitting form. Please try again.');
+                });
+            });
+            
+            // Handle Suggestion form
+            document.getElementById('suggest-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var form = e.target;
+                var formData = new FormData(form);
+                
+                fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                }).then(function() {
+                    form.style.display = 'none';
+                    document.getElementById('suggest-success').style.display = 'block';
+                }).catch(function(err) {
+                    alert('Error submitting form. Please try again.');
+                });
+            });
+            </script>
             
         </div>
     </section>
