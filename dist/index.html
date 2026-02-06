@@ -556,21 +556,31 @@
             <div class="newsletter-box">
                 <h2>📬 Get the Weekly Newsletter</h2>
                 <p>AI + Product Marketing insights delivered every Friday. Join product marketers from SAP, Salesforce, HubSpot, and more.</p>
-                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                <form class="newsletter-form" id="home-newsletter-form" onsubmit="subscribeNewsletter(event)">
                     <input type="email" id="newsletter-email" placeholder="Enter your email" required>
                     <button type="submit">Subscribe</button>
                 </form>
-                <p class="newsletter-note">Free forever. Unsubscribe anytime.</p>
+                <p class="newsletter-note" id="home-note">Free forever. Unsubscribe anytime.</p>
+                <p id="home-success" style="display: none; color: #86efac; font-weight: 600;">✅ You're subscribed! Check your email.</p>
             </div>
         </div>
     </section>
+    
+    <iframe id="home-beehiiv-iframe" style="display:none;"></iframe>
     
     <script>
     function subscribeNewsletter(e) {
         e.preventDefault();
         var email = document.getElementById('newsletter-email').value;
         var magicLink = 'https://magic.beehiiv.com/v1/ef3bcca1-2d98-4bdd-a347-03ea0734cf4a?email=' + encodeURIComponent(email);
-        window.location.href = magicLink;
+        
+        // Open in hidden iframe
+        document.getElementById('home-beehiiv-iframe').src = magicLink;
+        
+        // Show success
+        document.getElementById('home-newsletter-form').style.display = 'none';
+        document.getElementById('home-note').style.display = 'none';
+        document.getElementById('home-success').style.display = 'block';
     }
     </script>
     

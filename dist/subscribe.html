@@ -165,18 +165,30 @@
                         <input type="email" id="subscriber-email" name="email" required placeholder="you@company.com">
                     </div>
                     
-                    <button type="submit" class="btn">Subscribe to Newsletter</button>
+                    <button type="submit" class="btn" id="subscribe-btn">Subscribe to Newsletter</button>
                     
                     <p class="form-note">Join PMMs from SAP, Salesforce, HubSpot, and more. Free forever. Unsubscribe anytime.</p>
                 </form>
+                
+                <div id="success-message" style="display: none; background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 1rem; border-radius: 8px; text-align: center; margin-top: 1rem;">
+                    ✅ <strong>You're subscribed!</strong> Check your email to confirm.
+                </div>
             </div>
+            
+            <iframe id="beehiiv-iframe" name="beehiiv-iframe" style="display:none;"></iframe>
             
             <script>
             function subscribeToBeehiiv(e) {
                 e.preventDefault();
                 var email = document.getElementById('subscriber-email').value;
                 var magicLink = 'https://magic.beehiiv.com/v1/ef3bcca1-2d98-4bdd-a347-03ea0734cf4a?email=' + encodeURIComponent(email);
-                window.location.href = magicLink;
+                
+                // Open in hidden iframe
+                document.getElementById('beehiiv-iframe').src = magicLink;
+                
+                // Show success message
+                document.getElementById('beehiiv-form').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
             }
             </script>
             
