@@ -1,916 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Impact on the Pragmatic Framework's 37 Boxes | Future of PMM</title>
-  <meta name="description" content="Every activity in Pragmatic Institute's product lifecycle framework — evaluated for AI replacement probability with tool recommendations and real-world evidence.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-LL6G27YPXX');</script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #F8FAFC;
-      font-family: 'Inter', -apple-system, system-ui, sans-serif;
-      color: #1F2937;
-    }
-    
-    /* Navigation - matches main site */
-    header {
-      background: #fff;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 1rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .header-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo img { height: 135px; width: auto; }
-    header nav { display: flex; gap: 2rem; }
-    header nav a {
-      text-decoration: none;
-      color: #6b7280;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-    header nav a:hover, header nav a.active { color: #3b82f6; }
-    
-    /* Page Header (Hero) */
-    .page-header {
-      background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
-      padding: 40px 24px 32px;
-      position: relative;
-      overflow: hidden;
-    }
-    .page-header-content {
-      max-width: 900px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .page-header-badge {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: #93c5fd;
-      margin-bottom: 10px;
-      font-family: monospace;
-    }
-    .page-header h1 {
-      font-size: clamp(24px, 4.5vw, 36px);
-      font-weight: 700;
-      color: #fff;
-      margin: 0 0 10px;
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-    }
-    .page-header p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.55;
-      margin: 0 0 24px;
-      max-width: 600px;
-    }
-    .stats {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .stat {
-      display: flex;
-      align-items: baseline;
-      gap: 5px;
-    }
-    .stat-num {
-      font-size: 24px;
-      font-weight: 700;
-      font-family: monospace;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 11px;
-      color: #64748B;
-    }
-    
-    /* Filters */
-    .filters-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 16px 24px 0;
-    }
-    .filters {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 5px 14px;
-      border-radius: 18px;
-      font-size: 12px;
-      font-weight: 400;
-      cursor: pointer;
-      border: 1.5px solid #D1D5DB;
-      color: #6B7280;
-      background: #FFF;
-      transition: all 0.15s;
-      font-family: inherit;
-    }
-    .filter-btn:hover {
-      border-color: #9CA3AF;
-    }
-    .filter-btn.active {
-      font-weight: 600;
-    }
-    
-    /* Table */
-    .table-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 12px 24px 60px;
-    }
-    .table-container {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #E2E8F0;
-      background: #FFF;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    }
-    .table-scroll {
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 640px;
-    }
-    th {
-      padding: 10px 14px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #6B7280;
-      text-align: left;
-      cursor: pointer;
-      user-select: none;
-      white-space: nowrap;
-      border-bottom: 2px solid #E5E7EB;
-      font-family: monospace;
-      background: #F9FAFB;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    th:last-child { cursor: default; }
-    th .arrow {
-      margin-left: 4px;
-      opacity: 0.25;
-    }
-    th.sorted .arrow { opacity: 1; }
-    
-    /* Rows */
-    .data-row {
-      cursor: pointer;
-      background: #FFF;
-      transition: background 0.15s;
-    }
-    .data-row:hover { background: #F8FAFC; }
-    .data-row.expanded { background: var(--tier-bg); }
-    .data-row td {
-      padding: 12px 14px;
-      border-bottom: 1px solid #F1F5F9;
-    }
-    .data-row.expanded td { border-bottom: none; }
-    
-    /* Score bar */
-    .score-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .score-bar {
-      width: 50px;
-      height: 5px;
-      background: #E5E7EB;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .score-fill {
-      height: 100%;
-      border-radius: 3px;
-    }
-    .score-num {
-      font-size: 13px;
-      font-weight: 700;
-      font-family: monospace;
-      min-width: 30px;
-    }
-    
-    /* Activity name */
-    .activity-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #111827;
-    }
-    
-    /* Category badge */
-    .category-badge {
-      font-size: 10.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-    
-    /* Tier badge */
-    .tier-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 12px;
-      white-space: nowrap;
-      border: 1px solid;
-    }
-    
-    /* Expand arrow */
-    .expand-arrow {
-      display: inline-block;
-      transition: transform 0.2s;
-      color: #9CA3AF;
-      font-size: 14px;
-    }
-    .data-row.expanded .expand-arrow {
-      transform: rotate(180deg);
-    }
-    
-    /* Expanded content */
-    .expanded-row td {
-      padding: 0;
-    }
-    .expanded-content {
-      padding: 20px 24px;
-      display: grid;
-      gap: 16px;
-    }
-    .section-label {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #9CA3AF;
-      margin-bottom: 4px;
-      font-family: monospace;
-    }
-    .pragmatic-def {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.65;
-      color: #374151;
-      font-style: italic;
-      border-left: 3px solid #D1D5DB;
-      padding-left: 12px;
-    }
-    .pragmatic-credit {
-      font-size: 10px;
-      color: #9CA3AF;
-      margin-top: 4px;
-    }
-    .rationale {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.65;
-      color: #1F2937;
-    }
-    .tools-list {
-      background: rgba(255,255,255,0.7);
-      border-radius: 8px;
-      padding: 8px 14px;
-    }
-    .tool-item {
-      display: flex;
-      gap: 6px;
-      align-items: baseline;
-      padding: 5px 0;
-      border-bottom: 1px solid #F1F5F9;
-    }
-    .tool-item:last-child { border-bottom: none; }
-    .tool-name {
-      font-size: 12px;
-      font-weight: 700;
-      color: #1E293B;
-      white-space: nowrap;
-      font-family: monospace;
-    }
-    .tool-use {
-      font-size: 12px;
-      color: #64748B;
-      line-height: 1.5;
-    }
-    .evidence-list {
-      background: rgba(255,255,255,0.7);
-      border-radius: 8px;
-      padding: 10px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .evidence-item {
-      font-size: 12px;
-      line-height: 1.55;
-      color: #374151;
-    }
-    .evidence-link {
-      color: #6366F1;
-      text-decoration: none;
-      font-size: 11px;
-      font-family: monospace;
-    }
-    .evidence-link:hover { text-decoration: underline; }
-    
-    /* Attribution */
-    .attribution {
-      margin-top: 20px;
-      padding: 16px 20px;
-      background: #F1F5F9;
-      border-radius: 10px;
-      font-size: 12px;
-      color: #64748B;
-      line-height: 1.7;
-    }
-    .attribution strong { color: #334155; }
-    .attribution a {
-      color: #6366F1;
-      text-decoration: none;
-    }
-    .attribution a:hover { text-decoration: underline; }
-    
-    /* Colors */
-    .tier-replaced { --tier-color: #DC2626; --tier-bg: #FEF2F2; --tier-border: #FECACA; }
-    .tier-enhanced { --tier-color: #B45309; --tier-bg: #FFFBEB; --tier-border: #FDE68A; }
-    .tier-never { --tier-color: #047857; --tier-bg: #ECFDF5; --tier-border: #A7F3D0; }
-    
-    .cat-Market { --cat-color: #6366F1; }
-    .cat-Focus { --cat-color: #8B5CF6; }
-    .cat-Business { --cat-color: #EC4899; }
-    .cat-Planning { --cat-color: #EAB308; }
-    .cat-Programs { --cat-color: #10B981; }
-    .cat-Enablement { --cat-color: #3B82F6; }
-    .cat-Support { --cat-color: #6B7280; }
-    
-    /* Footer */
-    footer {
-      background: #1e3a5f;
-      color: white;
-      padding: 2rem 0;
-      text-align: center;
-    }
-    footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
-    footer .footer-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; opacity: 1; }
-    
-    @media (max-width: 640px) {
-      header nav { display: none; }
-      .page-header { padding: 24px 16px; }
-      .filters-wrap, .table-wrap { padding-left: 16px; padding-right: 16px; }
-      .stats { gap: 12px; }
-      .stat-num { font-size: 20px; }
-    }
-  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Impact on the Pragmatic Framework's 37 Boxes - The Future of PMM</title>
+    <meta name="description" content="Every activity in Pragmatic Institute's product lifecycle framework — evaluated for AI replacement probability with tool recommendations and real-world evidence.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #f5f6f7; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; margin: 0; line-height: 1.8; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 135px; width: auto; }
+        nav a { margin-left: 2rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        nav a:hover, nav a.active { color: var(--pmm-blue); }
+        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: white; padding: 3rem 0; }
+        .hero h1 { font-size: 2.25rem; margin: 0 0 0.5rem; font-weight: 700; }
+        .hero .subtitle { font-size: 1.1rem; opacity: 0.9; margin: 0; }
+        .hero .updated { font-size: 0.85rem; opacity: 0.7; margin-top: 1rem; }
+        .content { padding: 3rem 0 4rem; }
+        .content p { font-size: 1.05rem; margin-bottom: 1.5rem; color: #4b5563; }
+        .content h2 { color: var(--pmm-dark); font-size: 1.75rem; margin: 3rem 0 1rem; font-weight: 700; border-bottom: 2px solid var(--pmm-light); padding-bottom: 0.5rem; }
+        .content h3 { color: var(--pmm-dark); font-size: 1.35rem; margin: 2rem 0 0.75rem; font-weight: 600; }
+        .content a { color: var(--pmm-blue); }
+        .intro-box { background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border-left: 4px solid var(--pmm-blue); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .intro-box p { margin: 0; font-size: 1rem; }
+        footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+        
+        /* Stats row */
+        .stats-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 1.5rem 0 2rem; padding: 1.25rem; background: var(--pmm-light); border-radius: 8px; }
+        .stat { display: flex; align-items: baseline; gap: 6px; }
+        .stat-num { font-size: 1.75rem; font-weight: 700; font-family: monospace; }
+        .stat-num.red { color: #dc2626; }
+        .stat-num.amber { color: #d97706; }
+        .stat-num.green { color: #059669; }
+        .stat-num.gray { color: #6b7280; }
+        .stat-num.purple { color: #7c3aed; }
+        .stat-num.pink { color: #db2777; }
+        .stat-label { font-size: 0.85rem; color: #6b7280; }
+        
+        /* Filters */
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .filter-btn { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: 1.5px solid #d1d5db; color: #6b7280; background: #fff; transition: all 0.15s; font-family: inherit; }
+        .filter-btn:hover { border-color: #9ca3af; }
+        .filter-btn.active { font-weight: 600; }
+        .filter-btn.active[data-filter="all"] { border-color: #475569; color: #475569; background: rgba(71,85,105,0.05); }
+        .filter-btn.active[data-filter="replaced"] { border-color: #dc2626; color: #dc2626; background: rgba(220,38,38,0.05); }
+        .filter-btn.active[data-filter="enhanced"] { border-color: #d97706; color: #d97706; background: rgba(217,119,6,0.05); }
+        .filter-btn.active[data-filter="never"] { border-color: #059669; color: #059669; background: rgba(5,150,105,0.05); }
+        
+        /* Table */
+        .skills-table { width: 100%; border-collapse: collapse; margin: 0; font-size: 0.95rem; }
+        .skills-table th { background: var(--pmm-dark); color: white; padding: 12px 14px; text-align: left; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; user-select: none; white-space: nowrap; }
+        .skills-table th:last-child { cursor: default; }
+        .skills-table th .arrow { margin-left: 4px; opacity: 0.5; }
+        .skills-table th.sorted .arrow { opacity: 1; }
+        .skills-table td { padding: 12px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
+        .skills-table tbody tr { cursor: pointer; transition: background 0.1s; }
+        .skills-table tbody tr:hover { background: #f9fafb; }
+        .skills-table tbody tr.expanded { background: var(--row-bg, #fff); }
+        .skills-table tbody tr.expanded td { border-bottom: none; }
+        
+        /* Score */
+        .score-cell { display: flex; align-items: center; gap: 8px; }
+        .score-bar { width: 50px; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+        .score-fill { height: 100%; border-radius: 3px; }
+        .score-num { font-size: 0.9rem; font-weight: 700; font-family: monospace; min-width: 36px; }
+        
+        /* Category badge */
+        .cat-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; padding: 3px 8px; border-radius: 4px; font-family: monospace; white-space: nowrap; }
+        
+        /* Tier badge */
+        .tier-badge { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; white-space: nowrap; border: 1px solid; }
+        
+        /* Expand arrow */
+        .expand-arrow { color: #9ca3af; font-size: 12px; transition: transform 0.2s; display: inline-block; }
+        tr.expanded .expand-arrow { transform: rotate(180deg); }
+        
+        /* Expanded content */
+        .expanded-content { padding: 20px; }
+        .exp-section { margin-bottom: 16px; }
+        .exp-section:last-child { margin-bottom: 0; }
+        .exp-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 6px; font-family: monospace; }
+        .exp-def { margin: 0; font-size: 0.95rem; line-height: 1.6; color: #374151; font-style: italic; border-left: 3px solid #d1d5db; padding-left: 12px; }
+        .exp-credit { font-size: 0.75rem; color: #9ca3af; margin-top: 4px; }
+        .exp-rationale { margin: 0; font-size: 0.95rem; line-height: 1.6; color: #1f2937; }
+        .exp-tools { background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px 14px; }
+        .exp-tool { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+        .exp-tool:last-child { border-bottom: none; }
+        .exp-tool-name { font-size: 0.85rem; font-weight: 700; color: #1e293b; white-space: nowrap; font-family: monospace; }
+        .exp-tool-use { font-size: 0.85rem; color: #64748b; line-height: 1.5; }
+        .exp-evidence { background: rgba(255,255,255,0.8); border-radius: 8px; padding: 10px 14px; }
+        .exp-ev-item { font-size: 0.85rem; line-height: 1.5; color: #374151; margin-bottom: 10px; }
+        .exp-ev-item:last-child { margin-bottom: 0; }
+        .exp-ev-link { color: #6366f1; text-decoration: none; font-size: 0.8rem; font-family: monospace; }
+        .exp-ev-link:hover { text-decoration: underline; }
+        
+        /* Table container */
+        .table-wrap { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 2rem; }
+        .table-scroll { overflow-x: auto; }
+        
+        /* Attribution */
+        .attribution { background: var(--pmm-light); padding: 1.25rem; border-radius: 8px; font-size: 0.9rem; color: #64748b; line-height: 1.7; }
+        .attribution strong { color: var(--pmm-dark); }
+        .attribution a { color: var(--pmm-blue); text-decoration: none; }
+        .attribution a:hover { text-decoration: underline; }
+        
+        /* Colors */
+        .tier-replaced { --tier-color: #dc2626; --tier-bg: #fef2f2; --tier-border: #fecaca; }
+        .tier-enhanced { --tier-color: #d97706; --tier-bg: #fffbeb; --tier-border: #fde68a; }
+        .tier-never { --tier-color: #059669; --tier-bg: #ecfdf5; --tier-border: #a7f3d0; }
+        
+        @media (max-width: 700px) {
+            .stats-row { gap: 16px; }
+            .stat-num { font-size: 1.5rem; }
+            nav { display: none; }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="header-inner">
-      <a href="index.html" class="logo"><img src="./assets/images/logo.svg" alt="The Future of PMM"></a>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="blog.html">Archive</a>
-        <a href="ai-tools.html" class="active">AI Tools</a>
-        <a href="page-about.html">About</a>
-        <a href="subscribe.html">Subscribe</a>
-      </nav>
-    </div>
-  </header>
-
-  <section class="page-header">
-    <div class="page-header-content">
-      <div class="page-header-badge">The Future of PMM — Research</div>
-      <h1>AI Impact on the Pragmatic Framework's 37 Boxes</h1>
-      <p>Every activity in Pragmatic Institute's product lifecycle framework — evaluated for AI replacement probability with tool recommendations and real-world evidence.</p>
-      <div class="stats" id="stats"></div>
-    </div>
-  </section>
-
-  <div class="filters-wrap">
-    <div class="filters" id="filters"></div>
-  </div>
-
-  <div class="table-wrap">
-    <div class="table-container">
-      <div class="table-scroll">
-        <table>
-          <thead id="thead"></thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="attribution">
-      <strong>Sources & Attribution</strong><br>
-      Framework definitions from <em>The Pragmatic Framework™ Roles & Responsibilities</em> by 
-      <a href="https://www.pragmaticinstitute.com/product/framework/" target="_blank" rel="noopener">Pragmatic Institute</a>.
-      Evidence sourced from Harvard Business Review, Bain & Company, McKinsey, Salesforce, Gartner, eMarketer, Klue, and other cited publications.
-      AI impact scores and tool recommendations are editorial assessments by The Future of PMM.
-      The Pragmatic Framework™ is a trademark of Pragmatic Institute, Inc.
-    </div>
-  </div>
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo"><img src="./assets/images/logo.svg" alt="The Future of PMM"></a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="blog.html">Archive</a>
+                <a href="ai-tools.html" class="active">AI Tools</a>
+                <a href="page-about.html">About</a>
+                <a href="subscribe.html">Subscribe</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>AI Impact on the Pragmatic Framework's 37 Boxes</h1>
+            <p class="subtitle">Every activity in Pragmatic Institute's product lifecycle framework — evaluated for AI replacement probability with tool recommendations and real-world evidence.</p>
+            <p class="updated">Last updated: February 2026</p>
+        </div>
+    </section>
+    
+    <article class="content">
+        <div class="container">
+            
+            <div class="intro-box">
+                <p><strong>Which parts of your job will AI replace?</strong> We analyzed all 37 activities in Pragmatic Institute's product marketing framework and scored each one for AI disruption potential. Click any row to see the analysis, recommended tools, and evidence.</p>
+            </div>
+            
+            <div class="stats-row" id="stats"></div>
+            
+            <div class="filters" id="filters"></div>
+            
+            <div class="table-wrap">
+                <div class="table-scroll">
+                    <table class="skills-table">
+                        <thead id="thead"></thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="attribution">
+                <strong>Sources & Attribution</strong><br>
+                Framework definitions from <em>The Pragmatic Framework™ Roles & Responsibilities</em> by 
+                <a href="https://www.pragmaticinstitute.com/product/framework/" target="_blank" rel="noopener">Pragmatic Institute</a>.
+                Evidence sourced from Harvard Business Review, Bain & Company, McKinsey, Salesforce, Gartner, eMarketer, Klue, and other cited publications.
+                AI impact scores and tool recommendations are editorial assessments by The Future of PMM.
+                The Pragmatic Framework™ is a trademark of Pragmatic Institute, Inc.
+            </div>
+            
+        </div>
+    </article>
+    
+    <footer>
+        <div class="container">
+            <p style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; opacity: 1;">The Future of PMM</p>
+            <p>SAP Data and Analytics Product Marketing</p>
+        </div>
+    </footer>
 
 <script>
 const data = [
-  { id: 1, box: "Competitive Landscape", category: "Market", tier: "replaced", score: 95,
-    pragmaticDef: "Identify competitive and alternative offerings in the market. Assess their strengths and weaknesses. Develop a strategy for winning against the competition.",
-    rationale: "AI can continuously monitor competitors, scrape pricing pages, track product updates, analyze positioning shifts, and generate competitive battle cards in real time — far faster and more comprehensively than any human analyst.",
-    tools: [
-      { name: "Crayon", use: "Real-time competitive monitoring with AI-generated battlecards and Slack alerts" },
-      { name: "Klue", use: "Competitive enablement platform with AI-powered intel curation for sales teams" },
-      { name: "Visualping", use: "Automated website change detection for competitor pricing and messaging shifts" },
-      { name: "AlphaSense", use: "AI-powered market intelligence across filings, transcripts, and news" }
-    ],
-    evidence: [
-      { text: "Blackbaud's PMM reports Klue's Compete Agent saves 2 days/week and increased win rates 28% against top competitors", url: "https://klue.com/compete-agent", source: "Klue" },
-      { text: "Community Brands achieved 10% win rate lift and 50% reduction in PMM time to find/distribute competitive insights", url: "https://klue.com/case-study/competitiveenablement-programincreases-win-ratesby-up-to-10", source: "Klue Case Study" },
-      { text: "Klue's AI generates complete battlecards in under 60 seconds from verified intel sources", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" },
-      { text: "PMMs spend 10-15 hours/week on competitive intel manually; AI automated monitoring reduces this to near-zero", url: "https://klue.com/blog/ai-product-marketing", source: "Klue" }
-    ]},
-  { id: 2, box: "Content", category: "Enablement", tier: "replaced", score: 92,
-    pragmaticDef: "Provide content for buyer personas focused on a specific step of the buying process. Curate content aligned with stages of the buying process.",
-    rationale: "AI can generate buyer-persona-specific content mapped to buying stages at scale. Organizations report 30-50% reduction in content creation time. Human role shifts to editorial curation and brand voice governance.",
-    tools: [
-      { name: "Jasper", use: "Brand-trained AI content generation across formats with campaign workflows" },
-      { name: "Writer", use: "Enterprise AI writing with brand voice and compliance governance" },
-      { name: "Claude / ChatGPT", use: "Long-form drafting, repurposing launch docs into multi-channel assets" },
-      { name: "Descript", use: "AI video/audio editing to repurpose webinars into short-form clips" }
-    ],
-    evidence: [
-      { text: "Bain & Company (2025): organizations using generative AI for marketing see 30-50% decrease in content creation time", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "Bain via Cirrus Insight" },
-      { text: "29% of marketing teams now produce over half their content with AI; small teams average 71% AI-generated", url: "https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/", source: "Walnut / State of GenAI in B2B" },
-      { text: "Early adopters report content production time dropping 30-50%, freeing copywriters for strategy and storytelling", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" }
-    ]},
-  { id: 3, box: "Nurturing", category: "Programs", tier: "replaced", score: 91,
-    pragmaticDef: "Develop a lead nurturing process to turn prospects into satisfied customers and upsell or cross-sell existing customers.",
-    rationale: "Lead nurture sequences, drip campaigns, personalized follow-ups, and scoring models are increasingly automated end-to-end. AI optimizes timing, messaging, and channel selection dynamically based on behavioral signals.",
-    tools: [
-      { name: "HubSpot AI", use: "AI lead scoring, email personalization, and automated nurture workflows" },
-      { name: "6sense", use: "Intent-based buyer identification and AI-orchestrated campaigns" },
-      { name: "Drift / Salesloft", use: "Conversational AI chatbots that qualify and nurture leads 24/7" },
-      { name: "Seventh Sense", use: "AI send-time optimization to maximize email engagement per contact" }
-    ],
-    evidence: [
-      { text: "AI-powered lead scoring can increase leads by 50% and reduce acquisition costs by 60%", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "McKinsey via Cirrus Insight" },
-      { text: "Generative cold-email drafting improves response rates by 28% average using CRM data", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "LinkedIn 2025 via Cirrus Insight" },
-      { text: "Customer interactions automated by AI agents projected to grow from 3.3B in 2025 to 34B by 2027", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Juniper Research via DGR" }
-    ]},
-  { id: 4, box: "Sales Tools", category: "Enablement", tier: "replaced", score: 90,
-    pragmaticDef: "Create tools for salespeople focused on a specific step of the selling process.",
-    rationale: "Battle cards, one-pagers, ROI calculators, objection handlers, and demo scripts can all be generated and personalized by AI for specific deal contexts.",
-    tools: [
-      { name: "Highspot", use: "AI-powered content recommendations and sales play automation" },
-      { name: "Seismic", use: "Dynamic content assembly and personalized sales collateral generation" },
-      { name: "Gong", use: "Conversation intelligence that surfaces winning talk tracks and objection handling" },
-      { name: "Walnut", use: "AI-powered interactive demo personalization per persona/deal stage" }
-    ],
-    evidence: [
-      { text: "AI generates tailored proposals, case studies, and product recommendations from CRM data in seconds", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "Cirrus Insight" },
-      { text: "Personalized AI demos convert at 40%+ higher rates; sales cycles shortened 20-30%", url: "https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/", source: "Walnut" },
-      { text: "81% of sales pros using AI frequently report shorter deal cycles", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "ZoomInfo 2025" }
-    ]},
-  { id: 5, box: "Measurement", category: "Programs", tier: "replaced", score: 89,
-    pragmaticDef: "Measure and tune product efforts to ensure alignment with corporate goals.",
-    rationale: "Tracking KPIs, attributing pipeline to programs, anomaly detection, and performance reporting are natural AI strengths. AI dashboards surface insights humans would miss.",
-    tools: [
-      { name: "Improvado", use: "AI Agent lets marketers query unified data in plain English for instant dashboards" },
-      { name: "Power BI Copilot", use: "Conversational data analysis and auto-generated performance narratives" },
-      { name: "Databox", use: "AI-powered KPI tracking with anomaly alerts and automated reports" }
-    ],
-    evidence: [
-      { text: "KPMG Q2 2026 survey: 98% of leaders cite productivity improvements as realized benefit from AI", url: "https://improvado.io/blog/best-ai-marketing-tools", source: "KPMG via Improvado" },
-      { text: "Power BI Copilot allows users to describe what they want in natural language and AI generates the chart", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" },
-      { text: "Companies using AI-powered optimization see 30% higher ROI on advertising spend vs. manual", url: "https://ltx.studio/blog/ai-marketing-trends", source: "Salesforce State of Marketing" }
-    ]},
-  { id: 6, box: "Asset Assessment", category: "Market", tier: "replaced", score: 88,
-    pragmaticDef: "Inventory your assets (technical, skills, services, patents, other) and determine ways they can be leveraged.",
-    rationale: "Cataloging technical assets, patents, skills inventories, and identifying leverage opportunities is a classification and pattern-matching task AI excels at.",
-    tools: [
-      { name: "Glean", use: "AI enterprise search across all internal documents, wikis, and knowledge bases" },
-      { name: "Guru", use: "AI knowledge management that surfaces relevant internal assets in workflows" },
-      { name: "PatSnap", use: "AI patent analytics for IP portfolio assessment and competitive patent mapping" }
-    ],
-    evidence: [
-      { text: "AI-powered enterprise search tools now index and surface institutional knowledge across fragmented systems", url: "https://www.emarketer.com/content/how-ai-rewired-marketing-2025--breakout-use-cases-marketing-leaders", source: "eMarketer" },
-      { text: "Slack daily AI usage rose 233% in six months; workers using AI daily are 64% more productive", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Slack Workforce Index" }
-    ]},
-  { id: 7, box: "Use Scenarios", category: "Planning", tier: "replaced", score: 85,
-    pragmaticDef: "Illustrate market problems in context. Document how problems show up in a day in the life of the user.",
-    rationale: "Given persona data and market research, AI generates detailed day-in-the-life scenarios, user stories, and problem-context narratives. Synthetic user research supplements real interviews.",
-    tools: [
-      { name: "Claude / ChatGPT Projects", use: "Generate day-in-the-life scenarios from persona docs and research data" },
-      { name: "Synthetic Users", use: "AI-generated personas for rapid scenario testing and user story validation" },
-      { name: "Dovetail AI", use: "Synthesize qualitative research into scenario-ready themes and patterns" }
-    ],
-    evidence: [
-      { text: "Harvard Business Review: Gen AI offers four classes of opportunity for market research, including synthetic data that mimics real behaviors", url: "https://hbr.org/2025/05/how-gen-ai-is-transforming-market-research", source: "Harvard Business Review" },
-      { text: "81% of market researchers already use or plan to use gen AI to create synthetic data", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia Business School" },
-      { text: "Klue builds 'Persona GPTs' trained on win-loss data and Gong calls to interact with ICPs on demand", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }
-    ]},
-  { id: 8, box: "Product Profitability", category: "Business", tier: "enhanced", score: 75,
-    pragmaticDef: "Monitor and analyze KPIs to determine how well the product is performing and how it contributes to profit.",
-    rationale: "AI excels at monitoring KPIs, detecting margin erosion, and modeling profitability scenarios. The strategic response to what the data reveals still requires human judgment.",
-    tools: [
-      { name: "Tableau AI", use: "Automated profitability dashboards with anomaly detection" },
-      { name: "Mixpanel / Amplitude", use: "Product usage analytics with AI insight surfacing" },
-      { name: "Baremetrics", use: "SaaS revenue analytics with churn, MRR, and LTV modeling" }
-    ],
-    evidence: [
-      { text: "Next-gen dashboards become strategic copilots using predictive analytics and natural language", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" }
-    ]},
-  { id: 9, box: "Channel Training", category: "Enablement", tier: "enhanced", score: 72,
-    pragmaticDef: "Design and deliver training on how to sell the product, not how to use it.",
-    rationale: "AI generates training materials, creates roleplay simulations, and personalizes learning paths. But teaching partners how to sell benefits from human coaching.",
-    tools: [
-      { name: "Allego", use: "AI sales learning with video practice and coaching" },
-      { name: "Second Nature AI", use: "AI roleplay simulations for practicing objection handling" },
-      { name: "Spekit", use: "AI just-in-time enablement embedded in sales workflows" }
-    ],
-    evidence: [
-      { text: "Gong and Chorus analyze conversation patterns to identify winning sales behaviors via NLP", url: "https://persana.ai/blogs/ai-sales-case-studies", source: "Persana AI" }
-    ]},
-  { id: 10, box: "Win/Loss Analysis", category: "Market", tier: "enhanced", score: 72,
-    pragmaticDef: "Understand why recent evaluators did or didn't buy and what steps they took in the buying process.",
-    rationale: "AI transcribes and analyzes win/loss interviews, detects patterns across hundreds of deals. Building trust with sales and reading between the lines still requires human judgment.",
-    tools: [
-      { name: "Gong", use: "Conversation intelligence with AI deal risk and win/loss pattern analysis" },
-      { name: "Clari", use: "Revenue intelligence with AI-powered deal inspection and outcome prediction" },
-      { name: "Dovetail", use: "Qualitative analysis of interviews with AI theme extraction" }
-    ],
-    evidence: [
-      { text: "Gong analyzes optimal talk-to-listen ratios (43:57) and identifies what consistently leads to success", url: "https://persana.ai/blogs/ai-sales-case-studies", source: "Persana AI" },
-      { text: "Klue integrates win-loss data with competitive intel for complete go-to-market picture", url: "https://klue.com/customers", source: "Klue Customers" }
-    ]},
-  { id: 11, box: "Market Problems", category: "Market", tier: "enhanced", score: 70,
-    pragmaticDef: "Discover problems by interviewing customers, recent evaluators and untapped potential customers. Validate urgent problems.",
-    rationale: "AI analyzes survey data, mines support tickets, scrapes forums, and surfaces problem patterns at scale. Discovering truly latent problems still requires human intuition.",
-    tools: [
-      { name: "Gong", use: "Mine thousands of sales calls for recurring pain points" },
-      { name: "Qualtrics XM", use: "AI survey analysis with automated theme detection" },
-      { name: "SparkToro", use: "Discover what your market reads, watches, and discusses" },
-      { name: "Brand24", use: "Social listening across 25M+ sources for problem signals" }
-    ],
-    evidence: [
-      { text: "Harvard: AI fills gaps in market understanding by obtaining insights not available in conventional data", url: "https://hbr.org/2025/05/how-gen-ai-is-transforming-market-research", source: "Harvard Business Review" },
-      { text: "AI 'Listener Agents' monitor all prospect calls, tracking every mention of pain points 24/7", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Demand Gen Report" }
-    ]},
-  { id: 12, box: "Awareness", category: "Programs", tier: "enhanced", score: 70,
-    pragmaticDef: "Create and deliver thoughtful information to influence key market constituents.",
-    rationale: "AI produces thought leadership drafts, optimizes ad copy, generates visual assets. But genuine industry credibility still requires a recognizable human voice.",
-    tools: [
-      { name: "Jasper", use: "AI content generation for thought leadership and campaigns" },
-      { name: "Canva Magic Studio", use: "AI-powered design for social graphics and presentations" },
-      { name: "BuzzSumo", use: "AI content performance analysis" }
-    ],
-    evidence: [
-      { text: "Nearly 800M people/week use ChatGPT; AI-powered search has reduced organic traffic 15-64%", url: "https://www.wordstream.com/blog/2026-ai-marketing-trends", source: "WordStream" },
-      { text: "Marketers save 5+ hours/week with AI; AI-driven content is 25% more likely to succeed", url: "https://gogloby.io/case-studies/ai-in-marketing/", source: "Globy" }
-    ]},
-  { id: 13, box: "Market Definition", category: "Focus", tier: "enhanced", score: 68,
-    pragmaticDef: "Articulate segments using problem-based segmentation. Analyze segments to actively pursue.",
-    rationale: "AI processes vast datasets to identify segments and model TAM. But choosing which segments to pursue requires strategic judgment.",
-    tools: [
-      { name: "CB Insights", use: "AI market mapping and emerging company tracking" },
-      { name: "Similarweb", use: "Digital market intelligence for traffic-based segment sizing" }
-    ],
-    evidence: [
-      { text: "Evidenza uses synthetic data to help marketers make decisions about targeting and positioning, with ROI projections", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia" }
-    ]},
-  { id: 14, box: "Buyer Personas", category: "Planning", tier: "enhanced", score: 68,
-    pragmaticDef: "Define archetypical buyers. Create and share persona documents for each buyer type.",
-    rationale: "AI drafts data-driven personas from CRM and behavioral data. Making personas come alive organizationally requires human storytelling.",
-    tools: [
-      { name: "Delve AI", use: "Auto-generate buyer personas from web analytics and CRM data" },
-      { name: "SparkToro", use: "Audience research revealing what buyer segments engage with" },
-      { name: "Synthetic Users", use: "AI persona simulations for rapid hypothesis testing" }
-    ],
-    evidence: [
-      { text: "HBR: 40%+ of market researchers are experimenting with 'digital twins' of individual customers", url: "https://hbr.org/2025/05/how-gen-ai-is-transforming-market-research", source: "Harvard Business Review" },
-      { text: "Gen AI-powered simulation tools expected to disrupt the $140B market research industry in 2026", url: "https://www.success.com/ai-simulation-marketing-technology-2026/", source: "SUCCESS Magazine" },
-      { text: "Klue builds Persona GPTs trained on win-loss data and CRM notes to test messaging instantly", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }
-    ]},
-  { id: 15, box: "User Personas", category: "Planning", tier: "enhanced", score: 68,
-    pragmaticDef: "Define archetypical users. Who do you need to solve problems for?",
-    rationale: "AI synthesizes behavioral data into user archetypes rapidly. Nuanced context understanding and organizational buy-in remain human tasks.",
-    tools: [
-      { name: "Pendo", use: "Product analytics surfacing user behavior patterns for persona development" },
-      { name: "Amplitude", use: "Behavioral cohort analysis to identify distinct user archetypes" },
-      { name: "Maze AI", use: "User testing with AI insight extraction from usability sessions" }
-    ],
-    evidence: [
-      { text: "Harvard researchers found LLM-created synthetic customers produce realistic preferences for familiar attributes", url: "https://d3.harvard.edu/larger-faster-cheaper-the-future-of-market-research-with-ai/", source: "Harvard D³ Institute" }
-    ]},
-  { id: 16, box: "Channels (Support)", category: "Support", tier: "enhanced", score: 68,
-    pragmaticDef: "Provide ongoing support for the sales channel. Make support more repeatable.",
-    rationale: "AI chatbots handle routine channel queries. Complex troubleshooting and relationship management remain human.",
-    tools: [
-      { name: "Zendesk AI", use: "AI ticket routing, auto-responses, and knowledge base suggestions" },
-      { name: "Intercom Fin", use: "AI chatbot trained on help docs that resolves partner queries instantly" }
-    ],
-    evidence: [
-      { text: "AI agents for customer interactions projected to grow from 3.3B to 34B by 2027", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Juniper Research" }
-    ]},
-  { id: 17, box: "Buyer Experience", category: "Planning", tier: "enhanced", score: 65,
-    pragmaticDef: "Research and document the buying process. Understand barriers buyers encounter.",
-    rationale: "AI maps buyer journeys from CRM data and identifies friction points. Understanding emotional barriers requires empathetic human research.",
-    tools: [
-      { name: "Gong", use: "Analyze real buyer conversations to map actual buying process" },
-      { name: "6sense", use: "Buyer intent signals and dark funnel journey mapping" },
-      { name: "Hotjar AI", use: "Session replay with AI-generated UX insight summaries" }
-    ],
-    evidence: [
-      { text: "AI 'Topic Agents' automatically generate content ideas from insights captured by Listener Agents", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Demand Gen Report" }
-    ]},
-  { id: 18, box: "Revenue Retention", category: "Programs", tier: "enhanced", score: 65,
-    pragmaticDef: "Plans for customer loyalty and selling additional products to existing customers.",
-    rationale: "AI predicts churn and identifies expansion opportunities. Strategic decisions about customer investment and human relationships remain critical.",
-    tools: [
-      { name: "Gainsight", use: "AI health scoring, churn prediction, and expansion identification" },
-      { name: "ChurnZero", use: "Real-time engagement scoring with automated retention playbooks" }
-    ],
-    evidence: [
-      { text: "Companies using churn prediction see churn rates drop 13-31% and conversions rise 9-20%", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" },
-      { text: "Verizon's GenAI predicted reason behind 80% of incoming calls, preventing ~100K customers from churning", url: "https://visme.co/blog/ai-marketing-case-studies/", source: "Visme" }
-    ]},
-  { id: 19, box: "Pricing", category: "Business", tier: "enhanced", score: 65,
-    pragmaticDef: "Establish pricing models, schedules, guidelines, and procedures.",
-    rationale: "AI runs price sensitivity analyses and competitive pricing studies. But pricing is tied to positioning and brand — humans set strategy, AI optimizes.",
-    tools: [
-      { name: "Pricefx", use: "AI pricing optimization with competitive benchmarking" },
-      { name: "Competera", use: "Real-time competitive price monitoring" },
-      { name: "Conjointly", use: "AI-assisted conjoint analysis and pricing research" }
-    ],
-    evidence: [
-      { text: "Autonomous AI agents: price optimization evolved from predictive models into autonomous, continuously learning systems", url: "https://www.cmswire.com/digital-marketing/7-ai-competencies-marketers-must-master/", source: "CMSWire" }
-    ]},
-  { id: 20, box: "Marketing Plan", category: "Programs", tier: "enhanced", score: 65,
-    pragmaticDef: "Articulate strategies and programs for awareness and leads — including measurements and goals.",
-    rationale: "AI generates plan drafts and models ROI scenarios. Strategic vision and organizational alignment are human-led.",
-    tools: [
-      { name: "Claude / ChatGPT", use: "Draft marketing plans and channel mix recommendations" },
-      { name: "Improvado", use: "Historical performance analytics to inform plan allocation" }
-    ],
-    evidence: [
-      { text: "65% of organizations now utilize generative AI regularly in marketing operations", url: "https://blog.brandsatplayllc.com/blog/new-2026-marketing-trends-for-ai-first-marketing-strategies-that-work", source: "McKinsey via Brands at Play" }
-    ]},
-  { id: 21, box: "Business Plan", category: "Business", tier: "enhanced", score: 62,
-    pragmaticDef: "Objective analysis of market opportunity. Make go/no-go recommendation.",
-    rationale: "AI builds financial models and sizes markets rapidly. The go/no-go recommendation and internal influence are human skills.",
-    tools: [
-      { name: "Claude / ChatGPT", use: "Market analysis and business case drafting" },
-      { name: "CB Insights", use: "AI market sizing and investment landscape research" },
-      { name: "AlphaSense", use: "Earnings call analysis and opportunity validation" }
-    ],
-    evidence: [
-      { text: "AI compresses campaign and planning cycles by 30-50% while improving targeting accuracy", url: "https://gogloby.io/case-studies/ai-in-marketing/", source: "Globy" }
-    ]},
-  { id: 22, box: "Operations (Support)", category: "Support", tier: "enhanced", score: 62,
-    pragmaticDef: "Provide market and solution information to support the operations group.",
-    rationale: "AI automates reporting and streamlines cross-team information flows. Strategic context requires human interpretation.",
-    tools: [
-      { name: "Zapier AI", use: "Automated cross-team information flows" },
-      { name: "Slack AI", use: "Surface relevant market context from channels" }
-    ],
-    evidence: [
-      { text: "AI moved from tool to infrastructure in 2025 — the system itself, not an add-on", url: "https://www.emarketer.com/content/how-ai-rewired-marketing-2025--breakout-use-cases-marketing-leaders", source: "eMarketer" }
-    ]},
-  { id: 23, box: "Revenue Growth", category: "Programs", tier: "enhanced", score: 60,
-    pragmaticDef: "Plans and budgets for selling products to new customers.",
-    rationale: "AI identifies high-value segments and optimizes targeting. Growth strategy requires creative thinking and sales partnership.",
-    tools: [
-      { name: "6sense", use: "AI account identification and intent-based targeting" },
-      { name: "Demandbase", use: "ABM platform with AI audience building" },
-      { name: "Mutiny", use: "AI website personalization per target account" }
-    ],
-    evidence: [
-      { text: "AI-powered lead generation delivers 50% more sales-ready leads and 60% lower acquisition costs", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "Salesforce via Cirrus Insight" }
-    ]},
-  { id: 24, box: "Positioning", category: "Planning", tier: "enhanced", score: 60,
-    pragmaticDef: "Describe the product by its ability to solve market problems. Create positioning documents by segment and persona.",
-    rationale: "AI generates positioning drafts and tests messaging variants. Crafting positioning that resonates requires deep empathy and internal consensus.",
-    tools: [
-      { name: "Claude / ChatGPT", use: "Generate positioning hypotheses and messaging alternatives" },
-      { name: "Wynter", use: "AI-enhanced B2B message testing with real buyer panels" },
-      { name: "Crayon", use: "Competitive positioning gap analysis" }
-    ],
-    evidence: [
-      { text: "Evidenza helps marketers make decisions about targeting, positioning, and messaging with ROI projections", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia" },
-      { text: "Gong reveals which messaging resonates most and what objections stall deals", url: "https://www.crescendo.ai/blog/ai-for-customer-insights-tools", source: "Crescendo AI" }
-    ]},
-  { id: 25, box: "Product Roadmap", category: "Focus", tier: "enhanced", score: 58,
-    pragmaticDef: "Illustrate vision and key phases — the roadmap is a prediction, not a commitment.",
-    rationale: "AI synthesizes feedback and prioritizes features. The judgment calls about sequencing and trade-offs are human.",
-    tools: [
-      { name: "ProductBoard", use: "AI feature prioritization from customer feedback" },
-      { name: "Aha! AI", use: "Roadmap generation with AI goal setting" }
-    ],
-    evidence: [
-      { text: "AI-driven voice of customer analysis connects CRM and conversation data to generate roadmaps by revenue impact", url: "https://www.guideflow.com/blog/best-product-marketing-software-tools", source: "Guideflow" }
-    ]},
-  { id: 26, box: "Sales Alignment", category: "Enablement", tier: "enhanced", score: 58,
-    pragmaticDef: "Align selling process to the buying process. Describe information needs at each step.",
-    rationale: "AI maps buying-to-selling stages and recommends content. Trust-building with sales leadership is human.",
-    tools: [
-      { name: "Gong", use: "Reveal how actual conversations map to intended buying process" },
-      { name: "Highspot", use: "AI content recommendations per deal stage" },
-      { name: "Clari", use: "Revenue intelligence showing where deals stall" }
-    ],
-    evidence: [
-      { text: "64% of sales organizations modify strategy 2+ times/year; manual processes can't keep up", url: "https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/", source: "Gartner via Walnut" }
-    ]},
-  { id: 27, box: "Distribution Strategy", category: "Focus", tier: "enhanced", score: 55,
-    pragmaticDef: "Determine which channels align with buying preferences.",
-    rationale: "AI models channel economics. Relationship-driven channel decisions remain human.",
-    tools: [
-      { name: "Crossbeam / Reveal", use: "AI partner ecosystem mapping and overlap analysis" },
-      { name: "PartnerStack", use: "Partner performance analytics" }
-    ],
-    evidence: [
-      { text: "2026 MarTech landscape includes 15,000+ solutions with AI tools leading expansion", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Demand Gen Report" }
-    ]},
-  { id: 28, box: "Launch", category: "Programs", tier: "enhanced", score: 55,
-    pragmaticDef: "Define launch goals, develop plans, ensure cross-organizational readiness.",
-    rationale: "AI generates checklists and drafts messaging. Cross-functional leadership and real-time pivoting are human skills.",
-    tools: [
-      { name: "Asana Intelligence", use: "AI project planning with task lists and dependency mapping" },
-      { name: "Claude / ChatGPT", use: "Generate launch briefs and messaging frameworks" }
-    ],
-    evidence: [
-      { text: "Klue plugs launch narratives into custom GPTs to generate blogs, decks, emails, and social posts — 80% of the way there", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }
-    ]},
-  { id: 29, box: "Requirements", category: "Planning", tier: "enhanced", score: 55,
-    pragmaticDef: "Articulate and prioritize problems that solutions should solve.",
-    rationale: "AI mines feature requests and clusters themes. Prioritization judgment and cross-functional negotiation remain human.",
-    tools: [
-      { name: "ProductBoard", use: "AI feature request clustering and prioritization" },
-      { name: "Dovetail", use: "Synthesize research into requirement themes" }
-    ],
-    evidence: [
-      { text: "45% of market researchers already use gen AI, most to analyze transcripts and data", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia" }
-    ]},
-  { id: 30, box: "Buy, Build or Partner", category: "Business", tier: "enhanced", score: 52,
-    pragmaticDef: "Determine the most effective way to deliver a complete solution.",
-    rationale: "AI models make-vs-buy scenarios. Strategic judgment and organizational alignment are human.",
-    tools: [
-      { name: "CB Insights", use: "Technology landscape mapping and target identification" },
-      { name: "Crossbeam / Reveal", use: "Partner ecosystem overlap analysis" }
-    ],
-    evidence: [
-      { text: "AI-powered market mapping helps identify competitive and partnership opportunities faster", url: "https://www.alpha-sense.com/blog/competitive-intelligence-tools/", source: "AlphaSense" }
-    ]},
-  { id: 31, box: "Product Portfolio", category: "Focus", tier: "enhanced", score: 50,
-    pragmaticDef: "Integrate products, services and partners into a coherent set solving a market problem.",
-    rationale: "AI models portfolio interdependencies and coverage gaps. Portfolio politics and brand vision require human leadership.",
-    tools: [
-      { name: "Aha! AI", use: "Portfolio-level roadmapping with cross-product dependencies" },
-      { name: "ProductBoard", use: "Multi-product feedback synthesis" }
-    ],
-    evidence: [
-      { text: "Miro AI accelerates strategic planning by generating personas, competitive analysis and GTM plans from prompts", url: "https://www.guideflow.com/blog/best-product-marketing-software-tools", source: "Guideflow" }
-    ]},
-  { id: 32, box: "Programs (Support)", category: "Support", tier: "never", score: 40,
-    pragmaticDef: "Provide market and solution information to support marketing programs. Ensure alignment with corporate goals.",
-    rationale: "This requires organizational navigation, cross-team trust, and translating market intelligence into actionable direction.",
-    tools: [
-      { name: "Slack AI", use: "Surface market context when program teams need it" },
-      { name: "Guru", use: "Push verified market info into program workflows" }
-    ],
-    evidence: [
-      { text: "2026: the year AI becomes the operating system for marketing, but humans orchestrate strategy", url: "https://zetaglobal.com/resource-center/predictions-2026-ai-marketing/", source: "Zeta Global" }
-    ]},
-  { id: 33, box: "Stakeholder Communications", category: "Planning", tier: "never", score: 38,
-    pragmaticDef: "Manage proactive communications with stakeholders from strategy through execution.",
-    rationale: "Reading political dynamics, building coalitions, knowing what to share with whom — rooted in EQ and influence AI can't replicate.",
-    tools: [
-      { name: "Claude / ChatGPT", use: "Draft executive updates and status reports" },
-      { name: "Loom AI", use: "Async video updates with AI summaries for stakeholders" }
-    ],
-    evidence: [
-      { text: "Marketers in 2026 shift from building AI to architecting how it operates — orchestration is the skill", url: "https://www.cmswire.com/digital-marketing/7-ai-competencies-marketers-must-master/", source: "CMSWire" }
-    ]},
-  { id: 34, box: "Innovation", category: "Business", tier: "never", score: 35,
-    pragmaticDef: "Focus team creativity on solving market problems by leveraging distinctive competencies.",
-    rationale: "AI brainstorms and generates ideas. Creative leaps, risk tolerance, and vision to drive innovation are fundamentally human.",
-    tools: [
-      { name: "Claude / ChatGPT", use: "Brainstorming partner for 'what if' scenarios" },
-      { name: "Miro AI", use: "Facilitate innovation workshops with AI prompts" }
-    ],
-    evidence: [
-      { text: "The future of marketing isn't replacing humans with AI — it's using AI to amplify human creativity and strategic thinking", url: "https://www.dmcockpit.com/articles/marketing-predictions-2025-and-2026", source: "DM Cockpit" },
-      { text: "Competitive advantage flows to marketers who master context engineering, evaluation, and governance", url: "https://www.cmswire.com/digital-marketing/7-ai-competencies-marketers-must-master/", source: "CMSWire" }
-    ]},
-  { id: 35, box: "Advocacy", category: "Programs", tier: "never", score: 32,
-    pragmaticDef: "Identify customers for testimonials, case studies, or reference accounts. Capture customer success stories.",
-    rationale: "Authentic relationship-building, trust, and making customers feel valued. Reference calls are human-to-human exchanges.",
-    tools: [
-      { name: "Influitive", use: "Manage advocate programs and match advocates to opportunities" },
-      { name: "Gainsight", use: "Identify high-NPS customers as advocacy candidates" }
-    ],
-    evidence: [
-      { text: "Gainsight users leverage Ask Klue to validate differentiation during live customer calls", url: "https://klue.com/customers", source: "Klue Customers" }
-    ]},
-  { id: 36, box: "Distinctive Competencies", category: "Market", tier: "never", score: 30,
-    pragmaticDef: "Articulate and leverage the organization's unique abilities to deliver value.",
-    rationale: "Requires deep institutional knowledge and strategic self-awareness. AI can help articulate once identified, but can't discover what makes you unique.",
-    tools: [
-      { name: "Glean", use: "Enterprise search to surface internal capabilities" },
-      { name: "Claude / ChatGPT", use: "Structure and articulate competencies once identified" }
-    ],
-    evidence: [
-      { text: "2025's defining shift: AI moves from tool to infrastructure, but organizations still need human-defined strategy", url: "https://www.emarketer.com/content/how-ai-rewired-marketing-2025--breakout-use-cases-marketing-leaders", source: "eMarketer" }
-    ]},
-  { id: 37, box: "Events", category: "Support", tier: "never", score: 20,
-    pragmaticDef: "Provide product and market expertise for conferences, tradeshows, webinars, and seminars.",
-    rationale: "Physical presence, improvisation, reading a room, and authentic connection. The most AI-resistant activity in the entire framework.",
-    tools: [
-      { name: "ChatGPT / Claude", use: "Draft talk outlines, booth scripts, and briefing docs" },
-      { name: "Otter.ai", use: "Real-time transcription and AI session summaries" }
-    ],
-    evidence: [
-      { text: "Strong public speaking, comfort in front of senior groups — requirements AI fundamentally cannot fulfill", url: "https://www.pragmaticinstitute.com/resources/articles/product/sample-product-marketing-manager-job-description/", source: "Pragmatic Institute" }
-    ]}
+  { id: 1, box: "Competitive Landscape", category: "Market", tier: "replaced", score: 95, pragmaticDef: "Identify competitive and alternative offerings in the market. Assess their strengths and weaknesses. Develop a strategy for winning against the competition.", rationale: "AI can continuously monitor competitors, scrape pricing pages, track product updates, analyze positioning shifts, and generate competitive battle cards in real time — far faster and more comprehensively than any human analyst.", tools: [{ name: "Crayon", use: "Real-time competitive monitoring with AI-generated battlecards and Slack alerts" }, { name: "Klue", use: "Competitive enablement platform with AI-powered intel curation for sales teams" }, { name: "Visualping", use: "Automated website change detection for competitor pricing and messaging shifts" }, { name: "AlphaSense", use: "AI-powered market intelligence across filings, transcripts, and news" }], evidence: [{ text: "Blackbaud's PMM reports Klue's Compete Agent saves 2 days/week and increased win rates 28% against top competitors", url: "https://klue.com/compete-agent", source: "Klue" }, { text: "Community Brands achieved 10% win rate lift and 50% reduction in PMM time to find/distribute competitive insights", url: "https://klue.com/case-study/competitiveenablement-programincreases-win-ratesby-up-to-10", source: "Klue Case Study" }, { text: "Klue's AI generates complete battlecards in under 60 seconds from verified intel sources", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }, { text: "PMMs spend 10-15 hours/week on competitive intel manually; AI automated monitoring reduces this to near-zero", url: "https://klue.com/blog/ai-product-marketing", source: "Klue" }]},
+  { id: 2, box: "Content", category: "Enablement", tier: "replaced", score: 92, pragmaticDef: "Provide content for buyer personas focused on a specific step of the buying process. Curate content aligned with stages of the buying process.", rationale: "AI can generate buyer-persona-specific content mapped to buying stages at scale. Organizations report 30-50% reduction in content creation time. Human role shifts to editorial curation and brand voice governance.", tools: [{ name: "Jasper", use: "Brand-trained AI content generation across formats with campaign workflows" }, { name: "Writer", use: "Enterprise AI writing with brand voice and compliance governance" }, { name: "Claude / ChatGPT", use: "Long-form drafting, repurposing launch docs into multi-channel assets" }, { name: "Descript", use: "AI video/audio editing to repurpose webinars into short-form clips" }], evidence: [{ text: "Bain & Company (2025): organizations using generative AI for marketing see 30-50% decrease in content creation time", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "Bain via Cirrus Insight" }, { text: "29% of marketing teams now produce over half their content with AI; small teams average 71% AI-generated", url: "https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/", source: "Walnut / State of GenAI in B2B" }, { text: "Early adopters report content production time dropping 30-50%, freeing copywriters for strategy and storytelling", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" }]},
+  { id: 3, box: "Nurturing", category: "Programs", tier: "replaced", score: 91, pragmaticDef: "Develop a lead nurturing process to turn prospects into satisfied customers and upsell or cross-sell existing customers.", rationale: "Lead nurture sequences, drip campaigns, personalized follow-ups, and scoring models are increasingly automated end-to-end. AI optimizes timing, messaging, and channel selection dynamically based on behavioral signals.", tools: [{ name: "HubSpot AI", use: "AI lead scoring, email personalization, and automated nurture workflows" }, { name: "6sense", use: "Intent-based buyer identification and AI-orchestrated campaigns" }, { name: "Drift / Salesloft", use: "Conversational AI chatbots that qualify and nurture leads 24/7" }, { name: "Seventh Sense", use: "AI send-time optimization to maximize email engagement per contact" }], evidence: [{ text: "AI-powered lead scoring can increase leads by 50% and reduce acquisition costs by 60%", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "McKinsey via Cirrus Insight" }, { text: "Generative cold-email drafting improves response rates by 28% average using CRM data", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "LinkedIn 2025 via Cirrus Insight" }, { text: "Customer interactions automated by AI agents projected to grow from 3.3B in 2025 to 34B by 2027", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Juniper Research via DGR" }]},
+  { id: 4, box: "Sales Tools", category: "Enablement", tier: "replaced", score: 90, pragmaticDef: "Create tools for salespeople focused on a specific step of the selling process.", rationale: "Battle cards, one-pagers, ROI calculators, objection handlers, and demo scripts can all be generated and personalized by AI for specific deal contexts.", tools: [{ name: "Highspot", use: "AI-powered content recommendations and sales play automation" }, { name: "Seismic", use: "Dynamic content assembly and personalized sales collateral generation" }, { name: "Gong", use: "Conversation intelligence that surfaces winning talk tracks and objection handling" }, { name: "Walnut", use: "AI-powered interactive demo personalization per persona/deal stage" }], evidence: [{ text: "AI generates tailored proposals, case studies, and product recommendations from CRM data in seconds", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "Cirrus Insight" }, { text: "Personalized AI demos convert at 40%+ higher rates; sales cycles shortened 20-30%", url: "https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/", source: "Walnut" }, { text: "81% of sales pros using AI frequently report shorter deal cycles", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "ZoomInfo 2025" }]},
+  { id: 5, box: "Measurement", category: "Programs", tier: "replaced", score: 89, pragmaticDef: "Measure and tune product efforts to ensure alignment with corporate goals.", rationale: "Tracking KPIs, attributing pipeline to programs, anomaly detection, and performance reporting are natural AI strengths. AI dashboards surface insights humans would miss.", tools: [{ name: "Improvado", use: "AI Agent lets marketers query unified data in plain English for instant dashboards" }, { name: "Power BI Copilot", use: "Conversational data analysis and auto-generated performance narratives" }, { name: "Databox", use: "AI-powered KPI tracking with anomaly alerts and automated reports" }], evidence: [{ text: "KPMG Q2 2026 survey: 98% of leaders cite productivity improvements as realized benefit from AI", url: "https://improvado.io/blog/best-ai-marketing-tools", source: "KPMG via Improvado" }, { text: "Power BI Copilot allows users to describe what they want in natural language and AI generates the chart", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" }, { text: "Companies using AI-powered optimization see 30% higher ROI on advertising spend vs. manual", url: "https://ltx.studio/blog/ai-marketing-trends", source: "Salesforce State of Marketing" }]},
+  { id: 6, box: "Asset Assessment", category: "Market", tier: "replaced", score: 88, pragmaticDef: "Inventory your assets (technical, skills, services, patents, other) and determine ways they can be leveraged.", rationale: "Cataloging technical assets, patents, skills inventories, and identifying leverage opportunities is a classification and pattern-matching task AI excels at.", tools: [{ name: "Glean", use: "AI enterprise search across all internal documents, wikis, and knowledge bases" }, { name: "Guru", use: "AI knowledge management that surfaces relevant internal assets in workflows" }, { name: "PatSnap", use: "AI patent analytics for IP portfolio assessment and competitive patent mapping" }], evidence: [{ text: "AI-powered enterprise search tools now index and surface institutional knowledge across fragmented systems", url: "https://www.emarketer.com/content/how-ai-rewired-marketing-2025--breakout-use-cases-marketing-leaders", source: "eMarketer" }, { text: "Slack daily AI usage rose 233% in six months; workers using AI daily are 64% more productive", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Slack Workforce Index" }]},
+  { id: 7, box: "Use Scenarios", category: "Planning", tier: "replaced", score: 85, pragmaticDef: "Illustrate market problems in context. Document how problems show up in a day in the life of the user.", rationale: "Given persona data and market research, AI generates detailed day-in-the-life scenarios, user stories, and problem-context narratives. Synthetic user research supplements real interviews.", tools: [{ name: "Claude / ChatGPT Projects", use: "Generate day-in-the-life scenarios from persona docs and research data" }, { name: "Synthetic Users", use: "AI-generated personas for rapid scenario testing and user story validation" }, { name: "Dovetail AI", use: "Synthesize qualitative research into scenario-ready themes and patterns" }], evidence: [{ text: "Harvard Business Review: Gen AI offers four classes of opportunity for market research, including synthetic data that mimics real behaviors", url: "https://hbr.org/2025/05/how-gen-ai-is-transforming-market-research", source: "Harvard Business Review" }, { text: "81% of market researchers already use or plan to use gen AI to create synthetic data", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia Business School" }, { text: "Klue builds 'Persona GPTs' trained on win-loss data and Gong calls to interact with ICPs on demand", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }]},
+  { id: 8, box: "Product Profitability", category: "Business", tier: "enhanced", score: 75, pragmaticDef: "Monitor and analyze KPIs to determine how well the product is performing and how it contributes to profit.", rationale: "AI excels at monitoring KPIs, detecting margin erosion, and modeling profitability scenarios. The strategic response to what the data reveals still requires human judgment.", tools: [{ name: "Tableau AI", use: "Automated profitability dashboards with anomaly detection" }, { name: "Mixpanel / Amplitude", use: "Product usage analytics with AI insight surfacing" }, { name: "Baremetrics", use: "SaaS revenue analytics with churn, MRR, and LTV modeling" }], evidence: [{ text: "Next-gen dashboards become strategic copilots using predictive analytics and natural language", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" }]},
+  { id: 9, box: "Channel Training", category: "Enablement", tier: "enhanced", score: 72, pragmaticDef: "Design and deliver training on how to sell the product, not how to use it.", rationale: "AI generates training materials, creates roleplay simulations, and personalizes learning paths. But teaching partners how to sell benefits from human coaching.", tools: [{ name: "Allego", use: "AI sales learning with video practice and coaching" }, { name: "Second Nature AI", use: "AI roleplay simulations for practicing objection handling" }, { name: "Spekit", use: "AI just-in-time enablement embedded in sales workflows" }], evidence: [{ text: "Gong and Chorus analyze conversation patterns to identify winning sales behaviors via NLP", url: "https://persana.ai/blogs/ai-sales-case-studies", source: "Persana AI" }]},
+  { id: 10, box: "Win/Loss Analysis", category: "Market", tier: "enhanced", score: 72, pragmaticDef: "Understand why recent evaluators did or didn't buy and what steps they took in the buying process.", rationale: "AI transcribes and analyzes win/loss interviews, detects patterns across hundreds of deals. Building trust with sales and reading between the lines still requires human judgment.", tools: [{ name: "Gong", use: "Conversation intelligence with AI deal risk and win/loss pattern analysis" }, { name: "Clari", use: "Revenue intelligence with AI-powered deal inspection and outcome prediction" }, { name: "Dovetail", use: "Qualitative analysis of interviews with AI theme extraction" }], evidence: [{ text: "Gong analyzes optimal talk-to-listen ratios (43:57) and identifies what consistently leads to success", url: "https://persana.ai/blogs/ai-sales-case-studies", source: "Persana AI" }, { text: "Klue integrates win-loss data with competitive intel for complete go-to-market picture", url: "https://klue.com/customers", source: "Klue Customers" }]},
+  { id: 11, box: "Market Problems", category: "Market", tier: "enhanced", score: 70, pragmaticDef: "Discover problems by interviewing customers, recent evaluators and untapped potential customers. Validate urgent problems.", rationale: "AI analyzes survey data, mines support tickets, scrapes forums, and surfaces problem patterns at scale. Discovering truly latent problems still requires human intuition.", tools: [{ name: "Gong", use: "Mine thousands of sales calls for recurring pain points" }, { name: "Qualtrics XM", use: "AI survey analysis with automated theme detection" }, { name: "SparkToro", use: "Discover what your market reads, watches, and discusses" }, { name: "Brand24", use: "Social listening across 25M+ sources for problem signals" }], evidence: [{ text: "Harvard: AI fills gaps in market understanding by obtaining insights not available in conventional data", url: "https://hbr.org/2025/05/how-gen-ai-is-transforming-market-research", source: "Harvard Business Review" }, { text: "AI 'Listener Agents' monitor all prospect calls, tracking every mention of pain points 24/7", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Demand Gen Report" }]},
+  { id: 12, box: "Awareness", category: "Programs", tier: "enhanced", score: 70, pragmaticDef: "Create and deliver thoughtful information to influence key market constituents.", rationale: "AI produces thought leadership drafts, optimizes ad copy, generates visual assets. But genuine industry credibility still requires a recognizable human voice.", tools: [{ name: "Jasper", use: "AI content generation for thought leadership and campaigns" }, { name: "Canva Magic Studio", use: "AI-powered design for social graphics and presentations" }, { name: "BuzzSumo", use: "AI content performance analysis" }], evidence: [{ text: "Nearly 800M people/week use ChatGPT; AI-powered search has reduced organic traffic 15-64%", url: "https://www.wordstream.com/blog/2026-ai-marketing-trends", source: "WordStream" }, { text: "Marketers save 5+ hours/week with AI; AI-driven content is 25% more likely to succeed", url: "https://gogloby.io/case-studies/ai-in-marketing/", source: "Globy" }]},
+  { id: 13, box: "Market Definition", category: "Focus", tier: "enhanced", score: 68, pragmaticDef: "Articulate segments using problem-based segmentation. Analyze segments to actively pursue.", rationale: "AI processes vast datasets to identify segments and model TAM. But choosing which segments to pursue requires strategic judgment.", tools: [{ name: "CB Insights", use: "AI market mapping and emerging company tracking" }, { name: "Similarweb", use: "Digital market intelligence for traffic-based segment sizing" }], evidence: [{ text: "Evidenza uses synthetic data to help marketers make decisions about targeting and positioning, with ROI projections", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia" }]},
+  { id: 14, box: "Buyer Personas", category: "Planning", tier: "enhanced", score: 68, pragmaticDef: "Define archetypical buyers. Create and share persona documents for each buyer type.", rationale: "AI drafts data-driven personas from CRM and behavioral data. Making personas come alive organizationally requires human storytelling.", tools: [{ name: "Delve AI", use: "Auto-generate buyer personas from web analytics and CRM data" }, { name: "SparkToro", use: "Audience research revealing what buyer segments engage with" }, { name: "Synthetic Users", use: "AI persona simulations for rapid hypothesis testing" }], evidence: [{ text: "HBR: 40%+ of market researchers are experimenting with 'digital twins' of individual customers", url: "https://hbr.org/2025/05/how-gen-ai-is-transforming-market-research", source: "Harvard Business Review" }, { text: "Gen AI-powered simulation tools expected to disrupt the $140B market research industry in 2026", url: "https://www.success.com/ai-simulation-marketing-technology-2026/", source: "SUCCESS Magazine" }, { text: "Klue builds Persona GPTs trained on win-loss data and CRM notes to test messaging instantly", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }]},
+  { id: 15, box: "User Personas", category: "Planning", tier: "enhanced", score: 68, pragmaticDef: "Define archetypical users. Who do you need to solve problems for?", rationale: "AI synthesizes behavioral data into user archetypes rapidly. Nuanced context understanding and organizational buy-in remain human tasks.", tools: [{ name: "Pendo", use: "Product analytics surfacing user behavior patterns for persona development" }, { name: "Amplitude", use: "Behavioral cohort analysis to identify distinct user archetypes" }, { name: "Maze AI", use: "User testing with AI insight extraction from usability sessions" }], evidence: [{ text: "Harvard researchers found LLM-created synthetic customers produce realistic preferences for familiar attributes", url: "https://d3.harvard.edu/larger-faster-cheaper-the-future-of-market-research-with-ai/", source: "Harvard D³ Institute" }]},
+  { id: 16, box: "Channels (Support)", category: "Support", tier: "enhanced", score: 68, pragmaticDef: "Provide ongoing support for the sales channel. Make support more repeatable.", rationale: "AI chatbots handle routine channel queries. Complex troubleshooting and relationship management remain human.", tools: [{ name: "Zendesk AI", use: "AI ticket routing, auto-responses, and knowledge base suggestions" }, { name: "Intercom Fin", use: "AI chatbot trained on help docs that resolves partner queries instantly" }], evidence: [{ text: "AI agents for customer interactions projected to grow from 3.3B to 34B by 2027", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Juniper Research" }]},
+  { id: 17, box: "Buyer Experience", category: "Planning", tier: "enhanced", score: 65, pragmaticDef: "Research and document the buying process. Understand barriers buyers encounter.", rationale: "AI maps buyer journeys from CRM data and identifies friction points. Understanding emotional barriers requires empathetic human research.", tools: [{ name: "Gong", use: "Analyze real buyer conversations to map actual buying process" }, { name: "6sense", use: "Buyer intent signals and dark funnel journey mapping" }, { name: "Hotjar AI", use: "Session replay with AI-generated UX insight summaries" }], evidence: [{ text: "AI 'Topic Agents' automatically generate content ideas from insights captured by Listener Agents", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Demand Gen Report" }]},
+  { id: 18, box: "Revenue Retention", category: "Programs", tier: "enhanced", score: 65, pragmaticDef: "Plans for customer loyalty and selling additional products to existing customers.", rationale: "AI predicts churn and identifies expansion opportunities. Strategic decisions about customer investment and human relationships remain critical.", tools: [{ name: "Gainsight", use: "AI health scoring, churn prediction, and expansion identification" }, { name: "ChurnZero", use: "Real-time engagement scoring with automated retention playbooks" }], evidence: [{ text: "Companies using churn prediction see churn rates drop 13-31% and conversions rise 9-20%", url: "https://blog.coupler.io/ai-marketing-use-cases/", source: "Coupler.io" }, { text: "Verizon's GenAI predicted reason behind 80% of incoming calls, preventing ~100K customers from churning", url: "https://visme.co/blog/ai-marketing-case-studies/", source: "Visme" }]},
+  { id: 19, box: "Pricing", category: "Business", tier: "enhanced", score: 65, pragmaticDef: "Establish pricing models, schedules, guidelines, and procedures.", rationale: "AI runs price sensitivity analyses and competitive pricing studies. But pricing is tied to positioning and brand — humans set strategy, AI optimizes.", tools: [{ name: "Pricefx", use: "AI pricing optimization with competitive benchmarking" }, { name: "Competera", use: "Real-time competitive price monitoring" }, { name: "Conjointly", use: "AI-assisted conjoint analysis and pricing research" }], evidence: [{ text: "Autonomous AI agents: price optimization evolved from predictive models into autonomous, continuously learning systems", url: "https://www.cmswire.com/digital-marketing/7-ai-competencies-marketers-must-master/", source: "CMSWire" }]},
+  { id: 20, box: "Marketing Plan", category: "Programs", tier: "enhanced", score: 65, pragmaticDef: "Articulate strategies and programs for awareness and leads — including measurements and goals.", rationale: "AI generates plan drafts and models ROI scenarios. Strategic vision and organizational alignment are human-led.", tools: [{ name: "Claude / ChatGPT", use: "Draft marketing plans and channel mix recommendations" }, { name: "Improvado", use: "Historical performance analytics to inform plan allocation" }], evidence: [{ text: "65% of organizations now utilize generative AI regularly in marketing operations", url: "https://blog.brandsatplayllc.com/blog/new-2026-marketing-trends-for-ai-first-marketing-strategies-that-work", source: "McKinsey via Brands at Play" }]},
+  { id: 21, box: "Business Plan", category: "Business", tier: "enhanced", score: 62, pragmaticDef: "Objective analysis of market opportunity. Make go/no-go recommendation.", rationale: "AI builds financial models and sizes markets rapidly. The go/no-go recommendation and internal influence are human skills.", tools: [{ name: "Claude / ChatGPT", use: "Market analysis and business case drafting" }, { name: "CB Insights", use: "AI market sizing and investment landscape research" }, { name: "AlphaSense", use: "Earnings call analysis and opportunity validation" }], evidence: [{ text: "AI compresses campaign and planning cycles by 30-50% while improving targeting accuracy", url: "https://gogloby.io/case-studies/ai-in-marketing/", source: "Globy" }]},
+  { id: 22, box: "Operations (Support)", category: "Support", tier: "enhanced", score: 62, pragmaticDef: "Provide market and solution information to support the operations group.", rationale: "AI automates reporting and streamlines cross-team information flows. Strategic context requires human interpretation.", tools: [{ name: "Zapier AI", use: "Automated cross-team information flows" }, { name: "Slack AI", use: "Surface relevant market context from channels" }], evidence: [{ text: "AI moved from tool to infrastructure in 2025 — the system itself, not an add-on", url: "https://www.emarketer.com/content/how-ai-rewired-marketing-2025--breakout-use-cases-marketing-leaders", source: "eMarketer" }]},
+  { id: 23, box: "Revenue Growth", category: "Programs", tier: "enhanced", score: 60, pragmaticDef: "Plans and budgets for selling products to new customers.", rationale: "AI identifies high-value segments and optimizes targeting. Growth strategy requires creative thinking and sales partnership.", tools: [{ name: "6sense", use: "AI account identification and intent-based targeting" }, { name: "Demandbase", use: "ABM platform with AI audience building" }, { name: "Mutiny", use: "AI website personalization per target account" }], evidence: [{ text: "AI-powered lead generation delivers 50% more sales-ready leads and 60% lower acquisition costs", url: "https://www.cirrusinsight.com/blog/ai-in-sales", source: "Salesforce via Cirrus Insight" }]},
+  { id: 24, box: "Positioning", category: "Planning", tier: "enhanced", score: 60, pragmaticDef: "Describe the product by its ability to solve market problems. Create positioning documents by segment and persona.", rationale: "AI generates positioning drafts and tests messaging variants. Crafting positioning that resonates requires deep empathy and internal consensus.", tools: [{ name: "Claude / ChatGPT", use: "Generate positioning hypotheses and messaging alternatives" }, { name: "Wynter", use: "AI-enhanced B2B message testing with real buyer panels" }, { name: "Crayon", use: "Competitive positioning gap analysis" }], evidence: [{ text: "Evidenza helps marketers make decisions about targeting, positioning, and messaging with ROI projections", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia" }, { text: "Gong reveals which messaging resonates most and what objections stall deals", url: "https://www.crescendo.ai/blog/ai-for-customer-insights-tools", source: "Crescendo AI" }]},
+  { id: 25, box: "Product Roadmap", category: "Focus", tier: "enhanced", score: 58, pragmaticDef: "Illustrate vision and key phases — the roadmap is a prediction, not a commitment.", rationale: "AI synthesizes feedback and prioritizes features. The judgment calls about sequencing and trade-offs are human.", tools: [{ name: "ProductBoard", use: "AI feature prioritization from customer feedback" }, { name: "Aha! AI", use: "Roadmap generation with AI goal setting" }], evidence: [{ text: "AI-driven voice of customer analysis connects CRM and conversation data to generate roadmaps by revenue impact", url: "https://www.guideflow.com/blog/best-product-marketing-software-tools", source: "Guideflow" }]},
+  { id: 26, box: "Sales Alignment", category: "Enablement", tier: "enhanced", score: 58, pragmaticDef: "Align selling process to the buying process. Describe information needs at each step.", rationale: "AI maps buying-to-selling stages and recommends content. Trust-building with sales leadership is human.", tools: [{ name: "Gong", use: "Reveal how actual conversations map to intended buying process" }, { name: "Highspot", use: "AI content recommendations per deal stage" }, { name: "Clari", use: "Revenue intelligence showing where deals stall" }], evidence: [{ text: "64% of sales organizations modify strategy 2+ times/year; manual processes can't keep up", url: "https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/", source: "Gartner via Walnut" }]},
+  { id: 27, box: "Distribution Strategy", category: "Focus", tier: "enhanced", score: 55, pragmaticDef: "Determine which channels align with buying preferences.", rationale: "AI models channel economics. Relationship-driven channel decisions remain human.", tools: [{ name: "Crossbeam / Reveal", use: "AI partner ecosystem mapping and overlap analysis" }, { name: "PartnerStack", use: "Partner performance analytics" }], evidence: [{ text: "2026 MarTech landscape includes 15,000+ solutions with AI tools leading expansion", url: "https://www.demandgenreport.com/industry-news/feature/ai-agents-revolutionize-b2b-marketing-in-2025-from-automation-to-strategy/51106/", source: "Demand Gen Report" }]},
+  { id: 28, box: "Launch", category: "Programs", tier: "enhanced", score: 55, pragmaticDef: "Define launch goals, develop plans, ensure cross-organizational readiness.", rationale: "AI generates checklists and drafts messaging. Cross-functional leadership and real-time pivoting are human skills.", tools: [{ name: "Asana Intelligence", use: "AI project planning with task lists and dependency mapping" }, { name: "Claude / ChatGPT", use: "Generate launch briefs and messaging frameworks" }], evidence: [{ text: "Klue plugs launch narratives into custom GPTs to generate blogs, decks, emails, and social posts — 80% of the way there", url: "https://klue.com/blog/ai-product-marketing", source: "Klue Blog" }]},
+  { id: 29, box: "Requirements", category: "Planning", tier: "enhanced", score: 55, pragmaticDef: "Articulate and prioritize problems that solutions should solve.", rationale: "AI mines feature requests and clusters themes. Prioritization judgment and cross-functional negotiation remain human.", tools: [{ name: "ProductBoard", use: "AI feature request clustering and prioritization" }, { name: "Dovetail", use: "Synthesize research into requirement themes" }], evidence: [{ text: "45% of market researchers already use gen AI, most to analyze transcripts and data", url: "https://business.columbia.edu/insights/digital-future/ai/generative-ai-market-research", source: "HBR via Columbia" }]},
+  { id: 30, box: "Buy, Build or Partner", category: "Business", tier: "enhanced", score: 52, pragmaticDef: "Determine the most effective way to deliver a complete solution.", rationale: "AI models make-vs-buy scenarios. Strategic judgment and organizational alignment are human.", tools: [{ name: "CB Insights", use: "Technology landscape mapping and target identification" }, { name: "Crossbeam / Reveal", use: "Partner ecosystem overlap analysis" }], evidence: [{ text: "AI-powered market mapping helps identify competitive and partnership opportunities faster", url: "https://www.alpha-sense.com/blog/competitive-intelligence-tools/", source: "AlphaSense" }]},
+  { id: 31, box: "Product Portfolio", category: "Focus", tier: "enhanced", score: 50, pragmaticDef: "Integrate products, services and partners into a coherent set solving a market problem.", rationale: "AI models portfolio interdependencies and coverage gaps. Portfolio politics and brand vision require human leadership.", tools: [{ name: "Aha! AI", use: "Portfolio-level roadmapping with cross-product dependencies" }, { name: "ProductBoard", use: "Multi-product feedback synthesis" }], evidence: [{ text: "Miro AI accelerates strategic planning by generating personas, competitive analysis and GTM plans from prompts", url: "https://www.guideflow.com/blog/best-product-marketing-software-tools", source: "Guideflow" }]},
+  { id: 32, box: "Programs (Support)", category: "Support", tier: "never", score: 40, pragmaticDef: "Provide market and solution information to support marketing programs. Ensure alignment with corporate goals.", rationale: "This requires organizational navigation, cross-team trust, and translating market intelligence into actionable direction.", tools: [{ name: "Slack AI", use: "Surface market context when program teams need it" }, { name: "Guru", use: "Push verified market info into program workflows" }], evidence: [{ text: "2026: the year AI becomes the operating system for marketing, but humans orchestrate strategy", url: "https://zetaglobal.com/resource-center/predictions-2026-ai-marketing/", source: "Zeta Global" }]},
+  { id: 33, box: "Stakeholder Communications", category: "Planning", tier: "never", score: 38, pragmaticDef: "Manage proactive communications with stakeholders from strategy through execution.", rationale: "Reading political dynamics, building coalitions, knowing what to share with whom — rooted in EQ and influence AI can't replicate.", tools: [{ name: "Claude / ChatGPT", use: "Draft executive updates and status reports" }, { name: "Loom AI", use: "Async video updates with AI summaries for stakeholders" }], evidence: [{ text: "Marketers in 2026 shift from building AI to architecting how it operates — orchestration is the skill", url: "https://www.cmswire.com/digital-marketing/7-ai-competencies-marketers-must-master/", source: "CMSWire" }]},
+  { id: 34, box: "Innovation", category: "Business", tier: "never", score: 35, pragmaticDef: "Focus team creativity on solving market problems by leveraging distinctive competencies.", rationale: "AI brainstorms and generates ideas. Creative leaps, risk tolerance, and vision to drive innovation are fundamentally human.", tools: [{ name: "Claude / ChatGPT", use: "Brainstorming partner for 'what if' scenarios" }, { name: "Miro AI", use: "Facilitate innovation workshops with AI prompts" }], evidence: [{ text: "The future of marketing isn't replacing humans with AI — it's using AI to amplify human creativity and strategic thinking", url: "https://www.dmcockpit.com/articles/marketing-predictions-2025-and-2026", source: "DM Cockpit" }, { text: "Competitive advantage flows to marketers who master context engineering, evaluation, and governance", url: "https://www.cmswire.com/digital-marketing/7-ai-competencies-marketers-must-master/", source: "CMSWire" }]},
+  { id: 35, box: "Advocacy", category: "Programs", tier: "never", score: 32, pragmaticDef: "Identify customers for testimonials, case studies, or reference accounts. Capture customer success stories.", rationale: "Authentic relationship-building, trust, and making customers feel valued. Reference calls are human-to-human exchanges.", tools: [{ name: "Influitive", use: "Manage advocate programs and match advocates to opportunities" }, { name: "Gainsight", use: "Identify high-NPS customers as advocacy candidates" }], evidence: [{ text: "Gainsight users leverage Ask Klue to validate differentiation during live customer calls", url: "https://klue.com/customers", source: "Klue Customers" }]},
+  { id: 36, box: "Distinctive Competencies", category: "Market", tier: "never", score: 30, pragmaticDef: "Articulate and leverage the organization's unique abilities to deliver value.", rationale: "Requires deep institutional knowledge and strategic self-awareness. AI can help articulate once identified, but can't discover what makes you unique.", tools: [{ name: "Glean", use: "Enterprise search to surface internal capabilities" }, { name: "Claude / ChatGPT", use: "Structure and articulate competencies once identified" }], evidence: [{ text: "2025's defining shift: AI moves from tool to infrastructure, but organizations still need human-defined strategy", url: "https://www.emarketer.com/content/how-ai-rewired-marketing-2025--breakout-use-cases-marketing-leaders", source: "eMarketer" }]},
+  { id: 37, box: "Events", category: "Support", tier: "never", score: 20, pragmaticDef: "Provide product and market expertise for conferences, tradeshows, webinars, and seminars.", rationale: "Physical presence, improvisation, reading a room, and authentic connection. The most AI-resistant activity in the entire framework.", tools: [{ name: "ChatGPT / Claude", use: "Draft talk outlines, booth scripts, and briefing docs" }, { name: "Otter.ai", use: "Real-time transcription and AI session summaries" }], evidence: [{ text: "Strong public speaking, comfort in front of senior groups — requirements AI fundamentally cannot fulfill", url: "https://www.pragmaticinstitute.com/resources/articles/product/sample-product-marketing-manager-job-description/", source: "Pragmatic Institute" }]}
 ];
 
 const tierMeta = {
-  replaced: { label: "Likely Replaced by AI", color: "#DC2626", bg: "#FEF2F2", border: "#FECACA", icon: "⚡" },
-  enhanced: { label: "Enhanced by AI", color: "#B45309", bg: "#FFFBEB", border: "#FDE68A", icon: "🔄" },
-  never: { label: "Never Fully Replaced", color: "#047857", bg: "#ECFDF5", border: "#A7F3D0", icon: "🛡️" }
+  replaced: { label: "Likely Replaced", color: "#dc2626", bg: "#fef2f2", border: "#fecaca", icon: "⚡" },
+  enhanced: { label: "Enhanced by AI", color: "#d97706", bg: "#fffbeb", border: "#fde68a", icon: "🔄" },
+  never: { label: "Never Replaced", color: "#059669", bg: "#ecfdf5", border: "#a7f3d0", icon: "🛡️" }
 };
 
-const catColors = {
-  Market: "#6366F1", Focus: "#8B5CF6", Business: "#EC4899",
-  Planning: "#EAB308", Programs: "#10B981", Enablement: "#3B82F6", Support: "#6B7280"
-};
+const catColors = { Market: "#6366f1", Focus: "#8b5cf6", Business: "#ec4899", Planning: "#eab308", Programs: "#10b981", Enablement: "#3b82f6", Support: "#6b7280" };
 
-let filter = "all";
-let sortKey = "score";
-let sortAsc = false;
-let expandedId = null;
-
-const counts = {
-  replaced: data.filter(d => d.tier === "replaced").length,
-  enhanced: data.filter(d => d.tier === "enhanced").length,
-  never: data.filter(d => d.tier === "never").length
-};
+let filter = "all", sortKey = "score", sortAsc = false, expandedId = null;
+const counts = { replaced: data.filter(d => d.tier === "replaced").length, enhanced: data.filter(d => d.tier === "enhanced").length, never: data.filter(d => d.tier === "never").length };
 const avg = Math.round(data.reduce((s, d) => s + d.score, 0) / data.length);
 const totalTools = data.reduce((s, d) => s + d.tools.length, 0);
 const totalEvidence = data.reduce((s, d) => s + (d.evidence ? d.evidence.length : 0), 0);
 
 function renderStats() {
-  const stats = [
-    { n: counts.replaced, label: "Likely Replaced", c: "#F87171" },
-    { n: counts.enhanced, label: "AI-Enhanced", c: "#FBBF24" },
-    { n: counts.never, label: "Never Replaced", c: "#34D399" },
-    { n: avg + "%", label: "Avg. AI Score", c: "#CBD5E1" },
-    { n: totalTools, label: "Tools Mapped", c: "#A78BFA" },
-    { n: totalEvidence, label: "Sources Cited", c: "#F472B6" }
-  ];
-  document.getElementById("stats").innerHTML = stats.map(s =>
-    `<div class="stat"><span class="stat-num" style="color:${s.c}">${s.n}</span><span class="stat-label">${s.label}</span></div>`
-  ).join("");
+  document.getElementById("stats").innerHTML = [
+    { n: counts.replaced, label: "Likely Replaced", c: "red" },
+    { n: counts.enhanced, label: "AI-Enhanced", c: "amber" },
+    { n: counts.never, label: "Never Replaced", c: "green" },
+    { n: avg + "%", label: "Avg. AI Score", c: "gray" },
+    { n: totalTools, label: "Tools Mapped", c: "purple" },
+    { n: totalEvidence, label: "Sources Cited", c: "pink" }
+  ].map(s => `<div class="stat"><span class="stat-num ${s.c}">${s.n}</span><span class="stat-label">${s.label}</span></div>`).join("");
 }
 
 function renderFilters() {
-  const filters = [
-    { key: "all", label: `All (${data.length})`, c: "#475569" },
-    { key: "replaced", label: `⚡ Replaced (${counts.replaced})`, c: "#DC2626" },
-    { key: "enhanced", label: `🔄 Enhanced (${counts.enhanced})`, c: "#B45309" },
-    { key: "never", label: `🛡️ Never (${counts.never})`, c: "#047857" }
-  ];
-  document.getElementById("filters").innerHTML = filters.map(f => {
-    const active = filter === f.key;
-    const style = active
-      ? `border-color:${f.c};color:${f.c};background:${f.c}0D;font-weight:600`
-      : "";
-    return `<button class="filter-btn${active ? ' active' : ''}" data-filter="${f.key}" style="${style}">${f.label}</button>`;
-  }).join("");
+  document.getElementById("filters").innerHTML = [
+    { key: "all", label: `All (${data.length})` },
+    { key: "replaced", label: `⚡ Replaced (${counts.replaced})` },
+    { key: "enhanced", label: `🔄 Enhanced (${counts.enhanced})` },
+    { key: "never", label: `🛡️ Never (${counts.never})` }
+  ].map(f => `<button class="filter-btn${filter === f.key ? ' active' : ''}" data-filter="${f.key}">${f.label}</button>`).join("");
 }
 
 function renderTable() {
@@ -920,67 +273,37 @@ function renderTable() {
     if (sortKey === "score") cmp = a.score - b.score;
     else if (sortKey === "box") cmp = a.box.localeCompare(b.box);
     else if (sortKey === "category") cmp = a.category.localeCompare(b.category);
-    else if (sortKey === "tier") {
-      const o = { replaced: 0, enhanced: 1, never: 2 };
-      cmp = o[a.tier] - o[b.tier];
-    }
+    else if (sortKey === "tier") { const o = { replaced: 0, enhanced: 1, never: 2 }; cmp = o[a.tier] - o[b.tier]; }
     return sortAsc ? cmp : -cmp;
   });
 
-  // Header
-  const arrow = (col) => `<span class="arrow">${sortKey === col ? (sortAsc ? "↑" : "↓") : "↕"}</span>`;
+  const arrow = col => `<span class="arrow">${sortKey === col ? (sortAsc ? "↑" : "↓") : "↕"}</span>`;
   document.getElementById("thead").innerHTML = `<tr>
-    <th data-sort="score" class="${sortKey === 'score' ? 'sorted' : ''}" style="width:90px">AI Score ${arrow("score")}</th>
+    <th data-sort="score" class="${sortKey === 'score' ? 'sorted' : ''}" style="width:100px">AI Score ${arrow("score")}</th>
     <th data-sort="box" class="${sortKey === 'box' ? 'sorted' : ''}">Activity ${arrow("box")}</th>
     <th data-sort="category" class="${sortKey === 'category' ? 'sorted' : ''}" style="width:110px">Category ${arrow("category")}</th>
-    <th data-sort="tier" class="${sortKey === 'tier' ? 'sorted' : ''}" style="width:160px">AI Verdict ${arrow("tier")}</th>
-    <th style="width:40px"></th>
+    <th data-sort="tier" class="${sortKey === 'tier' ? 'sorted' : ''}" style="width:140px">AI Verdict ${arrow("tier")}</th>
+    <th style="width:30px"></th>
   </tr>`;
 
-  // Body
   let html = "";
   sorted.forEach(item => {
     const t = tierMeta[item.tier];
     const isOpen = expandedId === item.id;
-    const rowClass = `data-row tier-${item.tier} cat-${item.category}${isOpen ? ' expanded' : ''}`;
-    
-    html += `<tr class="${rowClass}" data-id="${item.id}" style="${isOpen ? `--tier-bg:${t.bg}` : ''}">
-      <td>
-        <div class="score-cell">
-          <div class="score-bar"><div class="score-fill" style="width:${item.score}%;background:${t.color}"></div></div>
-          <span class="score-num" style="color:${t.color}">${item.score}%</span>
-        </div>
-      </td>
-      <td><span class="activity-name">${item.box}</span></td>
-      <td><span class="category-badge" style="color:${catColors[item.category]};background:${catColors[item.category]}10">${item.category}</span></td>
+    html += `<tr class="tier-${item.tier}${isOpen ? ' expanded' : ''}" data-id="${item.id}" style="${isOpen ? `--row-bg:${t.bg}` : ''}">
+      <td><div class="score-cell"><div class="score-bar"><div class="score-fill" style="width:${item.score}%;background:${t.color}"></div></div><span class="score-num" style="color:${t.color}">${item.score}%</span></div></td>
+      <td><strong>${item.box}</strong></td>
+      <td><span class="cat-badge" style="color:${catColors[item.category]};background:${catColors[item.category]}15">${item.category}</span></td>
       <td><span class="tier-badge" style="color:${t.color};background:${t.bg};border-color:${t.border}">${t.icon} ${t.label}</span></td>
       <td style="text-align:center"><span class="expand-arrow">▾</span></td>
     </tr>`;
-    
     if (isOpen) {
-      html += `<tr class="expanded-row tier-${item.tier}"><td colspan="5" style="border-bottom:2px solid ${t.border}">
-        <div class="expanded-content" style="background:${t.bg}">
-          <div>
-            <div class="section-label">Pragmatic Institute Definition</div>
-            <p class="pragmatic-def">"${item.pragmaticDef}"</p>
-            <div class="pragmatic-credit">— Pragmatic Institute, The Pragmatic Framework™</div>
-          </div>
-          <div>
-            <div class="section-label">AI Impact Analysis</div>
-            <p class="rationale">${item.rationale}</p>
-          </div>
-          <div>
-            <div class="section-label">Recommended AI Tools</div>
-            <div class="tools-list">
-              ${item.tools.map(tool => `<div class="tool-item"><span class="tool-name">${tool.name}</span><span class="tool-use">${tool.use}</span></div>`).join("")}
-            </div>
-          </div>
-          ${item.evidence && item.evidence.length > 0 ? `<div>
-            <div class="section-label">📰 Evidence & Sources</div>
-            <div class="evidence-list">
-              ${item.evidence.map(ev => `<div class="evidence-item">${ev.text}<br><a href="${ev.url}" target="_blank" rel="noopener" class="evidence-link">↗ ${ev.source}</a></div>`).join("")}
-            </div>
-          </div>` : ""}
+      html += `<tr class="tier-${item.tier}"><td colspan="5" style="background:${t.bg};border-bottom:2px solid ${t.border}">
+        <div class="expanded-content">
+          <div class="exp-section"><div class="exp-label">Pragmatic Institute Definition</div><p class="exp-def">"${item.pragmaticDef}"</p><div class="exp-credit">— Pragmatic Institute, The Pragmatic Framework™</div></div>
+          <div class="exp-section"><div class="exp-label">AI Impact Analysis</div><p class="exp-rationale">${item.rationale}</p></div>
+          <div class="exp-section"><div class="exp-label">Recommended AI Tools</div><div class="exp-tools">${item.tools.map(tool => `<div class="exp-tool"><span class="exp-tool-name">${tool.name}</span><span class="exp-tool-use">${tool.use}</span></div>`).join("")}</div></div>
+          ${item.evidence && item.evidence.length > 0 ? `<div class="exp-section"><div class="exp-label">📰 Evidence & Sources</div><div class="exp-evidence">${item.evidence.map(ev => `<div class="exp-ev-item">${ev.text}<br><a href="${ev.url}" target="_blank" rel="noopener" class="exp-ev-link">↗ ${ev.source}</a></div>`).join("")}</div></div>` : ""}
         </div>
       </td></tr>`;
     }
@@ -988,20 +311,11 @@ function renderTable() {
   document.getElementById("tbody").innerHTML = html;
 }
 
-function render() {
-  renderStats();
-  renderFilters();
-  renderTable();
-}
+function render() { renderStats(); renderFilters(); renderTable(); }
 
 document.getElementById("filters").addEventListener("click", e => {
-  if (e.target.classList.contains("filter-btn")) {
-    filter = e.target.dataset.filter;
-    expandedId = null;
-    render();
-  }
+  if (e.target.classList.contains("filter-btn")) { filter = e.target.dataset.filter; expandedId = null; render(); }
 });
-
 document.getElementById("thead").addEventListener("click", e => {
   const th = e.target.closest("th");
   if (th && th.dataset.sort) {
@@ -1011,24 +325,12 @@ document.getElementById("thead").addEventListener("click", e => {
     render();
   }
 });
-
 document.getElementById("tbody").addEventListener("click", e => {
-  const row = e.target.closest(".data-row");
-  if (row) {
-    const id = parseInt(row.dataset.id);
-    expandedId = expandedId === id ? null : id;
-    renderTable();
-  }
+  const row = e.target.closest("tr[data-id]");
+  if (row) { const id = parseInt(row.dataset.id); expandedId = expandedId === id ? null : id; renderTable(); }
 });
 
 render();
 </script>
-
-  <footer>
-    <div class="container" style="max-width:900px;margin:0 auto;padding:0 20px;">
-      <p class="footer-title">The Future of PMM</p>
-      <p>SAP Data and Analytics Product Marketing</p>
-    </div>
-  </footer>
 </body>
 </html>
