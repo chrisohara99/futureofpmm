@@ -30,7 +30,8 @@
 - Brief personal sign-off
 - **Call to action: Subscribe!**
 - Share with a colleague
-- Links: Website, LinkedIn
+- Footer: *Produced by SAP PMMs for SAP PMMs*
+- Links: Website, Subscribe
 
 ---
 

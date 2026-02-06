@@ -88,4 +88,6 @@ See you next week,
 
 ---
 
-[Website](https://futureofpmm.com) • [LinkedIn](https://linkedin.com/in/christopherohara) • [Subscribe](https://futureofpmm.com/subscribe.html)
+*Produced by SAP PMMs for SAP PMMs*
+
+[Website](https://futureofpmm.com) • [Subscribe](https://futureofpmm.com/subscribe.html)
