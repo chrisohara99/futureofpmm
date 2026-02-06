@@ -1,57 +1,50 @@
 # Future of PMM Newsletter Template
 
-## Structure (Weekly)
+## Structure (Weekly - Fridays)
 
-### 1. Header
-- Logo
-- Issue # — Date
-- One-line hook for this week's theme
+### 1. 📝 Friday Note
+- Personal, conversational opener from Chris
+- Quick observation about the week in AI + PMM
+- 2-3 sentences, sets the tone
 
-### 2. Welcome/Intro (2-3 sentences)
-- Personal, conversational tone
-- Set up what's inside
+### 2. 🛠️ AI Tool of the Week
+- One featured AI tool for product marketers
+- Brief description + key use cases
+- Pricing info if relevant
+- Link to the tool
 
-### 3. 🔥 The Big Story (main feature)
-- 150-200 words
-- One major AI+PMM news item
-- "Why PMMs should care" callout
-- Link to source
+### 3. 📰 News Roundup
+- **5 most relevant stories** summarized
+- Each story: 2-3 sentence summary
+- Links back to futureofpmm.com posts (drive traffic to site)
+- Mix of: AI announcements, PMM trends, industry moves
 
-### 4. 🛠️ Tool of the Week
-- New or notable AI tool for product marketers
-- Brief description + use cases
-- Link
+### 4. 🏆 User of the Week
+- Thumbnail-style profile (like homepage)
+- Photo + Name + Title
+- What they built / accomplished
+- Key metric or impact
+- Link to full story on site
 
-### 5. 📊 Quick Hits (4-5 bullet points)
-- Short news items
-- One line each
-- Mix of AI, marketing tech, industry moves
-
-### 6. 💡 PMM Playbook (tactical tip)
-- Framework, template, or how-to
-- Something readers can use immediately
-- 100-150 words
-
-### 7. 📬 Sign-off
-- Call to action (reply, share, etc.)
-- Personal sign-off from Chris
-- Footer links
+### 5. 📬 Sign Off + CTA
+- Brief personal sign-off
+- **Call to action: Subscribe!**
+- Share with a colleague
+- Links: Website, LinkedIn
 
 ---
 
 ## Tone Guidelines
-- **Conversational** but professional
+- **Conversational** — like a note from a colleague
 - **Opinionated** — have a point of view
-- **Actionable** — readers should learn something they can use
-- **Concise** — respect their time
-
-## Visual Style (in Beehiiv)
-- Clean, minimal design
-- Blue accent color (#3b82f6) matching website
-- Plenty of white space
-- Use emojis as section markers (but don't overdo it)
+- **Actionable** — readers should learn something
+- **Concise** — respect their time (5 min read)
 
 ## Frequency
-- **Weekly** — Thursday or Friday morning
-- ~5 minute read
-- 800-1200 words
+- **Every Friday morning**
+- Target: 800-1000 words
+
+## Links Strategy
+- News stories link to futureofpmm.com posts
+- Drive traffic back to the site
+- Tool links go direct to external tools

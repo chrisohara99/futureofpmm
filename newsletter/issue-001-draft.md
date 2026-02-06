@@ -1,85 +1,91 @@
-# The Future of PMM Newsletter
-## Issue #1 — February 6, 2026
+# The Future of PMM
+## Issue #1 — Friday, February 7, 2026
 
 ---
 
-**Welcome to The Future of PMM!** 👋
+## 📝 Friday Note
 
-If you're reading this, you're one of the first to join our community of product marketers navigating the AI revolution. Each week, we'll bring you the news, tools, and strategies that matter for modern PMM.
+Happy Friday, PMMs.
 
-Let's dive in.
+This week felt like a turning point. Anthropic's Claude Cowork updates sent software stocks tumbling, and suddenly every exec wants to talk about AI strategy. If you're a product marketer in 2026, you're not just marketing products — you're marketing in an industry that's actively reshaping itself.
 
----
+Let's get into it.
 
-## 🔥 The Big Story
-
-### Anthropic's Claude Cowork Shakes Software Industry
-
-This week, Anthropic announced **Claude Opus 4.6** and expanded its Cowork productivity suite with new **legal, finance, and product marketing capabilities**. The impact? A **$285 billion selloff** across software stocks as investors reassess which companies are vulnerable to AI disruption.
-
-**Why PMMs should care:**
-- Anthropic released the new plugins as **open-source**, enabling customization
-- The product marketing features could change how we create positioning, battlecards, and competitive analysis
-- Enterprise buyers are now asking vendors: *"What's your AI strategy?"* — make sure you have an answer
-
-📰 [Read more at Bloomberg](https://www.bloomberg.com/news/articles/2026-02-03/legal-software-stocks-plunge-as-anthropic-releases-new-ai-tool)
+—Chris
 
 ---
 
-## 🛠️ Tool of the Week
+## 🛠️ AI Tool of the Week
 
 ### Guideflow — AI Demo Automation
 
-If you're still doing product demos the old way, it's time to upgrade. **Guideflow** offers AI-powered interactive demos, sandbox environments, and analytics specifically designed for product marketing and pre-sales.
+If you're still building product demos manually, meet your new best friend. **Guideflow** creates interactive, self-serve demos that let prospects explore your product without a sales call.
 
-**Use cases for PMMs:**
-- Self-serve product tours for prospects
-- Sales enablement without engineering resources
-- Demo analytics to understand buyer engagement
+**Why PMMs love it:**
+- Create product tours in minutes, not days
+- No engineering resources needed
+- Built-in analytics show exactly where buyers engage (and drop off)
+- Perfect for PLG motions and sales enablement
 
-🔗 [Check it out](https://www.guideflow.com)
+**Pricing:** Free tier available, paid plans from $49/mo
 
----
-
-## 📊 Quick Hits
-
-**Meta** launched intelligent shopping tools with advanced personalization for e-commerce.
-
-**Google** introduced "AI Plus" subscription offering Gemini 3 Pro for content creation.
-
-**Amazon MGM Studios** is developing AI tools to cut costs and streamline TV/film production — expect this to ripple into marketing content creation.
-
-**Grainger** expanded AI in sales and marketing tools, showing how B2B is embracing AI at scale.
+🔗 [guideflow.com](https://www.guideflow.com)
 
 ---
 
-## 💡 PMM Playbook: The AI Integration Question
+## 📰 News Roundup
 
-Every sales call now includes the question: *"How does your product use AI?"*
+**1. Anthropic's Claude Cowork Triggers $285B Stock Selloff**
+Anthropic released new productivity plugins for legal, finance, and product marketing — and Wall Street panicked. The open-source release means any company can customize these tools, raising questions about which software categories are next.
+→ [Read more](https://futureofpmm.com/posts/post-030.html)
 
-Here's a framework for positioning your AI story:
+**2. Claude Opus 4.6 Makes Cowork Smarter for Office Work**
+The latest model update is specifically optimized for workplace tasks — document analysis, meeting prep, and (yes) competitive positioning. PMMs, take note.
+→ [Read more](https://futureofpmm.com/posts/post-029.html)
 
-1. **Current state** — What AI is built into your product today?
-2. **Roadmap** — What's coming in the next 6-12 months?
-3. **Integration** — How do you work with tools like ChatGPT, Claude, Copilot?
-4. **Data** — How does AI make your product smarter over time?
+**3. Amazon MGM Studios Building AI for Content Production**
+Amazon is developing AI tools to cut costs in TV and film production. Expect this to ripple into marketing content creation — cheaper, faster video at scale.
+→ [Read more](https://futureofpmm.com/posts/post-028.html)
 
-**Pro tip:** If you don't have a clear AI narrative, you're already behind. Work with product to build one this quarter.
+**4. Grainger Expands AI Across Sales and Marketing**
+B2B giant Grainger is rolling out AI in sales, marketing, and customer operations. A case study in how enterprise companies are scaling AI beyond pilot programs.
+→ [Read more](https://futureofpmm.com/posts/post-027.html)
+
+**5. Google Launches "AI Plus" Subscription with Gemini 3 Pro**
+Google's new subscription tier puts advanced AI tools in reach for individual marketers. Content creation, filmmaking tools, and more for $20/month.
+→ [Read more](https://futureofpmm.com/posts/post-026.html)
 
 ---
 
-## 📬 That's a wrap!
+## 🏆 User of the Week
 
-Thanks for reading Issue #1. Hit reply and let me know:
-- What AI tools are you using for PMM?
-- What topics should we cover next?
+**Jacob Brass**
+*SAP Data & Analytics*
 
-**Share this newsletter** with a fellow product marketer who needs to stay ahead of the curve.
+![Jacob Brass](https://futureofpmm.com/assets/images/users/jacob-brass.jpg)
 
-Until next week,
+**Project:** HerveBot — an automated pricing approval bot that delivers instant answers to field questions about pricing exceptions.
+
+**Impact:** 75% reduction in field interactions
+
+Jacob turned a manual bottleneck into a seamless self-service experience. The bot handles routine pricing questions so the team can focus on strategic work.
+
+→ [Read the full story](https://futureofpmm.com/user-of-the-week.html)
+
+---
+
+## 📬 That's a Wrap!
+
+Thanks for reading Issue #1. If you found this useful, do me a favor:
+
+**👉 Forward this to a fellow product marketer who needs to stay ahead of the curve.**
+
+Not subscribed yet? 
+**[Sign up here](https://futureofpmm.com/subscribe.html)** — it's free, every Friday.
+
+See you next week,
 **Chris O'Hara**
-Founder, The Future of PMM
 
 ---
 
-*[Subscribe](https://futureofpmm.com) | [Website](https://futureofpmm.com) | [LinkedIn](https://linkedin.com/in/christopherohara)*
+[Website](https://futureofpmm.com) • [LinkedIn](https://linkedin.com/in/christopherohara) • [Subscribe](https://futureofpmm.com/subscribe.html)
