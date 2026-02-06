@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscribe - The Future of PMM</title>
-    <meta name="description" content="Sign up for AI + Product Marketing insights. Get daily or weekly roundups delivered to your inbox.">
+    <meta name="description" content="Sign up for AI + Product Marketing insights. Get weekly roundups delivered to your inbox.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #f5f6f7; }
@@ -30,7 +30,6 @@
         .hero p { margin: 0; opacity: 0.9; font-size: 1.1rem; }
         .content { padding: 3rem 0 4rem; }
         
-        /* Form Sections */
         .form-section {
             background: white;
             border: 1px solid #e5e7eb;
@@ -39,13 +38,15 @@
             margin-bottom: 2rem;
         }
         
+        .form-section.featured {
+            border: 2px solid var(--pmm-blue);
+            background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);
+        }
+        
         .form-section h2 {
             font-size: 1.35rem;
             margin: 0 0 0.5rem;
             color: var(--pmm-dark);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
         .form-section .subtitle {
@@ -86,46 +87,8 @@
         }
         
         .form-group textarea {
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
-        }
-        
-        .radio-group {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-        
-        .radio-option input[type="radio"] {
-            width: auto;
-            cursor: pointer;
-        }
-        
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-        }
-        
-        .checkbox-option {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-        
-        .checkbox-option input[type="checkbox"] {
-            width: auto;
-            margin-top: 0.25rem;
-            cursor: pointer;
         }
         
         .btn {
@@ -140,6 +103,7 @@
             cursor: pointer;
             transition: background 0.2s, transform 0.2s;
             font-family: inherit;
+            width: 100%;
         }
         
         .btn:hover {
@@ -159,36 +123,11 @@
             font-size: 0.85rem;
             color: #9ca3af;
             margin-top: 1rem;
-        }
-        
-        /* Tools Dropdown Styling */
-        .tools-checklist {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-        }
-        
-        @media (max-width: 500px) {
-            .tools-checklist {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Success State */
-        .success-message {
-            background: #dcfce7;
-            border: 1px solid #86efac;
-            color: #166534;
-            padding: 1rem;
-            border-radius: 8px;
             text-align: center;
-            display: none;
         }
         
         footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; }
         footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
-        footer .logo-footer { margin-bottom: 1rem; }
-        footer .logo-footer img { height: 40px; width: auto;  }
     </style>
 </head>
 <body>
@@ -207,7 +146,7 @@
     
     <section class="hero">
         <div class="container">
-            <h1>Stay in the Loop</h1>
+            <h1>Subscribe</h1>
             <p>Get AI + Product Marketing insights delivered to your inbox</p>
         </div>
     </section>
@@ -215,145 +154,72 @@
     <section class="content">
         <div class="container">
             
-            <!-- Newsletter Signup -->
-            <div class="form-section">
-                <h2>📬 Newsletter Signup</h2>
-                <p class="subtitle">Choose your preferred frequency for AI + PMM news and insights.</p>
+            <!-- Newsletter Signup - Primary CTA -->
+            <div class="form-section featured">
+                <h2>📬 Weekly Newsletter</h2>
+                <p class="subtitle">Every Thursday: AI tools, PMM trends, and actionable insights from the frontlines of product marketing.</p>
                 
-                <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-                    <input type="hidden" name="form-name" value="newsletter">
-                    <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
-                    
+                <form id="beehiiv-form" onsubmit="subscribeToBeehiiv(event)">
                     <div class="form-group">
-                        <label for="newsletter-name">Name</label>
-                        <input type="text" id="newsletter-name" name="name" required placeholder="Your name">
+                        <label for="subscriber-email">Email Address</label>
+                        <input type="email" id="subscriber-email" name="email" required placeholder="you@company.com">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="newsletter-title">Title</label>
-                        <input type="text" id="newsletter-title" name="title" placeholder="e.g., Product Marketing Manager">
-                    </div>
+                    <button type="submit" class="btn">Subscribe to Newsletter</button>
                     
-                    <div class="form-group">
-                        <label for="newsletter-email">Email Address</label>
-                        <input type="email" id="newsletter-email" name="email" required placeholder="you@company.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Frequency</label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="frequency" value="daily" required>
-                                <span>Daily Roundup</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="frequency" value="weekly">
-                                <span>Weekly Digest</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="frequency" value="both">
-                                <span>Both</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn">Subscribe</button>
-                    
-                    <p class="form-note">No spam, ever. Unsubscribe anytime.</p>
+                    <p class="form-note">Join PMMs from SAP, Salesforce, HubSpot, and more. Free forever. Unsubscribe anytime.</p>
                 </form>
             </div>
             
-            <!-- Tools Request -->
+            <script>
+            function subscribeToBeehiiv(e) {
+                e.preventDefault();
+                var email = document.getElementById('subscriber-email').value;
+                var magicLink = 'https://magic.beehiiv.com/v1/ef3bcca1-2d98-4bdd-a347-03ea0734cf4a?email=' + encodeURIComponent(email);
+                window.location.href = magicLink;
+            }
+            </script>
+            
+            <!-- Tool Request -->
             <div class="form-section">
                 <h2>🛠️ Request a Tool Review</h2>
-                <p class="subtitle">Want us to review a specific AI tool for product marketers? Let us know!</p>
+                <p class="subtitle">Want us to cover a specific AI tool? Let us know!</p>
                 
                 <form name="tool-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
                     <input type="hidden" name="form-name" value="tool-request">
                     <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
                     
                     <div class="form-group">
-                        <label for="tools-name">Name</label>
-                        <input type="text" id="tools-name" name="name" required placeholder="Your name">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tools-title">Title</label>
-                        <input type="text" id="tools-title" name="title" placeholder="e.g., Senior PMM">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tools-email">Email Address</label>
-                        <input type="email" id="tools-email" name="email" required placeholder="you@company.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tool-category">Tool Category</label>
-                        <select id="tool-category" name="category" required>
-                            <option value="">Select a category...</option>
-                            <option value="content-creation">Content Creation</option>
-                            <option value="competitive-intel">Competitive Intelligence</option>
-                            <option value="research">Research & Analysis</option>
-                            <option value="seo">SEO & Content Optimization</option>
-                            <option value="design">Design & Creative</option>
-                            <option value="productivity">Productivity & Workflow</option>
-                            <option value="analytics">Analytics & Insights</option>
-                            <option value="sales-enablement">Sales Enablement</option>
-                            <option value="social-media">Social Media</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="tool-name">Tool Name</label>
-                        <input type="text" id="tool-name" name="tool_name" required placeholder="e.g., Copy.ai, Crayon, etc.">
+                        <input type="text" id="tool-name" name="tool-name" required placeholder="e.g., Jasper, Copy.ai, Crayon">
                     </div>
                     
                     <div class="form-group">
-                        <label for="tool-url">Tool Website (optional)</label>
-                        <input type="url" id="tool-url" name="tool_url" placeholder="https://...">
+                        <label for="tool-url">Tool URL (optional)</label>
+                        <input type="url" id="tool-url" name="tool-url" placeholder="https://...">
                     </div>
                     
                     <div class="form-group">
-                        <label for="tool-notes">Why should we review this tool?</label>
-                        <textarea id="tool-notes" name="notes" placeholder="Tell us why this tool is interesting for PMMs..."></textarea>
+                        <label for="tool-notes">Why should we review it?</label>
+                        <textarea id="tool-notes" name="notes" placeholder="What makes this tool interesting for PMMs?"></textarea>
                     </div>
                     
                     <button type="submit" class="btn btn-secondary">Submit Request</button>
                 </form>
             </div>
             
-            <!-- Suggestions -->
+            <!-- Content Suggestion -->
             <div class="form-section">
                 <h2>💡 Suggest Content</h2>
-                <p class="subtitle">Have an idea for an article, topic, or resource we should cover? We're all ears!</p>
+                <p class="subtitle">Have an idea for an article or topic we should cover?</p>
                 
                 <form name="suggestions" method="POST" data-netlify="true" netlify-honeypot="bot-field">
                     <input type="hidden" name="form-name" value="suggestions">
                     <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
                     
                     <div class="form-group">
-                        <label for="suggest-name">Name (optional)</label>
-                        <input type="text" id="suggest-name" name="name" placeholder="Your name">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="suggest-email">Email (optional)</label>
+                        <label for="suggest-email">Your Email (optional)</label>
                         <input type="email" id="suggest-email" name="email" placeholder="If you'd like us to follow up">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="suggestion-type">Suggestion Type</label>
-                        <select id="suggestion-type" name="type" required>
-                            <option value="">Select type...</option>
-                            <option value="article-idea">Article Idea</option>
-                            <option value="tool-review">Tool Review Request</option>
-                            <option value="case-study">Case Study Request</option>
-                            <option value="interview">Interview Suggestion</option>
-                            <option value="resource">Resource / Guide Idea</option>
-                            <option value="feedback">General Feedback</option>
-                            <option value="other">Other</option>
-                        </select>
                     </div>
                     
                     <div class="form-group">
@@ -361,97 +227,7 @@
                         <textarea id="suggestion" name="suggestion" required placeholder="Tell us your idea..."></textarea>
                     </div>
                     
-                    <button type="submit" class="btn">Submit Suggestion</button>
-                </form>
-            </div>
-            
-            <!-- Request AI Service -->
-            <div class="form-section" style="border: 2px solid var(--pmm-blue); background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);">
-                <h2>🚀 Request an AI Service</h2>
-                <p class="subtitle">Here, you can officially make a budget request for a specific AI service or tool.</p>
-                
-                <form name="ai-service-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-                    <input type="hidden" name="form-name" value="ai-service-request">
-                    <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
-                    
-                    <div class="form-group">
-                        <label for="service-name">Name</label>
-                        <input type="text" id="service-name" name="name" required placeholder="Your name">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="service-title">Title</label>
-                        <input type="text" id="service-title" name="title" required placeholder="e.g., Product Marketing Manager">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="service-email">Email Address</label>
-                        <input type="email" id="service-email" name="email" required placeholder="you@company.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="service-department">Department</label>
-                        <input type="text" id="service-department" name="department" placeholder="e.g., Product Marketing, Sales">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="ai-service">AI Service / Tool</label>
-                        <select id="ai-service" name="ai_service" required>
-                            <option value="">Select a service...</option>
-                            <optgroup label="General Purpose AI">
-                                <option value="chatgpt-plus">ChatGPT Plus ($20/mo)</option>
-                                <option value="chatgpt-team">ChatGPT Team ($25/user/mo)</option>
-                                <option value="claude-pro">Claude Pro ($20/mo)</option>
-                                <option value="claude-team">Claude Team ($25/user/mo)</option>
-                                <option value="gemini-advanced">Gemini Advanced ($20/mo)</option>
-                                <option value="perplexity-pro">Perplexity Pro ($20/mo)</option>
-                            </optgroup>
-                            <optgroup label="Content & Marketing">
-                                <option value="jasper-ai">Jasper AI ($59-69/mo)</option>
-                                <option value="copy-ai">Copy.ai ($24-49/mo)</option>
-                                <option value="writer">Writer (Custom)</option>
-                            </optgroup>
-                            <optgroup label="Research & Intelligence">
-                                <option value="crayon">Crayon - Competitive Intel (Custom)</option>
-                                <option value="klue">Klue - Competitive Intel (Custom)</option>
-                                <option value="gong">Gong - Revenue Intelligence (Custom)</option>
-                                <option value="6sense">6Sense - Intent Data (Custom)</option>
-                            </optgroup>
-                            <optgroup label="SEO & Content Optimization">
-                                <option value="surfer-seo">Surfer SEO ($79-175/mo)</option>
-                                <option value="clearscope">Clearscope (Custom)</option>
-                                <option value="semrush-ai">Semrush AI (Add-on)</option>
-                            </optgroup>
-                            <optgroup label="Design & Creative">
-                                <option value="canva-pro">Canva Pro + AI ($13-15/mo)</option>
-                                <option value="midjourney">Midjourney ($10-60/mo)</option>
-                                <option value="adobe-firefly">Adobe Firefly (Included w/ CC)</option>
-                                <option value="adcreative-ai">AdCreative.ai ($29+/mo)</option>
-                            </optgroup>
-                            <optgroup label="Productivity & Workspace">
-                                <option value="notion-ai">Notion AI ($10/mo add-on)</option>
-                                <option value="microsoft-copilot">Microsoft 365 Copilot ($30/user/mo)</option>
-                                <option value="google-duet">Google Workspace Gemini ($20/user/mo)</option>
-                            </optgroup>
-                            <optgroup label="Other">
-                                <option value="other">Other (specify in use case)</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="use-case">Use Case Description <span style="color: #dc2626;">*</span></label>
-                        <textarea id="use-case" name="use_case" required placeholder="Please describe your specific use case for this AI service. Include:&#10;&#10;• What tasks or workflows will this tool support?&#10;• How will it improve your productivity or output?&#10;• Expected frequency of use&#10;• Any specific features you need"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="business-impact">Expected Business Impact (optional)</label>
-                        <textarea id="business-impact" name="business_impact" placeholder="Describe the expected ROI or business impact (e.g., time saved, increased output, improved quality)"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);">Submit Budget Request</button>
-                    
-                    <p class="form-note">Your request will be reviewed by the team. We'll follow up via email with next steps.</p>
+                    <button type="submit" class="btn btn-secondary">Submit Suggestion</button>
                 </form>
             </div>
             
@@ -460,8 +236,8 @@
     
     <footer>
         <div class="container">
-            <p class="logo-footer" style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">The Future of PMM</p>
-            <p>SAP Data and Analytics Product Marketing</p>
+            <p style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">The Future of PMM</p>
+            <p>AI + Product Marketing Insights</p>
         </div>
     </footer>
 </body>
