@@ -33,7 +33,7 @@ If you're still building product demos manually, meet your new best friend. **[G
 
 ---
 
-## 📰 News Roundup
+## [📰 News Roundup](https://futureofpmm.com/sap-ai-resources.html)
 
 **1. Anthropic's Claude Cowork Triggers $285B Stock Selloff**
 Anthropic released new productivity plugins for legal, finance, and product marketing — and Wall Street panicked. The open-source release means any company can customize these tools, raising questions about which software categories are next.
