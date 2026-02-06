@@ -15,11 +15,11 @@ Let's get into it.
 
 ---
 
-## 🛠️ AI Tool of the Week
+## [🛠️ AI Tool of the Week](https://futureofpmm.com/ai-tools.html)
 
-### Guideflow — AI Demo Automation
+### [Guideflow](https://www.guideflow.com) — AI Demo Automation
 
-If you're still building product demos manually, meet your new best friend. **Guideflow** creates interactive, self-serve demos that let prospects explore your product without a sales call.
+If you're still building product demos manually, meet your new best friend. **[Guideflow](https://www.guideflow.com)** creates interactive, self-serve demos that let prospects explore your product without a sales call.
 
 **Why PMMs love it:**
 - Create product tours in minutes, not days
@@ -29,7 +29,7 @@ If you're still building product demos manually, meet your new best friend. **Gu
 
 **Pricing:** Free tier available, paid plans from $49/mo
 
-🔗 [guideflow.com](https://www.guideflow.com)
+**→ [Try Guideflow](https://www.guideflow.com)** | [See all AI tools](https://futureofpmm.com/ai-tools.html)
 
 ---
 
@@ -57,20 +57,20 @@ Google's new subscription tier puts advanced AI tools in reach for individual ma
 
 ---
 
-## 🏆 User of the Week
+## [🏆 User of the Week](https://futureofpmm.com/user-of-the-week.html)
 
-**Jacob Brass**
+**[Jacob Brass](https://futureofpmm.com/user-of-the-week.html)**
 *SAP Data & Analytics*
 
 ![Jacob Brass](https://futureofpmm.com/assets/images/users/jacob-brass.jpg)
 
-**Project:** HerveBot — an automated pricing approval bot that delivers instant answers to field questions about pricing exceptions.
+**Project:** [HerveBot](https://futureofpmm.com/user-of-the-week.html) — an automated pricing approval bot that delivers instant answers to field questions about pricing exceptions.
 
-**Impact:** 75% reduction in field interactions
+**Impact:** 📉 75% reduction in field interactions
 
 Jacob turned a manual bottleneck into a seamless self-service experience. The bot handles routine pricing questions so the team can focus on strategic work.
 
-→ [Read the full story](https://futureofpmm.com/user-of-the-week.html)
+**→ [Read Jacob's full story](https://futureofpmm.com/user-of-the-week.html)**
 
 ---
 
