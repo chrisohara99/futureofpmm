@@ -112,6 +112,53 @@
             font-weight: 500;
         }
         nav a:hover { color: var(--pmm-blue); }
+                
+                /* Hamburger Menu */
+                .hamburger {
+                    display: none;
+                    flex-direction: column;
+                    justify-content: space-around;
+                    width: 28px;
+                    height: 24px;
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    padding: 0;
+                    z-index: 1001;
+                }
+                .hamburger span {
+                    width: 100%;
+                    height: 3px;
+                    background: var(--pmm-dark);
+                    border-radius: 2px;
+                    transition: all 0.3s ease;
+                }
+                .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+                .hamburger.active span:nth-child(2) { opacity: 0; }
+                .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+                
+                @media (max-width: 900px) {
+                    .hamburger { display: flex; }
+                    nav {
+                        position: fixed;
+                        top: 0;
+                        right: -100%;
+                        width: 280px;
+                        height: 100vh;
+                        background: #fff;
+                        flex-direction: column;
+                        padding: 80px 24px 24px;
+                        box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+                        transition: right 0.3s ease;
+                        z-index: 1000;
+                    }
+                    nav.open { right: 0; }
+                    nav a {
+                        margin: 0 0 1.25rem 0;
+                        font-size: 1.1rem;
+                        display: block;
+                    }
+                }
         .nav-links { display: flex; gap: 24px; }
         
         /* Content */
@@ -317,7 +364,7 @@
     </style>
 </head>
 <body>
-    <nav>
+    <nav id="main-nav">
         <div class="container">
             <a href="index.html" style="font-weight: 700; color: var(--pmm-dark);">← Back to Future of PMM</a>
             <div class="nav-links">
@@ -325,8 +372,17 @@
                 <a href="newsletters.html">Newsletter</a>
                 <a href="subscribe.html">Subscribe</a>
             </div>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <script>
+    document.getElementById('hamburger').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.getElementById('main-nav').classList.toggle('open');
+    });
+    </script>
     
     <header>
         <div class="header-content">

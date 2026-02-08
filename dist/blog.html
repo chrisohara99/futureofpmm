@@ -28,6 +28,53 @@
         .logo img { height: 135px; width: auto; }
         nav a { margin-left: 2rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
         nav a:hover { color: var(--pmm-blue); }
+                
+                /* Hamburger Menu */
+                .hamburger {
+                    display: none;
+                    flex-direction: column;
+                    justify-content: space-around;
+                    width: 28px;
+                    height: 24px;
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    padding: 0;
+                    z-index: 1001;
+                }
+                .hamburger span {
+                    width: 100%;
+                    height: 3px;
+                    background: var(--pmm-dark);
+                    border-radius: 2px;
+                    transition: all 0.3s ease;
+                }
+                .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+                .hamburger.active span:nth-child(2) { opacity: 0; }
+                .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+                
+                @media (max-width: 900px) {
+                    .hamburger { display: flex; }
+                    nav {
+                        position: fixed;
+                        top: 0;
+                        right: -100%;
+                        width: 280px;
+                        height: 100vh;
+                        background: #fff;
+                        flex-direction: column;
+                        padding: 80px 24px 24px;
+                        box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+                        transition: right 0.3s ease;
+                        z-index: 1000;
+                    }
+                    nav.open { right: 0; }
+                    nav a {
+                        margin: 0 0 1.25rem 0;
+                        font-size: 1.1rem;
+                        display: block;
+                    }
+                }
         .hero { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: white; padding: 3rem 0; text-align: center; }
         .hero h1 { font-size: 2rem; margin: 0 0 0.5rem 0; font-weight: 700; }
         .hero p { margin: 0; opacity: 0.9; }
@@ -52,7 +99,7 @@
     <header>
         <div class="container header-inner">
             <a href="index.html" class="logo"><img src="./assets/images/logo.svg" alt="The Future of PMM"></a>
-            <nav>
+            <nav id="main-nav">
                 <a href="index.html">Home</a>
                 <a href="blog.html">Archive</a>
                 <a href="ai-tools.html">AI Tools</a>
@@ -61,8 +108,17 @@
                 <a href="newsletters.html">Newsletter</a>
                 <a href="subscribe.html">Subscribe</a>
             </nav>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </header>
+    <script>
+    document.getElementById('hamburger').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.getElementById('main-nav').classList.toggle('open');
+    });
+    </script>
     
     <section class="hero">
         <div class="container">
