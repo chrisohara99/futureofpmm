@@ -1177,30 +1177,49 @@
   const totalSections = 6;
   const responses = {};
 
-  function toggleIdentity() {
-    const toggle = document.getElementById('id-toggle');
-    const fields = document.getElementById('id-fields');
-    toggle.classList.toggle('on');
-    fields.classList.toggle('show');
-  }
+  // Wait for DOM to load, then attach all event listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    // Identity toggle
+    document.getElementById('id-toggle').addEventListener('click', function() {
+      this.classList.toggle('on');
+      document.getElementById('id-fields').classList.toggle('show');
+    });
 
-  function toggleCheck(el) {
-    el.classList.toggle('selected');
-  }
+    // All checkbox items
+    document.querySelectorAll('.check-item:not(.radio)').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        this.classList.toggle('selected');
+      });
+    });
 
-  function selectRadio(el, groupName) {
-    const parent = el.closest('.check-group');
-    parent.querySelectorAll('.check-item').forEach(item => item.classList.remove('selected'));
-    el.classList.add('selected');
-    el.querySelector('input').checked = true;
-  }
+    // All radio items
+    document.querySelectorAll('.check-item.radio').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const parent = this.closest('.check-group');
+        parent.querySelectorAll('.check-item').forEach(function(i) { i.classList.remove('selected'); });
+        this.classList.add('selected');
+        const input = this.querySelector('input');
+        if (input) input.checked = true;
+      });
+    });
 
-  function selectRating(btn, name, value) {
-    const parent = btn.parentElement;
-    parent.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    responses[name + '-rating'] = value;
-  }
+    // Rating buttons
+    document.querySelectorAll('.rating-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const parent = this.parentElement;
+        const name = parent.id.replace('-rating', '');
+        const value = parseInt(this.textContent);
+        parent.querySelectorAll('.rating-btn').forEach(function(b) { b.classList.remove('selected'); });
+        this.classList.add('selected');
+        responses[name + '-rating'] = value;
+      });
+    });
+
+    // Initialize progress
+    updateProgress();
+  });
 
   function updateProgress() {
     const pct = Math.round(((currentSection - 1) / totalSections) * 100);
