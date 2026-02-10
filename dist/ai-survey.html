@@ -1251,20 +1251,26 @@
 
   function submitSurvey() {
     collectSectionData(6);
-
-    // Log the collected data (in production, POST to your backend)
-    console.log('=== SURVEY RESPONSE ===');
-    console.log(JSON.stringify(responses, null, 2));
-
-    // Create downloadable JSON
-    const blob = new Blob([JSON.stringify(responses, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    responses.timestamp = new Date().toISOString();
 
     // Store in localStorage as backup
     const existing = JSON.parse(localStorage.getItem('ai-survey-responses') || '[]');
-    responses.timestamp = new Date().toISOString();
     existing.push(responses);
     localStorage.setItem('ai-survey-responses', JSON.stringify(existing));
+
+    // POST to Google Sheets
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpuAEsPgsKLbXf862P4dGv1lJmalbf3nHsW8dvmBYvQcIgoyCZI8qb5CDY7rlMzNhp/exec';
+    
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(responses)
+    }).then(() => {
+      console.log('Survey submitted to Google Sheets');
+    }).catch(err => {
+      console.error('Error submitting survey:', err);
+    });
 
     // Show thank you
     document.getElementById('section-6').classList.add('hidden');
