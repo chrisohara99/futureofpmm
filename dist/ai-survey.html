@@ -1251,26 +1251,22 @@
 
   function submitSurvey() {
     collectSectionData(6);
-    responses.timestamp = new Date().toISOString();
-
-    // Store in localStorage as backup
-    const existing = JSON.parse(localStorage.getItem('ai-survey-responses') || '[]');
-    existing.push(responses);
-    localStorage.setItem('ai-survey-responses', JSON.stringify(existing));
 
     // POST to Google Sheets
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdINylxvJ4mVgR3w2a8eYebM68gEI-VhIgRGJeN3CaWM9PYAGNHVUz7lNoPQVQYis7/exec';
-    
-    fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(responses)
-    }).then(() => {
-      console.log('Survey submitted to Google Sheets');
-    }).catch(err => {
-      console.error('Error submitting survey:', err);
-    });
+    fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(responses) });
+    console.log('=== SURVEY RESPONSE ===');
+    console.log(JSON.stringify(responses, null, 2));
+
+    // Create downloadable JSON
+    const blob = new Blob([JSON.stringify(responses, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Store in localStorage as backup
+    const existing = JSON.parse(localStorage.getItem('ai-survey-responses') || '[]');
+    responses.timestamp = new Date().toISOString();
+    existing.push(responses);
+    localStorage.setItem('ai-survey-responses', JSON.stringify(existing));
 
     // Show thank you
     document.getElementById('section-6').classList.add('hidden');
