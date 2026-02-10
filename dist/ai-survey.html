@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDC Data & Analytics — AI Tools Assessment Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --slate: #1e293b;
+    --blue: #3b82f6;
+    --blue-dim: #2563eb;
+    --cyan: #06b6d4;
+    --emerald: #10b981;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --white: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background gradient mesh */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(6,182,212,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 90% 80%, rgba(59,130,246,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(16,185,129,0.04) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(6,182,212,0.1);
+    border: 1px solid rgba(6,182,212,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 24px;
+  }
+
+  .header-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .header h1 {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--white) 0%, var(--gray-300) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header p {
+    font-size: 16px;
+    color: var(--gray-400);
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 40px;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-400);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--gray-700);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--blue));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Section Cards */
+  .section-card {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 24px;
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--gray-400);
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+
+  /* Form Elements */
+  .field {
+    margin-bottom: 24px;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-200);
+    margin-bottom: 8px;
+  }
+
+  .field-hint {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  /* Text inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(6,182,212,0.15);
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+
+  select option {
+    background: var(--slate);
+    color: var(--white);
+  }
+
+  /* Checkbox / Radio groups */
+  .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .check-item:hover {
+    border-color: rgba(6,182,212,0.3);
+    background: rgba(6,182,212,0.05);
+  }
+
+  .check-item.selected {
+    border-color: rgba(6,182,212,0.4);
+    background: rgba(6,182,212,0.08);
+  }
+
+  .check-item input {
+    display: none;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 2px solid var(--gray-500);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+
+  .check-item.radio .check-box {
+    border-radius: 50%;
+  }
+
+  .check-item.selected .check-box {
+    background: var(--cyan);
+    border-color: var(--cyan);
+  }
+
+  .check-box::after {
+    content: '✓';
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .check-item.selected .check-box::after {
+    opacity: 1;
+  }
+
+  .check-text {
+    font-size: 14px;
+    color: var(--gray-200);
+    line-height: 1.4;
+  }
+
+  .check-text small {
+    display: block;
+    color: var(--gray-500);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  /* Rating scale */
+  .rating-scale {
+    display: flex;
+    gap: 8px;
+  }
+
+  .rating-btn {
+    flex: 1;
+    padding: 10px 4px;
+    background: rgba(15,23,42,0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    color: var(--gray-400);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .rating-btn:hover {
+    border-color: rgba(6,182,212,0.3);
+    color: var(--white);
+  }
+
+  .rating-btn.selected {
+    background: rgba(6,182,212,0.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .rating-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+
+  .rating-labels span {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .btn {
+    padding: 14px 28px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    color: var(--white);
+    flex: 1;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(6,182,212,0.25);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--gray-300);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Thank you screen */
+  .thank-you {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .thank-you-icon {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .thank-you h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .thank-you p {
+    color: var(--gray-400);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Toggle switch for identification */
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .toggle {
+    width: 48px;
+    height: 26px;
+    background: var(--gray-700);
+    border-radius: 100px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle.on {
+    background: var(--cyan);
+  }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: transform 0.2s;
+  }
+
+  .toggle.on::after {
+    transform: translateX(22px);
+  }
+
+  .toggle-label {
+    font-size: 14px;
+    color: var(--gray-300);
+  }
+
+  /* Identity fields */
+  .identity-fields {
+    display: none;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  .identity-fields.show {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 600px) {
+    .identity-fields.show {
+      grid-template-columns: 1fr;
+    }
+    .rating-scale {
+      flex-wrap: wrap;
+    }
+    .rating-btn {
+      min-width: 40px;
+    }
+    .container {
+      padding: 24px 16px 60px;
+    }
+    .section-card {
+      padding: 24px 20px;
+    }
+  }
+
+  /* SAP tools section styling */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 500px) {
+    .tool-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 24px 0;
+  }
+
+  /* Hidden sections */
+  .hidden { display: none; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .footer p {
+    font-size: 12px;
+    color: var(--gray-600);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">Live Survey</div>
+    <h1>AI Tools Assessment<br>BDC Data & Analytics</h1>
+    <p>Help us understand your current AI tool usage, needs, and priorities so we can build a smart, unified AI tooling strategy for our team.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span class="progress-label" id="progress-text">Section 1 of 6</span>
+      <span class="progress-label" id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION 1: IDENTITY -->
+  <!-- ============================================ -->
+  <div class="section-card" id="section-1">
+    <div class="section-tag">Section 1 — Who You Are</div>
+    <div class="section-title">Identification</div>
+    <div class="section-desc">You can respond anonymously or identify yourself. Identifying yourself helps us follow up on specific team needs.</div>
+
+    <div class="toggle-wrap">
+      <div class="toggle" id="id-toggle" onclick="toggleIdentity()"></div>
+      <span class="toggle-label">I'd like to identify myself</span>
+    </div>
+
+    <div class="identity-fields" id="id-fields">
+      <div class="field">
+        <label class="field-label">Your Name</label>
+        <input type="text" id="resp-name" placeholder="e.g., Jane Smith">
+      </div>
+      <div class="field">
+        <label class="field-label">Email</label>
+        <input type="email" id="resp-email" placeholder="jane.smith@sap.com">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top: 20px;">
+      <label class="field-label">Your Team</label>
+      <select id="resp-team">
+        <option value="">Select your team...</option>
+        <option value="outbound-kaiser">Outbound Product Marketing (Kaiser Larsen)</option>
+        <option value="technical-kara">Technical Product Marketing (Kara Reed)</option>
+        <option value="pricing-brian">Pricing & Commercialization (Brian Raver)</option>
+        <option value="ai-chris">Next-Gen Product Marketing / AI (Christopher O'Hara)</option>
+        <option value="research-scott-olivier">Market Intelligence & Research (Scott / Olivier)</option>
+        <option value="partners-kat-stuart">Field GTM & Partner Strategy (Kat / Stuart)</option>
+        <option value="cos-kendall">Chief of Staff (Kendall Dignam)</option>
+        <option value="other">Other / Prefer not to say</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Your Role Level</label>
+      <select id="resp-level">
+        <option value="">Select your level...</option>
+        <option value="ic">Individual Contributor</option>
+        <option value="senior-ic">Senior IC / Lead</option>
+        <option value="manager">Manager</option>
+        <option value="director">Director / VP</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goToSection(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION 2: CURRENT AI TOOL USAGE -->
+  <!-- ============================================ -->
+  <div class="section-card hidden" id="section-2">
+    <div class="section-tag">Section 2 — Current State</div>
+    <div class="section-title">What AI Tools Do You Use Today?</div>
+    <div class="section-desc">Select everything you currently use for work — whether officially approved or personally adopted.</div>
+
+    <div class="field">
+      <label class="field-label">SAP-Provided AI Tools</label>
+      <div class="field-hint">Tools available through SAP's enterprise stack</div>
+      <div class="tool-grid">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="joule">
+          <span class="check-box"></span>
+          <span class="check-text">SAP Joule<small>AI copilot across SAP apps</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="joule-deep-research">
+          <span class="check-box"></span>
+          <span class="check-text">Joule Deep Research<small>Complex multi-source analysis</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="ms-copilot">
+          <span class="check-box"></span>
+          <span class="check-text">Microsoft 365 Copilot<small>Word, Excel, PPT, Outlook, Teams</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="joule-ms-integration">
+          <span class="check-box"></span>
+          <span class="check-text">Joule ↔ Copilot Integration<small>Bidirectional SAP + M365</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="walkme-action-bar">
+          <span class="check-box"></span>
+          <span class="check-text">WalkMe / Joule Action Bar<small>Cross-app AI overlay</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="sap-analytics-cloud">
+          <span class="check-box"></span>
+          <span class="check-text">SAP Analytics Cloud AI<small>Smart insights & predictions</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="gen-ai-hub">
+          <span class="check-box"></span>
+          <span class="check-text">Generative AI Hub (BTP)<small>Model access: GPT, Claude, Gemini, Mistral</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="sap-tools" value="joule-studio">
+          <span class="check-box"></span>
+          <span class="check-text">Joule Studio / Agent Builder<small>Custom AI agent creation</small></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="field-label">Third-Party AI Tools (Personal or Team Use)</label>
+      <div class="field-hint">Anything you use for work, even if not SAP-sanctioned</div>
+      <div class="tool-grid">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="chatgpt">
+          <span class="check-box"></span>
+          <span class="check-text">ChatGPT / GPT-4/5<small>OpenAI</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="claude">
+          <span class="check-box"></span>
+          <span class="check-text">Claude<small>Anthropic</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="gemini">
+          <span class="check-box"></span>
+          <span class="check-text">Gemini<small>Google</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="perplexity">
+          <span class="check-box"></span>
+          <span class="check-text">Perplexity<small>AI search & research</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="midjourney-dalle">
+          <span class="check-box"></span>
+          <span class="check-text">Midjourney / DALL-E<small>Image generation</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="canva-ai">
+          <span class="check-box"></span>
+          <span class="check-text">Canva AI / Adobe Firefly<small>Design & creative</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="notion-ai">
+          <span class="check-box"></span>
+          <span class="check-text">Notion AI<small>Docs & knowledge management</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="grammarly">
+          <span class="check-box"></span>
+          <span class="check-text">Grammarly / Writesonic<small>Writing assistance</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="github-copilot">
+          <span class="check-box"></span>
+          <span class="check-text">GitHub Copilot<small>Code generation</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="external-tools" value="other-external">
+          <span class="check-box"></span>
+          <span class="check-text">Other<small>Specify below</small></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Other tools not listed above?</label>
+      <input type="text" id="other-tools" placeholder="e.g., Jasper, Copy.ai, Otter.ai, Fireflies...">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToSection(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goToSection(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION 3: HOW YOU USE AI -->
+  <!-- ============================================ -->
+  <div class="section-card hidden" id="section-3">
+    <div class="section-tag">Section 3 — Usage Patterns</div>
+    <div class="section-title">How Do You Use AI Today?</div>
+    <div class="section-desc">Help us understand which tasks AI is already supporting in your daily work.</div>
+
+    <div class="field">
+      <label class="field-label">How frequently do you use AI tools for work?</label>
+      <div class="check-group">
+        <label class="check-item radio" onclick="selectRadio(this, 'freq')">
+          <input type="radio" name="freq" value="multiple-daily">
+          <span class="check-box"></span>
+          <span class="check-text">Multiple times per day</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'freq')">
+          <input type="radio" name="freq" value="daily">
+          <span class="check-box"></span>
+          <span class="check-text">About once a day</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'freq')">
+          <input type="radio" name="freq" value="few-times-week">
+          <span class="check-box"></span>
+          <span class="check-text">A few times per week</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'freq')">
+          <input type="radio" name="freq" value="rarely">
+          <span class="check-box"></span>
+          <span class="check-text">Rarely / only when needed</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'freq')">
+          <input type="radio" name="freq" value="never">
+          <span class="check-box"></span>
+          <span class="check-text">I don't currently use AI tools</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">What tasks do you use AI for? (select all)</label>
+      <div class="tool-grid">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="writing-editing">
+          <span class="check-box"></span>
+          <span class="check-text">Writing & editing content</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="messaging-positioning">
+          <span class="check-box"></span>
+          <span class="check-text">Messaging & positioning</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="presentations">
+          <span class="check-box"></span>
+          <span class="check-text">Building presentations</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="research-analysis">
+          <span class="check-box"></span>
+          <span class="check-text">Research & competitive analysis</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="data-analysis">
+          <span class="check-box"></span>
+          <span class="check-text">Data analysis & spreadsheets</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="pricing-modeling">
+          <span class="check-box"></span>
+          <span class="check-text">Pricing & financial modeling</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="email-comms">
+          <span class="check-box"></span>
+          <span class="check-text">Email & communications</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="event-planning">
+          <span class="check-box"></span>
+          <span class="check-text">Event planning & logistics</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="image-design">
+          <span class="check-box"></span>
+          <span class="check-text">Image generation & design</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="meeting-summaries">
+          <span class="check-box"></span>
+          <span class="check-text">Meeting summaries & notes</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="translation">
+          <span class="check-box"></span>
+          <span class="check-text">Translation & localization</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="tasks" value="customer-persona">
+          <span class="check-box"></span>
+          <span class="check-text">Customer persona development</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Anything else you use AI for?</label>
+      <textarea id="other-tasks" placeholder="Describe any other AI-assisted tasks in your workflow..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToSection(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToSection(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION 4: PAIN POINTS & NEEDS -->
+  <!-- ============================================ -->
+  <div class="section-card hidden" id="section-4">
+    <div class="section-tag">Section 4 — Pain Points & Needs</div>
+    <div class="section-title">Where Do You Need the Most Help?</div>
+    <div class="section-desc">Tell us about your biggest time sinks, bottlenecks, and the AI capabilities that would make the biggest difference.</div>
+
+    <div class="field">
+      <label class="field-label">What are your top 3 most time-consuming tasks?</label>
+      <textarea id="time-sinks" placeholder="e.g., Building first-call decks from scratch, researching competitor pricing, formatting .com content for different personas..."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Rate your satisfaction with your current AI tools</label>
+      <div class="rating-scale" id="satisfaction-rating">
+        <button class="rating-btn" onclick="selectRating(this, 'satisfaction', 1)">1</button>
+        <button class="rating-btn" onclick="selectRating(this, 'satisfaction', 2)">2</button>
+        <button class="rating-btn" onclick="selectRating(this, 'satisfaction', 3)">3</button>
+        <button class="rating-btn" onclick="selectRating(this, 'satisfaction', 4)">4</button>
+        <button class="rating-btn" onclick="selectRating(this, 'satisfaction', 5)">5</button>
+      </div>
+      <div class="rating-labels">
+        <span>Not at all satisfied</span>
+        <span>Very satisfied</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">What's blocking you from using AI more effectively?</label>
+      <div class="check-group">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="dont-know-tools">
+          <span class="check-box"></span>
+          <span class="check-text">Don't know what tools are available</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="no-access">
+          <span class="check-box"></span>
+          <span class="check-text">Don't have access / licenses</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="no-training">
+          <span class="check-box"></span>
+          <span class="check-text">Lack of training or best practices</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="quality-concerns">
+          <span class="check-box"></span>
+          <span class="check-text">Output quality isn't good enough</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="data-privacy">
+          <span class="check-box"></span>
+          <span class="check-text">Data privacy / compliance concerns</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="integration">
+          <span class="check-box"></span>
+          <span class="check-text">Doesn't integrate with my workflow</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="time-to-learn">
+          <span class="check-box"></span>
+          <span class="check-text">Too much time to learn / adopt</span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="blockers" value="no-blockers">
+          <span class="check-box"></span>
+          <span class="check-text">Nothing — I'm using AI effectively</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToSection(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goToSection(5)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION 5: WISH LIST & PRIORITIES -->
+  <!-- ============================================ -->
+  <div class="section-card hidden" id="section-5">
+    <div class="section-tag">Section 5 — Wish List</div>
+    <div class="section-title">AI Capabilities You'd Want Most</div>
+    <div class="section-desc">If you could wave a magic wand, what AI capabilities would you add to your toolkit?</div>
+
+    <div class="field">
+      <label class="field-label">Which AI capabilities would be most valuable? (pick up to 5)</label>
+      <div class="check-group">
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="auto-deck-builder">
+          <span class="check-box"></span>
+          <span class="check-text">Automated deck/presentation builder<small>Generate L0 decks from messaging frameworks</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="content-repurposing">
+          <span class="check-box"></span>
+          <span class="check-text">Content repurposing engine<small>Turn one asset into blog, email, social, web copy</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="competitive-intel">
+          <span class="check-box"></span>
+          <span class="check-text">Competitive intelligence agent<small>Auto-monitor & summarize competitor moves</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="persona-content">
+          <span class="check-box"></span>
+          <span class="check-text">Persona-specific content generator<small>Adapt content for different buyer personas</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="pricing-calculator">
+          <span class="check-box"></span>
+          <span class="check-text">AI-assisted pricing / deal analysis<small>Model scenarios, flag exceptions, auto-approve</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="seo-content">
+          <span class="check-box"></span>
+          <span class="check-text">SEO-optimized content assistant<small>Keyword research + content optimization</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="event-automation">
+          <span class="check-box"></span>
+          <span class="check-text">Event planning & promotion automation<small>Agendas, invitations, follow-ups</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="research-synthesis">
+          <span class="check-box"></span>
+          <span class="check-text">Deep research & synthesis agent<small>Analyst-grade market research on demand</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="partner-content">
+          <span class="check-box"></span>
+          <span class="check-text">Partner co-marketing content builder<small>Joint messaging, co-branded assets</small></span>
+        </label>
+        <label class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox" name="wishlist" value="meeting-action">
+          <span class="check-box"></span>
+          <span class="check-text">Meeting intelligence & action items<small>Auto-transcribe, summarize, assign actions</small></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Your #1 AI wish — describe it in your own words</label>
+      <textarea id="top-wish" placeholder="If AI could do one thing for you that it doesn't do today, what would it be?"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToSection(4)">← Back</button>
+      <button class="btn btn-primary" onclick="goToSection(6)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION 6: BUDGET & READINESS -->
+  <!-- ============================================ -->
+  <div class="section-card hidden" id="section-6">
+    <div class="section-tag">Section 6 — Budget & Readiness</div>
+    <div class="section-title">Logistics & Final Thoughts</div>
+    <div class="section-desc">Help us understand budget considerations and your readiness for AI adoption.</div>
+
+    <div class="field">
+      <label class="field-label">Are you or your team currently paying for any AI tools out of pocket?</label>
+      <div class="check-group">
+        <label class="check-item radio" onclick="selectRadio(this, 'paying')">
+          <input type="radio" name="paying" value="yes-personal">
+          <span class="check-box"></span>
+          <span class="check-text">Yes — I pay personally (e.g., ChatGPT Plus, Claude Pro)</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'paying')">
+          <input type="radio" name="paying" value="yes-team">
+          <span class="check-box"></span>
+          <span class="check-text">Yes — team/department budget</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'paying')">
+          <input type="radio" name="paying" value="no">
+          <span class="check-box"></span>
+          <span class="check-text">No — only using free tiers or SAP-provided tools</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">If budget were available, how much per month per seat would be reasonable for AI tools?</label>
+      <div class="check-group">
+        <label class="check-item radio" onclick="selectRadio(this, 'budget')">
+          <input type="radio" name="budget" value="0">
+          <span class="check-box"></span>
+          <span class="check-text">$0 — should be company-provided</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'budget')">
+          <input type="radio" name="budget" value="20-50">
+          <span class="check-box"></span>
+          <span class="check-text">$20–50/month</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'budget')">
+          <input type="radio" name="budget" value="50-100">
+          <span class="check-box"></span>
+          <span class="check-text">$50–100/month</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'budget')">
+          <input type="radio" name="budget" value="100+">
+          <span class="check-box"></span>
+          <span class="check-text">$100+/month for the right tools</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">How would you rate your AI skill level?</label>
+      <div class="rating-scale" id="skill-rating">
+        <button class="rating-btn" onclick="selectRating(this, 'skill', 1)">1</button>
+        <button class="rating-btn" onclick="selectRating(this, 'skill', 2)">2</button>
+        <button class="rating-btn" onclick="selectRating(this, 'skill', 3)">3</button>
+        <button class="rating-btn" onclick="selectRating(this, 'skill', 4)">4</button>
+        <button class="rating-btn" onclick="selectRating(this, 'skill', 5)">5</button>
+      </div>
+      <div class="rating-labels">
+        <span>Beginner</span>
+        <span>Power user</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Would you attend AI training / lunch-and-learns?</label>
+      <div class="check-group">
+        <label class="check-item radio" onclick="selectRadio(this, 'training')">
+          <input type="radio" name="training" value="yes-eager">
+          <span class="check-box"></span>
+          <span class="check-text">Yes — very interested</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'training')">
+          <input type="radio" name="training" value="yes-if-relevant">
+          <span class="check-box"></span>
+          <span class="check-text">Yes — if it's relevant to my specific work</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'training')">
+          <input type="radio" name="training" value="maybe">
+          <span class="check-box"></span>
+          <span class="check-text">Maybe — depends on timing</span>
+        </label>
+        <label class="check-item radio" onclick="selectRadio(this, 'training')">
+          <input type="radio" name="training" value="no">
+          <span class="check-box"></span>
+          <span class="check-text">No — I prefer self-guided learning</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="field-label">Anything else you'd like us to know?</label>
+      <textarea id="final-comments" placeholder="Any additional thoughts on AI tools, team needs, concerns, or suggestions..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToSection(5)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSurvey()">Submit Survey ✓</button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- THANK YOU -->
+  <!-- ============================================ -->
+  <div class="section-card hidden" id="section-thanks">
+    <div class="thank-you">
+      <div class="thank-you-icon">🎯</div>
+      <h2>Thank You!</h2>
+      <p>Your responses have been recorded. We'll use this data to build a comprehensive AI tooling strategy for the BDC Data & Analytics team.</p>
+      <p style="margin-top: 16px; font-size: 14px;">Questions? Reach out to <strong>Christopher O'Hara</strong>.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>BDC Data & Analytics AI Tools Assessment · February 2026<br>
+    Built by <a href="https://futureofpmm.com" target="_blank">The Future of PMM</a></p>
+  </div>
+
+</div>
+
+<script>
+  let currentSection = 1;
+  const totalSections = 6;
+  const responses = {};
+
+  function toggleIdentity() {
+    const toggle = document.getElementById('id-toggle');
+    const fields = document.getElementById('id-fields');
+    toggle.classList.toggle('on');
+    fields.classList.toggle('show');
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('selected');
+  }
+
+  function selectRadio(el, groupName) {
+    const parent = el.closest('.check-group');
+    parent.querySelectorAll('.check-item').forEach(item => item.classList.remove('selected'));
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+  }
+
+  function selectRating(btn, name, value) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    responses[name + '-rating'] = value;
+  }
+
+  function updateProgress() {
+    const pct = Math.round(((currentSection - 1) / totalSections) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = 'Section ' + currentSection + ' of ' + totalSections;
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  function goToSection(num) {
+    // Collect current section data before moving
+    collectSectionData(currentSection);
+
+    document.getElementById('section-' + currentSection).classList.add('hidden');
+    currentSection = num;
+    document.getElementById('section-' + num).classList.remove('hidden');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function collectSectionData(sectionNum) {
+    // Collect checkboxes
+    const section = document.getElementById('section-' + sectionNum);
+    if (!section) return;
+
+    section.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      if (!responses[cb.name]) responses[cb.name] = [];
+      if (cb.closest('.check-item').classList.contains('selected')) {
+        if (!responses[cb.name].includes(cb.value)) {
+          responses[cb.name].push(cb.value);
+        }
+      } else {
+        responses[cb.name] = responses[cb.name].filter(v => v !== cb.value);
+      }
+    });
+
+    // Collect radios
+    section.querySelectorAll('input[type="radio"]:checked').forEach(r => {
+      responses[r.name] = r.value;
+    });
+
+    // Collect text fields
+    section.querySelectorAll('input[type="text"], input[type="email"], textarea, select').forEach(el => {
+      if (el.id && el.value) {
+        responses[el.id] = el.value;
+      }
+    });
+  }
+
+  function submitSurvey() {
+    collectSectionData(6);
+
+    // Log the collected data (in production, POST to your backend)
+    console.log('=== SURVEY RESPONSE ===');
+    console.log(JSON.stringify(responses, null, 2));
+
+    // Create downloadable JSON
+    const blob = new Blob([JSON.stringify(responses, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Store in localStorage as backup
+    const existing = JSON.parse(localStorage.getItem('ai-survey-responses') || '[]');
+    responses.timestamp = new Date().toISOString();
+    existing.push(responses);
+    localStorage.setItem('ai-survey-responses', JSON.stringify(existing));
+
+    // Show thank you
+    document.getElementById('section-6').classList.add('hidden');
+    document.getElementById('section-thanks').classList.remove('hidden');
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-text').textContent = 'Complete';
+    document.getElementById('progress-pct').textContent = '100%';
+  }
+
+  // Admin: retrieve all responses
+  function exportResponses() {
+    const data = JSON.parse(localStorage.getItem('ai-survey-responses') || '[]');
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ai-survey-responses-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+  }
+
+  // Init
+  updateProgress();
+</script>
+
+</body>
+</html>
