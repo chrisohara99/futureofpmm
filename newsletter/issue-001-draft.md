@@ -5,13 +5,11 @@
 
 ## 📝 Friday Note
 
-This week I had the chance to sit down with **David Yockelson**, a Research VP and Gartner Fellow who leads their product marketing practice. The conversation gave me the clearest framework I've seen for thinking about where and how to deploy AI across PMM activities.
+This week I sat down with **David Yockelson**, a Research VP and Gartner Fellow who leads their product marketing practice. The conversation gave me the clearest framework I've seen for thinking about where and how to deploy AI across PMM activities.
 
 The big insight? **Not all AI investments are equal** — and the framework he walked me through (Defend / Extend / Upend) maps different activities to different competitive ambitions, return profiles, and investment levels.
 
 We're also running two surveys right now — Gartner's and [our own AI Tools assessment](https://futureofpmm.com/ai-survey.html). Take both if you haven't already. We'll use the results to build a prioritized transformation roadmap.
-
-Enjoy!
 
 —Chris
 
@@ -39,73 +37,32 @@ This is not a performance review or individual evaluation, so please be open wit
 
 ---
 
-## [⚡ Featured: What Gartner Gets Right About AI in Product Marketing](https://futureofpmm.com/gartner-ai-product-marketing.html)
+## [⚡ Featured: AI Tools for Product Marketing](https://futureofpmm.com/ai-tools-guide.html)
 
-### And the One Thing They're Missing
+### What's Coming and How It Will Help You Work Smarter
 
-I sat down with **David Yockelson** — a Research VP and Gartner Fellow who leads Gartner's product marketing practice — to figure out how we should think about deploying AI agents across our teams.
+AI tools are coming to make your job easier. We've put together a practical guide to what we're evaluating, why certain tools made the list, and what to expect when they roll out.
 
-**The Framework: Defend / Extend / Upend**
+**What's in the guide:**
 
-Gartner maps PMM activities into three buckets based on competitive ambition:
+🔍 **What problems AI can actually solve**
+- First drafts taking too long? Content generation tools can help.
+- Competitive intel always stale? AI monitoring changes that.
+- Research synthesis eating up your week? Summarization tools are a game-changer.
 
-🛡️ **Defend** (Parity)
-- Augmenting individual productivity
-- Content generation lives here
-- Investment: ~$500/worker/year (Copilot tier)
-- Return: "Return on Employee"
+🛠️ **The tools we're evaluating**
+- **Tier 1:** ChatGPT/Claude, Perplexity Pro, Notion AI
+- **Tier 2:** Jasper, Writer, Klue, Crayon, Canva Magic Studio
+- Plus pricing, what each tool does best, and how we're testing them
 
-📈 **Extend** (Differentiation)  
-- Transforming processes for competitive advantage
-- Example: AI-powered continuous competitive intel
-- Investment: $250K - $5M (project-level)
-- Return: Actual financial ROI
+📋 **How we'll roll them out**
+- Properly licensed with enterprise security
+- Training and templates included
+- Ongoing feedback to see what's working
 
-🚀 **Upend** (Disruption)
-- Creating new products, markets, value props
-- Cross-functional GTM workflows, agentic AI
-- Investment: $20M - $250M+
-- Return: "Return on Future"
+**Important:** Please don't sign up for AI tools on your own using work information. We're actively evaluating options and will provide approved, licensed tools to the team.
 
-**Key Insight:** Each PMM activity has its own trajectory. Content = AI-led now. Persona development = build, don't buy. ICP refinement = human-led migrating to hybrid.
-
-**The real prize?** Not the activities themselves — it's what happens *between* them. Connected workflows. Shared data. Eliminated handoffs.
-
-**→ [Read the full analysis](https://futureofpmm.com/gartner-ai-product-marketing.html)**
-
----
-
-## [📊 Take the AI Tools Assessment](https://futureofpmm.com/ai-survey.html)
-
-### Help Us Build the Roadmap
-
-We're collecting data on:
-- What AI tools you're currently using
-- What's working and what's not
-- Where the gaps are
-
-Combined with Gartner's survey results, we'll map everything against Defend/Extend/Upend to create a prioritized transformation plan.
-
-**→ [Take the 5-minute survey](https://futureofpmm.com/ai-survey.html)**
-
----
-
-## [🛠️ Tool of the Week](https://futureofpmm.com/ai-tools.html)
-
-### [Copy.ai](https://copy.ai) — GTM AI Platform
-
-Since content creation is now firmly in "AI-led" territory per Gartner's framework, let's look at a tool leading that shift.
-
-**[Copy.ai](https://copy.ai)** goes beyond basic content generation — it's positioning itself as a full GTM AI platform with workflows that span content, competitive intel, and sales enablement.
-
-**Why it fits the framework:**
-- Content generation: Fully AI-led (Defend tier)
-- Sales emails: AI-led with human approval
-- Workflows connect multiple activities (hints at Extend)
-
-**Real use case:** Automated battlecard updates that feed sales playbooks without manual intervention.
-
-**→ [See all AI tools](https://futureofpmm.com/ai-tools.html)**
+**→ [Read the full guide](https://futureofpmm.com/ai-tools-guide.html)**
 
 ---
 
@@ -141,7 +98,7 @@ Source: [AllAboutAI / SEO.com](https://www.allaboutai.com/resources/ai-statistic
 ## [📰 News Roundup](https://futureofpmm.com/blog.html)
 
 **1. Matt Shumer's Viral Essay: "Something Big Is Happening"**
-The HyperWrite CEO's 5,000-word essay comparing AI's current moment to February 2020 is everywhere this week. His thesis: we're in the "this seems overblown" phase of something much bigger than COVID. The piece resonates because Shumer isn't making predictions — he's describing what already happened to AI workers and warning everyone else they're next. Required reading for anyone still on the fence about AI's pace of change. [Read it →](https://shumer.dev/something-big-is-happening)
+The HyperWrite CEO's 5,000-word essay comparing AI's current moment to February 2020 is everywhere this week. His thesis: we're in the "this seems overblown" phase of something much bigger than COVID. The piece resonates because Shumer isn't making predictions — he's describing what already happened to AI workers and warning everyone else they're next. [Read it →](https://shumer.dev/something-big-is-happening)
 
 **2. SAP Joule Studio Goes GA with Agent Builder**
 SAP's Joule Studio agent builder is now generally available, letting teams build custom AI agents on BTP with support for frameworks like CrewAI and LangGraph. This is the infrastructure layer for Upend-tier transformations. [Read more →](https://news.sap.com/2025/11/new-agentic-capabilities-sap-btp-supercharge-developers/)
@@ -157,32 +114,13 @@ Agentforce actions are now available in Marketing Cloud Account Engagement, help
 
 ---
 
-## 📊 Survey Results Preview
-
-Early results from our AI Tools assessment (100+ responses):
-
-**Most used tools:**
-1. ChatGPT/Claude (89%)
-2. Grammarly (67%)
-3. Jasper (34%)
-4. Copy.ai (28%)
-
-**Biggest gaps:**
-- Competitive intelligence (58% want better tools)
-- Win/loss analysis (52% manual only)
-- Sales enablement content (47% seeking automation)
-
-**Full analysis coming in Issue #2!**
-
----
-
 ## 📬 That's a Wrap!
 
 Thanks for reading Issue #1!
 
-**This week's homework:**
-1. [Take the AI survey](https://futureofpmm.com/ai-survey.html) if you haven't
-2. [Read the Gartner framework piece](https://futureofpmm.com/gartner-ai-product-marketing.html) and map your own activities
+**This week's action items:**
+1. [Complete the Gartner assessment](https://futureofpmm.com/ai-survey.html) if you haven't
+2. [Read the AI Tools Guide](https://futureofpmm.com/ai-tools-guide.html) to see what's coming
 
 Not subscribed yet? 
 **[Sign up here](https://futureofpmm.com/subscribe.html)** — it's free, every Friday.
@@ -194,4 +132,4 @@ See you next week,
 
 *Produced by SAP PMMs for SAP PMMs*
 
-[Website](https://futureofpmm.com) • [AI Tools](https://futureofpmm.com/ai-tools.html) • [SAP AI Resources](https://futureofpmm.com/sap-ai-resources.html) • [Subscribe](https://futureofpmm.com/subscribe.html)
+[Website](https://futureofpmm.com) • [AI Tools Guide](https://futureofpmm.com/ai-tools-guide.html) • [SAP AI Resources](https://futureofpmm.com/sap-ai-resources.html) • [Subscribe](https://futureofpmm.com/subscribe.html)
