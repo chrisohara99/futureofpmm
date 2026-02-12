@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O'Hara Home Search — Daily Update</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #faf9f7;
+            --accent: #2d6a4f;
+            --accent-light: #d8f3dc;
+            --muted: #6b7280;
+            --border: #e5e2dd;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Source Sans 3', Georgia, serif;
+            background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+            color: var(--ink);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--paper);
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 30px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+            color: #fff;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+        .header-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .header .date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .criteria {
+            background: var(--accent-light);
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .criteria-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .criteria-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 0.25rem;
+        }
+        .criteria-item .value {
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 0.95rem;
+        }
+        .content { padding: 2rem; }
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+        .market-snapshot {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 500px) {
+            .market-snapshot { grid-template-columns: 1fr; }
+        }
+        .town-card {
+            background: #f8f7f5;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+        .town-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--ink);
+        }
+        .town-card .count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .town-card .label {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .search-links {
+            margin: 2rem 0;
+        }
+        .search-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .search-link:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(45,106,79,0.15);
+        }
+        .search-link .icon {
+            font-size: 1.5rem;
+        }
+        .search-link .info { flex: 1; }
+        .search-link .name {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 1rem;
+        }
+        .search-link .desc {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .search-link .arrow {
+            color: var(--accent);
+            font-size: 1.25rem;
+        }
+        .tips {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 2rem;
+        }
+        .tips h3 {
+            color: #92400e;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        .tips ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+        .tips li { margin-bottom: 0.35rem; }
+        .footer {
+            background: var(--ink);
+            color: rgba(255,255,255,0.7);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        .footer a {
+            color: #86efac;
+            text-decoration: none;
+        }
+        .new-badge {
+            display: inline-block;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">🏡</div>
+            <h1>O'Hara Home Search</h1>
+            <p class="date">Daily Update — February 12, 2026</p>
+        </div>
+        
+        <div class="criteria">
+            <div class="criteria-grid">
+                <div class="criteria-item">
+                    <div class="label">Location</div>
+                    <div class="value">Cold Spring Harbor</div>
+                </div>
+                <div class="criteria-item">
+                    <div class="label">Radius</div>
+                    <div class="value">25 miles</div>
+                </div>
+                <div class="criteria-item">
+                    <div class="label">Bedrooms</div>
+                    <div class="value">3+</div>
+                </div>
+                <div class="criteria-item">
+                    <div class="label">Price Range</div>
+                    <div class="value">$650K–$1.3M</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <h2>📊 Market Snapshot</h2>
+            <div class="market-snapshot">
+                <div class="town-card">
+                    <h3>Cold Spring Harbor</h3>
+                    <div class="count">14</div>
+                    <div class="label">homes on market</div>
+                </div>
+                <div class="town-card">
+                    <h3>Huntington</h3>
+                    <div class="count">64</div>
+                    <div class="label">homes on market</div>
+                </div>
+                <div class="town-card">
+                    <h3>Syosset</h3>
+                    <div class="count">52</div>
+                    <div class="label">homes on market</div>
+                </div>
+                <div class="town-card">
+                    <h3>Oyster Bay</h3>
+                    <div class="count">23</div>
+                    <div class="label">homes on market</div>
+                </div>
+            </div>
+            
+            <h2>🔗 Search Links</h2>
+            <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem;">Click to view listings with your filters pre-applied:</p>
+            
+            <div class="search-links">
+                <a href="https://www.zillow.com/homes/for_sale/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22Cold%20Spring%20Harbor%2C%20NY%22%2C%22mapBounds%22%3A%7B%22north%22%3A41.1%2C%22south%22%3A40.6%2C%22east%22%3A-73.1%2C%22west%22%3A-73.8%7D%2C%22filterState%22%3A%7B%22price%22%3A%7B%22min%22%3A650000%2C%22max%22%3A1300000%7D%2C%22beds%22%3A%7B%22min%22%3A3%7D%2C%22sort%22%3A%7B%22value%22%3A%22days%22%7D%7D%7D" class="search-link" target="_blank">
+                    <div class="icon">🏠</div>
+                    <div class="info">
+                        <div class="name">Zillow</div>
+                        <div class="desc">Most popular • Great photos • Save favorites</div>
+                    </div>
+                    <div class="arrow">→</div>
+                </a>
+                
+                <a href="https://www.redfin.com/city/22172/NY/Cold-Spring-Harbor/filter/min-price=650k,max-price=1.3M,min-beds=3,viewport=41.1:40.6:-73.1:-73.8" class="search-link" target="_blank">
+                    <div class="icon">🔴</div>
+                    <div class="info">
+                        <div class="name">Redfin</div>
+                        <div class="desc">Accurate data • Tour scheduling • Agent support</div>
+                    </div>
+                    <div class="arrow">→</div>
+                </a>
+                
+                <a href="https://www.realtor.com/realestateandhomes-search/Cold-Spring-Harbor_NY/beds-3/price-650000-1300000/radius-25" class="search-link" target="_blank">
+                    <div class="icon">🏡</div>
+                    <div class="info">
+                        <div class="name">Realtor.com</div>
+                        <div class="desc">MLS direct • Open house info • School ratings</div>
+                    </div>
+                    <div class="arrow">→</div>
+                </a>
+                
+                <a href="https://www.compass.com/homes-for-sale/cold-spring-harbor-ny/?minPrice=650000&maxPrice=1300000&minBeds=3" class="search-link" target="_blank">
+                    <div class="icon">🧭</div>
+                    <div class="info">
+                        <div class="name">Compass</div>
+                        <div class="desc">Luxury focus • Exclusive listings • Modern interface</div>
+                    </div>
+                    <div class="arrow">→</div>
+                </a>
+            </div>
+            
+            <div class="tips">
+                <h3>💡 Pro Tips</h3>
+                <ul>
+                    <li><strong>Set up alerts</strong> on Zillow & Redfin for instant new listing notifications</li>
+                    <li><strong>Sort by "Newest"</strong> to catch fresh listings first</li>
+                    <li><strong>Check Sunday nights</strong> — many listings go live Monday morning</li>
+                    <li><strong>Save favorites</strong> to track price changes over time</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Updated daily at 8:00 AM ET</p>
+            <p style="margin-top: 0.5rem;">Questions? Reply to this email or text Chris</p>
+        </div>
+    </div>
+</body>
+</html>
