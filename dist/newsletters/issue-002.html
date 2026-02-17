@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Future of PMM — Issue #2: Battlecards Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf9f7;
+    --accent: #c84b31;
+    --accent-light: #f8e8e3;
+    --muted: #6b7280;
+    --border: #e5e2dd;
+    --section-bg: #f3f1ed;
+    --link: #2563eb;
+    --link-hover: #1d4ed8;
+    --claude-green: #10a37f;
+    --chatgpt-orange: #ea580c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', Georgia, serif;
+    background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+    color: var(--ink);
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .newsletter {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 2px;
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.08),
+      0 8px 30px rgba(0,0,0,0.12),
+      0 30px 60px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(200,75,49,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .header h1 span {
+    color: var(--accent);
+  }
+
+  .header-meta {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-meta .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── CONTENT ── */
+  .section {
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+    line-height: 1.3;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+
+  ul, ol {
+    margin: 1rem 0 1rem 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-note {
+    background: var(--section-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .intro-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  .signature {
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  /* Featured Article Card */
+  .featured-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    transition: box-shadow 0.2s;
+  }
+
+  .featured-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+
+  .featured-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .featured-card-body {
+    padding: 1.25rem;
+  }
+
+  .featured-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .featured-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .featured-card .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .featured-card .read-link:hover {
+    text-decoration: none;
+    color: var(--link-hover);
+  }
+
+  /* Scorecard */
+  .scorecard {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .scorecard-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .scorecard-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 80px;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  .scorecard-row:last-child {
+    border-bottom: none;
+  }
+
+  .scorecard-row.header-row {
+    background: var(--section-bg);
+    font-weight: 600;
+  }
+
+  .score-chatgpt {
+    color: var(--chatgpt-orange);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .score-claude {
+    color: var(--claude-green);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .winner::after {
+    content: ' ✓';
+  }
+
+  /* Quick Takes */
+  .quick-take {
+    background: var(--section-bg);
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .quick-take h4 {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .quick-take p {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    color: var(--muted);
+  }
+
+  /* Tool of the Week */
+  .tool-box {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid var(--claude-green);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .tool-box h3 {
+    margin: 0 0 0.75rem;
+    color: var(--claude-green);
+  }
+
+  .tool-box p {
+    font-size: 0.95rem;
+  }
+
+  .tool-box ul {
+    margin: 0.75rem 0 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    padding: 2rem 2.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer a {
+    color: rgba(255,255,255,0.7);
+  }
+
+  .footer a:hover {
+    color: #fff;
+  }
+
+  .footer-links {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 2rem 1.5rem; }
+    .header h1 { font-size: 1.8rem; }
+    .section { padding: 1.5rem; }
+    .scorecard-row { grid-template-columns: 1fr 60px 60px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="newsletter">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-label">Issue #2 — Battlecards Edition</div>
+    <h1>Competitive <span>Battlecards</span> & AI Showdown</h1>
+    <div class="header-meta">
+      <span>February 17, 2026</span>
+      <span class="dot"></span>
+      <span>The Future of PMM</span>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div class="section">
+    <div class="section-label">Friday Note</div>
+    <div class="intro-note">
+      <p>Welcome back to The Future of PMM!</p>
+      <p>This week I went deep on competitive battlecards — one of the most underrated weapons in a PMM's arsenal. Then I put AI to the test to see which tool could actually help build one.</p>
+      <p><strong>The result:</strong> A practical guide plus a head-to-head showdown that might change which AI you reach for next.</p>
+      <p class="signature">—Chris</p>
+    </div>
+  </div>
+
+  <!-- Featured Article 1 -->
+  <div class="section">
+    <div class="section-label">Featured</div>
+    <h2>How to Build Competitive Battlecards That Actually Win Deals</h2>
+    <p>Most battlecards collect dust in a SharePoint folder. They're either too generic to be useful or too detailed to be remembered.</p>
+    <p>I put together <strong>a practical guide</strong> with real-world examples from the Application Data Cloud wars — SAP vs. Oracle vs. Salesforce vs. Workday.</p>
+    
+    <div class="featured-card">
+      <img src="../assets/images/demo-one/img-03.jpg" alt="Battlecards Guide">
+      <div class="featured-card-body">
+        <h3>What's Inside</h3>
+        <ul>
+          <li>🎯 The 5 sections every battlecard needs</li>
+          <li>⚔️ Head-to-head positioning frameworks</li>
+          <li>🛡️ Objection handling that actually works</li>
+          <li>📋 A template you can steal</li>
+        </ul>
+        <a href="../competitive-battlecards-guide.html" class="read-link">Read the full guide →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Article 2 -->
+  <div class="section">
+    <div class="section-label">AI Showdown</div>
+    <h2>I Compared ChatGPT and Claude on Competitive Analysis</h2>
+    <p>I gave ChatGPT and Claude the exact same prompt: <em>"Build me a competitive battlecard for SAP's Business Data Cloud."</em></p>
+    <p><strong>Same prompt. Dramatically different results.</strong></p>
+    <p>One delivered a polished 9-slide presentation with specific competitive intel, objection handling, and situational guidance. The other gave me a 7-page text document that read like meeting notes.</p>
+
+    <div class="scorecard">
+      <div class="scorecard-header">📊 Head-to-Head Scorecard</div>
+      <div class="scorecard-row header-row">
+        <span>Dimension</span>
+        <span style="text-align:center">ChatGPT</span>
+        <span style="text-align:center">Claude</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Tactical Usefulness</span>
+        <span class="score-chatgpt">30</span>
+        <span class="score-claude winner">90</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Competitive Intel</span>
+        <span class="score-chatgpt">20</span>
+        <span class="score-claude winner">85</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Sales Readiness</span>
+        <span class="score-chatgpt">25</span>
+        <span class="score-claude winner">80</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Objection Handling</span>
+        <span class="score-chatgpt">0</span>
+        <span class="score-claude winner">85</span>
+      </div>
+    </div>
+
+    <p><strong>The winner:</strong> Claude, by a mile. But here's the catch — you still need to verify everything. AI can hallucinate competitive details with unsettling confidence.</p>
+    
+    <p><a href="../battlecard-ai-showdown.html" class="read-link" style="font-weight:600;">Read the full comparison with screenshots →</a></p>
+  </div>
+
+  <!-- Quick Takes -->
+  <div class="section">
+    <div class="section-label">Quick Takes</div>
+    
+    <div class="quick-take">
+      <h4>🎯 AI Tools Have "Personalities"</h4>
+      <p>The battlecard test revealed something important: ChatGPT leans strategic and conceptual. Claude leans tactical and detailed. Know which tool to use for which task.</p>
+    </div>
+
+    <div class="quick-take">
+      <h4>💡 The Verification Problem</h4>
+      <p>AI-generated competitive intel is plausible but unverified. Did Salesforce really acquire Informatica for $8B? AI is a first draft, not a finished product.</p>
+    </div>
+
+    <div class="quick-take">
+      <h4>📊 Coming Soon</h4>
+      <p>Next up on my radar: <strong>Klue, Crayon, and Kompyte</strong> — the dedicated competitive intelligence platforms. Can they beat a well-prompted Claude? Stay tuned.</p>
+    </div>
+  </div>
+
+  <!-- Tool of the Week -->
+  <div class="section">
+    <div class="section-label">Tool of the Week</div>
+    
+    <div class="tool-box">
+      <h3>✨ Claude for Sales Enablement</h3>
+      <p><strong>What it is:</strong> Anthropic's AI assistant (claude.ai)</p>
+      <p><strong>Why it's useful for PMMs:</strong> Unlike ChatGPT, Claude seems to intuitively understand the format and depth that sales enablement content requires:</p>
+      <ul>
+        <li>Professional slide structure</li>
+        <li>Specific competitive intelligence</li>
+        <li>Objection handling with rebuttals</li>
+        <li>Situational "when to use this" guidance</li>
+      </ul>
+      <p><strong>The catch:</strong> Claude can still hallucinate. Verify everything before sharing with sales.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">The Future of PMM</div>
+    <p>AI + Product Marketing insights for modern PMMs</p>
+    <div class="footer-links">
+      <a href="../index.html">Website</a>
+      <a href="../ai-tools.html">AI Tools Guide</a>
+      <a href="issue-001.html">Previous Issue</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
