@@ -15,7 +15,7 @@
     <meta name="description" content="Same prompt, dramatically different results. I asked both AI assistants to build a competitive battlecard. The outputs reveal two completely different philosophies.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #f5f6f7; --chatgpt-green: #10a37f; --claude-orange: #d97706; }
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #f5f6f7; --claude-green: #10a37f; --chatgpt-orange: #ea580c; }
         * { box-sizing: border-box; }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; margin: 0; line-height: 1.8; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
@@ -48,26 +48,26 @@
         /* Results at a Glance */
         .results-banner { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; }
         .result-card { padding: 1.5rem; border-radius: 12px; text-align: center; }
-        .result-card.chatgpt { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid var(--chatgpt-green); }
-        .result-card.claude { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid var(--claude-orange); }
+        .result-card.chatgpt { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 2px solid var(--chatgpt-orange); }
+        .result-card.claude { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid var(--claude-green); }
         .result-card .logo-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
         .result-card h4 { margin: 0 0 0.5rem; font-size: 1.1rem; }
         .result-card .stat { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
-        .result-card.chatgpt .stat { color: var(--chatgpt-green); }
-        .result-card.claude .stat { color: var(--claude-orange); }
+        .result-card.chatgpt .stat { color: var(--chatgpt-orange); }
+        .result-card.claude .stat { color: var(--claude-green); }
         .result-card .stat-label { font-size: 0.85rem; color: #6b7280; }
         @media (max-width: 600px) { .results-banner { grid-template-columns: 1fr; } }
         
         /* Comparison Table */
         .comparison-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.95rem; }
         .comparison-table th { background: var(--pmm-dark); color: white; padding: 1rem; text-align: left; font-weight: 600; }
-        .comparison-table th.chatgpt { background: var(--chatgpt-green); }
-        .comparison-table th.claude { background: var(--claude-orange); }
+        .comparison-table th.chatgpt { background: var(--chatgpt-orange); }
+        .comparison-table th.claude { background: var(--claude-green); }
         .comparison-table td { padding: 0.875rem 1rem; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
         .comparison-table tr:hover { background: #f9fafb; }
         .comparison-table .dimension { font-weight: 600; color: var(--pmm-dark); background: #f8fafc; }
         .win { background: #fffbeb !important; }
-        .win::after { content: ' ✓'; color: var(--claude-orange); font-weight: 700; }
+        .win::after { content: ' ✓'; color: var(--claude-green); font-weight: 700; }
         
         /* Image Gallery */
         .slide-gallery { margin: 1.5rem 0; }
@@ -86,27 +86,27 @@
         /* Side by side gallery */
         .sidebyside { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0; }
         .sidebyside-card { border-radius: 12px; overflow: hidden; }
-        .sidebyside-card.chatgpt { border: 3px solid var(--chatgpt-green); }
-        .sidebyside-card.claude { border: 3px solid var(--claude-orange); }
+        .sidebyside-card.chatgpt { border: 3px solid var(--chatgpt-orange); }
+        .sidebyside-card.claude { border: 3px solid var(--claude-green); }
         .sidebyside-card .card-header { padding: 0.75rem 1rem; font-weight: 600; text-align: center; color: white; }
-        .sidebyside-card.chatgpt .card-header { background: var(--chatgpt-green); }
-        .sidebyside-card.claude .card-header { background: var(--claude-orange); }
+        .sidebyside-card.chatgpt .card-header { background: var(--chatgpt-orange); }
+        .sidebyside-card.claude .card-header { background: var(--claude-green); }
         .sidebyside-card img { width: 100%; height: auto; display: block; }
         @media (max-width: 800px) { .sidebyside { grid-template-columns: 1fr; } }
         
         /* Highlight boxes */
         .highlight-box { padding: 1.25rem 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
-        .highlight-box.green { background: #ecfdf5; border-left: 4px solid var(--chatgpt-green); }
-        .highlight-box.orange { background: #fffbeb; border-left: 4px solid var(--claude-orange); }
+        .highlight-box.green { background: #ecfdf5; border-left: 4px solid var(--claude-green); }
+        .highlight-box.orange { background: #fffbeb; border-left: 4px solid var(--chatgpt-orange); }
         .highlight-box.blue { background: #eff6ff; border-left: 4px solid var(--pmm-blue); }
         .highlight-box h4 { margin: 0 0 0.5rem; }
         .highlight-box p { margin: 0; }
         .highlight-box ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
         
         /* Winner Section */
-        .winner-section { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 3px solid var(--claude-orange); padding: 2rem; border-radius: 16px; margin: 2.5rem 0; text-align: center; }
+        .winner-section { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 3px solid var(--claude-green); padding: 2rem; border-radius: 16px; margin: 2.5rem 0; text-align: center; }
         .winner-section .trophy { font-size: 3rem; margin-bottom: 0.5rem; }
-        .winner-section h3 { margin: 0 0 0.5rem; font-size: 1.5rem; color: var(--claude-orange); }
+        .winner-section h3 { margin: 0 0 0.5rem; font-size: 1.5rem; color: var(--claude-green); }
         .winner-section p { margin: 0; font-size: 1.05rem; color: #4b5563; }
         
         /* Scorecard */
@@ -117,8 +117,8 @@
         .score-label { flex: 1; font-weight: 500; }
         .score-bar { flex: 2; display: flex; gap: 0.5rem; align-items: center; }
         .bar { height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 600; }
-        .bar.chatgpt { background: var(--chatgpt-green); }
-        .bar.claude { background: var(--claude-orange); }
+        .bar.chatgpt { background: var(--chatgpt-orange); }
+        .bar.claude { background: var(--claude-green); }
         
         /* Takeaways */
         .takeaways { background: var(--pmm-light); padding: 2rem; border-radius: 12px; margin: 2.5rem 0; }
@@ -188,14 +188,14 @@
                     <h4>ChatGPT</h4>
                     <div class="stat">~500</div>
                     <div class="stat-label">words of strategic framing</div>
-                    <p style="margin: 1rem 0 0; font-size: 0.9rem; color: #065f46;"><strong>7-page text doc</strong> with high-level positioning themes and market context</p>
+                    <p style="margin: 1rem 0 0; font-size: 0.9rem; color: #9a3412;"><strong>7-page text doc</strong> with high-level positioning themes and market context</p>
                 </div>
                 <div class="result-card claude">
-                    <div class="logo-icon">🟠</div>
+                    <div class="logo-icon">✨</div>
                     <h4>Claude</h4>
                     <div class="stat">~3,000</div>
                     <div class="stat-label">words of tactical detail</div>
-                    <p style="margin: 1rem 0 0; font-size: 0.9rem; color: #92400e;"><strong>9-slide battlecard</strong> with head-to-head positioning, objection handling, and situational guidance</p>
+                    <p style="margin: 1rem 0 0; font-size: 0.9rem; color: #065f46;"><strong>9-slide battlecard</strong> with head-to-head positioning, objection handling, and situational guidance</p>
                 </div>
             </div>
             
@@ -211,7 +211,7 @@
                     <img src="./assets/images/battlecard-comparison/chatgpt-battlecard-1.png" alt="ChatGPT First Page">
                 </div>
                 <div class="sidebyside-card claude">
-                    <div class="card-header">🟠 Claude</div>
+                    <div class="card-header">✨ Claude</div>
                     <img src="./assets/images/battlecard-comparison/claude-battlecard-1.png" alt="Claude Title Slide">
                 </div>
             </div>
