@@ -1,98 +1,131 @@
-# Newsletter Issue #2 — Draft
+# Newsletter Issue #2 — Battlecards Edition
 **Target Send: Friday, February 21, 2026**
 
 ---
 
-## 1. FRIDAY NOTE (Week in Review)
+## 1. FRIDAY NOTE
 
 Welcome back to The Future of PMM!
 
-This week I ran an experiment: I gave three AI tools the same brief and asked them to create a presentation. The results surprised me — and they should matter to every PMM thinking about their AI workflow.
+This week I went deep on competitive battlecards — one of the most underrated weapons in a PMM's arsenal. Then I put AI to the test to see which tool could actually help build one.
 
-**The test:** Two articles, one SAP template, instructions to combine them into a two-chapter deck.
+**The result:** A practical guide plus a head-to-head showdown that might change which AI you reach for next.
 
-**The tools:** Claude, ChatGPT, and Prezent (an enterprise presentation AI).
-
-**The winner:** Claude, by a mile. Zero manual work required. It pulled images from the source articles and wove a coherent narrative. ChatGPT produced 30 slides of bad design. Prezent's "enterprise features" were impossible to access.
-
-**The lesson:** General-purpose LLMs are beating specialized tools on their own turf. If you're evaluating AI for content work, read the full breakdown.
-
-👉 **[Read: I Tested 3 AI Content Tools on the Same Brief](https://futureofpmm.com/content-gen-tools-evaluation.html)**
+Let's get into it.
 
 —Chris
 
 ---
 
-## 2. SURVEY RESULTS
+## 2. FEATURED: How to Build Competitive Battlecards That Actually Win Deals
 
-**[PLACEHOLDER: Need survey data from Chris]**
+![Battlecards Guide](https://futureofpmm.com/assets/images/demo-one/img-03.jpg)
 
-Questions:
-- Which survey results are we featuring?
-- Gartner PMM Skills Assessment results?
-- AI Tools Survey results?
-- Do we have charts/data to include?
+Most battlecards collect dust in a SharePoint folder. They're either too generic to be useful or too detailed to be remembered.
 
----
+I put together **a practical guide** with real-world examples from the Application Data Cloud wars — SAP vs. Oracle vs. Salesforce vs. Workday.
 
-## 3. USER OF THE WEEK
+**What's inside:**
+- 🎯 The 5 sections every battlecard needs
+- ⚔️ Head-to-head positioning frameworks
+- 🛡️ Objection handling that actually works
+- 📋 A template you can steal
 
-**[PLACEHOLDER: Story to come from Chris]**
+**The goal:** Battlecards your sellers will actually use.
 
-Template:
-- Name & Role
-- What they're doing with AI
-- Results/Impact
-- Quote from them
-- Photo (optional)
+👉 **[Read: How to Build Competitive Battlecards That Actually Win Deals](https://futureofpmm.com/competitive-battlecards-guide.html)**
 
 ---
 
-## 4. NEWS ROUNDUP
+## 3. FEATURED: I Compared ChatGPT and Claude on Competitive Analysis
 
-### 🎯 "AI Agents Can Draft Your Launch Narrative Before Lunch"
-*AdWeek's 10 AI Marketing Trends for 2026*
+![AI Showdown](https://futureofpmm.com/assets/images/demo-one/img-05.jpg)
 
-The uncomfortable truth emerging from Davos: when an AI agent can draft positioning, pressure test messaging, and spin 10 campaign variants before noon, the question isn't "will PMMs be replaced?" but "what does human expertise mean now?"
+I gave ChatGPT and Claude the exact same prompt: "Build me a competitive battlecard for SAP's Business Data Cloud."
 
-**PMM takeaway:** Role confusion is already hitting strategists. The winners are those organizing *around* AI, not just using it.
+**Same prompt. Dramatically different results.**
 
----
+One delivered a polished 9-slide presentation with specific competitive intel, objection handling, and situational guidance. The other gave me a 7-page text document that read like meeting notes.
 
-### 💰 ChatGPT Gets Ads — Trust Is Now Marketing's Problem
+**The scorecard:**
+| Dimension | ChatGPT | Claude |
+|-----------|---------|--------|
+| Tactical Usefulness | 30 | 90 ✓ |
+| Competitive Intel | 20 | 85 ✓ |
+| Sales Readiness | 25 | 80 ✓ |
+| Objection Handling | 0 | 85 ✓ |
 
-OpenAI's ad rollout in ChatGPT marks a pivotal shift. Marketing will be accountable when customers ask: is this recommendation organic or paid?
+**The winner:** Claude, by a mile.
 
-**PMM takeaway:** If you touch AI-powered customer experiences, you're inheriting ethical risk.
+But here's the catch — you still need to verify everything. AI can hallucinate competitive details with unsettling confidence.
 
----
-
-### 📉 Good Ideas Just Got Cheaper
-
-AI-native creative is flooding the market. Content volume is nearly free now, which means "good enough" creative collapses in value. What's scarce: taste, cultural relevance, and restraint.
-
-**PMM takeaway:** Differentiation comes from judgment, not output volume.
-
----
-
-### ⚡ Gartner: 40% of Enterprise Apps Will Have AI Agents by Year-End
-
-The shift isn't "AI tools" → it's "AI agents that operate." If your team runs campaigns like a relay race between specialists, you'll be outperformed by orgs running a "control room" overseeing agentic workflows.
+👉 **[Read: I Compared ChatGPT and Claude on Competitive Analysis](https://futureofpmm.com/battlecard-ai-showdown.html)**
 
 ---
 
-## FOOTER
+## 4. QUICK TAKES
 
-- Subscribe link
-- Website link
-- Unsubscribe link
+### 🎯 AI Tools Have "Personalities"
+
+The battlecard test revealed something important: ChatGPT leans strategic and conceptual. Claude leans tactical and detailed.
+
+**The lesson:** Know which tool to use for which task. Battlecards? Claude. Market positioning frameworks? Maybe ChatGPT. Or try both and compare.
 
 ---
 
-## TO DO BEFORE FRIDAY:
-- [ ] Get survey results from Chris
-- [ ] Get User of the Week story from Chris
-- [ ] Convert to HTML
+### 💡 The Verification Problem
+
+AI-generated competitive intel is plausible but unverified. Did Salesforce really acquire Informatica for $8B? Is Oracle's rebrand date accurate?
+
+**PMM takeaway:** AI is a first draft, not a finished product. Build verification into your workflow.
+
+---
+
+### 📊 Coming Soon: Competitive Intel Tools
+
+Next up on my radar: **Klue, Crayon, and Kompyte** — the dedicated competitive intelligence platforms.
+
+Can they beat a well-prompted Claude? Stay tuned.
+
+---
+
+## 5. TOOL OF THE WEEK: Claude for Sales Enablement
+
+**What it is:** Anthropic's AI assistant (claude.ai)
+
+**Why it's useful for PMMs:** Unlike ChatGPT, Claude seems to intuitively understand the format and depth that sales enablement content requires. It delivered:
+- Professional slide structure
+- Specific competitive intelligence
+- Objection handling with rebuttals
+- Situational "when to use this" guidance
+
+**The catch:** Claude can still hallucinate. Verify everything before sharing with sales.
+
+**Try it:** Give Claude your competitive brief and see what happens.
+
+---
+
+## 6. ONE MORE THING
+
+**Question for you:** What's your biggest battlecard challenge?
+- Creating them from scratch?
+- Keeping them updated?
+- Getting sales to actually use them?
+
+Reply to this email — I read every response.
+
+---
+
+**The Future of PMM**
+AI + Product Marketing insights for modern PMMs
+
+[Website](https://futureofpmm.com) · [AI Tools Guide](https://futureofpmm.com/ai-tools.html) · [Unsubscribe](#)
+
+---
+
+## TO DO BEFORE SEND:
+- [ ] Convert to HTML with Beehiiv styling
+- [ ] Add header image/banner
 - [ ] Test email rendering
 - [ ] Final review
-- [ ] Send!
+- [ ] Schedule for Friday AM
