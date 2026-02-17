@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Future of PMM — Issue #2: Battlecards Edition</title>
+<title>The Future of PMM — Issue #2: AI Tools Deep Dive</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -233,65 +233,85 @@
     color: var(--link-hover);
   }
 
-  /* Scorecard */
-  .scorecard {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 1.5rem 0;
-  }
-
-  .scorecard-header {
-    background: var(--ink);
-    color: #fff;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-
-  .scorecard-row {
+  /* User of the Week */
+  .uow-card {
     display: grid;
-    grid-template-columns: 1fr 80px 80px;
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid var(--border);
+    grid-template-columns: 100px 1fr;
+    gap: 1.25rem;
+    background: #fff;
+    border: 2px solid #f0ab00;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .uow-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .uow-badge {
+    display: inline-block;
+    background: #f0ab00;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .uow-card h4 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+  }
+
+  .uow-card .title {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .uow-card .summary {
     font-size: 0.9rem;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
   }
 
-  .scorecard-row:last-child {
-    border-bottom: none;
+  @media (max-width: 500px) {
+    .uow-card { grid-template-columns: 1fr; text-align: center; }
+    .uow-card img { margin: 0 auto; }
   }
 
-  .scorecard-row.header-row {
-    background: var(--section-bg);
-    font-weight: 600;
-  }
-
-  .score-chatgpt {
-    color: var(--chatgpt-orange);
-    font-weight: 600;
+  /* Survey Results */
+  .survey-placeholder {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px dashed #f59e0b;
+    border-radius: 12px;
+    padding: 1.5rem;
     text-align: center;
+    margin: 1rem 0;
   }
 
-  .score-claude {
-    color: var(--claude-green);
-    font-weight: 600;
-    text-align: center;
+  .survey-placeholder p {
+    margin: 0;
+    color: #92400e;
   }
 
-  .winner::after {
-    content: ' ✓';
-  }
-
-  /* Quick Takes */
-  .quick-take {
+  /* News Item */
+  .news-item {
     background: var(--section-bg);
     padding: 1.25rem;
     border-radius: 8px;
     margin: 1rem 0;
   }
 
-  .quick-take h4 {
+  .news-item h4 {
     font-family: 'Source Sans 3', sans-serif;
     font-size: 1rem;
     font-weight: 600;
@@ -301,33 +321,58 @@
     gap: 0.5rem;
   }
 
-  .quick-take p {
+  .news-item p {
     font-size: 0.95rem;
     margin-bottom: 0;
     color: var(--muted);
   }
 
-  /* Tool of the Week */
-  .tool-box {
-    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-    border: 2px solid var(--claude-green);
+  .news-item .takeaway {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .news-item .takeaway strong {
+    color: var(--accent);
+  }
+
+  /* CTA Box */
+  .cta-box {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+    color: white;
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 2rem;
+    text-align: center;
     margin: 1.5rem 0;
   }
 
-  .tool-box h3 {
+  .cta-box h3 {
+    color: white;
     margin: 0 0 0.75rem;
-    color: var(--claude-green);
   }
 
-  .tool-box p {
-    font-size: 0.95rem;
+  .cta-box p {
+    opacity: 0.9;
+    margin-bottom: 1.25rem;
   }
 
-  .tool-box ul {
-    margin: 0.75rem 0 0.75rem 1.25rem;
-    font-size: 0.95rem;
+  .cta-box .btn {
+    display: inline-block;
+    background: #f59e0b;
+    color: #1e3a5f;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .cta-box .btn:hover {
+    background: #fbbf24;
+    text-decoration: none;
   }
 
   /* Footer */
@@ -362,20 +407,10 @@
     gap: 1.5rem;
   }
 
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
   @media (max-width: 600px) {
     .header { padding: 2rem 1.5rem; }
     .header h1 { font-size: 1.8rem; }
     .section { padding: 1.5rem; }
-    .scorecard-row { grid-template-columns: 1fr 60px 60px; font-size: 0.8rem; }
   }
 </style>
 </head>
@@ -385,8 +420,8 @@
 
   <!-- Header -->
   <div class="header">
-    <div class="header-label">Issue #2 — Battlecards Edition</div>
-    <h1>Competitive <span>Battlecards</span> & AI Showdown</h1>
+    <div class="header-label">Issue #2 — AI Tools Deep Dive</div>
+    <h1>Testing the <span>Tools</span></h1>
     <div class="header-meta">
       <span>February 17, 2026</span>
       <span class="dot"></span>
@@ -394,117 +429,124 @@
     </div>
   </div>
 
-  <!-- Intro -->
+  <!-- 1. Intro -->
   <div class="section">
-    <div class="section-label">Friday Note</div>
+    <div class="section-label">Welcome to Week Two</div>
     <div class="intro-note">
       <p>Welcome back to The Future of PMM!</p>
-      <p>This week I went deep on competitive battlecards — one of the most underrated weapons in a PMM's arsenal. Then I put AI to the test to see which tool could actually help build one.</p>
-      <p><strong>The result:</strong> A practical guide plus a head-to-head showdown that might change which AI you reach for next.</p>
+      <p>This week we're going hands-on with <strong>AI tools</strong>. Not just reviews — real tests with real briefs. What happens when you give Claude, ChatGPT, and Prezent the same assignment? What about competitive battlecards?</p>
+      <p>The results surprised me. Let's dig in.</p>
       <p class="signature">—Chris</p>
     </div>
   </div>
 
-  <!-- Featured Article 1 -->
+  <!-- 2. Article: Content Generation Test -->
   <div class="section">
     <div class="section-label">Featured</div>
-    <h2>How to Build Competitive Battlecards That Actually Win Deals</h2>
-    <p>Most battlecards collect dust in a SharePoint folder. They're either too generic to be useful or too detailed to be remembered.</p>
-    <p>I put together <strong>a practical guide</strong> with real-world examples from the Application Data Cloud wars — SAP vs. Oracle vs. Salesforce vs. Workday.</p>
+    <h2>I Tested 3 AI Content Tools on the Same Brief</h2>
+    <p>I gave Claude, ChatGPT, and Prezent the same assignment: take two articles and an SAP template, create a two-chapter presentation deck.</p>
+    <p><strong>The winner:</strong> Claude, by a mile. Zero manual work required — it pulled images from the source articles and wove a coherent narrative.</p>
     
     <div class="featured-card">
-      <img src="../assets/images/demo-one/img-03.jpg" alt="Battlecards Guide">
+      <img src="../assets/images/demo-one/img-04.jpg" alt="AI Content Tools Test">
+      <div class="featured-card-body">
+        <h3>Key Findings</h3>
+        <ul>
+          <li>🏆 <strong>Claude:</strong> Clean slides, pulled images, coherent story</li>
+          <li>😐 <strong>ChatGPT:</strong> 30 slides of questionable design</li>
+          <li>❌ <strong>Prezent:</strong> Enterprise features locked behind walls</li>
+        </ul>
+        <a href="../content-gen-tools-evaluation.html" class="read-link">Read the full breakdown →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Article: Competitive Battlecards -->
+  <div class="section">
+    <div class="section-label">Guide</div>
+    <h2>How to Build Competitive Battlecards That Actually Win Deals</h2>
+    <p>Most battlecards collect dust in SharePoint. They're either too generic to be useful or too detailed to remember.</p>
+    <p>I put together a practical guide with real-world examples from the Application Data Cloud wars — SAP vs. Oracle vs. Salesforce vs. Workday.</p>
+    
+    <div class="featured-card">
+      <img src="../assets/images/demo-one/img-03.jpg" alt="Competitive Battlecards">
       <div class="featured-card-body">
         <h3>What's Inside</h3>
         <ul>
           <li>🎯 The 5 sections every battlecard needs</li>
           <li>⚔️ Head-to-head positioning frameworks</li>
-          <li>🛡️ Objection handling that actually works</li>
+          <li>🛡️ Objection handling that works</li>
           <li>📋 A template you can steal</li>
         </ul>
-        <a href="../competitive-battlecards-guide.html" class="read-link">Read the full guide →</a>
+        <a href="../competitive-battlecards-guide.html" class="read-link">Read the guide →</a>
       </div>
     </div>
   </div>
 
-  <!-- Featured Article 2 -->
+  <!-- 4. Survey Results -->
   <div class="section">
-    <div class="section-label">AI Showdown</div>
-    <h2>I Compared ChatGPT and Claude on Competitive Analysis</h2>
-    <p>I gave ChatGPT and Claude the exact same prompt: <em>"Build me a competitive battlecard for SAP's Business Data Cloud."</em></p>
-    <p><strong>Same prompt. Dramatically different results.</strong></p>
-    <p>One delivered a polished 9-slide presentation with specific competitive intel, objection handling, and situational guidance. The other gave me a 7-page text document that read like meeting notes.</p>
-
-    <div class="scorecard">
-      <div class="scorecard-header">📊 Head-to-Head Scorecard</div>
-      <div class="scorecard-row header-row">
-        <span>Dimension</span>
-        <span style="text-align:center">ChatGPT</span>
-        <span style="text-align:center">Claude</span>
-      </div>
-      <div class="scorecard-row">
-        <span>Tactical Usefulness</span>
-        <span class="score-chatgpt">30</span>
-        <span class="score-claude winner">90</span>
-      </div>
-      <div class="scorecard-row">
-        <span>Competitive Intel</span>
-        <span class="score-chatgpt">20</span>
-        <span class="score-claude winner">85</span>
-      </div>
-      <div class="scorecard-row">
-        <span>Sales Readiness</span>
-        <span class="score-chatgpt">25</span>
-        <span class="score-claude winner">80</span>
-      </div>
-      <div class="scorecard-row">
-        <span>Objection Handling</span>
-        <span class="score-chatgpt">0</span>
-        <span class="score-claude winner">85</span>
-      </div>
-    </div>
-
-    <p><strong>The winner:</strong> Claude, by a mile. But here's the catch — you still need to verify everything. AI can hallucinate competitive details with unsettling confidence.</p>
+    <div class="section-label">Survey Results</div>
+    <h2>What PMMs Are Saying About AI</h2>
     
-    <p><a href="../battlecard-ai-showdown.html" class="read-link" style="font-weight:600;">Read the full comparison with screenshots →</a></p>
+    <div class="survey-placeholder">
+      <p>📊 <strong>Survey results coming soon</strong><br>We're collecting responses from PMMs across the industry. Results will be published in the next issue.</p>
+    </div>
+    
+    <p>Haven't taken the survey yet? <a href="#survey-cta">Take it now</a> — it takes 2 minutes and helps shape future content.</p>
   </div>
 
-  <!-- Quick Takes -->
+  <!-- 5. User of the Week -->
   <div class="section">
-    <div class="section-label">Quick Takes</div>
+    <div class="section-label">User of the Week</div>
     
-    <div class="quick-take">
-      <h4>🎯 AI Tools Have "Personalities"</h4>
-      <p>The battlecard test revealed something important: ChatGPT leans strategic and conceptual. Claude leans tactical and detailed. Know which tool to use for which task.</p>
+    <div class="uow-card">
+      <img src="../assets/images/demo-one/sidebar-author.jpg" alt="Olivier Duvelleroy" onerror="this.src='../assets/images/demo-one/sidebar-author.jpg'">
+      <div>
+        <span class="uow-badge">🏆 User of the Week</span>
+        <h4>Olivier Duvelleroy</h4>
+        <p class="title">SAP · Greater Marseille Area</p>
+        <p class="summary"><strong>Built his own RAG system</strong> — Olivier, a data veteran who was the first product designer hired by Business Objects in 1994, has been tinkering with AI and built a custom Retrieval-Augmented Generation system for his work. More details coming soon.</p>
+      </div>
     </div>
+    
+    <p style="font-size: 0.9rem; color: var(--muted);">Know someone doing interesting AI work? <a href="mailto:chris@futureofpmm.com">Nominate them</a> for User of the Week.</p>
+  </div>
 
-    <div class="quick-take">
-      <h4>💡 The Verification Problem</h4>
-      <p>AI-generated competitive intel is plausible but unverified. Did Salesforce really acquire Informatica for $8B? AI is a first draft, not a finished product.</p>
+  <!-- 6. News Roundup -->
+  <div class="section">
+    <div class="section-label">News Roundup</div>
+    <h2>This Week in AI + PMM</h2>
+    
+    <div class="news-item">
+      <h4>🎯 General-Purpose LLMs Beating Specialized Tools</h4>
+      <p>The content generation test revealed a surprising trend: Claude and ChatGPT are outperforming dedicated enterprise tools on their own turf.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> Before buying specialized AI software, test what free/cheap LLMs can do first.</p>
     </div>
-
-    <div class="quick-take">
-      <h4>📊 Coming Soon</h4>
-      <p>Next up on my radar: <strong>Klue, Crayon, and Kompyte</strong> — the dedicated competitive intelligence platforms. Can they beat a well-prompted Claude? Stay tuned.</p>
+    
+    <div class="news-item">
+      <h4>💡 AI Tools Have "Personalities"</h4>
+      <p>Different tools approach the same brief differently. Claude leans tactical and detailed. ChatGPT leans strategic and conceptual.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> Know which tool to use for which task. Match the tool to the job.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4>⚠️ The Verification Problem</h4>
+      <p>AI-generated competitive intel is plausible but unverified. Both tools hallucinated specific details with confidence.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> AI is a first draft, not a finished product. Build verification into your workflow.</p>
     </div>
   </div>
 
-  <!-- Tool of the Week -->
-  <div class="section">
-    <div class="section-label">Tool of the Week</div>
+  <!-- 7. CTA: Take the Survey -->
+  <div class="section" id="survey-cta">
+    <div class="section-label">Your Turn</div>
     
-    <div class="tool-box">
-      <h3>✨ Claude for Sales Enablement</h3>
-      <p><strong>What it is:</strong> Anthropic's AI assistant (claude.ai)</p>
-      <p><strong>Why it's useful for PMMs:</strong> Unlike ChatGPT, Claude seems to intuitively understand the format and depth that sales enablement content requires:</p>
-      <ul>
-        <li>Professional slide structure</li>
-        <li>Specific competitive intelligence</li>
-        <li>Objection handling with rebuttals</li>
-        <li>Situational "when to use this" guidance</li>
-      </ul>
-      <p><strong>The catch:</strong> Claude can still hallucinate. Verify everything before sharing with sales.</p>
+    <div class="cta-box">
+      <h3>📋 Take the PMM + AI Survey</h3>
+      <p>Help shape the future of this newsletter. Tell us how you're using AI, what's working, and what you want to learn.</p>
+      <a href="https://forms.gle/YOUR_SURVEY_LINK" class="btn">Take the Survey (2 min) →</a>
     </div>
+    
+    <p style="text-align: center; font-size: 0.9rem; color: var(--muted); margin-top: 1rem;">Results will be shared in the next issue. Your responses help us create better content.</p>
   </div>
 
   <!-- Footer -->
