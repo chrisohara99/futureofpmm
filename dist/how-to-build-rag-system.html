@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Build a Personal RAG System: A Weekend Project | The Future of PMM</title>
+    <meta name="description" content="A step-by-step guide to building your own local, private context engine using Ollama, FAISS, and Python. No cloud APIs required.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #f5f6f7; --accent: #f59e0b; --success: #10b981; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; margin: 0; line-height: 1.8; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 135px; width: auto; }
+        nav a { margin-left: 2rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        nav a:hover { color: var(--pmm-blue); }
+        @media (max-width: 900px) { .logo img { height: 70px; } nav { display: none; } }
+        
+        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #10b981 100%); color: white; padding: 3rem 0; }
+        .hero h1 { font-size: 2.25rem; margin: 0 0 0.75rem; font-weight: 700; line-height: 1.2; }
+        .hero .subtitle { font-size: 1.15rem; opacity: 0.9; margin: 0; }
+        .hero .meta { font-size: 0.9rem; opacity: 0.7; margin-top: 1rem; }
+        
+        .content { padding: 3rem 0 4rem; }
+        .content p { font-size: 1.05rem; margin-bottom: 1.5rem; color: #4b5563; }
+        .content h2 { color: var(--pmm-dark); font-size: 1.6rem; margin: 3rem 0 1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        .content h2 .time { font-size: 0.8rem; font-weight: 500; background: #dbeafe; color: var(--pmm-blue); padding: 0.25rem 0.75rem; border-radius: 20px; }
+        .content h3 { color: var(--pmm-dark); font-size: 1.25rem; margin: 2rem 0 0.75rem; font-weight: 600; }
+        .content ul, .content ol { color: #4b5563; margin-bottom: 1.5rem; padding-left: 1.5rem; }
+        .content li { margin-bottom: 0.5rem; }
+        .content strong { color: var(--pmm-dark); }
+        .content a { color: var(--pmm-blue); }
+        
+        .prereq-box { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left: 4px solid var(--pmm-blue); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .prereq-box h4 { margin: 0 0 1rem; color: var(--pmm-dark); }
+        .prereq-box ul { margin: 0; padding-left: 1.25rem; }
+        .prereq-box li { margin-bottom: 0.5rem; color: #4b5563; }
+        
+        .warning-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid var(--accent); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .warning-box h4 { margin: 0 0 0.5rem; color: #92400e; }
+        .warning-box p { margin: 0; color: #78350f; }
+        
+        .success-box { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid var(--success); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .success-box h4 { margin: 0 0 0.5rem; color: #065f46; }
+        .success-box p { margin: 0; color: #047857; }
+        
+        .code-block { background: #1e293b; color: #e2e8f0; padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 1.6; }
+        .code-inline { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--pmm-dark); }
+        
+        .architecture-box { background: #f8fafc; border: 1px solid #e5e7eb; padding: 2rem; margin: 2rem 0; border-radius: 12px; text-align: center; }
+        .architecture-box pre { text-align: left; display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.5; color: #475569; }
+        .architecture-box .caption { margin-top: 1rem; font-size: 0.9rem; color: #6b7280; }
+        
+        .step-box { background: #fff; border: 1px solid #e5e7eb; padding: 1.5rem; margin: 2rem 0; border-radius: 12px; }
+        .step-number { display: inline-block; width: 32px; height: 32px; background: var(--pmm-blue); color: white; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 600; font-size: 0.9rem; margin-right: 0.75rem; }
+        .step-title { font-weight: 600; font-size: 1.1rem; display: inline; }
+        .step-content { margin-top: 1rem; }
+        .step-content p { margin-bottom: 1rem; }
+        .step-content p:last-child { margin-bottom: 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.95rem; }
+        th { background: #f8fafc; text-align: left; padding: 0.75rem 1rem; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; }
+        tr:hover { background: #f9fafb; }
+        
+        .quote-box { background: #f8fafc; border-left: 4px solid var(--pmm-blue); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .quote-box p { margin: 0; font-style: italic; color: #4b5563; }
+        .quote-box .attribution { margin-top: 0.75rem; font-style: normal; font-size: 0.9rem; color: #9ca3af; }
+        
+        footer { background: var(--pmm-dark); color: white; padding: 3rem 0; margin-top: 4rem; }
+        footer p { text-align: center; opacity: 0.8; margin: 0; }
+        footer a { color: white; }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.75rem; }
+            .architecture-box pre { font-size: 0.65rem; }
+            .code-block { font-size: 0.8rem; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo"><img src="assets/images/futureofpmm-logo.png" alt="The Future of PMM"></a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="newsletters.html">Newsletter</a>
+                <a href="ai-survey.html">AI Survey</a>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="hero">
+        <div class="container">
+            <div class="meta">Tutorial • February 2026</div>
+            <h1>How to Build a Personal RAG System</h1>
+            <p class="subtitle">A step-by-step guide to building your own local, private context engine. No cloud APIs, no monthly fees, no data leaving your machine.</p>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="container">
+            <p>This guide is based on <a href="olivier-rag-brain.html">Olivier Duvelleroy's NEXUS project</a>—a personal RAG system he built in a single weekend to solve the file-limit problem with AI tools. If you haven't read that story, start there for context on why this matters.</p>
+            
+            <p>Here, we'll walk through exactly how to build your own version.</p>
+            
+            <div class="prereq-box">
+                <h4>What You'll Need</h4>
+                <ul>
+                    <li><strong>A computer with 16GB+ RAM</strong> (the model runs locally)</li>
+                    <li><strong>~10GB free disk space</strong> (for the model and index)</li>
+                    <li><strong>Basic comfort with the terminal</strong> (you'll copy/paste commands)</li>
+                    <li><strong>Documents to index</strong> (PDFs, Word docs, text files)</li>
+                    <li><strong>2-4 hours</strong> (mostly waiting for downloads)</li>
+                </ul>
+            </div>
+            
+            <h2>The Architecture</h2>
+            
+            <p>Before we start, let's understand what we're building:</p>
+            
+            <div class="architecture-box">
+                <pre>
+┌─────────────────────────────────────────────────────────────┐
+│                      YOUR DOCUMENTS                         │
+│            (PDFs, Word docs, text files, etc.)              │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    CHUNKING & EMBEDDING                     │
+│         Split into paragraphs → Convert to vectors          │
+│              (sentence-transformers library)                │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     FAISS VECTOR INDEX                      │
+│       Fast similarity search across all your chunks         │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+              ┌───────────┴───────────┐
+              │                       │
+              ▼                       ▼
+┌─────────────────────┐   ┌───────────────────────────────────┐
+│    YOUR QUESTION    │   │         RETRIEVED CHUNKS          │
+│                     │──▶│    (Top 5-10 most relevant)       │
+└─────────────────────┘   └───────────────────┬───────────────┘
+                                              │
+                                              ▼
+                          ┌───────────────────────────────────┐
+                          │         LOCAL LLM (Ollama)        │
+                          │   Question + Context → Answer     │
+                          │           (Qwen3:8b)              │
+                          └───────────────────────────────────┘
+                </pre>
+                <p class="caption">NEXUS Architecture: Index once, query instantly</p>
+            </div>
+            
+            <p>The key insight: <strong>retrieval is fast</strong> (a few seconds), while <strong>generation is slower</strong> (1-2 minutes on local hardware). This is fine because you're trading speed for privacy and unlimited context.</p>
+            
+            <h2>Step 1: Install Ollama <span class="time">~10 min</span></h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>Ollama is a local AI runtime that makes it dead simple to run open-source models. Think of it as "Docker for LLMs."</p>
+                    
+                    <p><strong>On Mac or Linux:</strong></p>
+                    <div class="code-block">curl -fsSL https://ollama.com/install.sh | sh</div>
+                    
+                    <p><strong>On Windows:</strong> Download from <a href="https://ollama.com/download" target="_blank">ollama.com/download</a></p>
+                    
+                    <p>Verify it's working:</p>
+                    <div class="code-block">ollama --version</div>
+                </div>
+            </div>
+            
+            <h2>Step 2: Pull a Model <span class="time">~20 min</span></h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>We'll use Qwen3:8b—a capable model that runs well on consumer hardware. It's 4-bit quantized, meaning it's compressed to use less memory while maintaining quality.</p>
+                    
+                    <div class="code-block">ollama pull qwen3:8b</div>
+                    
+                    <p>This downloads about 5GB. Go grab coffee.</p>
+                    
+                    <p>Test it:</p>
+                    <div class="code-block">ollama run qwen3:8b "What is RAG in AI?"</div>
+                    
+                    <p>You should see a response about Retrieval-Augmented Generation. If your fan starts spinning, that's normal—your CPU is doing the work.</p>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <h4>⚠️ Performance Note</h4>
+                <p>Local inference is slower than cloud APIs. Expect 1-2 minutes per response on a typical laptop. This is the tradeoff for privacy and no API costs. If you need speed, you can swap in a cloud API later.</p>
+            </div>
+            
+            <h2>Step 3: Set Up Python Environment <span class="time">~15 min</span></h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>Create a clean Python environment for the project:</p>
+                    
+                    <div class="code-block"># Create project directory
+mkdir nexus && cd nexus
+
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+source venv/bin/activate  # Mac/Linux
+# or: venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install langchain langchain-community sentence-transformers faiss-cpu pypdf python-docx</div>
+                    
+                    <p>What we're installing:</p>
+                    <ul>
+                        <li><strong>langchain:</strong> Orchestration framework for LLM pipelines</li>
+                        <li><strong>sentence-transformers:</strong> Creates embeddings from text</li>
+                        <li><strong>faiss-cpu:</strong> Facebook's vector similarity search</li>
+                        <li><strong>pypdf, python-docx:</strong> Document parsers</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2>Step 4: Create the Indexing Script <span class="time">~30 min</span></h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>This script reads your documents, splits them into chunks, creates embeddings, and stores them in a FAISS index.</p>
+                    
+                    <p>Create <span class="code-inline">index_documents.py</span>:</p>
+                    
+                    <div class="code-block">import os
+from pathlib import Path
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+
+# Configuration
+DOCS_PATH = "./documents"  # Put your docs here
+INDEX_PATH = "./faiss_index"
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
+
+def load_documents(docs_path):
+    """Load all documents from the specified directory."""
+    documents = []
+    
+    for file_path in Path(docs_path).rglob("*"):
+        if file_path.suffix.lower() == ".pdf":
+            loader = PyPDFLoader(str(file_path))
+        elif file_path.suffix.lower() in [".docx", ".doc"]:
+            loader = Docx2txtLoader(str(file_path))
+        elif file_path.suffix.lower() in [".txt", ".md"]:
+            loader = TextLoader(str(file_path))
+        else:
+            continue
+            
+        try:
+            documents.extend(loader.load())
+            print(f"Loaded: {file_path.name}")
+        except Exception as e:
+            print(f"Error loading {file_path.name}: {e}")
+    
+    return documents
+
+def main():
+    print("Loading documents...")
+    documents = load_documents(DOCS_PATH)
+    print(f"Loaded {len(documents)} document pages")
+    
+    print("Splitting into chunks...")
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        separators=["\n\n", "\n", " ", ""]
+    )
+    chunks = text_splitter.split_documents(documents)
+    print(f"Created {len(chunks)} chunks")
+    
+    print("Creating embeddings (this takes a while)...")
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+    
+    print("Building FAISS index...")
+    vectorstore = FAISS.from_documents(chunks, embeddings)
+    
+    print(f"Saving index to {INDEX_PATH}...")
+    vectorstore.save_local(INDEX_PATH)
+    
+    print("Done! Index ready for queries.")
+
+if __name__ == "__main__":
+    main()</div>
+                </div>
+            </div>
+            
+            <h2>Step 5: Create the Query Script <span class="time">~30 min</span></h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>This script loads the index, retrieves relevant chunks for your question, and sends them to the local LLM.</p>
+                    
+                    <p>Create <span class="code-inline">query.py</span>:</p>
+                    
+                    <div class="code-block">import sys
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.llms import Ollama
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
+
+INDEX_PATH = "./faiss_index"
+MODEL_NAME = "qwen3:8b"
+TOP_K = 5  # Number of chunks to retrieve
+
+PROMPT_TEMPLATE = """Use the following context to answer the question. 
+If you cannot answer based on the context, say so. 
+Always cite which documents support your answer.
+
+Context:
+{context}
+
+Question: {question}
+
+Answer:"""
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python query.py 'Your question here'")
+        sys.exit(1)
+    
+    question = " ".join(sys.argv[1:])
+    
+    print("Loading index...")
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+    vectorstore = FAISS.load_local(
+        INDEX_PATH, embeddings, allow_dangerous_deserialization=True
+    )
+    
+    print("Connecting to Ollama...")
+    llm = Ollama(model=MODEL_NAME, temperature=0.1)
+    
+    prompt = PromptTemplate(
+        template=PROMPT_TEMPLATE,
+        input_variables=["context", "question"]
+    )
+    
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=vectorstore.as_retriever(search_kwargs={"k": TOP_K}),
+        chain_type_kwargs={"prompt": prompt},
+        return_source_documents=True
+    )
+    
+    print(f"\nQuestion: {question}\n")
+    print("Thinking... (this takes 1-2 minutes)\n")
+    
+    result = qa_chain({"query": question})
+    
+    print("=" * 60)
+    print("ANSWER:")
+    print("=" * 60)
+    print(result["result"])
+    
+    print("\n" + "=" * 60)
+    print("SOURCES:")
+    print("=" * 60)
+    for doc in result["source_documents"]:
+        source = doc.metadata.get("source", "Unknown")
+        print(f"- {source}")
+
+if __name__ == "__main__":
+    main()</div>
+                </div>
+            </div>
+            
+            <h2>Step 6: Index Your Documents</h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>Create a <span class="code-inline">documents</span> folder and add your files:</p>
+                    
+                    <div class="code-block">mkdir documents
+# Copy your PDFs, Word docs, and text files here</div>
+                    
+                    <p>Run the indexing script:</p>
+                    
+                    <div class="code-block">python index_documents.py</div>
+                    
+                    <p>This will take a while depending on how many documents you have. For 100 documents, expect 10-20 minutes.</p>
+                </div>
+            </div>
+            
+            <div class="success-box">
+                <h4>✓ Checkpoint</h4>
+                <p>You should now have a <code>faiss_index</code> folder containing your vectorized knowledge base. This only needs to be rebuilt when you add new documents.</p>
+            </div>
+            
+            <h2>Step 7: Query Your Knowledge Base</h2>
+            
+            <div class="step-box">
+                <div class="step-content">
+                    <p>Now the fun part. Ask questions:</p>
+                    
+                    <div class="code-block">python query.py "What did customers say about pricing in our research?"
+
+python query.py "Summarize the main themes from the Gartner reports"
+
+python query.py "Find quotes about AI adoption challenges"</div>
+                    
+                    <p>The system will:</p>
+                    <ol>
+                        <li>Convert your question to an embedding (instant)</li>
+                        <li>Find the 5 most relevant chunks (instant)</li>
+                        <li>Send question + context to the local LLM (1-2 min)</li>
+                        <li>Return a grounded answer with sources</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <h2>What's Next</h2>
+            
+            <p>This is a working foundation. Here's how to extend it:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Improvement</th>
+                        <th>Difficulty</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Add a simple web UI (Gradio/Streamlit)</td>
+                        <td>Easy</td>
+                        <td>Much better UX</td>
+                    </tr>
+                    <tr>
+                        <td>Swap in GPT-4 for faster inference</td>
+                        <td>Easy</td>
+                        <td>10x faster responses</td>
+                    </tr>
+                    <tr>
+                        <td>Add incremental indexing</td>
+                        <td>Medium</td>
+                        <td>Faster updates</td>
+                    </tr>
+                    <tr>
+                        <td>Support images/diagrams (vision model)</td>
+                        <td>Hard</td>
+                        <td>Much richer context</td>
+                    </tr>
+                    <tr>
+                        <td>Add memory across sessions</td>
+                        <td>Medium</td>
+                        <td>Conversational queries</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>The Hybrid Future</h2>
+            
+            <p>Olivier's insight: this doesn't have to be all-local forever. The architecture supports a <strong>hybrid approach</strong>:</p>
+            
+            <ul>
+                <li><strong>Local retrieval</strong> for governance (your documents never leave your machine)</li>
+                <li><strong>Optional cloud inference</strong> for speed/quality when content is non-sensitive</li>
+            </ul>
+            
+            <p>You control the tradeoff. That's the point.</p>
+            
+            <div class="quote-box">
+                <p>"At no time should we be afraid of diving into the details these days. AI tools can guide you through implementation; you are mostly limited by your curiosity, creativity, and intent."</p>
+                <p class="attribution">— Olivier Duvelleroy</p>
+            </div>
+            
+            <p>You now have your own context engine. What will you ask it?</p>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p><a href="index.html">The Future of PMM</a> · AI + Product Marketing insights for modern PMMs</p>
+        </div>
+    </footer>
+</body>
+</html>
