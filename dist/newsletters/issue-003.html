@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Future of PMM — The Friday Note #3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf9f7;
+    --accent: #c84b31;
+    --accent-light: #f8e8e3;
+    --muted: #6b7280;
+    --border: #e5e2dd;
+    --section-bg: #f3f1ed;
+    --link: #2563eb;
+    --link-hover: #1d4ed8;
+    --emerging: #E85D3A;
+    --overhyped: #D4A843;
+    --declining: #6B7B8D;
+    --maturing: #4A90D9;
+    --proven: #2D8F6F;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', Georgia, serif;
+    background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+    color: var(--ink);
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .newsletter {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 2px;
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.08),
+      0 8px 30px rgba(0,0,0,0.12),
+      0 30px 60px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(200,75,49,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .header h1 span {
+    color: var(--accent);
+  }
+
+  .header-meta {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-meta .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── CONTENT ── */
+  .section {
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+    line-height: 1.3;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+
+  ul, ol {
+    margin: 1rem 0 1rem 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-note {
+    background: var(--section-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .intro-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  .signature {
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  /* Featured Article Card */
+  .featured-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    transition: box-shadow 0.2s;
+  }
+
+  .featured-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+
+  .featured-card-body {
+    padding: 1.25rem;
+  }
+
+  .featured-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .featured-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .featured-card .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .featured-card .read-link:hover {
+    text-decoration: none;
+    color: var(--link-hover);
+  }
+
+  .article-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag-series { background: var(--emerging); color: white; }
+  .tag-uotw { background: #f59e0b; color: white; }
+
+  /* News Item */
+  .news-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .news-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .news-item h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.35;
+  }
+
+  .news-item p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+
+  .news-number {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+  }
+
+  /* Hype Cycle Legend */
+  .hype-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.emerging { background: var(--emerging); }
+  .legend-dot.overhyped { background: var(--overhyped); }
+  .legend-dot.declining { background: var(--declining); }
+  .legend-dot.maturing { background: var(--maturing); }
+  .legend-dot.proven { background: var(--proven); }
+
+  .hype-category {
+    background: var(--section-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+  }
+
+  .hype-category h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hype-category ul {
+    margin: 0 0 0 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .hype-category li {
+    margin-bottom: 0.25rem;
+  }
+
+  /* CTA Box */
+  .cta-box {
+    background: linear-gradient(135deg, var(--ink) 0%, #2d2d4a 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .cta-box h3 {
+    color: white;
+    margin: 0 0 0.75rem;
+  }
+
+  .cta-box p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .cta-button {
+    display: inline-block;
+    background: var(--accent);
+    color: white !important;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: background 0.2s;
+  }
+
+  .cta-button:hover {
+    background: #b03d26;
+    text-decoration: none !important;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--section-bg);
+    padding: 1.5rem 2.5rem;
+    text-align: center;
+  }
+
+  .footer p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer a {
+    color: var(--muted);
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .social-links a {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem 0.5rem; }
+    .section { padding: 1.5rem; }
+    .header { padding: 2rem 1.5rem; }
+    .header h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    .hype-legend { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="newsletter">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">The Friday Note</div>
+    <h1>The Future of <span>PMM</span></h1>
+    <div class="header-meta">
+      <span>Issue #3</span>
+      <span class="dot"></span>
+      <span>February 28, 2026</span>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="section">
+    <div class="section-label">Welcome to Week 3</div>
+    
+    <div class="intro-note">
+      <p>This week we focus on <strong>the agentic shift</strong> — and what it means when your buyer stops being a person and starts being an algorithm.</p>
+      <p>I've been thinking about this for months, but this week I finally wrote it down: the uncomfortable truth that everything we assume about product marketing — personas, messaging hierarchies, content-to-conversion pipelines — breaks when an AI agent is doing the evaluation.</p>
+      <p>We also spotlight someone who's already building for this future: <strong>Hyunsoo "Soo" Shim</strong>, whose BattleCoach prototype shows what competitive intelligence looks like when it's designed for scale.</p>
+    </div>
+    
+    <p class="signature">Let's get into it. —Chris</p>
+  </div>
+
+  <!-- ARTICLE 1: AGENTIC PMM -->
+  <div class="section">
+    <div class="section-label">📖 This Week's Essay</div>
+    
+    <div class="featured-card">
+      <div class="featured-card-body">
+        <span class="article-tag tag-series">🚀 Agentic PMM Series — Part 1</span>
+        <h3>Your Buyer Just Hired an Agent. Now What?</h3>
+        <p>Here's the uncomfortable truth most product marketers haven't internalized yet: your buyer is disappearing. Not literally — but increasingly, humans are deploying agents to do the work that used to land them on your website.</p>
+        <p><strong>This essay digs into:</strong></p>
+        <ul style="font-size: 0.95rem; color: var(--muted);">
+          <li>Why the old frameworks are broken — personas, SEO, content marketing all assumed human discovery patterns</li>
+          <li>The K-shaped future — the widening gap between AI-native PMMs and everyone else</li>
+          <li>Discoverability as the new battleground — what happens when agents don't use Google</li>
+          <li>MCP vs. end-to-end activation — two strategic paths forward</li>
+        </ul>
+        <a href="https://futureofpmm.com/agentic-pmm-buyer-hired-agent.html" class="read-link">Read the full essay →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLE 2: USER OF THE WEEK -->
+  <div class="section">
+    <div class="section-label">🏆 User of the Week</div>
+    
+    <div class="featured-card">
+      <div class="featured-card-body">
+        <span class="article-tag tag-uotw">⭐ User of the Week</span>
+        <h3>Hyunsoo "Soo" Shim — Building an AI Sales Simulator That Thinks Like a PMM</h3>
+        <p>While most PMMs are using AI to write emails faster, Soo is building <strong>BattleCoach</strong> — an agentic AI prototype that transforms static competitive content into dynamic coaching for sellers.</p>
+        <p>The insight that sparked it: <em>"Our competitive messaging often fails the logo swap test."</em> If you can swap your logo for a competitor's and the messaging still works, you don't have differentiation.</p>
+        <p>Her approach: a 3-day workshop to create <strong>9 solution-level playbooks</strong> (3 buying scenarios × 3 competitors), then encode that intelligence into an AI system that can scale.</p>
+        <p><strong>Crawl → Walk → Run:</strong></p>
+        <ul style="font-size: 0.95rem; color: var(--muted);">
+          <li><strong>Crawl:</strong> Structured competitive intelligence framework</li>
+          <li><strong>Walk:</strong> Context-aware AI co-pilot</li>
+          <li><strong>Run:</strong> Autonomous competitive coaching</li>
+        </ul>
+        <a href="https://futureofpmm.com/user-of-the-week-soo-shim.html" class="read-link">Read the full profile →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS ROUNDUP -->
+  <div class="section">
+    <div class="section-label">📰 News Roundup</div>
+    
+    <div class="news-item">
+      <h4><span class="news-number">1</span>OpenAI Turns ChatGPT Into an Ad Platform</h4>
+      <p>800 million users just became the product. OpenAI's February announcement validated what many predicted: every AI assistant builder is now an ad company. Your brand's presence in AI-mediated conversations just became a paid media question.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4><span class="news-number">2</span>Salesforce Spring 2026: AI Agents Across CRM</h4>
+      <p>Salesforce expanded Agentforce with new autonomous agents for marketing, sales, and service. The agents can now handle multi-step workflows without human intervention. The race to embed agentic capabilities into enterprise software is officially on.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4><span class="news-number">3</span>Oracle Launches Role-Based AI Agents</h4>
+      <p>Oracle is betting that role-based agents — not standalone tools — will let revenue teams cut through data silos. New agents for marketers, sellers, and CS teams can pull context from across Fusion applications.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4><span class="news-number">4</span>Google Announces AI Mode Checkout Protocols</h4>
+      <p>Google introduced standards allowing AI agents to complete purchases directly within its ecosystem. Translation: buyer agents can now transact without human involvement. If your checkout flow isn't agent-friendly, you're invisible.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4><span class="news-number">5</span>B2BMX 2026: The "Infinite Content Graveyard"</h4>
+      <p>The Demand Gen Report's conference preview says it plainly: "AI-powered is no longer a differentiator—it's the baseline." Every whitepaper sounds the same. Every LinkedIn outreach feels like a robot talking to a robot. The new question: what actually breaks through?</p>
+    </div>
+  </div>
+
+  <!-- CHART OF THE WEEK -->
+  <div class="section">
+    <div class="section-label">📊 Chart of the Week</div>
+    
+    <h2>The Agentic PMM Hype Cycle</h2>
+    <p>Where PMM capabilities actually sit — not where vendors want you to think they sit.</p>
+    
+    <div class="hype-legend">
+      <div class="legend-item"><span class="legend-dot emerging"></span> Emerging</div>
+      <div class="legend-item"><span class="legend-dot overhyped"></span> Overhyped</div>
+      <div class="legend-item"><span class="legend-dot declining"></span> Declining</div>
+      <div class="legend-item"><span class="legend-dot maturing"></span> Maturing</div>
+      <div class="legend-item"><span class="legend-dot proven"></span> Proven</div>
+    </div>
+    
+    <div class="hype-category" style="border-left: 3px solid var(--emerging);">
+      <h4><span class="legend-dot emerging"></span> Innovation Trigger</h4>
+      <ul>
+        <li>Agentic Buying Teams</li>
+        <li>MCP-Based Activation</li>
+        <li>Agent-Readable Positioning</li>
+      </ul>
+    </div>
+    
+    <div class="hype-category" style="border-left: 3px solid var(--overhyped);">
+      <h4><span class="legend-dot overhyped"></span> Peak of Inflated Expectations</h4>
+      <ul>
+        <li>AI Content Generation</li>
+        <li>AI Competitive Intel</li>
+        <li>End-to-End Agentic GTM</li>
+      </ul>
+    </div>
+    
+    <div class="hype-category" style="border-left: 3px solid var(--declining);">
+      <h4><span class="legend-dot declining"></span> Trough of Disillusionment</h4>
+      <ul>
+        <li>SEO-Driven Demand Gen</li>
+        <li>Traditional Persona Models</li>
+      </ul>
+    </div>
+    
+    <div class="hype-category" style="border-left: 3px solid var(--maturing);">
+      <h4><span class="legend-dot maturing"></span> Slope of Enlightenment</h4>
+      <ul>
+        <li>Consumption-Based PMM</li>
+        <li>AI-Augmented Sales Enablement</li>
+      </ul>
+    </div>
+    
+    <div class="hype-category" style="border-left: 3px solid var(--proven);">
+      <h4><span class="legend-dot proven"></span> Plateau of Productivity</h4>
+      <ul>
+        <li>Data-Driven Messaging</li>
+        <li>Product-Led Storytelling</li>
+      </ul>
+    </div>
+    
+    <p style="font-size: 0.9rem; color: var(--muted); margin-top: 1rem;"><em>See the full interactive graphic in <a href="https://futureofpmm.com/agentic-pmm-buyer-hired-agent.html">the essay</a>.</em></p>
+  </div>
+
+  <!-- CTA: TAKE THE SURVEY -->
+  <div class="section">
+    <div class="section-label">🎯 Your Turn</div>
+    
+    <div class="cta-box">
+      <h3>Take the AI + PMM Survey</h3>
+      <p>We're building the first comprehensive benchmark on AI adoption in Product Marketing. How are teams actually using AI? What's working? Your input shapes the report.</p>
+      <a href="https://futureofpmm.com/ai-survey.html" class="cta-button">Take the Survey (5 min) →</a>
+    </div>
+  </div>
+
+  <!-- WRAP -->
+  <div class="section">
+    <div class="section-label">That's a Wrap</div>
+    <p>The agentic shift is real, and it's happening faster than most marketing orgs realize. The question isn't whether AI will change product marketing — it's whether you'll be the one shaping that change or reacting to it.</p>
+    <p>See you next Friday.</p>
+    <p style="margin-top: 1.5rem;"><strong>Chris O'Hara</strong><br>
+    <span style="color: var(--muted);">VP of Product Marketing, SAP</span></p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p><a href="https://futureofpmm.com">futureofpmm.com</a> · <a href="https://thefullstack.chrisohara.com">The Full Stack</a></p>
+    <p style="font-size: 0.75rem; color: #999;">You're receiving this because you subscribed to The Friday Note.</p>
+    <div class="social-links">
+      <a href="https://linkedin.com/in/christopherohara">LinkedIn</a>
+      <a href="https://futureofpmm.com/newsletters.html">Archive</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
