@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Competitive Intelligence Dashboard | Future of PMM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .last-updated {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .card .subtitle {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        
+        .badge-leader {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-new {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge-acquired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .ai-strategy {
+            background: #f0f9ff;
+            border-left: 3px solid #3b82f6;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .ai-strategy-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #3b82f6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .ai-strategy-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e40af;
+            margin-top: 0.25rem;
+        }
+        
+        .key-messages {
+            margin-top: 1rem;
+        }
+        
+        .key-messages h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .key-messages ul {
+            list-style: none;
+            font-size: 0.85rem;
+        }
+        
+        .key-messages li {
+            padding: 0.25rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        .key-messages li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+        
+        .signal {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .signal-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #dc2626;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .signal-value {
+            font-size: 0.85rem;
+            color: #991b1b;
+            font-weight: 500;
+        }
+        
+        .maturity {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .maturity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .maturity-green { background: #22c55e; }
+        .maturity-yellow { background: #eab308; }
+        .maturity-red { background: #ef4444; }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .insights-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .insights-box h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+        
+        .insights-box ul {
+            list-style: none;
+        }
+        
+        .insights-box li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #78350f;
+        }
+        
+        .insights-box li::before {
+            content: "🔥";
+            position: absolute;
+            left: 0;
+        }
+        
+        .schedule {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .schedule h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .schedule-day {
+            font-weight: 600;
+            color: #3b82f6;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Competitive Intelligence Dashboard</h1>
+        <p>Enterprise Application Data Clouds + Customer Data Platforms</p>
+        <span class="last-updated">Last updated: February 26, 2026</span>
+    </div>
+
+    <div class="container">
+        
+        <!-- Key Insights -->
+        <div class="insights-box">
+            <h3>🎯 Key Signals This Week</h3>
+            <ul>
+                <li><strong>Salesforce:</strong> Rebranded Data Cloud → "Data 360" — positioning as AI foundation</li>
+                <li><strong>Hightouch:</strong> Named Gartner Leader for CDPs; launching "Agentic Marketing Platform"</li>
+                <li><strong>Census:</strong> Acquired by Fivetran → now "Fivetran Activations"</li>
+                <li><strong>Adobe:</strong> New "Agent Orchestrator" for building AI agents in RT-CDP</li>
+            </ul>
+        </div>
+
+        <!-- TRACK 1: Enterprise Application Data Clouds -->
+        <h2 class="section-title">📊 Enterprise Application Data Clouds</h2>
+        
+        <div class="grid">
+            <!-- Salesforce -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Salesforce</h3>
+                        <div class="subtitle">Data 360 + Agentforce</div>
+                    </div>
+                    <span class="badge badge-new">Rebranded</span>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Agentforce — "Digital Labor"</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Zero-Copy architecture" — federate, don't migrate</li>
+                        <li>"Essential data foundation for Agentforce"</li>
+                        <li>"Let humans do what they do best, let Agentforce do the rest"</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-green"></span>
+                    <span>Agent maturity: Production</span>
+                </div>
+            </div>
+
+            <!-- Workday -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Workday</h3>
+                        <div class="subtitle">Illuminate + Sana</div>
+                    </div>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Workday Sana — "AI Experience Platform"</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"AI that truly understands work"</li>
+                        <li>"Largest, cleanest HR and finance dataset"</li>
+                        <li>ISO 42001 — responsible AI certification</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-yellow"></span>
+                    <span>Agent maturity: Emerging</span>
+                </div>
+            </div>
+
+            <!-- Oracle -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Oracle</h3>
+                        <div class="subtitle">Modern Data Platform + Unity CDP</div>
+                    </div>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Agent Hub (Beta) + OCI AI</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Complete, Open, Intelligent"</li>
+                        <li>Infrastructure flexibility (on-prem, hybrid, multicloud)</li>
+                        <li>Forrester Leader: Translytical Data Platforms</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-red"></span>
+                    <span>Agent maturity: Beta</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRACK 2: CDPs -->
+        <h2 class="section-title">🗂️ Customer Data Platforms — Packaged</h2>
+        
+        <div class="grid">
+            <!-- Adobe -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Adobe Real-Time CDP</h3>
+                        <div class="subtitle">Experience Cloud</div>
+                    </div>
+                    <span class="badge badge-new">New Feature</span>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Agent Orchestrator + AI Assistant</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Build AI agents that automate workflows"</li>
+                        <li>AI-powered activation</li>
+                        <li>Real-Time CDP Collaboration</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-yellow"></span>
+                    <span>Agent maturity: New/Emerging</span>
+                </div>
+            </div>
+
+            <!-- Salesforce Data 360 -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Salesforce Data 360</h3>
+                        <div class="subtitle">Formerly Data Cloud</div>
+                    </div>
+                    <span class="badge badge-new">Rebranded</span>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Agentforce Foundation</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>Zero-Copy to Snowflake/Databricks</li>
+                        <li>"Real-time data engine"</li>
+                        <li>Native Salesforce metadata integration</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-green"></span>
+                    <span>Agent maturity: Production</span>
+                </div>
+            </div>
+
+            <!-- Amperity -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Amperity</h3>
+                        <div class="subtitle">AI-Powered Customer Data Cloud</div>
+                    </div>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Agent-Powered Identity Resolution</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Get a return on customer data"</li>
+                        <li>Lakehouse-native (Databricks, Snowflake)</li>
+                        <li>AI finds hidden PII connections</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-yellow"></span>
+                    <span>Agent maturity: Embedded</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🧱 Customer Data Platforms — Composable</h2>
+        
+        <div class="grid">
+            <!-- Hightouch -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Hightouch</h3>
+                        <div class="subtitle">Composable CDP + AI</div>
+                    </div>
+                    <span class="badge badge-leader">Gartner Leader</span>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Agentic Marketing Platform (AMP)</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Launch 10x more campaigns with 10x more creativity"</li>
+                        <li>"We don't store your data" (security angle)</li>
+                        <li>Backed by Databricks AND Snowflake</li>
+                    </ul>
+                </div>
+                
+                <div class="signal">
+                    <div class="signal-label">🔥 Watch</div>
+                    <div class="signal-value">Surging — Gartner Leader, dual lakehouse backing</div>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-green"></span>
+                    <span>Agent maturity: Production</span>
+                </div>
+            </div>
+
+            <!-- Segment -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Twilio Segment</h3>
+                        <div class="subtitle">CDP + Communications</div>
+                    </div>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Twilio Engage + Predictive AI</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Keep your data where it is" (zero-copy)</li>
+                        <li>Warehouse as source of truth</li>
+                        <li>Twilio communications integration</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-yellow"></span>
+                    <span>Agent maturity: Emerging</span>
+                </div>
+            </div>
+
+            <!-- RudderStack -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>RudderStack</h3>
+                        <div class="subtitle">Real-Time Data Foundation</div>
+                    </div>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Data Quality for AI/ML</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Competitive advantage through real-time data"</li>
+                        <li>1B+ daily events capability</li>
+                        <li>Open-source heritage</li>
+                    </ul>
+                </div>
+                
+                <div class="maturity">
+                    <span class="maturity-dot maturity-red"></span>
+                    <span>Agent maturity: Not focused</span>
+                </div>
+            </div>
+
+            <!-- Fivetran/Census -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Fivetran Activations</h3>
+                        <div class="subtitle">Formerly Census</div>
+                    </div>
+                    <span class="badge badge-acquired">Acquired</span>
+                </div>
+                
+                <div class="ai-strategy">
+                    <div class="ai-strategy-label">AI Strategy</div>
+                    <div class="ai-strategy-value">Reverse ETL + Activation</div>
+                </div>
+                
+                <div class="key-messages">
+                    <h4>Key Messages</h4>
+                    <ul>
+                        <li>"Unify. Enhance. Activate."</li>
+                        <li>Part of Fivetran data movement platform</li>
+                        <li>End-to-end: ingestion + activation</li>
+                    </ul>
+                </div>
+                
+                <div class="signal">
+                    <div class="signal-label">📢 M&A Signal</div>
+                    <div class="signal-value">Consolidation accelerating in composable CDP space</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Tables -->
+        <h2 class="section-title">📈 AI Agent Maturity Comparison</h2>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Agent Capability</th>
+                    <th>Maturity</th>
+                    <th>Pricing Model</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Salesforce</strong></td>
+                    <td>Agentforce</td>
+                    <td><span class="maturity-dot maturity-green" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Production</td>
+                    <td>Flex Credits (consumption)</td>
+                </tr>
+                <tr>
+                    <td><strong>Hightouch</strong></td>
+                    <td>Agentic Marketing Platform</td>
+                    <td><span class="maturity-dot maturity-green" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Production</td>
+                    <td>Usage-based</td>
+                </tr>
+                <tr>
+                    <td><strong>Adobe</strong></td>
+                    <td>Agent Orchestrator</td>
+                    <td><span class="maturity-dot maturity-yellow" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Emerging</td>
+                    <td>Platform license</td>
+                </tr>
+                <tr>
+                    <td><strong>Workday</strong></td>
+                    <td>Illuminate + Sana</td>
+                    <td><span class="maturity-dot maturity-yellow" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Emerging</td>
+                    <td>Flex Credits</td>
+                </tr>
+                <tr>
+                    <td><strong>Amperity</strong></td>
+                    <td>Agent-powered identity</td>
+                    <td><span class="maturity-dot maturity-yellow" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Embedded</td>
+                    <td>Platform license</td>
+                </tr>
+                <tr>
+                    <td><strong>Oracle</strong></td>
+                    <td>Agent Hub</td>
+                    <td><span class="maturity-dot maturity-red" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Beta</td>
+                    <td>Traditional + free tier</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Schedule -->
+        <div class="schedule">
+            <h3>📅 Monitoring Schedule</h3>
+            <div class="schedule-item">
+                <span class="schedule-day">Wednesdays 12pm ET</span>
+                <span>Enterprise App Data Clouds (Salesforce, Workday, Oracle)</span>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-day">Thursdays 12pm ET</span>
+                <span>CDPs (Adobe, Salesforce, Amperity, Hightouch, Segment, RudderStack)</span>
+            </div>
+        </div>
+
+        <a href="/" class="nav-link">← Back to Future of PMM</a>
+    </div>
+
+    <script>
+        // Auto-update timestamp
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            // Keep static for now - will be updated by cron jobs
+        });
+    </script>
+</body>
+</html>
