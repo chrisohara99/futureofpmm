@@ -977,36 +977,54 @@
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
       function openLogin() {
-        if (typeof netlifyIdentity !== 'undefined') {
-          netlifyIdentity.open();
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.open('login');
         } else {
           alert('Loading... please wait a moment and try again');
         }
       }
       
-      // When widget is ready
-      if (window.netlifyIdentity) {
+      // Wait for widget to load, then initialize
+      function initIdentity() {
+        if (!window.netlifyIdentity) {
+          setTimeout(initIdentity, 100);
+          return;
+        }
+        
+        window.netlifyIdentity.init({
+          container: '#netlify-modal'
+        });
+        
         window.netlifyIdentity.on("init", user => {
           if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
             document.getElementById('authGate').style.display = 'none';
             document.getElementById('protectedContent').style.display = 'block';
           }
         });
+        
         window.netlifyIdentity.on("login", user => {
           if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
             document.getElementById('authGate').style.display = 'none';
             document.getElementById('protectedContent').style.display = 'block';
           } else {
             document.getElementById('authError').style.display = 'block';
+            document.getElementById('authError').textContent = 'Access denied. Only @sap.com emails are allowed.';
             window.netlifyIdentity.logout();
           }
         });
+        
         window.netlifyIdentity.on("logout", () => {
           document.getElementById('authGate').style.display = 'flex';
           document.getElementById('protectedContent').style.display = 'none';
         });
       }
+      
+      // Start initialization when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initIdentity);
+      } else {
+        initIdentity();
+      }
     </script>
 </body>
 </html>
-<!-- identity enabled -->
