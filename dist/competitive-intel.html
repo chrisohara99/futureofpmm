@@ -541,7 +541,7 @@
             <h2>Competitive Intelligence</h2>
             <p>This dashboard contains internal competitive data and is restricted to SAP employees.</p>
             <div class="sap-note">🔒 Sign in with your @sap.com email to access</div>
-            <button class="auth-btn" onclick="openLogin()">Sign In with Email</button>
+            <button class="auth-btn" id="loginBtn">Sign In with Email</button>
             <div class="auth-error" id="authError">
                 Access denied. This content is only available to SAP employees (@sap.com email required).
             </div>
@@ -974,57 +974,48 @@
     </div>
     </div><!-- end protected-content -->
 
-    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
-      function openLogin() {
-        if (window.netlifyIdentity) {
-          window.netlifyIdentity.open('login');
-        } else {
-          alert('Loading... please wait a moment and try again');
-        }
-      }
-      
-      // Wait for widget to load, then initialize
-      function initIdentity() {
-        if (!window.netlifyIdentity) {
-          setTimeout(initIdentity, 100);
-          return;
-        }
+      // Bind login button after page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('loginBtn');
         
-        window.netlifyIdentity.init({
-          container: '#netlify-modal'
-        });
-        
-        window.netlifyIdentity.on("init", user => {
-          if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
-            document.getElementById('authGate').style.display = 'none';
-            document.getElementById('protectedContent').style.display = 'block';
-          }
-        });
-        
-        window.netlifyIdentity.on("login", user => {
-          if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
-            document.getElementById('authGate').style.display = 'none';
-            document.getElementById('protectedContent').style.display = 'block';
+        btn.addEventListener('click', function() {
+          console.log('Button clicked, netlifyIdentity:', typeof netlifyIdentity);
+          if (typeof netlifyIdentity !== 'undefined') {
+            netlifyIdentity.open();
           } else {
-            document.getElementById('authError').style.display = 'block';
-            document.getElementById('authError').textContent = 'Access denied. Only @sap.com emails are allowed.';
-            window.netlifyIdentity.logout();
+            alert('Identity widget not loaded yet. Please refresh the page.');
           }
         });
         
-        window.netlifyIdentity.on("logout", () => {
-          document.getElementById('authGate').style.display = 'flex';
-          document.getElementById('protectedContent').style.display = 'none';
-        });
-      }
-      
-      // Start initialization when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initIdentity);
-      } else {
-        initIdentity();
-      }
+        // Set up identity handlers when widget is ready
+        if (typeof netlifyIdentity !== 'undefined') {
+          netlifyIdentity.on('init', function(user) {
+            console.log('Identity init, user:', user);
+            if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
+              document.getElementById('authGate').style.display = 'none';
+              document.getElementById('protectedContent').style.display = 'block';
+            }
+          });
+          
+          netlifyIdentity.on('login', function(user) {
+            console.log('Login, user:', user);
+            if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
+              document.getElementById('authGate').style.display = 'none';
+              document.getElementById('protectedContent').style.display = 'block';
+            } else {
+              document.getElementById('authError').style.display = 'block';
+              netlifyIdentity.logout();
+            }
+          });
+          
+          netlifyIdentity.on('logout', function() {
+            document.getElementById('authGate').style.display = 'flex';
+            document.getElementById('protectedContent').style.display = 'none';
+          });
+        }
+      });
     </script>
 </body>
 </html>
