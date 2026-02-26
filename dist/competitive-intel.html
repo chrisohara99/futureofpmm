@@ -450,10 +450,105 @@
                 font-size: 1rem;
             }
         }
+        /* Auth Gate Styles */
+        .auth-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .auth-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .auth-box img {
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-box h2 {
+            font-size: 1.5rem;
+            color: #1e3a5f;
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-box p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .auth-box .sap-note {
+            background: #fef3c7;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #92400e;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        
+        .auth-btn:hover {
+            background: #2563eb;
+        }
+        
+        .auth-error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            display: none;
+        }
+        
+        .protected-content {
+            display: none;
+        }
     </style>
     
 </head>
 <body>
+    <!-- Auth Gate - Shows until user logs in with @sap.com email -->
+    <div class="auth-gate" id="authGate">
+        <div class="auth-box">
+            <img src="./assets/images/logo.svg" alt="Future of PMM">
+            <h2>Competitive Intelligence</h2>
+            <p>This dashboard contains internal competitive data and is restricted to SAP employees.</p>
+            <div class="sap-note">🔒 Sign in with your @sap.com email to access</div>
+            <button class="auth-btn" onclick="openLogin()">Sign In with Email</button>
+            <div class="auth-error" id="authError">
+                Access denied. This content is only available to SAP employees (@sap.com email required).
+            </div>
+        </div>
+    </div>
+
+    <div class="protected-content" id="protectedContent">
     <header>
         <div class="header-inner">
             <a href="index.html" class="logo"><img src="./assets/images/logo.svg" alt="The Future of PMM"></a>
@@ -877,5 +972,40 @@
 
         <a href="/" class="nav-link">← Back to Future of PMM</a>
     </div>
+    </div><!-- end protected-content -->
+
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      function openLogin() {
+        if (typeof netlifyIdentity !== 'undefined') {
+          netlifyIdentity.open();
+        } else {
+          alert('Loading... please wait a moment and try again');
+        }
+      }
+      
+      // When widget is ready
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
+            document.getElementById('authGate').style.display = 'none';
+            document.getElementById('protectedContent').style.display = 'block';
+          }
+        });
+        window.netlifyIdentity.on("login", user => {
+          if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
+            document.getElementById('authGate').style.display = 'none';
+            document.getElementById('protectedContent').style.display = 'block';
+          } else {
+            document.getElementById('authError').style.display = 'block';
+            window.netlifyIdentity.logout();
+          }
+        });
+        window.netlifyIdentity.on("logout", () => {
+          document.getElementById('authGate').style.display = 'flex';
+          document.getElementById('protectedContent').style.display = 'none';
+        });
+      }
+    </script>
 </body>
 </html>
