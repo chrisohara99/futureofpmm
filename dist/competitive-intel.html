@@ -982,74 +982,50 @@
     </div>
     </div><!-- end protected-content -->
 
-    <script>
-        // Wait for DOM and Netlify Identity widget to load
-        document.addEventListener('DOMContentLoaded', function() {
-            const authGate = document.getElementById('authGate');
-            const protectedContent = document.getElementById('protectedContent');
-            const authError = document.getElementById('authError');
-            const loginBtn = document.getElementById('loginBtn');
-            
-            function checkAccess(user) {
-                if (user && user.email) {
-                    const email = user.email.toLowerCase();
-                    if (email.endsWith('@sap.com')) {
-                        // Grant access
-                        authGate.classList.add('hidden');
-                        protectedContent.classList.add('visible');
-                        authError.style.display = 'none';
-                    } else {
-                        // Wrong domain - deny access
-                        authError.style.display = 'block';
-                        if (window.netlifyIdentity) {
-                            netlifyIdentity.logout();
-                        }
-                    }
-                }
-            }
-            
-            // Login button click
-            loginBtn.addEventListener('click', function() {
-                if (window.netlifyIdentity) {
-                    netlifyIdentity.open();
-                } else {
-                    alert('Authentication service loading... please try again in a moment.');
-                }
-            });
-            
-            // Wait for netlifyIdentity to be available
-            if (window.netlifyIdentity) {
-                initIdentity();
-            } else {
-                document.addEventListener('netlifyIdentityReady', initIdentity);
-            }
-            
-            function initIdentity() {
-                // Check if user is already logged in
-                netlifyIdentity.on('init', user => {
-                    if (user) {
-                        checkAccess(user);
-                    }
-                });
-                
-                // Handle login
-                netlifyIdentity.on('login', user => {
-                    checkAccess(user);
-                });
-                
-                // Handle logout
-                netlifyIdentity.on('logout', () => {
-                    authGate.classList.remove('hidden');
-                    protectedContent.classList.remove('visible');
-                });
-                
-                // Initialize
-                netlifyIdentity.init();
-            }
-        });
-    </script>
-    
-    <!-- Netlify Identity Widget - load at end for reliability -->
+    <!-- Netlify Identity Widget - must load first -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <script>
+        const authGate = document.getElementById('authGate');
+        const protectedContent = document.getElementById('protectedContent');
+        const authError = document.getElementById('authError');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        function checkAccess(user) {
+            if (user && user.email) {
+                const email = user.email.toLowerCase();
+                if (email.endsWith('@sap.com')) {
+                    authGate.classList.add('hidden');
+                    protectedContent.classList.add('visible');
+                    authError.style.display = 'none';
+                } else {
+                    authError.style.display = 'block';
+                    netlifyIdentity.logout();
+                }
+            }
+        }
+        
+        // Login button
+        loginBtn.addEventListener('click', function() {
+            netlifyIdentity.open();
+        });
+        
+        // Identity events
+        netlifyIdentity.on('init', user => {
+            if (user) checkAccess(user);
+        });
+        
+        netlifyIdentity.on('login', user => {
+            checkAccess(user);
+        });
+        
+        netlifyIdentity.on('logout', () => {
+            authGate.classList.remove('hidden');
+            protectedContent.classList.remove('visible');
+        });
+        
+        // Initialize
+        netlifyIdentity.init();
+    </script>
 </body>
 </html>
