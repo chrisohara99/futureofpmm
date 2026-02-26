@@ -527,16 +527,8 @@
             display: none;
         }
         
-        .auth-gate.hidden {
-            display: none;
-        }
-        
         .protected-content {
             display: none;
-        }
-        
-        .protected-content.visible {
-            display: block;
         }
     </style>
     
@@ -549,7 +541,7 @@
             <h2>Competitive Intelligence</h2>
             <p>This dashboard contains internal competitive data and is restricted to SAP employees.</p>
             <div class="sap-note">🔒 Sign in with your @sap.com email to access</div>
-            <button class="auth-btn" id="loginBtn">Sign In with Email</button>
+            <button class="auth-btn" onclick="openLogin()">Sign In with Email</button>
             <div class="auth-error" id="authError">
                 Access denied. This content is only available to SAP employees (@sap.com email required).
             </div>
@@ -982,50 +974,38 @@
     </div>
     </div><!-- end protected-content -->
 
-    <!-- Netlify Identity Widget - must load first -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
-        const authGate = document.getElementById('authGate');
-        const protectedContent = document.getElementById('protectedContent');
-        const authError = document.getElementById('authError');
-        const loginBtn = document.getElementById('loginBtn');
-        
-        function checkAccess(user) {
-            if (user && user.email) {
-                const email = user.email.toLowerCase();
-                if (email.endsWith('@sap.com')) {
-                    authGate.classList.add('hidden');
-                    protectedContent.classList.add('visible');
-                    authError.style.display = 'none';
-                } else {
-                    authError.style.display = 'block';
-                    netlifyIdentity.logout();
-                }
-            }
+      function openLogin() {
+        if (typeof netlifyIdentity !== 'undefined') {
+          netlifyIdentity.open();
+        } else {
+          alert('Loading... please wait a moment and try again');
         }
-        
-        // Login button
-        loginBtn.addEventListener('click', function() {
-            netlifyIdentity.open();
+      }
+      
+      // When widget is ready
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
+            document.getElementById('authGate').style.display = 'none';
+            document.getElementById('protectedContent').style.display = 'block';
+          }
         });
-        
-        // Identity events
-        netlifyIdentity.on('init', user => {
-            if (user) checkAccess(user);
+        window.netlifyIdentity.on("login", user => {
+          if (user && user.email && user.email.toLowerCase().endsWith('@sap.com')) {
+            document.getElementById('authGate').style.display = 'none';
+            document.getElementById('protectedContent').style.display = 'block';
+          } else {
+            document.getElementById('authError').style.display = 'block';
+            window.netlifyIdentity.logout();
+          }
         });
-        
-        netlifyIdentity.on('login', user => {
-            checkAccess(user);
+        window.netlifyIdentity.on("logout", () => {
+          document.getElementById('authGate').style.display = 'flex';
+          document.getElementById('protectedContent').style.display = 'none';
         });
-        
-        netlifyIdentity.on('logout', () => {
-            authGate.classList.remove('hidden');
-            protectedContent.classList.remove('visible');
-        });
-        
-        // Initialize
-        netlifyIdentity.init();
+      }
     </script>
 </body>
 </html>
