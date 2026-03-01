@@ -80,7 +80,23 @@ When buyer agents are doing research, traditional SEO isn't enough. Your content
 
 **The insight:** "If you're not optimizing for AI search, you're optimizing for yesterday's internet."
 
-**[Note for Chris: Want to add any notes from your Yan Yan conversation?]**
+---
+
+**FORMAT: Yan Yan Feature (UOTW-style)**
+
+Photo: Yan Yan headshot (need from Chris)
+Name: Yan Yan
+Title: [TBD] · SAP
+
+**The Evaluation:**
+Yan Yan tested Evertune on SAP's GEO visibility. Here's what he found...
+
+[Content from Evertune deck on SAP results — waiting for deck from Chris]
+
+**Pending:**
+- [ ] Yan Yan headshot
+- [ ] Evertune deck with SAP GEO results
+- [ ] Yan Yan's key takeaways / quote
 
 ---
 
