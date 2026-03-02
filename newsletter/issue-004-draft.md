@@ -49,6 +49,8 @@ We built exactly that:
 ### 3. VENDOR OF THE WEEK: EVERTUNE
 **GEO Platform for AI Search Visibility**
 
+**[PHOTO: Brian Stempeck headshot — images/brian-stempeck.jpg]**
+
 **Company:** Evertune
 **Founded:** April 2024
 **Funding:** $4M Seed → $19M Series A (Eniac Ventures)
@@ -68,49 +70,33 @@ Help brands understand and improve how they appear in AI-generated search result
 3. **AI Content Strategy** — Identify which sources influence AI recommendations; data-driven content creation
 4. **AI Retargeting** — Programmatic ads on URLs that AI cites most (via Trade Desk/Index Exchange integration)
 
-**Key Stats (from their site):**
+**Key Stats:**
 - 25% decline in traditional search expected by 2026 (Gartner)
 - 58% of consumers use GenAI for product recommendations (Capgemini)
 - 90% of B2B buyers use GenAI to research vendors (Forrester)
 
-**Customers:** Fortune 500 brands, including Miro
-
 **Why it matters for PMMs:**
 When buyer agents are doing research, traditional SEO isn't enough. Your content needs to be optimized for LLM retrieval and citation. If you're not showing up when someone asks ChatGPT "what's the best solution for X," you're invisible in the fastest-growing discovery channel in B2B.
-
-**The insight:** "If you're not optimizing for AI search, you're optimizing for yesterday's internet."
-
----
-
-**FORMAT: Yan Yan Feature (UOTW-style)**
-
-Photo: Yan Yan headshot (need from Chris)
-Name: Yan Yan
-Title: [TBD] · SAP
-
-**The Evaluation:**
-Yan Yan tested Evertune on SAP's GEO visibility. Here's what he found...
-
-[Content from Evertune deck on SAP results — waiting for deck from Chris]
-
-**Pending:**
-- [ ] Yan Yan headshot
-- [ ] Evertune deck with SAP GEO results
-- [ ] Yan Yan's key takeaways / quote
 
 ---
 
 ### 4. NEWS ROUNDUP
 **This Week in AI + PMM**
 
-[To be populated with stories from March 1-7 digests]
+**🔥 OpenAI Lands Pentagon Deal — Hours After Anthropic Blacklisted**
+OpenAI secured a DoD contract for classified networks just hours after Anthropic was designated a "supply chain risk to national security." The divergence: Anthropic refused to remove safety guardrails; OpenAI negotiated. Enterprise AI procurement just got political.
 
-Potential topics to watch:
-- OpenAI Pentagon deal / Anthropic blacklisting
-- NVIDIA "inflection point" earnings
-- Microsoft Azure Foundry for agentic AI
-- Meta Manus AI rollout to advertisers
-- Salesforce + Qualified acquisition
+**📈 NVIDIA: Enterprise Agentic AI Has Hit an "Inflection Point"**
+Jensen Huang declared it during earnings: agentic AI adoption has crossed from pilot to production. The numbers back it up — fiscal 2026 revenue reached $216 billion, up 65% YoY. If you're treating AI as experimental, you're already behind.
+
+**💰 Enterprise AI-Native Spend Up 94% YoY**
+New Tropic data from $18B in software spend: AI-Native tools grew 94% while "Primarily SaaS" limped along at 8%. Companies are placing serious bets on purpose-built AI, not just AI features bolted onto legacy platforms.
+
+**⚠️ The "AI Tax" Is Real: 20-37% Price Increases at Renewal**
+Same Tropic report: vendors are using AI to push renewal increases of 20-37% — far beyond typical 3-9% uplifts. Tactics include forced SKU migrations and credit-based pricing. Silver lining? Negotiation works.
+
+**📊 Only 6% of Marketers Have Fully Implemented AI**
+Reality check from Supermetrics: despite the hype, just 6% of marketers have fully implemented AI. The bigger problem? 52% say external teams define their data strategy. AI adoption isn't a tech problem — it's a data governance problem.
 
 ---
 
@@ -123,11 +109,12 @@ Every morning, we surface the 5-6 stories shaping AI + PMM. It's free, takes 2 m
 
 ---
 
-## Notes for Chris
+## Ready for Review
 
-- **Evertune research:** Want me to research Evertune and draft the Vendor of the Week section? Or do you have notes from your convo with Yan Yan?
-- **Title ideas for #4:**
-  - "The Pattern Emerges" (callback to feature article)
-  - "From Signals to System" 
-  - "Reading the Room (When the Room is an Agent)"
-- **Timing:** Should we research Evertune this week for Friday send?
+- ✅ Featured article up front
+- ✅ Competitive Intel Dashboard intro
+- ✅ Vendor of the Week: Evertune with Brian Stempeck headshot
+- ✅ News Roundup populated (5 strong stories)
+- ✅ Daily Digest CTA
+
+**Image:** `/root/.openclaw/workspace/futureofpmm/dist/images/brian-stempeck.jpg`
