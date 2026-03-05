@@ -100,7 +100,23 @@ Reality check from Supermetrics: despite the hype, just 6% of marketers have ful
 
 ---
 
-### 5. CTA: DAILY DIGEST
+### 5. NEWSLETTER WE LOVE
+**📬 Agent of Curiosity**
+
+Fellow SAP PMM **Skyler Neal** is documenting her own AI journey in *Agent of Curiosity* — a newsletter exploring the intersection of Product Marketing and AI.
+
+Recent highlights:
+- "The AI Signal Scanner Agent Build" — practical agent architecture
+- "2025: The Year AI Hype Met Reality" — honest retrospective
+- "Big Shifts Redefining Work in 2026" — what's actually changing
+
+If you're a PMM trying to figure out how AI fits into your workflow, Skyler's building in public and sharing what works.
+
+[Subscribe to Agent of Curiosity →](https://agentofcuriosity.com/)
+
+---
+
+### 6. CTA: DAILY DIGEST
 **📰 Don't Miss the Daily Digest**
 
 Every morning, we surface the 5-6 stories shaping AI + PMM. It's free, takes 2 minutes with your coffee, and it's how we spotted the patterns in this week's feature article.
