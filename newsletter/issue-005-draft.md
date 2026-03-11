@@ -116,7 +116,7 @@ The key insight: you're not replacing human-focused content with machine-focused
 
 **Newsletter We Love**
 
-**[Lenny's Newsletter](https://www.lennysnewsletter.com/)** — Lenny Rachitsky's deep dives on product management and growth continue to be essential reading. His recent piece on "How AI is changing PM" is particularly relevant — the same dynamics hitting product management are hitting product marketing.
+**[Eli Schwartz](https://www.elischwartz.co/)** — Eli has been at the forefront of the SEO-to-GEO shift we cover in this issue. His recent writing on how AI is reshaping organic discovery — and what marketers need to do about it — is essential reading for anyone thinking about visibility in an AI-first world. Author of "Product-Led SEO" and a clear-eyed voice on what's actually changing vs. what's hype.
 
 ---
 
