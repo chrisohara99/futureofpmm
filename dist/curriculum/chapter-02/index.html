@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2: The Gartner Moment | Future of PMM Curriculum</title>
+<meta name="description" content="37 PMM activities evaluated against AI replaceability. Learn which work to automate, which to watch, and which to double down on.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pmm-blue: #3b82f6;
+  --pmm-dark: #1e3a5f;
+  --accent: #c84b31;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e5e7eb;
+  --bg: #faf9f7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+.chapter-header { background: linear-gradient(135deg, var(--pmm-dark) 0%, #0f172a 100%); color: white; padding: 3rem 0; }
+.breadcrumb { font-size: 0.85rem; opacity: 0.7; margin-bottom: 1rem; }
+.breadcrumb a { color: white; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.chapter-num { display: inline-block; background: var(--accent); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; margin-bottom: 1rem; }
+.chapter-header h1 { font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 0.75rem; }
+.chapter-header .subtitle { font-size: 1.1rem; opacity: 0.85; }
+.pragmatic { margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 0.9rem; }
+.pragmatic strong { color: var(--accent); }
+
+/* Downloads */
+.downloads { background: white; border: 2px solid var(--pmm-blue); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.download-btn { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; background: #eff6ff; border-radius: 8px; text-decoration: none; color: var(--pmm-dark); font-weight: 600; transition: all 0.2s; }
+.download-btn:hover { background: var(--pmm-blue); color: white; }
+.download-btn .icon { font-size: 1.5rem; }
+.download-btn .info { text-align: left; }
+.download-btn .label { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+.download-btn:hover .label { color: rgba(255,255,255,0.8); }
+@media (max-width: 500px) { .downloads { grid-template-columns: 1fr; } }
+
+/* Content sections */
+.content { padding: 2rem 0; }
+section { margin-bottom: 3rem; }
+h2 { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: var(--pmm-dark); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); }
+h3 { font-size: 1.2rem; color: var(--pmm-dark); margin: 1.5rem 0 0.75rem; }
+p { margin-bottom: 1rem; }
+ul, ol { margin: 1rem 0 1.5rem 1.5rem; }
+li { margin-bottom: 0.5rem; }
+
+/* Callout boxes */
+.callout { padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+.callout.warning { background: #fef2f2; border-left: 4px solid #dc2626; }
+.callout.insight { background: #eff6ff; border-left: 4px solid var(--pmm-blue); }
+.callout.quote { background: #f8fafc; border-left: 4px solid var(--muted); font-style: italic; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-box { background: white; border-radius: 12px; padding: 1.5rem; text-align: center; border: 2px solid var(--border); }
+.stat-box .number { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--pmm-dark); }
+.stat-box .label { font-size: 0.9rem; color: var(--muted); margin-top: 0.25rem; }
+@media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+
+/* Activity Matrix */
+.matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+.matrix-quadrant { background: white; border-radius: 12px; padding: 1.25rem; }
+.matrix-quadrant h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+.matrix-quadrant ul { margin: 0; padding-left: 1.25rem; font-size: 0.9rem; }
+.matrix-quadrant li { margin-bottom: 0.4rem; }
+.q-automate { border: 2px solid #f97316; }
+.q-automate h4 { color: #ea580c; }
+.q-watch { border: 2px solid #eab308; }
+.q-watch h4 { color: #ca8a04; }
+.q-deprioritize { border: 2px solid #94a3b8; }
+.q-deprioritize h4 { color: #64748b; }
+.q-double { border: 2px solid #16a34a; }
+.q-double h4 { color: #15803d; }
+.quadrant-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+.q-automate .quadrant-badge { background: #fff7ed; }
+.q-watch .quadrant-badge { background: #fefce8; }
+.q-deprioritize .quadrant-badge { background: #f1f5f9; }
+.q-double .quadrant-badge { background: #dcfce7; }
+@media (max-width: 600px) { .matrix { grid-template-columns: 1fr; } }
+
+/* Big insight */
+.big-insight { background: linear-gradient(135deg, var(--pmm-dark) 0%, #0f172a 100%); color: white; border-radius: 16px; padding: 2rem; margin: 2rem 0; text-align: center; }
+.big-insight p { font-size: 1.25rem; font-style: italic; max-width: 600px; margin: 0 auto; }
+
+/* Vulnerability table */
+.vuln-table { margin: 2rem 0; overflow-x: auto; }
+.vuln-table table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.vuln-table th { background: var(--pmm-dark); color: white; padding: 0.75rem 1rem; text-align: left; }
+.vuln-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+.vuln-table tr:nth-child(even) { background: #f8fafc; }
+.risk-high { color: #dc2626; font-weight: 600; }
+.risk-med { color: #ca8a04; font-weight: 600; }
+.risk-low { color: #16a34a; font-weight: 600; }
+
+/* Action steps */
+.actions { background: white; border: 2px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+.actions h3 { color: var(--accent); margin-top: 0; border-bottom: none; padding-bottom: 0; }
+.action-item { display: grid; grid-template-columns: 50px 1fr; gap: 1rem; margin: 1.5rem 0; }
+.action-num { width: 40px; height: 40px; background: var(--accent); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.action-content h4 { margin: 0 0 0.5rem; font-size: 1rem; }
+.action-content p { margin: 0; font-size: 0.95rem; color: var(--muted); }
+.action-box { background: #fef3c7; padding: 0.75rem 1rem; border-radius: 6px; margin-top: 0.75rem; font-size: 0.9rem; }
+.action-box strong { color: #92400e; }
+
+/* Takeaways */
+.takeaways { background: var(--pmm-dark); color: white; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+.takeaways h2 { color: white; border-color: var(--accent); }
+.takeaways ul { margin-left: 1.25rem; }
+.takeaways li { margin-bottom: 0.75rem; }
+
+/* Navigation */
+.chapter-nav { display: flex; justify-content: space-between; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 3rem; }
+.nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: white; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text); font-weight: 500; }
+.nav-btn:hover { background: #f8fafc; border-color: var(--pmm-blue); }
+.nav-btn.next { background: var(--pmm-blue); color: white; border-color: var(--pmm-blue); }
+.nav-btn.next:hover { background: #2563eb; }
+
+footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; }
+footer p { opacity: 0.7; font-size: 0.9rem; }
+footer a { color: rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+
+<header class="chapter-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../">← Back to Curriculum</a>
+    </div>
+    <div class="chapter-num">Chapter 2</div>
+    <h1>The Gartner Moment</h1>
+    <p class="subtitle">37 PMM activities evaluated against AI replaceability. Which work to automate, which to watch, and which to double down on.</p>
+    <div class="pragmatic">
+      <strong>Pragmatic Remix:</strong> All 37 Pragmatic Institute PMM Activities • Strategic Planning • Resource Allocation
+    </div>
+  </div>
+</header>
+
+<main class="content">
+  <div class="container">
+    
+    <!-- Downloads -->
+    <div class="downloads">
+      <a href="chapter-02-slides.pptx" class="download-btn" download>
+        <span class="icon">📊</span>
+        <span class="info">
+          <span class="label">Download</span>
+          <br>PowerPoint Deck
+        </span>
+      </a>
+      <a href="chapter-02-whitepaper.pdf" class="download-btn" download>
+        <span class="icon">📄</span>
+        <span class="info">
+          <span class="label">Download</span>
+          <br>PDF Whitepaper
+        </span>
+      </a>
+    </div>
+    
+    <!-- Executive Summary -->
+    <section>
+      <h2>Executive Summary</h2>
+      
+      <p>This chapter introduces the analytical framework for understanding which PMM activities are most vulnerable to AI replacement — and which represent the durable, irreplaceable core of the profession.</p>
+      
+      <div class="callout quote">
+        <p>"The distribution is not random. AI is replacing the work that feels most like work — the volume, the drafts, the research — and leaving intact the work that feels most like thinking."</p>
+        <p style="font-style: normal; margin-top: 1rem;"><strong>— Chris O'Hara</strong></p>
+      </div>
+      
+      <p>Using the Pragmatic Institute framework as a baseline, we evaluated all 37 standard PMM activities against AI replaceability and strategic value. The results reveal a vulnerability paradox: <strong>the activities PMMs spend the most time on are often the most replaceable.</strong></p>
+    </section>
+    
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="number">37</div>
+        <div class="label">PMM activities evaluated</div>
+      </div>
+      <div class="stat-box">
+        <div class="number">53</div>
+        <div class="label">SAP PMMs analyzed</div>
+      </div>
+      <div class="stat-box">
+        <div class="number">4</div>
+        <div class="label">strategic quadrants</div>
+      </div>
+    </div>
+    
+    <!-- The Analysis -->
+    <section>
+      <h2>The Analysis</h2>
+      
+      <p>Every PMM activity was scored on two dimensions:</p>
+      
+      <ul>
+        <li><strong>AI Replaceability (vertical axis):</strong> How likely is this activity to be automated by AI in the next 2-3 years? Based on current capabilities, trajectory, and demonstrated performance.</li>
+        <li><strong>Strategic Value (horizontal axis):</strong> How much does this activity move the needle on outcomes that matter — revenue, win rate, market share, competitive position?</li>
+      </ul>
+      
+      <p>Plotting these two axes produces a matrix that is more diagnostic than either dimension alone. The quadrant labels are <strong>prescriptions, not descriptions</strong>.</p>
+    </section>
+    
+    <!-- The Activity Matrix -->
+    <section>
+      <h2>The PMM Activity Matrix</h2>
+      
+      <div class="matrix">
+        <div class="matrix-quadrant q-automate">
+          <h4><span class="quadrant-badge">AUTOMATE NOW</span> High AI Risk / Low Value</h4>
+          <ul>
+            <li>Blog drafts & ad copy</li>
+            <li>Standard RFP responses</li>
+            <li>Basic comp research</li>
+            <li>Template enablement assets</li>
+            <li>Market sizing models</li>
+          </ul>
+        </div>
+        
+        <div class="matrix-quadrant q-watch">
+          <h4><span class="quadrant-badge">WATCH CLOSELY</span> High AI Risk / High Value</h4>
+          <ul>
+            <li>Win/loss synthesis</li>
+            <li>Analyst briefing prep</li>
+            <li>Launch planning</li>
+            <li>Sales training content</li>
+            <li>Demo scripting</li>
+          </ul>
+        </div>
+        
+        <div class="matrix-quadrant q-deprioritize">
+          <h4><span class="quadrant-badge">DEPRIORITIZE</span> Low AI Risk / Low Value</h4>
+          <ul>
+            <li>PMM ops & reporting</li>
+            <li>Tool management</li>
+            <li>Budget tracking</li>
+            <li>Meeting facilitation</li>
+            <li>Admin & coordination</li>
+          </ul>
+        </div>
+        
+        <div class="matrix-quadrant q-double">
+          <h4><span class="quadrant-badge">DOUBLE DOWN</span> Low AI Risk / High Value</h4>
+          <ul>
+            <li>Narrative architecture</li>
+            <li>Category creation</li>
+            <li>Competitive strategy</li>
+            <li>Executive communication</li>
+            <li>Positioning & GTM design</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="callout warning">
+        <p><strong>The dangerous quadrant is WATCH CLOSELY.</strong> These are high-value activities where AI is rapidly improving. Win/loss synthesis, analyst prep, and launch planning all live here — PMMs rightly invest in them, but they're also where AI capability is advancing fastest.</p>
+      </div>
+    </section>
+    
+    <!-- Big Insight -->
+    <div class="big-insight">
+      <p>"The activities PMMs spend the most time on are disproportionately the most replaceable. The activities they spend the least time on are disproportionately the most durable."</p>
+    </div>
+    
+    <!-- The Vulnerability Paradox -->
+    <section>
+      <h2>The Vulnerability Paradox</h2>
+      
+      <p>When we mapped time allocation against replaceability, a troubling pattern emerged:</p>
+      
+      <div class="vuln-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Activity Category</th>
+              <th>Avg. Time Spent</th>
+              <th>AI Risk</th>
+              <th>Strategic Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Content production (blogs, copy, assets)</td>
+              <td>35%</td>
+              <td class="risk-high">High</td>
+              <td>Medium</td>
+            </tr>
+            <tr>
+              <td>Research & analysis (comp, market, win/loss)</td>
+              <td>25%</td>
+              <td class="risk-high">High</td>
+              <td>High</td>
+            </tr>
+            <tr>
+              <td>Enablement (training, demos, collateral)</td>
+              <td>20%</td>
+              <td class="risk-med">Medium</td>
+              <td>High</td>
+            </tr>
+            <tr>
+              <td>Strategy (positioning, narrative, GTM)</td>
+              <td>12%</td>
+              <td class="risk-low">Low</td>
+              <td>Very High</td>
+            </tr>
+            <tr>
+              <td>Ops & admin</td>
+              <td>8%</td>
+              <td class="risk-low">Low</td>
+              <td>Low</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <p>The implication is stark: PMM orgs are structured around activities that are increasingly automated, while underinvesting in the strategic work that AI cannot replicate.</p>
+    </section>
+    
+    <!-- What This Means -->
+    <section>
+      <h2>What This Means for PMM Leaders</h2>
+      
+      <h3>1. Automate the Automate Now Quadrant — Immediately</h3>
+      <p>If your team is still spending significant hours on blog drafts, basic RFP responses, or template content, you're paying human rates for commodity work. Build the AI workflows now.</p>
+      
+      <h3>2. Build Expertise in Watch Closely Activities</h3>
+      <p>These are high-value activities where AI is getting good but not great. The PMMs who can work <em>with</em> AI on win/loss synthesis, launch planning, and analyst prep will outperform both pure-human and pure-AI approaches.</p>
+      
+      <h3>3. Deprioritize the Deprioritize Quadrant</h3>
+      <p>Ops and admin work that isn't being automated is just... still there. Minimize it. Don't let it consume strategic capacity.</p>
+      
+      <h3>4. Double Down on What AI Can't Do</h3>
+      <p>Narrative architecture, category creation, competitive strategy, executive communication — these are the irreplaceable activities. If your team isn't spending more time here, restructure until they are.</p>
+    </section>
+    
+    <!-- Action Steps -->
+    <section>
+      <div class="actions">
+        <h3>Action Steps</h3>
+        
+        <div class="action-item">
+          <div class="action-num">01</div>
+          <div class="action-content">
+            <h4>Map Your Team's Time Allocation</h4>
+            <p>Have each PMM estimate how they spend their hours across the four quadrants. Compare the aggregate to the strategic ideal.</p>
+            <div class="action-box">
+              <strong>Action →</strong> Create a simple survey: "What percentage of your time goes to content production, research, enablement, strategy, and ops?" Analyze the gap.
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-item">
+          <div class="action-num">02</div>
+          <div class="action-content">
+            <h4>Identify Your Top 3 Automation Targets</h4>
+            <p>Which "Automate Now" activities are consuming the most hours on your team? Build AI workflows for these first.</p>
+            <div class="action-box">
+              <strong>Action →</strong> Pick three activities from the Automate Now quadrant. Assign ownership for building AI workflows within 30 days.
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-item">
+          <div class="action-num">03</div>
+          <div class="action-content">
+            <h4>Protect Strategic Time</h4>
+            <p>Block time for Double Down activities. If it's not on the calendar, it won't happen.</p>
+            <div class="action-box">
+              <strong>Action →</strong> Institute "Strategy Fridays" or equivalent — protected time for narrative architecture, positioning work, and competitive strategy.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Key Takeaways -->
+    <div class="takeaways">
+      <h2>Chapter Takeaways</h2>
+      <ul>
+        <li><strong>37 PMM activities were evaluated</strong> against AI replaceability and strategic value, producing a 2x2 matrix with four prescriptive quadrants.</li>
+        <li><strong>The Vulnerability Paradox:</strong> PMMs spend the most time on the most replaceable activities, and the least time on the most durable ones.</li>
+        <li><strong>AI is replacing "work that feels like work"</strong> — the volume, the drafts, the research — and leaving intact "work that feels like thinking."</li>
+        <li><strong>The four prescriptions:</strong> Automate Now (commodity content), Watch Closely (high-value/high-risk), Deprioritize (low-value ops), Double Down (irreplaceable strategy).</li>
+        <li><strong>Org restructuring is required.</strong> Teams built around content production will need to shift capacity toward narrative architecture and competitive strategy.</li>
+      </ul>
+    </div>
+    
+    <!-- Quiz CTA -->
+    <div class="quiz-cta" style="background: linear-gradient(135deg, var(--pmm-blue) 0%, #1d4ed8 100%); border-radius: 16px; padding: 2.5rem; text-align: center; margin: 3rem 0; color: white;">
+      <h2 style="font-family: 'Playfair Display', serif; font-size: 1.75rem; margin-bottom: 0.75rem; color: white; border: none; padding: 0;">📝 Ready to Test Your Knowledge?</h2>
+      <p style="opacity: 0.9; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">Take the 10-question comprehension quiz to assess your understanding of Chapter 2. Get instant feedback and a personalized assessment.</p>
+      <a href="quiz.html" style="display: inline-block; background: white; color: var(--pmm-blue); padding: 1rem 2rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.1rem;">Start Chapter 2 Quiz →</a>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="chapter-nav">
+      <a href="../chapter-01/" class="nav-btn">← Chapter 1: Your Buyer Hired an Agent</a>
+      <a href="../chapter-03/" class="nav-btn next">Chapter 3: The Six Percent Problem →</a>
+    </nav>
+    
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong>The Future of Product Marketing</strong> — Chris O'Hara</p>
+    <p style="margin-top: 0.5rem;"><a href="../../index.html">futureofpmm.com</a> · <a href="../../newsletters.html">Newsletter</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
