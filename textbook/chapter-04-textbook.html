@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 4: The Full Stack PMM</title>
+<style>
+@page {
+  size: letter;
+  margin: 1in 1.25in;
+  @top-center {
+    content: "The Future of Product Marketing";
+    font-family: Georgia, serif;
+    font-size: 9pt;
+    color: #666;
+  }
+  @bottom-center {
+    content: counter(page);
+    font-family: Georgia, serif;
+    font-size: 9pt;
+  }
+  @bottom-right {
+    content: "Chapter 4";
+    font-family: Georgia, serif;
+    font-size: 9pt;
+    color: #666;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #1a1a1a;
+  max-width: 6.5in;
+  margin: 0 auto;
+  padding: 0.5in;
+}
+
+/* Chapter opener */
+.chapter-opener {
+  text-align: center;
+  margin-bottom: 2em;
+  padding-bottom: 1.5em;
+  border-bottom: 1px solid #ccc;
+}
+
+.chapter-num {
+  font-size: 14pt;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 28pt;
+  font-weight: normal;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 12pt;
+  font-style: italic;
+  color: #555;
+}
+
+/* Headings */
+h2 {
+  font-size: 16pt;
+  font-weight: normal;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.25em;
+}
+
+h3 {
+  font-size: 13pt;
+  font-weight: bold;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+/* Body text */
+p {
+  margin-bottom: 0.75em;
+  text-align: justify;
+  text-indent: 1.5em;
+}
+
+p:first-of-type,
+h2 + p,
+h3 + p,
+.figure + p,
+.callout + p,
+blockquote + p {
+  text-indent: 0;
+}
+
+/* Blockquotes / Pull quotes */
+blockquote {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background: #f5f5f5;
+  border-left: 3px solid #333;
+  font-style: italic;
+}
+
+blockquote p {
+  text-indent: 0;
+  margin-bottom: 0;
+}
+
+/* Figures */
+.figure {
+  margin: 1.5em 0;
+  padding: 1em;
+  background: #fafafa;
+  border: 1px solid #ddd;
+}
+
+.figure-title {
+  font-weight: bold;
+  font-size: 10pt;
+  margin-bottom: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.figure-content {
+  margin-bottom: 0.75em;
+}
+
+.figure-caption {
+  font-size: 9pt;
+  font-style: italic;
+  color: #555;
+  text-align: center;
+}
+
+/* Comparison boxes */
+.comparison {
+  display: table;
+  width: 100%;
+  margin: 1.5em 0;
+  border: 1px solid #ccc;
+}
+
+.comparison-col {
+  display: table-cell;
+  width: 50%;
+  padding: 1em;
+  vertical-align: top;
+}
+
+.comparison-col:first-child {
+  border-right: 1px solid #ccc;
+  background: #fafafa;
+}
+
+.comparison-col h4 {
+  font-size: 11pt;
+  margin-bottom: 0.75em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #ddd;
+}
+
+.comparison-col ul {
+  margin-left: 1.25em;
+  font-size: 10pt;
+}
+
+.comparison-col li {
+  margin-bottom: 0.35em;
+}
+
+/* Matrix / Grid */
+.matrix {
+  margin: 1.5em 0;
+  border: 1px solid #ccc;
+}
+
+.matrix-row {
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+
+.matrix-row:last-child {
+  border-bottom: none;
+}
+
+.matrix-cell {
+  display: table-cell;
+  width: 50%;
+  padding: 0.75em;
+  vertical-align: top;
+  font-size: 10pt;
+}
+
+.matrix-cell:first-child {
+  border-right: 1px solid #ddd;
+  background: #f9f9f9;
+}
+
+.matrix-cell strong {
+  display: block;
+  margin-bottom: 0.25em;
+}
+
+/* Callout boxes */
+.callout {
+  margin: 1.5em 0;
+  padding: 1em;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+.callout-label {
+  font-size: 9pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5em;
+  color: #555;
+}
+
+.callout p {
+  text-indent: 0;
+  margin-bottom: 0;
+  font-size: 10pt;
+}
+
+/* Stack diagram */
+.stack {
+  margin: 1.5em 0;
+}
+
+.stack-layer {
+  padding: 0.75em 1em;
+  margin-bottom: 0.5em;
+  border: 1px solid #999;
+  background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
+}
+
+.stack-layer.top {
+  background: linear-gradient(to bottom, #e0e0e0, #ccc);
+}
+
+.stack-layer.middle {
+  background: linear-gradient(to bottom, #eee, #ddd);
+}
+
+.stack-layer-title {
+  font-weight: bold;
+  font-size: 10pt;
+  margin-bottom: 0.25em;
+}
+
+.stack-layer-desc {
+  font-size: 9pt;
+  color: #444;
+}
+
+/* T-shape diagram */
+.t-shape-diagram {
+  margin: 1.5em auto;
+  text-align: center;
+}
+
+.t-horizontal {
+  background: #333;
+  color: white;
+  padding: 0.75em;
+  font-size: 10pt;
+  margin-bottom: 0;
+}
+
+.t-vertical {
+  background: #666;
+  color: white;
+  width: 60%;
+  margin: 0 auto;
+  padding: 2em 1em;
+  font-size: 10pt;
+}
+
+/* Lists */
+ul, ol {
+  margin: 0.75em 0 0.75em 2em;
+}
+
+li {
+  margin-bottom: 0.35em;
+}
+
+/* Action steps */
+.action-steps {
+  margin: 1.5em 0;
+}
+
+.action-step {
+  margin-bottom: 1em;
+  padding-left: 2.5em;
+  position: relative;
+}
+
+.action-step-num {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.75em;
+  height: 1.75em;
+  background: #333;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.75em;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+.action-step h4 {
+  font-size: 11pt;
+  margin-bottom: 0.25em;
+}
+
+.action-step p {
+  text-indent: 0;
+  font-size: 10pt;
+  margin-bottom: 0;
+}
+
+/* Key takeaways */
+.takeaways {
+  margin: 2em 0;
+  padding: 1em;
+  border: 2px solid #333;
+}
+
+.takeaways h3 {
+  margin-top: 0;
+  font-size: 12pt;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.takeaways ul {
+  margin-bottom: 0;
+}
+
+.takeaways li {
+  font-size: 10pt;
+}
+
+/* Page breaks */
+.page-break {
+  page-break-before: always;
+}
+</style>
+</head>
+<body>
+
+<div class="chapter-opener">
+  <div class="chapter-num">Chapter Four</div>
+  <h1>The Full Stack PMM</h1>
+  <p class="subtitle">What separates the PMMs who compound from those who just keep up</p>
+</div>
+
+<blockquote>
+  <p>"The Full Stack PMM is not a generalist with tools. They are a deep specialist who has extended their reach using AI—and redesigned their day around the difference."</p>
+</blockquote>
+
+<p>This chapter defines the Full Stack PMM—the profile that compounds quarter over quarter while others plateau. It's not about learning more tools. It's about combining deep craft expertise with AI-enabled horizontal reach.</p>
+
+<p>Most PMMs fall into one of two traps: deep expertise without AI leverage, or broad tool fluency without genuine craft. The Full Stack PMM escapes both—and the gap widens every quarter.</p>
+
+<div class="callout">
+  <div class="callout-label">Key Insight</div>
+  <p>Time spent on narrative and positioning work doubles when PMMs redesign their workflow around AI. The commodity work drops from approximately 50% to approximately 10% of total effort.</p>
+</div>
+
+<h2>The Problem</h2>
+
+<p>There are two ways to fail as a PMM in the AI era, and both are more common than they should be.</p>
+
+<div class="comparison">
+  <div class="comparison-col">
+    <h4>The Pure Specialist</h4>
+    <p style="text-indent:0; font-size:10pt;">Deep expertise, no AI leverage. Knows the domain cold but every deliverable still moves at human speed. AI makes this profile less competitive over time.</p>
+  </div>
+  <div class="comparison-col">
+    <h4>The AI Generalist</h4>
+    <p style="text-indent:0; font-size:10pt;">Broad tool fluency, shallow craft. Impressive personal stack, but actual domain expertise is thin. AI amplifies what you bring—if what you bring is generic, AI makes you generically faster.</p>
+  </div>
+</div>
+
+<p>The two traps are mirrors of each other. Pure Specialists have depth but not leverage. AI Generalists have leverage but not depth. The Full Stack PMM escapes both.</p>
+
+<h2>The Full Stack PMM T-Shape</h2>
+
+<p>The T-shape describes deep expertise in core PMM craft (the vertical), extended by AI across five adjacent functions (the horizontal).</p>
+
+<div class="figure">
+  <div class="figure-title">Figure 4.1: The Full Stack PMM T-Shape</div>
+  <div class="t-shape-diagram">
+    <div class="t-horizontal">
+      AI-ENABLED HORIZONTAL REACH<br>
+      <span style="font-size:9pt;">Research & Intelligence · Content Production · Demo & Enablement · Data & Analytics · Comms & Distribution</span>
+    </div>
+    <div class="t-vertical">
+      DEEP PMM CRAFT<br>
+      <span style="font-size:9pt;">(Irreplaceable)</span><br><br>
+      Positioning · Competitive Intel<br>
+      Narrative · Category Design
+    </div>
+  </div>
+  <div class="figure-caption">The horizontal breadth is achieved by deploying AI agents across five adjacent functions. The vertical depth is where irreplaceable value lives.</div>
+</div>
+
+<p>The Full Stack PMM directs the horizontal and owns the vertical. The horizontal breadth is achieved by deploying AI agents across five adjacent functions. The vertical depth is where irreplaceable value lives—positioning, competitive intelligence, narrative construction, and category design.</p>
+
+<h2>The AI-Enabled Workflow</h2>
+
+<p>The gap between the PMM doing work the old way and the one who has redesigned around AI is most visible in how the day is allocated—not the tools they use.</p>
+
+<div class="figure">
+  <div class="figure-title">Figure 4.2: Daily Time Allocation Comparison</div>
+  <div class="comparison" style="border:none; margin:0;">
+    <div class="comparison-col" style="background:#f5f5f5;">
+      <h4>Before: Traditional PMM Day</h4>
+      <ul>
+        <li>50% — Commodity execution (first drafts, research compilation)</li>
+        <li>30% — Competitive intel & analysis</li>
+        <li>15% — Internal meetings</li>
+        <li>5% — Strategic work</li>
+      </ul>
+    </div>
+    <div class="comparison-col" style="background:#fff;">
+      <h4>After: Full Stack PMM Day</h4>
+      <ul>
+        <li>10% — AI-supervised execution</li>
+        <li>22% — Research & synthesis</li>
+        <li>28% — Narrative & positioning</li>
+        <li>25% — Strategic & exec work</li>
+        <li>15% — Stack management</li>
+      </ul>
+    </div>
+  </div>
+  <div class="figure-caption">The most counterintuitive finding: Full Stack PMMs spend more time on positioning and narrative than before, not less.</div>
+</div>
+
+<p>The commodity production work was consuming time they should have spent thinking through the story. AI gave them that time back.</p>
+
+<h2>The Depth/Breadth Matrix</h2>
+
+<p>Four profiles exist in every PMM organization. The dynamics determine which ones compound over time and which ones fall behind.</p>
+
+<div class="figure">
+  <div class="figure-title">Figure 4.3: The Depth/Breadth Matrix</div>
+  <div class="matrix">
+    <div class="matrix-row">
+      <div class="matrix-cell">
+        <strong>❌ Obsolete</strong>
+        Neither deep craft nor AI leverage. Being replaced.
+      </div>
+      <div class="matrix-cell">
+        <strong>⚠️ Generalist</strong>
+        Broad tools, shallow craft. At risk from better-tooled specialists.
+      </div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">
+        <strong>📚 Specialist</strong>
+        Deep craft, no AI leverage. Progressively slower than peers.
+      </div>
+      <div class="matrix-cell">
+        <strong>⭐ Full Stack PMM</strong>
+        Deep craft + AI-extended reach. Compounds quarter over quarter.
+      </div>
+    </div>
+  </div>
+  <div class="figure-caption">Most PMMs sit in the bottom two quadrants. The destination is Full Stack. The risk is ending up Obsolete before you know it.</div>
+</div>
+
+<p>Most PMMs sit in the bottom two: Specialist (deep but slow) or Generalist (fast but shallow). Both are viable in the short term. Neither compounds. The destination is Full Stack.</p>
+
+<h2>The Stack Architecture</h2>
+
+<p>The Full Stack PMM operates across three layers, each with distinct relationships to judgment:</p>
+
+<div class="figure">
+  <div class="figure-title">Figure 4.4: The Three-Layer Stack Architecture</div>
+  <div class="stack">
+    <div class="stack-layer top">
+      <div class="stack-layer-title">Layer 3: Output (Judgment)</div>
+      <div class="stack-layer-desc">What the market sees. Human judgment owns this entirely. Positioning docs, competitive battlecards, launch assets, category POVs, executive narratives.</div>
+    </div>
+    <div class="stack-layer middle">
+      <div class="stack-layer-title">Layer 2: Specialist (Intelligence)</div>
+      <div class="stack-layer-desc">Domain intelligence and synthesis. Agents produce raw material; PMM directs, filters, interprets. Win/loss analysis, competitor monitoring, voice-of-customer synthesis, market trend analysis.</div>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-title">Layer 1: Core AI (Velocity)</div>
+      <div class="stack-layer-desc">Automation and velocity. Fully AI-executed; PMM sets standards. Format conversion, research aggregation, first-draft generation, prompt library maintenance.</div>
+    </div>
+  </div>
+  <div class="figure-caption">The judgment loop is the compounding mechanism. When a PMM reviews output and decides it's not sharp enough, that judgment feeds back into the prompts and frameworks governing the Specialist Layer.</div>
+</div>
+
+<p>Over time, the stack gets better because the PMM keeps improving the judgment loop.</p>
+
+<h2>The Three Moves</h2>
+
+<p>The transition to Full Stack is three sequential moves. The order matters: building the stack creates time for rebuilding the story, and the story work clarifies which skills are worth investing in.</p>
+
+<div class="action-steps">
+  <div class="action-step">
+    <div class="action-step-num">1</div>
+    <h4>Build Your Stack</h4>
+    <p>Identify your highest-volume commodity tasks and build agent workflows for them. Not one grand AI strategy—five specific workflows that run without you. The stack is not a tool list; it's a set of running processes.</p>
+  </div>
+  
+  <div class="action-step">
+    <div class="action-step-num">2</div>
+    <h4>Rebuild Your Story</h4>
+    <p>Revisit every major positioning claim and ask whether it is true, specific, and differentiated enough. This is the work that becomes possible when the stack is running. Sharp positioning, cleaner category narratives, more specific competitive differentiation.</p>
+  </div>
+  
+  <div class="action-step">
+    <div class="action-step-num">3</div>
+    <h4>Rebuild Your Skills</h4>
+    <p>The craft skills that matter most are not the ones AI can replicate—they're the ones AI makes more valuable. Deep competitive analysis, category narrative construction, executive-level positioning judgment. These are the multipliers.</p>
+  </div>
+</div>
+
+<h2>Why the Full Stack PMM Compounds</h2>
+
+<p>A PMM who builds a good stack and invests the recovered time in genuine craft development doesn't just get incrementally better—they get better in a way that improves the stack, which frees more time, which enables better craft development, which improves the stack further.</p>
+
+<blockquote>
+  <p>"The Full Stack PMM is not a destination you arrive at. It is a set of decisions you make—about what to automate, what to protect, what to get better at—and the compounding starts the moment you make the first one."</p>
+</blockquote>
+
+<p>The PMMs who start this sequence now will not be caught up to later—because by the time others start, the compound effect will have moved the target.</p>
+
+<div class="takeaways">
+  <h3>Key Takeaways</h3>
+  <ul>
+    <li><strong>The Full Stack PMM is not a generalist with tools</strong>—it's a deep specialist with AI-extended horizontal reach. The depth is irreplaceable; the horizontal is AI-enabled.</li>
+    <li><strong>The AI-Enabled Workflow reallocates the same eight hours:</strong> commodity execution drops from ~50% to ~10%. Narrative and strategic work doubles.</li>
+    <li><strong>The Depth/Breadth Matrix has four profiles.</strong> Most PMMs are Specialists or Generalists. The destination is Full Stack. The risk is ending up Obsolete.</li>
+    <li><strong>The Stack Architecture has three layers</strong>—Core AI (velocity), Specialist (intelligence), Output (judgment). The judgment loop ties them together and improves them over time.</li>
+    <li><strong>The three moves:</strong> Build Your Stack. Rebuild Your Story. Rebuild Your Skills. In that order, for that reason.</li>
+  </ul>
+</div>
+
+</body>
+</html>
