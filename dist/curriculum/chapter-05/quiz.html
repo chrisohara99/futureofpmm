@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Why Stories Still Win | Chapter 5</title>
+    <meta name="description" content="Test your understanding of the Narrative Architecture, Story Quality Spectrum, and Resonance Test from Chapter 5.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        
+        .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 1rem 2rem; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: 700; text-decoration: none; color: white; }
+        .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; margin-left: 2rem; }
+        
+        .quiz-header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .quiz-header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .quiz-header h1 span { color: #e67e22; }
+        .quiz-header p { color: rgba(255,255,255,0.8); font-size: 1.1rem; }
+        
+        .quiz-container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        
+        .progress-bar { background: #e9ecef; border-radius: 10px; height: 8px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, #e67e22 0%, #f39c12 100%); height: 100%; border-radius: 10px; transition: width 0.3s ease; }
+        .progress-text { text-align: center; color: #6c757d; font-size: 0.9rem; margin-bottom: 1rem; }
+        
+        .question-card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .question-number { background: #e67e22; color: white; display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
+        .question-text { font-size: 1.2rem; font-weight: 600; color: #1a1a2e; margin-bottom: 1.5rem; }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 2px solid #e9ecef; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: #e67e22; background: #fff8f0; }
+        .option.selected { border-color: #e67e22; background: #fff8f0; }
+        .option.correct { border-color: #198754; background: #d1e7dd; }
+        .option.incorrect { border-color: #dc3545; background: #f8d7da; }
+        .option input { margin-top: 0.2rem; accent-color: #e67e22; }
+        .option label { cursor: pointer; flex: 1; }
+        
+        .explanation { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; }
+        .explanation.show { display: block; }
+        .explanation.correct { background: #d1e7dd; border-left: 4px solid #198754; }
+        .explanation.incorrect { background: #f8d7da; border-left: 4px solid #dc3545; }
+        
+        .quiz-actions { text-align: center; margin: 2rem 0; }
+        .btn { display: inline-block; padding: 1rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; font-size: 1rem; transition: all 0.2s; }
+        .btn-primary { background: #e67e22; color: white; }
+        .btn-primary:hover { background: #d35400; }
+        .btn-secondary { background: #6c757d; color: white; margin-left: 1rem; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn:disabled { background: #adb5bd; cursor: not-allowed; }
+        
+        .results { background: white; border-radius: 12px; padding: 2rem; text-align: center; display: none; }
+        .results.show { display: block; }
+        .results h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .score { font-size: 4rem; font-weight: 800; color: #e67e22; }
+        .score-label { color: #6c757d; margin-bottom: 1.5rem; }
+        .results-message { font-size: 1.1rem; color: #495057; margin-bottom: 2rem; }
+        
+        .nav-buttons { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        .nav-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .nav-btn.chapter { background: #1a1a2e; color: white; }
+        .nav-btn.next { background: #198754; color: white; }
+        
+        .footer { text-align: center; padding: 2rem; color: #6c757d; }
+        .footer a { color: #e67e22; text-decoration: none; }
+        
+        @media (max-width: 600px) {
+            .quiz-header h1 { font-size: 1.75rem; }
+            .question-text { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">The Future of Product Marketing</a>
+            <nav>
+                <a href="/curriculum/" class="nav-link">Curriculum</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="quiz-header">
+        <h1>Chapter 5 <span>Quiz</span></h1>
+        <p>Why Stories Still Win — Test your understanding</p>
+    </div>
+
+    <div class="quiz-container">
+        <div class="progress-text">Question <span id="currentQ">1</span> of <span id="totalQ">10</span></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="quiz-actions">
+            <button class="btn btn-primary" id="checkBtn" onclick="checkAnswer()">Check Answer</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+            <button class="btn btn-primary" id="finishBtn" onclick="showResults()" style="display: none;">See Results</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Quiz Complete!</h2>
+            <div class="score" id="finalScore">0/10</div>
+            <div class="score-label">Correct Answers</div>
+            <div class="results-message" id="resultsMessage"></div>
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn chapter">📖 Review Chapter</a>
+                <a href="../chapter-06/" class="nav-btn next">Next Chapter →</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p><a href="/curriculum/">← Back to Curriculum</a></p>
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                question: "According to Chapter 5, what has AI done to storytelling in product marketing?",
+                options: [
+                    "Made storytelling completely obsolete",
+                    "Made mediocre storytelling worthless while premium shifts to specific, true stories",
+                    "Replaced the need for human PMMs in narrative creation",
+                    "Made all content equally valuable regardless of specificity"
+                ],
+                correct: 1,
+                explanation: "AI has not made storytelling obsolete — it has made mediocre storytelling worthless. When any PMM can produce a competent first draft in seconds, the competitive premium shifts entirely to what AI cannot do: the specific story, named protagonist, and verifiable numbers."
+            },
+            {
+                question: "What are the three layers of the Narrative Architecture?",
+                options: [
+                    "Introduction, Body, Conclusion",
+                    "Problem, Solution, Results",
+                    "Insight, Problem, Resolution",
+                    "Awareness, Consideration, Decision"
+                ],
+                correct: 2,
+                explanation: "The Narrative Architecture has three layers: 1) Insight (what is true about the world right now), 2) Problem (what that means for a buyer like this one), and 3) Resolution (why your product is the inevitable answer). AI can assist at each layer, but the PMM owns the interpretive judgment."
+            },
+            {
+                question: "In the Story Quality Spectrum, which zones are considered 'Human Territory' that AI cannot access?",
+                options: [
+                    "Generic and Informed",
+                    "Informed and Contextualized",
+                    "Contextualized and Specific",
+                    "Specific and Resonant"
+                ],
+                correct: 3,
+                explanation: "Specific and Resonant are Human Territory. These zones require inputs AI doesn't have: actual customer names, verifiable numbers from real data pulls, and the arc that changes how buyers see themselves. The Resonant zone especially requires genuine conviction that no prompt can manufacture."
+            },
+            {
+                question: "What is the 'noise floor problem' described in Chapter 5?",
+                options: [
+                    "AI tools make too much noise during content generation",
+                    "Buyers can no longer distinguish between vendors due to elevated baseline of competent, interchangeable AI content",
+                    "PMMs are creating too many assets for buyers to process",
+                    "Audio quality in sales calls has decreased"
+                ],
+                correct: 1,
+                explanation: "The noise floor has risen because buyers are also operating in an AI-saturated environment. Their inboxes, feeds, and vendor touchpoints all run at the same elevated baseline of competent, fluent, largely interchangeable content. What used to stand out (well-crafted positioning) is now table stakes."
+            },
+            {
+                question: "The Story Library model cascades one core narrative into how many asset families across how many buyer audiences?",
+                options: [
+                    "3 asset families across 2 audiences",
+                    "4 asset families across 4 audiences",
+                    "6 asset families across 3 audiences",
+                    "5 asset families across 5 audiences"
+                ],
+                correct: 2,
+                explanation: "The Story Library cascades one core narrative into six asset families (Positioning & Narrative, Sales Enablement, Competitive Battlecards, Demo Scripts, Content & GEO, Analyst Briefings) across three buyer audiences (Exec/Economic Buyer, Champion/Practitioner, Technical Evaluator)."
+            },
+            {
+                question: "What is the fourth and most frequently violated criterion of the Resonance Test?",
+                options: [
+                    "Is there a named protagonist?",
+                    "Is there a specific, verifiable number?",
+                    "Does the resolution change the protagonist's identity?",
+                    "Would only YOU tell this story?"
+                ],
+                correct: 3,
+                explanation: "'Would only YOU tell this story?' is the fourth criterion and the most frequently violated. Category-level content is the natural output of AI trained on industry data. The test forces PMMs to ask what is genuinely proprietary about their version of the story."
+            },
+            {
+                question: "According to the chapter, what should come first when building content with AI?",
+                options: [
+                    "Generate AI drafts, then edit for specificity",
+                    "Build the core narrative first, then scale with AI second",
+                    "Use AI to research, then write manually",
+                    "Let AI handle all content, then review for accuracy"
+                ],
+                correct: 1,
+                explanation: "Build the core narrative first. Scale with AI second. The PMMs who reverse this order produce more content that says less. The core is not a prompt — it is a judgment call about which version of the truth is worth telling. Never reverse the order."
+            },
+            {
+                question: "What distinguishes a 'moment' from a 'case study' in the Story Library context?",
+                options: [
+                    "Moments are shorter than case studies",
+                    "Moments have specific conversations, metrics, and before-and-after that real customers can verify",
+                    "Case studies require more graphics and design",
+                    "Moments are only for internal use"
+                ],
+                correct: 1,
+                explanation: "The difference between a case study and a story is the difference between a category description and a character who changes. Moments capture the specific conversation, the specific metric, the specific before-and-after that a real customer can verify. AI can scale the story once you have the moment, but cannot manufacture it."
+            },
+            {
+                question: "What should PMMs 'protect from AI' according to the Three Moves framework?",
+                options: [
+                    "Customer data and privacy information",
+                    "The narrative architecture (insight, problem framing, resolution arc)",
+                    "Competitive intelligence and market research",
+                    "Budget allocation and resource planning"
+                ],
+                correct: 1,
+                explanation: "Protect the narrative layer from AI. Let AI draft content, build assets, and scale distribution — but own the narrative architecture yourself. The insight, problem framing, and resolution arc require accumulated domain knowledge and contextual sensitivity that foundation models don't replicate."
+            },
+            {
+                question: "Why does the chapter say the time to build a Story Library is 'before you need it'?",
+                options: [
+                    "Because AI tools will become unavailable in the future",
+                    "Because budgets are easier to secure in advance",
+                    "Because the repository of specific, customer-sourced material compounds over time and competitors cannot copy it",
+                    "Because marketing teams have more free time in off-seasons"
+                ],
+                correct: 2,
+                explanation: "The advantage is the repository of specific, verified, customer-sourced story material that no AI tool can generate and no competitor can copy. That repository takes time to build. Every PMM will have equivalent AI tools in 18 months — the differentiator is the raw material collected now."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function renderQuestion() {
+            const container = document.getElementById('questionsContainer');
+            const q = questions[currentQuestion];
+            
+            let optionsHTML = q.options.map((opt, idx) => `
+                <div class="option" onclick="selectOption(${idx})">
+                    <input type="radio" name="q${currentQuestion}" id="opt${idx}" value="${idx}">
+                    <label for="opt${idx}">${opt}</label>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `
+                <div class="question-card">
+                    <span class="question-number">Question ${currentQuestion + 1}</span>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options" id="options">${optionsHTML}</div>
+                    <div class="explanation" id="explanation">${q.explanation}</div>
+                </div>
+            `;
+            
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressFill').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            
+            document.getElementById('checkBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('finishBtn').style.display = 'none';
+            answered = false;
+        }
+
+        function selectOption(idx) {
+            if (answered) return;
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option')[idx].classList.add('selected');
+            document.querySelector(`#opt${idx}`).checked = true;
+        }
+
+        function checkAnswer() {
+            const selected = document.querySelector('input[name="q' + currentQuestion + '"]:checked');
+            if (!selected) return;
+            
+            answered = true;
+            const selectedIdx = parseInt(selected.value);
+            const correct = questions[currentQuestion].correct;
+            const options = document.querySelectorAll('.option');
+            
+            options[selectedIdx].classList.add(selectedIdx === correct ? 'correct' : 'incorrect');
+            if (selectedIdx !== correct) {
+                options[correct].classList.add('correct');
+            } else {
+                score++;
+            }
+            
+            const explanation = document.getElementById('explanation');
+            explanation.classList.add('show', selectedIdx === correct ? 'correct' : 'incorrect');
+            
+            document.getElementById('checkBtn').style.display = 'none';
+            if (currentQuestion < questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('finishBtn').style.display = 'inline-block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            renderQuestion();
+        }
+
+        function showResults() {
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.quiz-actions').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.progress-text').style.display = 'none';
+            
+            const results = document.getElementById('results');
+            results.classList.add('show');
+            document.getElementById('finalScore').textContent = score + '/' + questions.length;
+            
+            let message = '';
+            const pct = score / questions.length;
+            if (pct === 1) message = "Perfect score! You've mastered the art of stories that cut through the noise. Your narratives will resonate.";
+            else if (pct >= 0.8) message = "Excellent! You understand why specific, true stories win in an AI-saturated world.";
+            else if (pct >= 0.6) message = "Good foundation! Review the Resonance Test and Story Library to strengthen your narrative architecture.";
+            else message = "Time to revisit Chapter 5. Focus on the Story Quality Spectrum and what makes Human Territory different from AI Territory.";
+            
+            document.getElementById('resultsMessage').textContent = message;
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
