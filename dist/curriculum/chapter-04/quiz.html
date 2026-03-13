@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 Quiz: The Full Stack PMM | The Future of PMM</title>
+    <meta name="description" content="Test your understanding of Chapter 4: The Full Stack PMM">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        
+        nav {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(200, 75, 49, 0.2);
+        }
+        
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #c84b31;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: #c84b31; }
+        
+        .quiz-header {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+        
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quiz-header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .question {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-number {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #c84b31;
+            letter-spacing: 2px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .question-text {
+            font-size: 1.15rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background: rgba(200, 75, 49, 0.1);
+            border-color: rgba(200, 75, 49, 0.3);
+        }
+        
+        .option.selected {
+            background: rgba(200, 75, 49, 0.15);
+            border-color: #c84b31;
+        }
+        
+        .option.correct {
+            background: rgba(39, 174, 96, 0.2);
+            border-color: #27ae60;
+        }
+        
+        .option.incorrect {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+        
+        .option input {
+            display: none;
+        }
+        
+        .option-marker {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        
+        .option.selected .option-marker {
+            background: #c84b31;
+            border-color: #c84b31;
+            color: #ffffff;
+        }
+        
+        .option.correct .option-marker {
+            background: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .option.incorrect .option-marker {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        
+        .option-text {
+            flex: 1;
+            color: #c0c0c0;
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .submit-btn {
+            background: #c84b31;
+            color: #ffffff;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-family: inherit;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #a33d28;
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .results.show { display: block; }
+        
+        .score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #c84b31;
+            margin-bottom: 0.5rem;
+        }
+        
+        .score-label {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feedback {
+            font-size: 1.1rem;
+            color: #c0c0c0;
+            padding: 1rem;
+            background: rgba(200, 75, 49, 0.1);
+            border-radius: 8px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-buttons a {
+            color: #c84b31;
+            text-decoration: none;
+        }
+        
+        .nav-buttons a:hover { text-decoration: underline; }
+        
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #606060;
+            font-size: 0.9rem;
+        }
+        
+        footer a { color: #c84b31; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">The Future of PMM</a>
+        <ul class="nav-links">
+            <li><a href="/curriculum/">Curriculum</a></li>
+            <li><a href="/blog.html">Articles</a></li>
+            <li><a href="/newsletters.html">Newsletter</a></li>
+        </ul>
+    </nav>
+    
+    <header class="quiz-header">
+        <h1>Chapter 4 Quiz</h1>
+        <p>The Full Stack PMM — Test your understanding</p>
+    </header>
+    
+    <main class="quiz-container">
+        <div class="results" id="results">
+            <div class="score" id="score">0/10</div>
+            <div class="score-label">Questions Correct</div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+        
+        <form id="quiz-form">
+            <div class="question" data-correct="c">
+                <div class="question-number">QUESTION 01</div>
+                <div class="question-text">What is the defining characteristic of a Full Stack PMM?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">They use the most AI tools on their team</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">They are generalists who know a little about everything</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">They are deep specialists who have extended their reach using AI</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">They produce the most content output per week</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="b">
+                <div class="question-number">QUESTION 02</div>
+                <div class="question-text">According to the T-Shape model, what represents the "vertical" that is irreplaceable?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">Content production and format conversion</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">Positioning, competitive intelligence, narrative, and category design</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">Research aggregation and first-draft generation</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">Demo preparation and enablement materials</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="a">
+                <div class="question-number">QUESTION 03</div>
+                <div class="question-text">In the AI-Enabled Workflow, what happens to commodity execution time?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">It drops from ~50% to ~10% of the workday</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">It increases because more output is produced</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">It stays the same but quality improves</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">It is completely eliminated</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="d">
+                <div class="question-number">QUESTION 04</div>
+                <div class="question-text">What is the most counterintuitive finding about Full Stack PMMs and narrative/positioning time?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">They spend less time on it because AI handles it</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">They eliminate narrative work entirely</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">They delegate it to junior team members</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">They spend MORE time on it than before AI freed up their capacity</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="c">
+                <div class="question-number">QUESTION 05</div>
+                <div class="question-text">In the Depth/Breadth Matrix, what characterizes the "Generalist" profile?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">Deep craft expertise with no AI leverage</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">Deep craft expertise with AI-extended reach</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">Broad AI tools but shallow domain craft</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">Neither deep craft nor AI leverage</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="b">
+                <div class="question-number">QUESTION 06</div>
+                <div class="question-text">What are the three layers in the Stack Architecture?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">Strategy, Tactics, Operations</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">Core AI (Velocity), Specialist (Intelligence), Output (Judgment)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">Research, Production, Distribution</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">Data, Content, Messaging</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="a">
+                <div class="question-number">QUESTION 07</div>
+                <div class="question-text">What is the "judgment loop" in the Stack Architecture?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">The mechanism by which PMM insight at the Output Layer improves the layers below</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">A quality assurance process run by managers</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">An AI system that automatically rates content quality</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">A weekly review meeting with stakeholders</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="c">
+                <div class="question-number">QUESTION 08</div>
+                <div class="question-text">What is the correct sequence of the "Three Moves" to become a Full Stack PMM?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">Rebuild Your Skills → Build Your Stack → Rebuild Your Story</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">Rebuild Your Story → Rebuild Your Skills → Build Your Stack</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">Build Your Stack → Rebuild Your Story → Rebuild Your Skills</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">All three moves should happen simultaneously</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="d">
+                <div class="question-number">QUESTION 09</div>
+                <div class="question-text">Why does building the stack come first in the Three Moves sequence?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">It's the easiest step to complete</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">Management requires it before other changes</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">AI tools need to be purchased before they can be used</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">It creates the freed capacity needed for the subsequent moves</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="question" data-correct="b">
+                <div class="question-number">QUESTION 10</div>
+                <div class="question-text">Why does the Full Stack PMM "compound" over time?</div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a">
+                        <span class="option-marker">A</span>
+                        <span class="option-text">They get regular promotions and raises</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b">
+                        <span class="option-marker">B</span>
+                        <span class="option-text">Better craft improves the stack, which frees more time, enabling better craft development in a virtuous cycle</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c">
+                        <span class="option-marker">C</span>
+                        <span class="option-text">They accumulate more AI tools over time</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d">
+                        <span class="option-marker">D</span>
+                        <span class="option-text">Their team grows larger each year</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <button type="submit" class="submit-btn" id="submit-btn">Submit Answers</button>
+            </div>
+        </form>
+        
+        <div class="nav-buttons">
+            <a href="/curriculum/chapter-04/">← Back to Chapter 4</a>
+            <a href="/curriculum/">Curriculum Home</a>
+        </div>
+    </main>
+    
+    <footer>
+        <p>The Future of PMM Curriculum · <a href="/">futureofpmm.com</a></p>
+        <p>© 2026 Chris O'Hara. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionDiv = this.closest('.question');
+                questionDiv.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input').checked = true;
+            });
+        });
+        
+        document.getElementById('quiz-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            const questions = document.querySelectorAll('.question');
+            
+            questions.forEach((question, index) => {
+                const correct = question.dataset.correct;
+                const selected = question.querySelector('input:checked');
+                const options = question.querySelectorAll('.option');
+                
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    const input = opt.querySelector('input');
+                    if (input.value === correct) {
+                        opt.classList.add('correct');
+                    } else if (input.checked) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                if (selected && selected.value === correct) {
+                    score++;
+                }
+            });
+            
+            const resultsDiv = document.getElementById('results');
+            const scoreDiv = document.getElementById('score');
+            const feedbackDiv = document.getElementById('feedback');
+            
+            scoreDiv.textContent = score + '/10';
+            
+            let feedback = '';
+            if (score === 10) {
+                feedback = '🏆 Perfect score! You\'ve mastered the Full Stack PMM framework. You understand exactly what separates the PMMs who compound from those who just keep up.';
+            } else if (score >= 8) {
+                feedback = '🌟 Excellent! You have a strong grasp of the Full Stack PMM model. The compounding advantage awaits — review the Three Moves sequence to solidify the approach.';
+            } else if (score >= 6) {
+                feedback = '📚 Good foundation! You understand the basics. Focus on the Stack Architecture and the judgment loop — these are the mechanisms that drive compounding.';
+            } else if (score >= 4) {
+                feedback = '📖 Getting there. Re-read the chapter, especially the Depth/Breadth Matrix and the workflow reallocation. Understanding these concepts is key to the transition.';
+            } else {
+                feedback = '🔄 This chapter is dense with new frameworks. Take another pass through it — focus on understanding why depth is irreplaceable and how the three moves sequence together.';
+            }
+            
+            feedbackDiv.textContent = feedback;
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('submit-btn').textContent = 'Quiz Completed';
+        });
+    </script>
+</body>
+</html>
