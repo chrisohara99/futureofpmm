@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz: Chapter 10 — Analyst Relations and the Influence Layer | Future of PMM Curriculum</title>
+<meta name="description" content="Test your understanding of Chapter 10: Analyst Relations and the Influence Layer. 10 questions on RFI automation, influence architecture, and the four-layer landscape.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pmm-blue: #3b82f6;
+  --pmm-dark: #1e3a5f;
+  --accent: #c84b31;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e5e7eb;
+  --bg: #faf9f7;
+  --correct: #16a34a;
+  --incorrect: #dc2626;
+  --indigo: #6366f1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 700px; margin: 0 auto; padding: 0 20px; }
+
+header { background: linear-gradient(135deg, var(--indigo) 0%, #4f46e5 100%); color: white; padding: 2.5rem 0; }
+.breadcrumb { font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem; }
+.breadcrumb a { color: white; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 0.5rem; }
+header p { opacity: 0.9; }
+
+.progress-container { background: white; padding: 1.5rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--indigo); border-radius: 4px; transition: width 0.3s ease; }
+.progress-text { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.85rem; color: var(--muted); }
+
+.quiz-container { padding: 2rem 0; }
+.question-card { background: white; border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 2px solid transparent; transition: all 0.3s; }
+.question-card.answered-correct { border-color: var(--correct); background: #f0fdf4; }
+.question-card.answered-incorrect { border-color: var(--incorrect); background: #fef2f2; }
+
+.q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.q-number { font-size: 0.8rem; font-weight: 600; color: var(--indigo); text-transform: uppercase; letter-spacing: 0.05em; }
+.q-type { font-size: 0.75rem; padding: 0.25rem 0.75rem; background: #eef2ff; color: var(--indigo); border-radius: 20px; }
+
+.q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.5; }
+
+.options { list-style: none; }
+.option { margin-bottom: 0.75rem; }
+.option label { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 1.25rem; background: #f8fafc; border: 2px solid transparent; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+.option label:hover { background: #eef2ff; border-color: var(--indigo); }
+.option input { display: none; }
+.option .radio { width: 24px; height: 24px; min-width: 24px; border: 2px solid #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 2px; }
+.option input:checked + .radio { border-color: var(--indigo); background: var(--indigo); }
+.option input:checked + .radio::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; }
+.option .text { flex: 1; }
+
+.option.correct label { background: #dcfce7; border-color: var(--correct); }
+.option.correct .radio { border-color: var(--correct); background: var(--correct); }
+.option.incorrect label { background: #fef2f2; border-color: var(--incorrect); }
+.option.incorrect .radio { border-color: var(--incorrect); background: var(--incorrect); }
+.option.incorrect .radio::after { content: '✕'; color: white; font-size: 12px; font-weight: bold; }
+.option.correct .radio::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; background: none; width: auto; height: auto; }
+
+.feedback { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; }
+.feedback.show { display: block; }
+.feedback.correct { background: #dcfce7; color: #166534; }
+.feedback.incorrect { background: #fef2f2; color: #991b1b; }
+
+.submit-btn { display: block; width: 100%; padding: 1rem; background: var(--indigo); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin: 2rem 0; transition: all 0.2s; }
+.submit-btn:hover { background: #4f46e5; transform: translateY(-1px); }
+
+.results-container { display: none; background: white; border-radius: 16px; padding: 2.5rem; text-align: center; margin: 2rem 0; }
+.results-container.show { display: block; }
+
+.score-circle { width: 180px; height: 180px; border-radius: 50%; margin: 0 auto 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-circle.excellent { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); }
+.score-circle.good { background: linear-gradient(135deg, var(--indigo) 0%, #4f46e5 100%); }
+.score-circle.needs-work { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.score-circle.review { background: linear-gradient(135deg, var(--incorrect) 0%, #991b1b 100%); }
+.score-circle .percentage { font-size: 3.5rem; font-weight: 700; color: white; line-height: 1; }
+.score-circle .label { font-size: 1rem; color: rgba(255,255,255,0.9); margin-top: 0.25rem; }
+
+.results-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: var(--pmm-dark); margin-bottom: 0.5rem; }
+.results-subtitle { color: var(--muted); margin-bottom: 2rem; }
+
+.assessment { background: #f8fafc; border-radius: 12px; padding: 1.5rem; text-align: left; margin-bottom: 2rem; }
+.assessment h3 { font-size: 1rem; color: var(--pmm-dark); margin-bottom: 0.75rem; }
+.assessment p { font-size: 0.95rem; color: var(--muted); margin-bottom: 0.75rem; }
+.assessment ul { margin: 0.75rem 0 0 1.25rem; font-size: 0.9rem; color: var(--muted); }
+.assessment li { margin-bottom: 0.5rem; }
+
+.results-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.results-btn { padding: 0.875rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+.results-btn.primary { background: var(--indigo); color: white; border: none; cursor: pointer; }
+.results-btn.primary:hover { background: #4f46e5; }
+.results-btn.secondary { background: white; color: var(--pmm-dark); border: 2px solid var(--border); }
+.results-btn.secondary:hover { border-color: var(--indigo); color: var(--indigo); }
+
+.stats-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-item { padding: 1rem; background: #f8fafc; border-radius: 8px; text-align: center; }
+.stat-item .number { font-size: 1.5rem; font-weight: 700; color: var(--pmm-dark); }
+.stat-item .label { font-size: 0.8rem; color: var(--muted); }
+.stat-item.correct .number { color: var(--correct); }
+.stat-item.incorrect .number { color: var(--incorrect); }
+
+footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; margin-top: 3rem; }
+footer p { opacity: 0.7; font-size: 0.9rem; }
+footer a { color: rgba(255,255,255,0.8); }
+
+@media (max-width: 500px) {
+  .stats-breakdown { grid-template-columns: 1fr; }
+  .results-actions { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="./">← Back to Chapter 10</a>
+    </div>
+    <h1>📝 Chapter 10 Quiz</h1>
+    <p>Analyst Relations and the Influence Layer — Test Your Understanding</p>
+  </div>
+</header>
+
+<div class="progress-container">
+  <div class="container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress" style="width: 0%"></div>
+    </div>
+    <div class="progress-text">
+      <span id="progress-count">0 of 10 answered</span>
+      <span id="progress-pct">0%</span>
+    </div>
+  </div>
+</div>
+
+<main class="quiz-container">
+  <div class="container">
+    
+    <form id="quiz-form">
+      
+      <!-- Question 1 -->
+      <div class="question-card" data-question="1" data-correct="c">
+        <div class="q-header">
+          <span class="q-number">Question 1 of 10</span>
+          <span class="q-type">Stats</span>
+        </div>
+        <div class="q-text">How many person-hours did a single Gartner Magic Quadrant RFI consume on average before automation?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q1" value="a"><span class="radio"></span><span class="text">40 person-hours</span></label></li>
+          <li class="option"><label><input type="radio" name="q1" value="b"><span class="radio"></span><span class="text">80 person-hours</span></label></li>
+          <li class="option"><label><input type="radio" name="q1" value="c"><span class="radio"></span><span class="text">120 person-hours</span></label></li>
+          <li class="option"><label><input type="radio" name="q1" value="d"><span class="radio"></span><span class="text">200 person-hours</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 2 -->
+      <div class="question-card" data-question="2" data-correct="b">
+        <div class="q-header">
+          <span class="q-number">Question 2 of 10</span>
+          <span class="q-type">Impact</span>
+        </div>
+        <div class="q-text">By what percentage did RFI automation reduce response effort?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q2" value="a"><span class="radio"></span><span class="text">20-30%</span></label></li>
+          <li class="option"><label><input type="radio" name="q2" value="b"><span class="radio"></span><span class="text">50-70%</span></label></li>
+          <li class="option"><label><input type="radio" name="q2" value="c"><span class="radio"></span><span class="text">80-90%</span></label></li>
+          <li class="option"><label><input type="radio" name="q2" value="d"><span class="radio"></span><span class="text">95-100%</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 3 -->
+      <div class="question-card" data-question="3" data-correct="d">
+        <div class="q-header">
+          <span class="q-number">Question 3 of 10</span>
+          <span class="q-type">Framework</span>
+        </div>
+        <div class="q-text">How many layers of influence does Chapter 10 identify in the evaluation landscape?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q3" value="a"><span class="radio"></span><span class="text">Two layers</span></label></li>
+          <li class="option"><label><input type="radio" name="q3" value="b"><span class="radio"></span><span class="text">Three layers</span></label></li>
+          <li class="option"><label><input type="radio" name="q3" value="c"><span class="radio"></span><span class="text">Five layers</span></label></li>
+          <li class="option"><label><input type="radio" name="q3" value="d"><span class="radio"></span><span class="text">Four layers</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 4 -->
+      <div class="question-card" data-question="4" data-correct="a">
+        <div class="q-header">
+          <span class="q-number">Question 4 of 10</span>
+          <span class="q-type">Layers</span>
+        </div>
+        <div class="q-text">Which influence layer is described as "the fastest-growing evaluation channel"?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q4" value="a"><span class="radio"></span><span class="text">Layer 3: AI Influence Layer (Perplexity, ChatGPT, Claude, Gemini)</span></label></li>
+          <li class="option"><label><input type="radio" name="q4" value="b"><span class="radio"></span><span class="text">Layer 1: Traditional Analysts (Gartner, Forrester, IDC)</span></label></li>
+          <li class="option"><label><input type="radio" name="q4" value="c"><span class="radio"></span><span class="text">Layer 2: Independent Voices (Substack, LinkedIn, YouTube)</span></label></li>
+          <li class="option"><label><input type="radio" name="q4" value="d"><span class="radio"></span><span class="text">Layer 4: Peer Communities (G2, TrustRadius)</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 5 -->
+      <div class="question-card" data-question="5" data-correct="c">
+        <div class="q-header">
+          <span class="q-number">Question 5 of 10</span>
+          <span class="q-type">Role</span>
+        </div>
+        <div class="q-text">What is the key difference between an "AR Manager" and an "Influence Architect"?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q5" value="a"><span class="radio"></span><span class="text">Influence Architect focuses only on Gartner relationships</span></label></li>
+          <li class="option"><label><input type="radio" name="q5" value="b"><span class="radio"></span><span class="text">AR Manager uses AI tools while Influence Architect does not</span></label></li>
+          <li class="option"><label><input type="radio" name="q5" value="c"><span class="radio"></span><span class="text">Influence Architect covers all four layers of influence, not just traditional analysts</span></label></li>
+          <li class="option"><label><input type="radio" name="q5" value="d"><span class="radio"></span><span class="text">AR Manager is a senior role while Influence Architect is junior</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 6 -->
+      <div class="question-card" data-question="6" data-correct="b">
+        <div class="q-header">
+          <span class="q-number">Question 6 of 10</span>
+          <span class="q-type">Playbook</span>
+        </div>
+        <div class="q-text">What is the first move in the AR Practitioner's Playbook?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q6" value="a"><span class="radio"></span><span class="text">Make briefings two-way intelligence channels</span></label></li>
+          <li class="option"><label><input type="radio" name="q6" value="b"><span class="radio"></span><span class="text">Build the RFI knowledge base</span></label></li>
+          <li class="option"><label><input type="radio" name="q6" value="c"><span class="radio"></span><span class="text">Map your influence landscape</span></label></li>
+          <li class="option"><label><input type="radio" name="q6" value="d"><span class="radio"></span><span class="text">Automate analyst briefings</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 7 -->
+      <div class="question-card" data-question="7" data-correct="d">
+        <div class="q-header">
+          <span class="q-number">Question 7 of 10</span>
+          <span class="q-type">Strategy</span>
+        </div>
+        <div class="q-text">According to Chapter 10, why does AR ROI have a "multiplier" in the agentic era?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q7" value="a"><span class="radio"></span><span class="text">Analyst reports are more expensive to produce</span></label></li>
+          <li class="option"><label><input type="radio" name="q7" value="b"><span class="radio"></span><span class="text">More companies are participating in evaluations</span></label></li>
+          <li class="option"><label><input type="radio" name="q7" value="c"><span class="radio"></span><span class="text">Analyst briefings are longer</span></label></li>
+          <li class="option"><label><input type="radio" name="q7" value="d"><span class="radio"></span><span class="text">AI agents weight analyst evaluations heavily when filtering vendor shortlists for buyers</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 8 -->
+      <div class="question-card" data-question="8" data-correct="a">
+        <div class="q-header">
+          <span class="q-number">Question 8 of 10</span>
+          <span class="q-type">Application</span>
+        </div>
+        <div class="q-text">What quick test does the chapter recommend for auditing your AI influence presence?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q8" value="a"><span class="radio"></span><span class="text">Ask Perplexity to recommend vendors in your category and see what comes back</span></label></li>
+          <li class="option"><label><input type="radio" name="q8" value="b"><span class="radio"></span><span class="text">Count your G2 reviews</span></label></li>
+          <li class="option"><label><input type="radio" name="q8" value="c"><span class="radio"></span><span class="text">Check your Gartner positioning</span></label></li>
+          <li class="option"><label><input type="radio" name="q8" value="d"><span class="radio"></span><span class="text">Survey your sales team</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 9 -->
+      <div class="question-card" data-question="9" data-correct="c">
+        <div class="q-header">
+          <span class="q-number">Question 9 of 10</span>
+          <span class="q-type">Insight</span>
+        </div>
+        <div class="q-text">What should analyst briefings become, according to the chapter?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q9" value="a"><span class="radio"></span><span class="text">Longer product demonstrations</span></label></li>
+          <li class="option"><label><input type="radio" name="q9" value="b"><span class="radio"></span><span class="text">Fully automated AI presentations</span></label></li>
+          <li class="option"><label><input type="radio" name="q9" value="c"><span class="radio"></span><span class="text">Two-way intelligence channels where you gather market intel, not just pitch</span></label></li>
+          <li class="option"><label><input type="radio" name="q9" value="d"><span class="radio"></span><span class="text">Written-only communications to save time</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <!-- Question 10 -->
+      <div class="question-card" data-question="10" data-correct="b">
+        <div class="q-header">
+          <span class="q-number">Question 10 of 10</span>
+          <span class="q-type">Concept</span>
+        </div>
+        <div class="q-text">Why do customer advocacy programs "feed all four layers" of influence?</div>
+        <ul class="options">
+          <li class="option"><label><input type="radio" name="q10" value="a"><span class="radio"></span><span class="text">They reduce RFI response time</span></label></li>
+          <li class="option"><label><input type="radio" name="q10" value="b"><span class="radio"></span><span class="text">Strong reviews improve analyst perception, AI visibility, and peer credibility simultaneously</span></label></li>
+          <li class="option"><label><input type="radio" name="q10" value="c"><span class="radio"></span><span class="text">They eliminate the need for analyst briefings</span></label></li>
+          <li class="option"><label><input type="radio" name="q10" value="d"><span class="radio"></span><span class="text">They are required for Gartner participation</span></label></li>
+        </ul>
+        <div class="feedback"></div>
+      </div>
+      
+      <button type="button" class="submit-btn" id="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+      
+    </form>
+    
+    <div class="results-container" id="results">
+      <div class="score-circle" id="score-circle">
+        <span class="percentage" id="score-pct">0%</span>
+        <span class="label" id="score-label">0 of 10</span>
+      </div>
+      
+      <h2 class="results-title" id="results-title">Results</h2>
+      <p class="results-subtitle" id="results-subtitle">Your performance summary</p>
+      
+      <div class="stats-breakdown">
+        <div class="stat-item correct">
+          <div class="number" id="correct-count">0</div>
+          <div class="label">Correct</div>
+        </div>
+        <div class="stat-item incorrect">
+          <div class="number" id="incorrect-count">0</div>
+          <div class="label">Incorrect</div>
+        </div>
+        <div class="stat-item">
+          <div class="number" id="time-taken">0:00</div>
+          <div class="label">Time</div>
+        </div>
+      </div>
+      
+      <div class="assessment">
+        <h3>📊 Your Assessment</h3>
+        <p id="assessment-text">Assessment details will appear here.</p>
+        <div id="assessment-details"></div>
+      </div>
+      
+      <div class="results-actions">
+        <button class="results-btn primary" onclick="retakeQuiz()">Retake Quiz</button>
+        <a href="../" class="results-btn secondary">Back to Curriculum →</a>
+      </div>
+    </div>
+    
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>The Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a> · Chris O'Hara</p>
+  </div>
+</footer>
+
+<script>
+let startTime = Date.now();
+
+document.querySelectorAll('input[type="radio"]').forEach(input => {
+  input.addEventListener('change', updateProgress);
+});
+
+function updateProgress() {
+  const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+  const total = 10;
+  const pct = Math.round((answered / total) * 100);
+  
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-count').textContent = `${answered} of ${total} answered`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function submitQuiz() {
+  const questions = document.querySelectorAll('.question-card');
+  let correct = 0;
+  
+  questions.forEach(q => {
+    const correctAnswer = q.dataset.correct;
+    const selected = q.querySelector('input:checked');
+    const options = q.querySelectorAll('.option');
+    const feedback = q.querySelector('.feedback');
+    
+    options.forEach(opt => {
+      opt.classList.remove('correct', 'incorrect');
+    });
+    
+    if (selected) {
+      const selectedOption = selected.closest('.option');
+      
+      if (selected.value === correctAnswer) {
+        correct++;
+        selectedOption.classList.add('correct');
+        q.classList.add('answered-correct');
+        feedback.className = 'feedback correct show';
+        feedback.innerHTML = '<strong>✓ Correct!</strong>';
+      } else {
+        selectedOption.classList.add('incorrect');
+        q.classList.add('answered-incorrect');
+        
+        options.forEach(opt => {
+          const input = opt.querySelector('input');
+          if (input.value === correctAnswer) {
+            opt.classList.add('correct');
+          }
+        });
+        
+        feedback.className = 'feedback incorrect show';
+        feedback.innerHTML = '<strong>✗ Incorrect</strong> Review the chapter material on this topic.';
+      }
+    } else {
+      q.classList.add('answered-incorrect');
+      feedback.className = 'feedback incorrect show';
+      feedback.innerHTML = '<strong>⚠ Not answered</strong>';
+    }
+    
+    q.querySelectorAll('input').forEach(i => i.disabled = true);
+  });
+  
+  const elapsed = Math.round((Date.now() - startTime) / 1000);
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+  
+  const pct = Math.round((correct / 10) * 100);
+  const scoreCircle = document.getElementById('score-circle');
+  
+  scoreCircle.className = 'score-circle';
+  if (pct >= 90) scoreCircle.classList.add('excellent');
+  else if (pct >= 70) scoreCircle.classList.add('good');
+  else if (pct >= 50) scoreCircle.classList.add('needs-work');
+  else scoreCircle.classList.add('review');
+  
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-label').textContent = `${correct} of 10`;
+  document.getElementById('correct-count').textContent = correct;
+  document.getElementById('incorrect-count').textContent = 10 - correct;
+  document.getElementById('time-taken').textContent = timeStr;
+  
+  let title, subtitle, assessmentText, details;
+  
+  if (pct >= 90) {
+    title = '🏆 Excellent!';
+    subtitle = 'You\'ve mastered influence architecture';
+    assessmentText = 'You understand RFI automation, the four-layer influence landscape, and how to transform AR into full-spectrum influence strategy. You\'re ready to think holistically.';
+    details = '<p><strong>Next steps:</strong></p><ul><li>Build your RFI knowledge base from the last three evaluations</li><li>Map your presence across all four influence layers</li><li>Ask Perplexity about your category and audit the results</li></ul>';
+  } else if (pct >= 70) {
+    title = '✓ Good Job!';
+    subtitle = 'You understand most influence architecture concepts';
+    assessmentText = 'You have a solid grasp of AR evolution and the four layers. Review the questions you missed to strengthen your understanding.';
+    details = '<p><strong>Areas to review:</strong></p><ul><li>Re-read the four influence layers</li><li>Study the AR Manager vs Influence Architect comparison</li><li>Understand the multiplier effect</li></ul>';
+  } else if (pct >= 50) {
+    title = '📚 Needs Review';
+    subtitle = 'Some concepts need more attention';
+    assessmentText = 'You understand the basics, but the four-layer model and influence architect role need more study. These are core to the chapter.';
+    details = '<p><strong>Recommended actions:</strong></p><ul><li>Re-read Chapter 10 focusing on the influence landscape</li><li>Study each of the four layers</li><li>Review the practitioner\'s playbook</li><li>Retake the quiz after reviewing</li></ul>';
+  } else {
+    title = '📖 More Study Needed';
+    subtitle = 'Please review Chapter 10 carefully';
+    assessmentText = 'AR in the agentic era requires understanding influence holistically. Take time to study the four layers and the influence architect model.';
+    details = '<p><strong>Before continuing:</strong></p><ul><li>Read Chapter 10 from the beginning</li><li>Focus on RFI automation impact</li><li>Study the four-layer influence landscape</li><li>Download the PDF whitepaper</li><li>Retake this quiz after reviewing</li></ul>';
+  }
+  
+  document.getElementById('results-title').textContent = title;
+  document.getElementById('results-subtitle').textContent = subtitle;
+  document.getElementById('assessment-text').textContent = assessmentText;
+  document.getElementById('assessment-details').innerHTML = details;
+  
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function retakeQuiz() {
+  document.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.checked = false;
+    input.disabled = false;
+  });
+  
+  document.querySelectorAll('.question-card').forEach(q => {
+    q.classList.remove('answered-correct', 'answered-incorrect');
+  });
+  
+  document.querySelectorAll('.option').forEach(opt => {
+    opt.classList.remove('correct', 'incorrect');
+  });
+  
+  document.querySelectorAll('.feedback').forEach(f => {
+    f.classList.remove('show');
+  });
+  
+  document.getElementById('submit-btn').style.display = 'block';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('progress').style.width = '0%';
+  document.getElementById('progress-count').textContent = '0 of 10 answered';
+  document.getElementById('progress-pct').textContent = '0%';
+  
+  startTime = Date.now();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
