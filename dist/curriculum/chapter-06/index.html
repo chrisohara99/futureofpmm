@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6: Competitive Intelligence as a Living System | Future of PMM Curriculum</title>
+<meta name="description" content="The quarterly battlecard is dead. Build a living CI architecture that continuously monitors signals, synthesizes changes, and delivers intel to reps in context.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pmm-blue: #3b82f6;
+  --pmm-dark: #1e3a5f;
+  --accent: #c84b31;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e5e7eb;
+  --bg: #faf9f7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+.chapter-header { background: linear-gradient(135deg, var(--pmm-dark) 0%, #0f172a 100%); color: white; padding: 3rem 0; }
+.breadcrumb { font-size: 0.85rem; opacity: 0.7; margin-bottom: 1rem; }
+.breadcrumb a { color: white; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.chapter-num { display: inline-block; background: var(--accent); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; margin-bottom: 1rem; }
+.chapter-header h1 { font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 0.75rem; }
+.chapter-header .subtitle { font-size: 1.1rem; opacity: 0.85; }
+.pragmatic { margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 0.9rem; }
+.pragmatic strong { color: var(--accent); }
+
+/* Downloads */
+.downloads { background: white; border: 2px solid var(--pmm-blue); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.download-btn { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; background: #eff6ff; border-radius: 8px; text-decoration: none; color: var(--pmm-dark); font-weight: 600; transition: all 0.2s; }
+.download-btn:hover { background: var(--pmm-blue); color: white; }
+.download-btn .icon { font-size: 1.5rem; }
+.download-btn .info { text-align: left; }
+.download-btn .label { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+.download-btn:hover .label { color: rgba(255,255,255,0.8); }
+@media (max-width: 500px) { .downloads { grid-template-columns: 1fr; } }
+
+/* Content sections */
+.content { padding: 2rem 0; }
+section { margin-bottom: 3rem; }
+h2 { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: var(--pmm-dark); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); }
+h3 { font-size: 1.2rem; color: var(--pmm-dark); margin: 1.5rem 0 0.75rem; }
+p { margin-bottom: 1rem; }
+ul, ol { margin: 1rem 0 1.5rem 1.5rem; }
+li { margin-bottom: 0.5rem; }
+
+/* Callout boxes */
+.callout { padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+.callout.warning { background: #fef2f2; border-left: 4px solid #dc2626; }
+.callout.insight { background: #eff6ff; border-left: 4px solid var(--pmm-blue); }
+.callout.quote { background: #f8fafc; border-left: 4px solid var(--muted); font-style: italic; }
+.callout p:last-child { margin-bottom: 0; }
+.callout-attribution { font-size: 0.85rem; color: var(--muted); margin-top: 0.75rem; font-style: normal; }
+
+/* Stats */
+.big-stat { text-align: center; padding: 2rem; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; border-radius: 16px; margin: 2rem 0; }
+.big-stat .number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; line-height: 1; }
+.big-stat .label { font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.9; }
+
+/* Framework tables */
+.framework-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.framework-table th { background: var(--pmm-dark); color: white; padding: 1rem; text-align: left; font-weight: 600; }
+.framework-table td { padding: 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.framework-table tr:last-child td { border-bottom: none; }
+.framework-table tr:nth-child(even) { background: #f8fafc; }
+
+/* Maturity stages */
+.maturity-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin: 1.5rem 0; }
+.maturity-stage { padding: 1rem; border-radius: 8px; text-align: center; color: white; }
+.maturity-stage.reactive { background: #dc2626; }
+.maturity-stage.periodic { background: #ea580c; }
+.maturity-stage.monitored { background: #ca8a04; }
+.maturity-stage.living { background: #059669; }
+.maturity-stage strong { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.maturity-stage .stage-name { font-size: 0.9rem; font-weight: 600; }
+.maturity-stage small { font-size: 0.7rem; opacity: 0.9; display: block; margin-top: 0.5rem; }
+@media (max-width: 600px) { .maturity-grid { grid-template-columns: 1fr 1fr; } }
+
+/* Architecture layers */
+.layer { background: white; border: 2px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.layer:hover { border-color: var(--pmm-blue); }
+.layer h4 { display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--pmm-dark); }
+.layer-num { background: var(--pmm-dark); color: white; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.85rem; }
+.layer-subtitle { font-style: italic; color: var(--muted); font-size: 0.9rem; }
+.layer p { margin-bottom: 0.5rem; color: var(--muted); }
+.layer ul { margin: 0.5rem 0 0 1.25rem; color: var(--muted); font-size: 0.9rem; }
+.layer li { margin-bottom: 0.25rem; }
+
+/* Flywheel */
+.flywheel { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+.flywheel h3 { color: white; margin-top: 0; margin-bottom: 1rem; }
+.flywheel-step { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.flywheel-step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.flywheel-num { background: var(--accent); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+.flywheel-content strong { display: block; margin-bottom: 0.25rem; }
+.flywheel-content span { opacity: 0.8; font-size: 0.9rem; }
+
+/* Action steps */
+.actions { background: white; border: 2px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+.actions h3 { color: var(--accent); margin-top: 0; border-bottom: none; padding-bottom: 0; }
+.action-item { display: grid; grid-template-columns: 50px 1fr; gap: 1rem; margin: 1.5rem 0; }
+.action-num { width: 40px; height: 40px; background: var(--accent); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.action-content h4 { margin: 0 0 0.5rem; font-size: 1rem; color: var(--pmm-dark); }
+.action-content p { margin: 0; font-size: 0.95rem; color: var(--muted); }
+.action-box { background: #fef3c7; padding: 0.75rem 1rem; border-radius: 6px; margin-top: 0.75rem; font-size: 0.9rem; }
+.action-box strong { color: #92400e; }
+
+/* Takeaways */
+.takeaways { background: var(--pmm-dark); color: white; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+.takeaways h2 { color: white; border-color: var(--accent); }
+.takeaways ul { margin-left: 1.25rem; }
+.takeaways li { margin-bottom: 0.75rem; }
+
+/* Quiz CTA */
+.quiz-cta { background: linear-gradient(135deg, var(--pmm-blue) 0%, #2563eb 100%); color: white; text-align: center; padding: 2.5rem; border-radius: 16px; margin: 2rem 0; }
+.quiz-cta h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+.quiz-cta p { opacity: 0.9; margin-bottom: 1.5rem; }
+.quiz-btn { display: inline-block; background: white; color: var(--pmm-blue); padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s; }
+.quiz-btn:hover { transform: scale(1.05); }
+
+/* Navigation */
+.chapter-nav { display: flex; justify-content: space-between; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 3rem; }
+.nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: white; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text); font-weight: 500; }
+.nav-btn:hover { background: #f8fafc; border-color: var(--pmm-blue); }
+.nav-btn.next { background: var(--pmm-blue); color: white; border-color: var(--pmm-blue); }
+.nav-btn.next:hover { background: #2563eb; }
+
+footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; }
+footer p { opacity: 0.7; font-size: 0.9rem; }
+footer a { color: rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+
+<header class="chapter-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../">← Back to Curriculum</a>
+    </div>
+    <div class="chapter-num">Chapter 6</div>
+    <h1>Competitive Intelligence as a Living System</h1>
+    <p class="subtitle">The quarterly battlecard is dead. The PMM who replaces it wins.</p>
+    <div class="pragmatic">
+      <strong>Pragmatic Remix:</strong> Competitive Intelligence • Sales Enablement • Market Research • Win/Loss Analysis
+    </div>
+  </div>
+</header>
+
+<main class="content">
+  <div class="container">
+    
+    <!-- Downloads -->
+    <div class="downloads">
+      <a href="downloads/chapter-06-slides.pptx" class="download-btn" download>
+        <span class="icon">📊</span>
+        <div class="info">
+          <span class="label">PowerPoint</span>
+          <br>Download Slides
+        </div>
+      </a>
+      <a href="downloads/chapter-06-whitepaper.pdf" class="download-btn" download>
+        <span class="icon">📄</span>
+        <div class="info">
+          <span class="label">PDF</span>
+          <br>Download Whitepaper
+        </div>
+      </a>
+    </div>
+    
+    <!-- Big Stat -->
+    <div class="big-stat">
+      <div class="number">Days, Not Quarters</div>
+      <div class="label">CI latency is now a competitive disadvantage measured in days — every week of lag is a week of deals at risk</div>
+    </div>
+
+    <!-- Executive Summary -->
+    <section>
+      <h2>Executive Summary</h2>
+      <p>The quarterly battlecard is a product of a world where competitive positioning moved slowly enough that a quarterly update cycle kept you current. <strong>That world is over.</strong></p>
+      <p>Every major enterprise software vendor is making AI announcements on a weekly cadence. G2 reviews surface competitive claims within days of a product change. Job postings telegraph strategic intent months before a product ships. The PMM organization that still treats competitive intelligence as a research project — assigned, completed, published, forgotten until next quarter — is operating on information that is always stale.</p>
+      
+      <div class="callout quote">
+        <p>"CI latency — the gap between 'the market changed' and 'your reps know about it' — is now a competitive disadvantage measured in days, not quarters. Every week of latency is a week of deals at risk."</p>
+        <div class="callout-attribution">— Chris O'Hara</div>
+      </div>
+    </section>
+
+    <!-- CI Latency Problem -->
+    <section>
+      <h2>The CI Latency Problem</h2>
+      <p>Here is a scenario that plays out in enterprise sales organizations every week:</p>
+      <ul>
+        <li><strong>Monday:</strong> A competitor publishes a blog post announcing a new AI capability.</li>
+        <li><strong>Tuesday:</strong> The post has been picked up by three G2 reviewers who mention it in their product comparisons.</li>
+        <li><strong>Wednesday:</strong> The competitor's job board shows eight new ML engineering roles, and your AEs are getting asked about it in active deals.</li>
+        <li><strong>Thursday:</strong> An analyst has referenced it in a passing social post.</li>
+        <li><strong>Friday:</strong> Your battlecard still describes the competitor as having "limited AI capabilities."</li>
+      </ul>
+      <p>This is not a hypothetical. It is the default state of competitive intelligence in most enterprise software PMM organizations.</p>
+      
+      <div class="callout warning">
+        <p><strong>The CI latency — the gap between the market change and rep awareness — is typically measured in weeks.</strong> In a market where competitive positioning can shift meaningfully between Monday and Friday, weeks is too long.</p>
+      </div>
+
+      <p>The solution is not to update battlecards more frequently. That is a headcount problem disguised as a process problem. The solution is to change the architecture: from a write-once, publish-quarterly system to a <strong>living system</strong> that continuously monitors signals, drafts updates, and delivers intel in context.</p>
+    </section>
+
+    <!-- CI Maturity Model -->
+    <section>
+      <h2>The CI Maturity Model</h2>
+      <p>Four stages of competitive intelligence practice — most PMM organizations sit at Stage 2:</p>
+      
+      <div class="maturity-grid">
+        <div class="maturity-stage reactive">
+          <strong>Stage 1</strong>
+          <span class="stage-name">Reactive</span>
+          <small>No system. CI happens when a rep loses a deal.</small>
+        </div>
+        <div class="maturity-stage periodic">
+          <strong>Stage 2</strong>
+          <span class="stage-name">Periodic</span>
+          <small>Quarterly cycle. Good at publish, stale within weeks.</small>
+        </div>
+        <div class="maturity-stage monitored">
+          <strong>Stage 3</strong>
+          <span class="stage-name">Monitored</span>
+          <small>Alerts + triggers. PMM reviews within days.</small>
+        </div>
+        <div class="maturity-stage living">
+          <strong>Stage 4</strong>
+          <span class="stage-name">Living System</span>
+          <small>Always-on agents. Freshness in hours.</small>
+        </div>
+      </div>
+
+      <table class="framework-table">
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th>Freshness</th>
+            <th>Effort</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Reactive</strong></td>
+            <td>Days to months</td>
+            <td>High (manual, crisis-driven)</td>
+          </tr>
+          <tr>
+            <td><strong>Periodic</strong></td>
+            <td>Weeks to months</td>
+            <td>Medium (scheduled)</td>
+          </tr>
+          <tr>
+            <td><strong>Monitored</strong></td>
+            <td>Days to a week</td>
+            <td>Low (reactive to signals)</td>
+          </tr>
+          <tr>
+            <td><strong>Living System</strong></td>
+            <td>Hours to a day</td>
+            <td>Minimal (humans QA outputs)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout insight">
+        <p><strong>The move from Stage 2 to Stage 4 is not primarily a resource question.</strong> A well-configured agent stack can monitor more signals more consistently than any team of analysts. The investment is in architecture: building the signal layer, configuring the analysis pipeline, and integrating with CRM and sales tooling.</p>
+      </div>
+    </section>
+
+    <!-- Living CI Architecture -->
+    <section>
+      <h2>The Living CI Architecture</h2>
+      <p>Three layers that transform competitive intelligence from a quarterly project into an always-on system:</p>
+
+      <div class="layer">
+        <h4><span class="layer-num">1</span> Signal Layer</h4>
+        <p class="layer-subtitle">What gets monitored</p>
+        <ul>
+          <li>Press releases & company blogs</li>
+          <li>G2 / TrustRadius reviews</li>
+          <li>Job postings & hiring patterns</li>
+          <li>Earnings calls & SEC filings</li>
+          <li>Social channels & community forums</li>
+          <li>Win/loss call transcripts</li>
+        </ul>
+        <p>Each source provides a different signal. Press releases surface intentional positioning. G2 reviews surface what customers actually believe. Job postings surface strategic intent before the product ships.</p>
+      </div>
+
+      <div class="layer">
+        <h4><span class="layer-num">2</span> Analysis Layer</h4>
+        <p class="layer-subtitle">What agents do with signals</p>
+        <ul>
+          <li>Pattern detection across all sources</li>
+          <li>Change-delta vs. last snapshot</li>
+          <li>Sentiment shift in review scores</li>
+          <li>Draft battlecard update sections</li>
+          <li>Flag high-priority alerts for PMM</li>
+          <li>Link signal to open deals in CRM</li>
+        </ul>
+        <p>A well-configured agent running on the signal stream can compute change-deltas against the last snapshot and draft the specific battlecard sections that need updating.</p>
+      </div>
+
+      <div class="layer">
+        <h4><span class="layer-num">3</span> Distribution Layer</h4>
+        <p class="layer-subtitle">How intel reaches reps in context</p>
+        <ul>
+          <li>Battlecard auto-update (PMM QA before publish)</li>
+          <li>Slack alert to AEs with active comp deals</li>
+          <li>BattleCoach in-deal coaching prompt</li>
+          <li>Weekly CI digest to CS and SE teams</li>
+          <li>Win/loss feedback fed back to signal layer</li>
+        </ul>
+        <p><strong>The Distribution Layer is where most CI systems are weakest.</strong> Intel that reaches the battlecard but does not reach the rep in context is only marginally better than intel that never leaves the PMM's Notion page.</p>
+      </div>
+    </section>
+
+    <!-- The Battlecard Rebuild -->
+    <section>
+      <h2>The Battlecard Rebuild</h2>
+      <p>The Living Battlecard is not a different document. It is the same document with four new attributes that the quarterly battlecard lacks:</p>
+
+      <table class="framework-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Quarterly Battlecard</th>
+            <th>Living Battlecard</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Format</strong></td>
+            <td>Static Google Doc or PDF. No version control.</td>
+            <td>Structured data record, updated via agent write-back.</td>
+          </tr>
+          <tr>
+            <td><strong>Update Cycle</strong></td>
+            <td>Quarterly, when PMM finds time.</td>
+            <td>Triggered by signal threshold — within 24–48 hours.</td>
+          </tr>
+          <tr>
+            <td><strong>Freshness</strong></td>
+            <td>No indicator. Rep has no way to know if current.</td>
+            <td>"Last updated 2 days ago based on 3 signals — see changelog."</td>
+          </tr>
+          <tr>
+            <td><strong>Distribution</strong></td>
+            <td>Slack message when published. Link buried in folder.</td>
+            <td>Push notification to reps with active deals. BattleCoach integration.</td>
+          </tr>
+          <tr>
+            <td><strong>Feedback Loop</strong></td>
+            <td>None. Win/loss data never reaches battlecard.</td>
+            <td>Win/loss tags feed back to signal layer.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout quote">
+        <p>"The freshness timestamp is not a vanity metric. It is the single most important attribute the Living Battlecard gains — because it gives the rep permission to trust the document. A battlecard with no date is a document with an unknown expiration."</p>
+        <div class="callout-attribution">— Chris O'Hara</div>
+      </div>
+    </section>
+
+    <!-- BattleCoach Flywheel -->
+    <section>
+      <h2>The BattleCoach Flywheel</h2>
+      <p>How competitive intelligence becomes sales coaching becomes better competitive intelligence:</p>
+
+      <div class="flywheel">
+        <div class="flywheel-step">
+          <div class="flywheel-num">1</div>
+          <div class="flywheel-content">
+            <strong>CI Signal</strong>
+            <span>Competitor change detected — press release, G2 review, job posting, or earnings call.</span>
+          </div>
+        </div>
+        <div class="flywheel-step">
+          <div class="flywheel-num">2</div>
+          <div class="flywheel-content">
+            <strong>Battlecard Update</strong>
+            <span>Agent drafts the relevant section update. PMM reviews and approves before publish.</span>
+          </div>
+        </div>
+        <div class="flywheel-step">
+          <div class="flywheel-num">3</div>
+          <div class="flywheel-content">
+            <strong>Rep Coaching</strong>
+            <span>BattleCoach delivers updated positioning to reps with active deals against this competitor.</span>
+          </div>
+        </div>
+        <div class="flywheel-step">
+          <div class="flywheel-num">4</div>
+          <div class="flywheel-content">
+            <strong>Deal Application</strong>
+            <span>Rep uses updated talk track or objection handle in a live call. Outcome is logged.</span>
+          </div>
+        </div>
+        <div class="flywheel-step">
+          <div class="flywheel-num">5</div>
+          <div class="flywheel-content">
+            <strong>Win/Loss Feedback</strong>
+            <span>Win or loss is tagged with competitor context. Notes feed back to the signal layer.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warning">
+        <p><strong>The return path is where most CI systems break.</strong> Win and loss data is captured in the CRM but never flows back to the PMM or to the signal layer. The result is a write-only system: intel goes out, outcomes never come back, and the system cannot improve over time.</p>
+      </div>
+    </section>
+
+    <!-- Three Moves -->
+    <div class="actions">
+      <h3>Three Moves</h3>
+      <p>The PMM who wants to move from quarterly battlecards to a living CI system needs to make three moves. They build on each other in sequence.</p>
+
+      <div class="action-item">
+        <div class="action-num">01</div>
+        <div class="action-content">
+          <h4>Audit Your CI Latency</h4>
+          <p>Pull your last five competitive situations where you lost or nearly lost a deal. Map three dates: when did the competitive shift happen? When did your battlecard reflect it? When did the rep know? The gap between those dates is your CI latency.</p>
+          <div class="action-box">
+            <strong>This week:</strong> Pick three lost deals from last quarter. Map the CI latency timeline for each: signal date, battlecard update date, rep awareness date. Calculate the average lag.
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">02</div>
+        <div class="action-content">
+          <h4>Build the Signal Layer First</h4>
+          <p>The most common architecture mistake is starting with distribution before the signal layer exists. Without a monitored signal layer, the distribution layer has nothing to distribute.</p>
+          <div class="action-box">
+            <strong>This week:</strong> Set up Google Alerts for your top three competitors. Add a G2 review monitor. Route everything to a dedicated Slack channel. Run for 30 days before touching a single battlecard.
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">03</div>
+        <div class="action-content">
+          <h4>Close the Feedback Loop</h4>
+          <p>The most underbuilt part of every CI system is the return path: win/loss data feeding back to the signal layer. This is not an AI problem — it's a CRM hygiene problem.</p>
+          <div class="action-box">
+            <strong>This week:</strong> Add two fields to your CRM's opportunity close stage: "Competitive Situation" (Y/N) and "Primary Competitor Mentioned" (picklist). Brief your AE team in a five-minute async video. Run for one quarter.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Layer as Moat -->
+    <section>
+      <h2>The Data Layer as Competitive Moat</h2>
+      <p>Every competitor can set up Google Alerts. Every competitor can monitor G2 reviews. The signal layer, in isolation, is not a moat — it is table stakes.</p>
+      <p><strong>The moat is the accumulated win/loss data that flows back through the return path.</strong> After four quarters of running a competitive situation tag in your CRM, you have a dataset that tells you:</p>
+      <ul>
+        <li>Which battlecard sections correlate with wins</li>
+        <li>Which competitor claims reliably appear in late-stage deals</li>
+        <li>Which objections are increasing in frequency</li>
+        <li>Which positioning moves are losing effectiveness</li>
+      </ul>
+      
+      <div class="callout quote">
+        <p>"The PMMs building living CI systems now are not just solving the latency problem. They are building a proprietary intelligence asset — a dataset of competitive outcomes that compounds in value every quarter and cannot be replicated from public sources alone."</p>
+        <div class="callout-attribution">— Chris O'Hara</div>
+      </div>
+    </section>
+
+    <!-- Key Takeaways -->
+    <div class="takeaways">
+      <h2>Chapter Takeaways</h2>
+      <ul>
+        <li><strong>The quarterly battlecard cannot keep pace</strong> with a market where competitive positioning shifts weekly. CI latency is now a measurable competitive disadvantage.</li>
+        <li><strong>The CI Maturity Model</strong> runs Reactive → Periodic → Monitored → Living System. Most PMM organizations are at Stage 2. Stage 4 is an architecture decision, not a headcount decision.</li>
+        <li><strong>The Living CI Architecture</strong> has three layers: Signal (what gets monitored), Analysis (what agents do with it), Distribution (how it reaches reps in context).</li>
+        <li><strong>The Living Battlecard</strong> gains four attributes the quarterly battlecard lacks: freshness timestamp, change delta, signal source, and confidence level.</li>
+        <li><strong>The BattleCoach Flywheel</strong> closes the loop: CI signal → battlecard update → rep coaching → deal application → win/loss feedback → back to signal. The return path is the most underbuilt component in most CI systems.</li>
+      </ul>
+    </div>
+
+    <!-- Quiz CTA -->
+    <div class="quiz-cta">
+      <h3>Test Your CI Knowledge</h3>
+      <p>Can you identify which stage of the CI Maturity Model your organization operates at?</p>
+      <a href="#" class="quiz-btn">Coming Soon: Chapter 6 Quiz</a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="chapter-nav">
+      <a href="../chapter-05/" class="nav-btn">← Chapter 5: Why Stories Still Win</a>
+      <a href="../chapter-07/" class="nav-btn next">Chapter 7: The Demo Stack →</a>
+    </nav>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>The Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a> · Chris O'Hara</p>
+    <p style="margin-top: 0.5rem;">© 2026. Educational content for product marketing professionals.</p>
+  </div>
+</footer>
+
+</body>
+</html>
