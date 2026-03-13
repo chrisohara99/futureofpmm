@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7: The Demo Stack | Future of PMM Curriculum</title>
+<meta name="description" content="Match the tool to the moment. A practitioner's guide to the three-tier demo landscape, decision matrix, and Demo Asset Pyramid.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pmm-blue: #3b82f6;
+  --pmm-dark: #1e3a5f;
+  --accent: #c84b31;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e5e7eb;
+  --bg: #faf9f7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+.chapter-header { background: linear-gradient(135deg, var(--pmm-dark) 0%, #0f172a 100%); color: white; padding: 3rem 0; }
+.breadcrumb { font-size: 0.85rem; opacity: 0.7; margin-bottom: 1rem; }
+.breadcrumb a { color: white; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.chapter-num { display: inline-block; background: var(--accent); padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; margin-bottom: 1rem; }
+.chapter-header h1 { font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 0.75rem; }
+.chapter-header .subtitle { font-size: 1.1rem; opacity: 0.85; }
+.pragmatic { margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 0.9rem; }
+.pragmatic strong { color: var(--accent); }
+
+/* Downloads */
+.downloads { background: white; border: 2px solid var(--pmm-blue); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.download-btn { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; background: #eff6ff; border-radius: 8px; text-decoration: none; color: var(--pmm-dark); font-weight: 600; transition: all 0.2s; }
+.download-btn:hover { background: var(--pmm-blue); color: white; }
+.download-btn .icon { font-size: 1.5rem; }
+.download-btn .info { text-align: left; }
+.download-btn .label { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+.download-btn:hover .label { color: rgba(255,255,255,0.8); }
+@media (max-width: 500px) { .downloads { grid-template-columns: 1fr; } }
+
+/* Content sections */
+.content { padding: 2rem 0; }
+section { margin-bottom: 3rem; }
+h2 { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: var(--pmm-dark); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); }
+h3 { font-size: 1.2rem; color: var(--pmm-dark); margin: 1.5rem 0 0.75rem; }
+p { margin-bottom: 1rem; }
+ul, ol { margin: 1rem 0 1.5rem 1.5rem; }
+li { margin-bottom: 0.5rem; }
+
+/* Callout boxes */
+.callout { padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+.callout.warning { background: #fef2f2; border-left: 4px solid #dc2626; }
+.callout.insight { background: #eff6ff; border-left: 4px solid var(--pmm-blue); }
+.callout.quote { background: #f8fafc; border-left: 4px solid var(--muted); font-style: italic; }
+.callout p:last-child { margin-bottom: 0; }
+.callout-attribution { font-size: 0.85rem; color: var(--muted); margin-top: 0.75rem; font-style: normal; }
+
+/* Stats */
+.big-stat { text-align: center; padding: 2rem; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; border-radius: 16px; margin: 2rem 0; }
+.big-stat .number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; line-height: 1; }
+.big-stat .label { font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.9; }
+
+/* Framework tables */
+.framework-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.framework-table th { background: var(--pmm-dark); color: white; padding: 1rem; text-align: left; font-weight: 600; }
+.framework-table td { padding: 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.framework-table tr:last-child td { border-bottom: none; }
+.framework-table tr:nth-child(even) { background: #f8fafc; }
+
+/* Tier cards */
+.tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.tier-card { background: white; border: 2px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+.tier-card:hover { border-color: var(--pmm-blue); }
+.tier-num { display: inline-block; background: var(--pmm-dark); color: white; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem; }
+.tier-card h4 { font-size: 1rem; color: var(--pmm-dark); margin-bottom: 0.5rem; }
+.tier-card .motion { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; }
+.tier-tools { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; }
+.tier-best { font-size: 0.85rem; margin-bottom: 0.5rem; }
+.tier-watch { font-size: 0.8rem; color: #dc2626; background: #fef2f2; padding: 0.5rem; border-radius: 6px; }
+@media (max-width: 700px) { .tier-grid { grid-template-columns: 1fr; } }
+
+/* Pyramid visual */
+.pyramid { margin: 2rem 0; }
+.pyramid-layer { padding: 1rem 1.5rem; margin-bottom: 0.5rem; border-radius: 8px; color: white; }
+.pyramid-layer.master { background: linear-gradient(135deg, var(--pmm-dark) 0%, #0f172a 100%); }
+.pyramid-layer.persona { background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); margin-left: 2rem; margin-right: 2rem; }
+.pyramid-layer.usecase { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); margin-left: 4rem; margin-right: 4rem; }
+.pyramid-layer.channel { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); margin-left: 6rem; margin-right: 6rem; }
+.pyramid-layer strong { display: block; font-size: 0.9rem; margin-bottom: 0.25rem; }
+.pyramid-layer span { font-size: 0.8rem; opacity: 0.9; }
+@media (max-width: 600px) { .pyramid-layer.persona, .pyramid-layer.usecase, .pyramid-layer.channel { margin-left: 0.5rem; margin-right: 0.5rem; } }
+
+/* Responsibility map */
+.resp-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0; margin: 1.5rem 0; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); font-size: 0.9rem; }
+.resp-header { background: var(--pmm-dark); color: white; padding: 0.75rem; font-weight: 600; text-align: center; }
+.resp-header:first-child { text-align: left; }
+.resp-cell { padding: 0.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+.resp-cell:nth-child(4n+1) { font-weight: 500; }
+.resp-cell.owns { background: #dcfce7; color: #166534; justify-content: center; font-weight: 600; }
+.resp-cell.leads { background: #dbeafe; color: #1e40af; justify-content: center; }
+.resp-cell.supports { background: #fef3c7; color: #92400e; justify-content: center; }
+.resp-cell.inputs { background: #f3f4f6; color: #6b7280; justify-content: center; }
+@media (max-width: 600px) { .resp-grid { font-size: 0.75rem; } .resp-cell { padding: 0.5rem; } }
+
+/* Action steps */
+.actions { background: white; border: 2px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+.actions h3 { color: var(--accent); margin-top: 0; border-bottom: none; padding-bottom: 0; }
+.action-item { display: grid; grid-template-columns: 50px 1fr; gap: 1rem; margin: 1.5rem 0; }
+.action-num { width: 40px; height: 40px; background: var(--accent); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.action-content h4 { margin: 0 0 0.5rem; font-size: 1rem; color: var(--pmm-dark); }
+.action-content p { margin: 0; font-size: 0.95rem; color: var(--muted); }
+.action-box { background: #fef3c7; padding: 0.75rem 1rem; border-radius: 6px; margin-top: 0.75rem; font-size: 0.9rem; }
+.action-box strong { color: #92400e; }
+
+/* Takeaways */
+.takeaways { background: var(--pmm-dark); color: white; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+.takeaways h2 { color: white; border-color: var(--accent); }
+.takeaways ul { margin-left: 1.25rem; }
+.takeaways li { margin-bottom: 0.75rem; }
+
+/* Quiz CTA */
+.quiz-cta { background: linear-gradient(135deg, var(--pmm-blue) 0%, #2563eb 100%); color: white; text-align: center; padding: 2.5rem; border-radius: 16px; margin: 2rem 0; }
+.quiz-cta h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+.quiz-cta p { opacity: 0.9; margin-bottom: 1.5rem; }
+.quiz-btn { display: inline-block; background: white; color: var(--pmm-blue); padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s; }
+.quiz-btn:hover { transform: scale(1.05); }
+
+/* Navigation */
+.chapter-nav { display: flex; justify-content: space-between; padding: 2rem 0; border-top: 1px solid var(--border); margin-top: 3rem; }
+.nav-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: white; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text); font-weight: 500; }
+.nav-btn:hover { background: #f8fafc; border-color: var(--pmm-blue); }
+.nav-btn.next { background: var(--pmm-blue); color: white; border-color: var(--pmm-blue); }
+.nav-btn.next:hover { background: #2563eb; }
+
+footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; }
+footer p { opacity: 0.7; font-size: 0.9rem; }
+footer a { color: rgba(255,255,255,0.8); }
+</style>
+</head>
+<body>
+
+<header class="chapter-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../">← Back to Curriculum</a>
+    </div>
+    <div class="chapter-num">Chapter 7</div>
+    <h1>The Demo Stack</h1>
+    <p class="subtitle">Match the tool to the moment. Stop building demos nobody watches.</p>
+    <div class="pragmatic">
+      <strong>Pragmatic Remix:</strong> Sales Enablement • Product Demos • Customer Evidence • Tools & Technology
+    </div>
+  </div>
+</header>
+
+<main class="content">
+  <div class="container">
+    
+    <!-- Downloads -->
+    <div class="downloads">
+      <a href="downloads/chapter-07-slides.pptx" class="download-btn" download>
+        <span class="icon">📊</span>
+        <div class="info">
+          <span class="label">PowerPoint</span>
+          <br>Download Slides
+        </div>
+      </a>
+      <a href="downloads/chapter-07-whitepaper.pdf" class="download-btn" download>
+        <span class="icon">📄</span>
+        <div class="info">
+          <span class="label">PDF</span>
+          <br>Download Whitepaper
+        </div>
+      </a>
+    </div>
+    
+    <!-- Big Stat -->
+    <div class="big-stat">
+      <div class="number">3 Tiers, 1 Strategy</div>
+      <div class="label">Most PMMs over-invest in Tier 1 and under-invest in the async channel that converts at scale</div>
+    </div>
+
+    <!-- Executive Summary -->
+    <section>
+      <h2>Executive Summary</h2>
+      <p>Product demos are among the most time-intensive and highest-leverage activities in the PMM toolkit — and they are being transformed by a generation of automation tools. <strong>Demostack</strong> and <strong>Reprise</strong> let teams clone full product environments. <strong>Supademo</strong> and <strong>Navattic</strong> capture HTML walkthroughs in an afternoon. <strong>Arcade</strong> and <strong>Loom</strong> produce embeddable micro-demos in minutes.</p>
+      <p>The tools exist. The strategy to deploy them coherently, for most PMM organizations, does not.</p>
+      
+      <div class="callout quote">
+        <p>"The PMM who is still hand-crafting a single demo environment for every sales situation is not just leaving leverage on the table — they are building a maintenance burden that compounds with every product release."</p>
+        <div class="callout-attribution">— Chris O'Hara</div>
+      </div>
+    </section>
+
+    <!-- The Problem -->
+    <section>
+      <h2>The One-Size-Fits-None Problem</h2>
+      <p>Walk through any enterprise PMM organization and ask: <em>how many distinct demo environments do you have, and which one gets used for which sales moment?</em></p>
+      <p>The answer is almost always: "We have one main environment, the SEs use it for everything, and we're not entirely sure what gets shown in discovery calls."</p>
+      
+      <p>The demo category has fragmented into <strong>three distinct types of experience</strong> — each with different tooling, different build economics, and different optimal use cases:</p>
+      <ul>
+        <li><strong>Discovery call:</strong> Needs a low-friction, persona-aware walkthrough a rep can run without SE support</li>
+        <li><strong>Executive briefing:</strong> Needs a high-fidelity environment with business outcome framing</li>
+        <li><strong>Website embed:</strong> Needs to load in two seconds and qualify intent without a gating form</li>
+      </ul>
+      <p>These are three different products. One environment cannot serve all three.</p>
+
+      <div class="callout warning">
+        <p><strong>Demo sprawl without demo strategy</strong> — lots of building, no architecture. Discovery calls where the rep shows the wrong persona. Executive briefings where the CFO sees the same environment the SDR used for cold outreach. Conference booths where the live product crashes and there's no fallback.</p>
+      </div>
+    </section>
+
+    <!-- Three-Tier Landscape -->
+    <section>
+      <h2>The Three-Tier Demo Landscape</h2>
+      <p>The demo automation market has organized into three distinct tiers. These are not a hierarchy — Tier 3 is not worse than Tier 1. They are a <strong>menu</strong>, and the right selection depends on the motion, the moment, and the buyer.</p>
+
+      <div class="tier-grid">
+        <div class="tier-card">
+          <span class="tier-num">TIER 1</span>
+          <h4>Full-Environment Cloning</h4>
+          <div class="motion">Enterprise / Complex Sale</div>
+          <div class="tier-tools"><strong>Tools:</strong> Demostack · Reprise · Testbox</div>
+          <div class="tier-best"><strong>Best for:</strong> Executive briefings, late-stage POCs, custom vertical tours. When the deal justifies weeks of investment.</div>
+          <div class="tier-watch">⚠️ Weeks to build. Expensive to maintain. Too heavy for top-of-funnel.</div>
+        </div>
+        <div class="tier-card">
+          <span class="tier-num">TIER 2</span>
+          <h4>HTML-Capture Mid-Market</h4>
+          <div class="motion">Mid-Market / Growth Motion</div>
+          <div class="tier-tools"><strong>Tools:</strong> Supademo · Navattic · Storylane · Walnut</div>
+          <div class="tier-best"><strong>Best for:</strong> Champion demos, SDR outreach, persona-specific leave-behinds, onboarding flows. Balances quality and velocity.</div>
+          <div class="tier-watch">⚠️ Limited interactivity. Feels captured rather than live. Limited branching logic.</div>
+        </div>
+        <div class="tier-card">
+          <span class="tier-num">TIER 3</span>
+          <h4>Agile Self-Serve</h4>
+          <div class="motion">PLG / Self-Serve / Website</div>
+          <div class="tier-tools"><strong>Tools:</strong> Arcade · Loom · Scribe · Tango</div>
+          <div class="tier-best"><strong>Best for:</strong> Website embeds, async follow-ups, blog posts, enablement docs. Fast to create, easy to update.</div>
+          <div class="tier-watch">⚠️ Short shelf life. Can feel lightweight for enterprise buyers doing due diligence.</div>
+        </div>
+      </div>
+
+      <div class="callout insight">
+        <p><strong>Tier 3 is where most PMMs under-invest.</strong> The async channel — email sequences, blog posts, help documentation — converts at scale. A thirty-second Arcade embed on a product feature page can do more pipeline work than a Tier 1 environment that only gets used in twenty executive briefings a year.</p>
+      </div>
+    </section>
+
+    <!-- Demo Decision Matrix -->
+    <section>
+      <h2>The Demo Decision Matrix</h2>
+      <p>Which tier for which moment? The matrix maps six common sales moments to their primary tier:</p>
+
+      <table class="framework-table">
+        <thead>
+          <tr>
+            <th>Sales Moment</th>
+            <th>Tier 1</th>
+            <th>Tier 2</th>
+            <th>Tier 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Discovery Call</strong><br><small>Tier 2 is lowest friction; Tier 1 is overkill early in cycle</small></td>
+            <td>✓</td>
+            <td style="background:#dcfce7;"><strong>✓✓ PRIMARY</strong></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Champion Deep-Dive</strong><br><small>Tier 1 when deal size justifies; Tier 2 for velocity</small></td>
+            <td style="background:#dcfce7;"><strong>✓✓ PRIMARY</strong></td>
+            <td>✓</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Executive Briefing</strong><br><small>Tier 1 only — business outcome framing is non-negotiable</small></td>
+            <td style="background:#dcfce7;"><strong>✓✓ PRIMARY</strong></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Async Leave-Behind</strong><br><small>Tier 2 captures attention; Tier 3 for fast async follow-up</small></td>
+            <td>✓</td>
+            <td style="background:#dcfce7;"><strong>✓✓ PRIMARY</strong></td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td><strong>Conference / Event</strong><br><small>Tier 3 for open booth; Tier 1 for VIP executive suite</small></td>
+            <td>✓</td>
+            <td>✓</td>
+            <td style="background:#dcfce7;"><strong>✓✓ PRIMARY</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Website Embed</strong><br><small>Tier 3 for PLG/SEO; Tier 2 for product-led sales motion</small></td>
+            <td>—</td>
+            <td>✓</td>
+            <td style="background:#dcfce7;"><strong>✓✓ PRIMARY</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout quote">
+        <p>"The async leave-behind is the most under-leveraged moment in B2B demo strategy. A Tier 2 shareable link that tracks engagement and can be updated in real time is categorically better than a PDF. Most PMM teams are still sending the PDF."</p>
+        <div class="callout-attribution">— Chris O'Hara</div>
+      </div>
+    </section>
+
+    <!-- PMM Responsibility Map -->
+    <section>
+      <h2>The PMM Demo Responsibility Map</h2>
+      <p>Demo quality degrades when ownership lines are unclear. The most common failure: PMMs build a master environment, hand it to the SE team, and lose visibility into what gets shown.</p>
+
+      <div class="resp-grid">
+        <div class="resp-header">Demo Activity</div>
+        <div class="resp-header">PMM</div>
+        <div class="resp-header">SE</div>
+        <div class="resp-header">AE</div>
+        
+        <div class="resp-cell">Demo strategy & tool selection</div>
+        <div class="resp-cell owns">Owns</div>
+        <div class="resp-cell supports">Consults</div>
+        <div class="resp-cell inputs">Inputs</div>
+        
+        <div class="resp-cell">Master environment build</div>
+        <div class="resp-cell leads">Leads</div>
+        <div class="resp-cell owns">Builds</div>
+        <div class="resp-cell inputs">Reviews</div>
+        
+        <div class="resp-cell">Persona & use-case narrative</div>
+        <div class="resp-cell owns">Owns</div>
+        <div class="resp-cell supports">Supports</div>
+        <div class="resp-cell inputs">Inputs</div>
+        
+        <div class="resp-cell">Talk track & objection handles</div>
+        <div class="resp-cell owns">Owns</div>
+        <div class="resp-cell supports">Supports</div>
+        <div class="resp-cell leads">Co-owns</div>
+        
+        <div class="resp-cell">Deal personalization</div>
+        <div class="resp-cell leads">Template</div>
+        <div class="resp-cell owns">Executes</div>
+        <div class="resp-cell leads">Directs</div>
+        
+        <div class="resp-cell">Live demo delivery</div>
+        <div class="resp-cell supports">Trains</div>
+        <div class="resp-cell owns">Delivers</div>
+        <div class="resp-cell leads">Leads</div>
+        
+        <div class="resp-cell">Post-demo leave-behind</div>
+        <div class="resp-cell owns">Owns</div>
+        <div class="resp-cell supports">Supports</div>
+        <div class="resp-cell leads">Sends</div>
+        
+        <div class="resp-cell">Demo feedback & pipeline data</div>
+        <div class="resp-cell owns">Owns</div>
+        <div class="resp-cell inputs">Reports</div>
+        <div class="resp-cell inputs">Reports</div>
+      </div>
+
+      <p><strong>The critical handoff is at deal personalization.</strong> PMMs own the template — the structured framework that defines what can be customized and what cannot. SEs execute. AEs direct. When this handoff is clean, every demo is both consistent and relevant.</p>
+    </section>
+
+    <!-- Demo Asset Pyramid -->
+    <section>
+      <h2>The Demo Asset Pyramid</h2>
+      <p>Most organizations build demo assets horizontally — one environment per use case, one deck per persona. The result is a portfolio of one-offs, each requiring independent maintenance.</p>
+      <p><strong>The alternative: build vertically.</strong> One master environment at the top serves as the single source of truth. Everything else derives from it.</p>
+
+      <div class="pyramid">
+        <div class="pyramid-layer master">
+          <strong>Master Environment</strong>
+          <span>PMM-owned. Product-accurate. Narrative-structured. The single source of truth.</span>
+        </div>
+        <div class="pyramid-layer persona">
+          <strong>Persona Variants (3–5)</strong>
+          <span>CFO view · VP Engineering · End User · IT Admin · Line of Business</span>
+        </div>
+        <div class="pyramid-layer usecase">
+          <strong>Use-Case Modules</strong>
+          <span>Analytics · Integration · Governance · Collaboration · Reporting · Compliance</span>
+        </div>
+        <div class="pyramid-layer channel">
+          <strong>Channel Cuts</strong>
+          <span>Web embed · AE-delivered · Event booth · Async follow-up · Enablement doc</span>
+        </div>
+      </div>
+
+      <div class="callout quote">
+        <p>"The PMM who builds five one-off demo environments owns five maintenance burdens. The PMM who builds one master environment and four derivatives owns one. The math of leverage is not subtle."</p>
+        <div class="callout-attribution">— Chris O'Hara</div>
+      </div>
+
+      <p><strong>Prioritization framework:</strong> Invest first in the master environment, then in the one or two persona variants that appear most often in the pipeline, then in channel cuts for the highest-volume distribution channel. Building channel cuts before the master exists is building on sand.</p>
+    </section>
+
+    <!-- Three Moves -->
+    <div class="actions">
+      <h3>Three Moves</h3>
+
+      <div class="action-item">
+        <div class="action-num">01</div>
+        <div class="action-content">
+          <h4>Own Demo Strategy Before Demo Environment</h4>
+          <p>The most common mistake is jumping to tool selection before strategy. The right sequence: audit your sales motions, map demo failure modes by stage, determine your tier mix, then select tools.</p>
+          <div class="action-box">
+            <strong>This week:</strong> Audit your last ten demo interactions. For each: what tool was used, what persona was it built for, what stage, what outcome? Map the gap between what was used and what the moment actually needed.
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">02</div>
+        <div class="action-content">
+          <h4>Build the Asset Pyramid, Not the Swiss Army Knife</h4>
+          <p>The single most leveraged investment is a well-structured master environment — not a mega-demo that tries to show everything, but a narrative-structured, persona-aware environment that can be cut and remixed for any channel.</p>
+          <div class="action-box">
+            <strong>This sprint:</strong> Define your master demo environment. Answer four questions: What is the primary job-to-be-done? What is the primary buyer persona? What is the narrative arc? What does 'done' look like? Build that first.
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">03</div>
+        <div class="action-content">
+          <h4>Close the Feedback Loop from Demo to Pipeline</h4>
+          <p>Demo data is almost never connected to pipeline data. One CRM field changes that. Add a 'Demo Delivered' field to your opportunity close stage: format used, persona cut, and use-case module shown.</p>
+          <div class="action-box">
+            <strong>This week:</strong> Add three fields to your CRM: Demo Format (Tier 1/2/3/None), Demo Persona Cut (dropdown), Demo Use Case (dropdown). Brief your SE team in five minutes. Run for one quarter.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Takeaways -->
+    <div class="takeaways">
+      <h2>Chapter Takeaways</h2>
+      <ul>
+        <li><strong>The demo landscape has three tiers.</strong> Full-environment cloning (Demostack, Reprise), HTML-capture mid-market (Supademo, Navattic), and Agile self-serve (Arcade, Loom). These are not a hierarchy — they are a menu matched to the sales motion.</li>
+        <li><strong>The Demo Decision Matrix maps moments to tiers.</strong> Executive briefings require Tier 1. Website embeds require Tier 3. Async leave-behinds are best served by Tier 2. Most PMMs over-invest in Tier 1 and under-invest in async.</li>
+        <li><strong>PMMs own strategy, narrative, and feedback loops.</strong> SEs own build and delivery. AEs own direction. Blurred lines produce inconsistent, untracked demos that cannot be improved.</li>
+        <li><strong>The Demo Asset Pyramid is the most leveraged investment.</strong> One master environment cascades into persona variants, use-case modules, and channel cuts. Build the master first.</li>
+        <li><strong>Demo data must connect to pipeline data.</strong> A single CRM field closes the feedback loop. One quarter of clean data transforms demo strategy from intuition into evidence.</li>
+      </ul>
+    </div>
+
+    <!-- Quiz CTA -->
+    <div class="quiz-cta">
+      <h3>Test Your Demo Strategy Knowledge</h3>
+      <p>Can you match the right tier to each sales moment in your pipeline?</p>
+      <a href="#" class="quiz-btn">Coming Soon: Chapter 7 Quiz</a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="chapter-nav">
+      <a href="../chapter-06/" class="nav-btn">← Chapter 6: CI as a Living System</a>
+      <a href="../chapter-08/" class="nav-btn next">Chapter 8: Building Your PMM Stack →</a>
+    </nav>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>The Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a> · Chris O'Hara</p>
+    <p style="margin-top: 0.5rem;">© 2026. Educational content for product marketing professionals.</p>
+  </div>
+</footer>
+
+</body>
+</html>
