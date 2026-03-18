@@ -21,45 +21,12 @@
     <meta property="og:description" content="Assess your PMM team's AI readiness. Interactive scorecard with benchmarks from 10x teams.">
     <meta property="og:url" content="https://futureofpmm.com/10x-scorecard">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://futureofpmm.com/assets/images/10x-scorecard-og.jpg">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="The 10x PMM Scorecard">
-    <meta name="twitter:description" content="Assess your PMM team's AI readiness across Content, Competitive Intel, and Demand Gen.">
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "The 10x PMM Scorecard",
-      "description": "Interactive assessment tool for product marketing AI readiness",
-      "url": "https://futureofpmm.com/10x-scorecard",
-      "applicationCategory": "BusinessApplication",
-      "author": {
-        "@type": "Person",
-        "name": "Chris O'Hara"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "The Future of PMM"
-      }
-    }
-    </script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -68,7 +35,10 @@
             line-height: 1.6;
         }
         
-        /* Site Navigation */
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .serif { font-family: 'Instrument Serif', Georgia, serif; }
+        
+        /* Header */
         header {
             background: #fff;
             border-bottom: 1px solid #e5e7eb;
@@ -87,22 +57,10 @@
             gap: 1rem;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; width: auto; }
         
-        .logo img {
-            height: 100px;
-            width: auto;
-        }
-        
-        header nav {
-            display: flex;
-            gap: 1.5rem;
-        }
-        
+        header nav { display: flex; gap: 1.5rem; }
         header nav a {
             font-size: 0.9rem;
             color: #64748b;
@@ -110,15 +68,8 @@
             transition: color 0.2s;
             white-space: nowrap;
         }
-        
-        header nav a:hover {
-            color: #1e3a5f;
-        }
-        
-        header nav a.active {
-            color: #3b82f6;
-            font-weight: 600;
-        }
+        header nav a:hover { color: #1e3a5f; }
+        header nav a.active { color: #3b82f6; font-weight: 600; }
         
         .hamburger {
             display: none;
@@ -132,7 +83,6 @@
             padding: 0;
             z-index: 1001;
         }
-        
         .hamburger span {
             width: 100%;
             height: 3px;
@@ -140,10 +90,6 @@
             border-radius: 2px;
             transition: all 0.3s ease;
         }
-        
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
         
         @media (max-width: 900px) {
             .hamburger { display: flex !important; }
@@ -163,21 +109,529 @@
                 z-index: 1000;
                 gap: 0;
             }
-            header nav.open {
-                display: flex;
-                right: 0;
-            }
-            header nav a {
-                padding: 1rem 0;
-                border-bottom: 1px solid #e5e7eb;
-                font-size: 1rem;
-            }
+            header nav.open { display: flex; right: 0; }
+            header nav a { padding: 1rem 0; border-bottom: 1px solid #e5e7eb; font-size: 1rem; }
         }
         
-        #scorecard-root {
-            min-height: calc(100vh - 120px);
+        /* Main Content */
+        .main-content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            min-height: calc(100vh - 200px);
         }
         
+        .page-header {
+            margin-bottom: 8px;
+        }
+        
+        .page-header .label {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        
+        .page-header h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin: 0 0 20px 0;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 16px;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tab.active {
+            color: #e2e8f0;
+            border-bottom-color: #3b82f6;
+            font-weight: 700;
+        }
+        
+        .tab .check { color: #22c55e; font-size: 10px; }
+        
+        /* Card Intro */
+        .card-intro {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 36px 0;
+        }
+        
+        .card-intro .label {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        
+        .card-intro h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin: 0 0 12px 0;
+        }
+        
+        .card-intro p {
+            font-size: 14.5px;
+            line-height: 1.7;
+            color: #94a3b8;
+            margin: 0 0 28px 0;
+        }
+        
+        .btn {
+            background: #e2e8f0;
+            color: #0f172a;
+            border: none;
+            padding: 12px 28px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn:hover { background: #f1f5f9; }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 9px 18px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .btn:disabled {
+            background: #1e293b;
+            color: #475569;
+            cursor: default;
+            opacity: 0.5;
+        }
+        
+        /* Question View */
+        .question-view {
+            max-width: 660px;
+            margin: 0 auto;
+            padding: 28px 0;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        
+        .question-header .label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+        
+        .progress-bar {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .progress-bar .step {
+            width: 28px;
+            height: 3px;
+            background: #1e293b;
+        }
+        
+        .progress-bar .step.done { background: #e2e8f0; }
+        .progress-bar .step.current { background: #3b82f6; }
+        
+        .question-view h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin: 0 0 20px 0;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: transparent;
+            border: 1px solid #1e293b;
+            padding: 12px 14px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .option.selected {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .option .num {
+            min-width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            background: #0f172a;
+            color: #64748b;
+            border: 1px solid #334155;
+        }
+        
+        .option.selected .num {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+        }
+        
+        .option .text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #94a3b8;
+        }
+        
+        .option.selected .text { color: #e2e8f0; }
+        
+        .question-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+        }
+        
+        /* Results View */
+        .results-view {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 28px 0;
+        }
+        
+        .results-view .label {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        
+        .score-big {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        
+        .score-big .num {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .score-big .max {
+            font-size: 18px;
+            color: #64748b;
+        }
+        
+        .grade-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-width: 1px;
+            border-style: solid;
+            margin-bottom: 12px;
+        }
+        
+        .results-view > p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #cbd5e1;
+            margin: 0 0 24px 0;
+        }
+        
+        /* Bar Chart */
+        .chart-box {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .bar-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .bar-row .dim-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .bar-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .bar-line .bar-label {
+            font-size: 10px;
+            color: #64748b;
+            width: 50px;
+            text-align: right;
+        }
+        
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: #1e293b;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .bar-fill.you { background: #3b82f6; }
+        .bar-fill.avg { background: #f59e0b; opacity: 0.6; }
+        .bar-fill.tenx { background: #22c55e; opacity: 0.6; }
+        
+        .bar-value {
+            font-size: 10px;
+            color: #94a3b8;
+            width: 24px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #1e293b;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+        
+        .legend-item .dot {
+            width: 10px;
+            height: 10px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+        
+        .stat-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            padding: 16px;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+        
+        .stat-card .stat-name {
+            font-size: 13px;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        
+        /* Dimension List */
+        .dim-list {
+            margin-bottom: 24px;
+        }
+        
+        .dim-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        
+        .dim-item .dim-name {
+            flex: 1;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        
+        .dim-item .mini-bars {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .dim-item .mini-bar {
+            width: 24px;
+            height: 5px;
+            background: #1e293b;
+        }
+        
+        .dim-item .mini-bar.filled { background: #3b82f6; }
+        
+        .dim-item .dim-score {
+            font-size: 13px;
+            font-weight: 700;
+            color: #e2e8f0;
+            width: 20px;
+            text-align: right;
+        }
+        
+        .results-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        
+        /* Org View */
+        .org-empty {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 36px 0;
+            text-align: center;
+        }
+        
+        .org-empty .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .org-empty h2 {
+            font-size: 24px;
+            color: #f1f5f9;
+            margin: 0 0 12px 0;
+        }
+        
+        .org-empty p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+        
+        .card-summaries {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .card-summaries.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .card-summaries.cols-2 { grid-template-columns: 1fr 1fr; }
+        .card-summaries.cols-1 { grid-template-columns: 1fr; }
+        
+        @media (max-width: 600px) {
+            .card-summaries.cols-3,
+            .card-summaries.cols-2 { grid-template-columns: 1fr; }
+        }
+        
+        .card-summary {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            padding: 20px;
+        }
+        
+        .card-summary .cs-title {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        
+        .card-summary .cs-score {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .card-summary .cs-grade {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        .incomplete-note {
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .incomplete-note p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
         .footer-cta {
             background: #0f172a;
             border-top: 1px solid #1e293b;
@@ -198,9 +652,9 @@
             text-decoration: none;
         }
         
-        .footer-cta a:hover {
-            text-decoration: underline;
-        }
+        .footer-cta a:hover { text-decoration: underline; }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -213,6 +667,7 @@
                 <a href="digests/">Digests</a>
                 <a href="ai-tools.html">AI Tools</a>
                 <a href="10x-scorecard.html" class="active">10x Scorecard</a>
+                <a href="competitive-intel.html">Competitive Intel</a>
                 <a href="page-about.html">About</a>
                 <a href="newsletters.html">Newsletter</a>
             </nav>
@@ -221,453 +676,565 @@
             </button>
         </div>
     </header>
-    <script>
-    document.getElementById('hamburger').addEventListener('click', function() {
-        this.classList.toggle('active');
-        document.getElementById('main-nav').classList.toggle('open');
-    });
-    </script>
 
-    <div id="scorecard-root"></div>
+    <div class="main-content">
+        <div class="page-header">
+            <div class="label mono">The Future of PMM</div>
+            <h1 class="serif">The 10x PMM Scorecard</h1>
+        </div>
+        
+        <div class="tabs" id="tabs">
+            <button class="tab active mono" data-tab="content">
+                <span class="icon">✏️</span> Content
+            </button>
+            <button class="tab mono" data-tab="competitive">
+                <span class="icon">🎯</span> Competitive
+            </button>
+            <button class="tab mono" data-tab="demandgen">
+                <span class="icon">📈</span> Demand Gen
+            </button>
+            <button class="tab mono" data-tab="org">
+                <span class="icon">◉</span> Full Org
+            </button>
+        </div>
+        
+        <div id="content-area"></div>
+    </div>
     
     <div class="footer-cta">
         <p>The 10x PMM Scorecard is part of <em>The Future of Product Marketing</em> by Dan Yu and Chris O'Hara. Full playbooks for each dimension available in the <a href="curriculum/">curriculum</a>.</p>
         <p><a href="newsletters.html">Subscribe to the newsletter</a> for weekly insights on AI-powered product marketing.</p>
     </div>
 
-    <script type="text/babel">
-const { useState } = React;
-const { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend } = Recharts;
+    <script>
+    // Data
+    const SCORECARDS = {
+      content: {
+        title: "Content PMM",
+        subtitle: "How AI-Ready Is Your Content Operation?",
+        intro: "Your content team is the production engine of product marketing — positioning docs, blog posts, sales assets, launch materials. AI is compressing production timelines from weeks to hours. Where does your content operation fall?",
+        benchAvg: [2.2, 1.7, 1.8, 2.0, 1.5, 1.6],
+        benchTenx: [4.6, 4.3, 4.5, 4.2, 4.3, 4.5],
+        dims: [
+          { key: "drafting", short: "Drafting", label: "Drafting & Production", levels: [
+            "All-human content workflows. Writers start from blank page every time. Major assets take weeks.",
+            "Individual writers experimenting with ChatGPT or Claude for first drafts. No shared standards or prompts.",
+            "AI-first drafting is the team standard for most content types. Human editing layer for voice and accuracy. Days per asset.",
+            "Templatized AI workflows per content type. RAG-powered knowledge base feeds consistent positioning into every draft. Same-day turnaround.",
+            "Automated content pipeline: AI generates drafts from product telemetry, competitive signals, and positioning frameworks. Humans focus on strategy and judgment."
+          ]},
+          { key: "voice", short: "Brand Voice", label: "Brand Voice & Consistency", levels: [
+            "Brand voice is tribal knowledge — lives in people's heads. Consistency depends on who writes it.",
+            "Style guide exists as a document but isn't systematically applied. AI outputs sound generic.",
+            "Codified style guide actively used to prompt AI. Results are recognizably on-brand most of the time.",
+            "Style guide integrated into AI workflows via system prompts or fine-tuning. Consistent voice at scale across writers.",
+            "AI writing system trained on your corpus with RAG-powered style enforcement. Voice is indistinguishable from your best human writer."
+          ]},
+          { key: "repurpose", short: "Repurposing", label: "Content Repurposing & Atomization", levels: [
+            "Each channel gets its own content created from scratch. A blog post is a blog post — it doesn't become anything else.",
+            "Ad hoc manual repurposing — someone reformats the webinar into a blog post when they have time.",
+            "Structured repurposing workflow: one anchor asset deliberately planned to feed multiple channels.",
+            "AI-assisted atomization: one asset generates blog, social, email, sales snippet, and slide deck variants with human review.",
+            "One-to-many content engine: anchor assets auto-atomized into 10+ formats. AI handles adaptation per channel, persona, and buying stage."
+          ]},
+          { key: "performance", short: "Performance", label: "Performance & Optimization", levels: [
+            "Publish and hope. Content performance measured sporadically if at all. No feedback loop into strategy.",
+            "Basic analytics tracked (views, downloads) but not systematically used to inform what gets created next.",
+            "Content performance data reviewed monthly. High performers identified and replicated. Low performers retired.",
+            "AI-driven analysis of content performance patterns. A/B testing on headlines, formats, and CTAs. Insights feed editorial calendar.",
+            "Closed-loop system: engagement and pipeline data flow back into content strategy in real time. AI recommends what to create next based on performance signals."
+          ]},
+          { key: "geo", short: "GEO", label: "GEO & AI Discoverability", levels: [
+            "No awareness of how LLMs surface your content. Optimization is traditional SEO only.",
+            "Aware of GEO as a concept. Have tested LLM queries about your product but taken no action.",
+            "Actively restructuring key pages with structured claims, evidence citations, and schema markup for AI readability.",
+            "Systematic GEO program: evidence-rich content, structured data, regular LLM result monitoring across models.",
+            "AI-optimized content pipeline feeding all major LLMs. MCP-ready product data. Agent-discoverable across every discovery surface."
+          ]},
+          { key: "knowledge", short: "Knowledge", label: "Knowledge Infrastructure", levels: [
+            "Content lives in Google Drive folders and Confluence pages that nobody can find. Institutional knowledge walks out the door with people.",
+            "Some content indexed in a shared repository, but search is poor and most people rely on asking colleagues.",
+            "Centralized content library with decent search and tagging. PMMs can find existing assets before creating new ones.",
+            "RAG-powered knowledge base: AI can retrieve and reference any existing asset. Positioning consistency enforced through retrieval.",
+            "Living content intelligence layer: AI indexes, relates, and surfaces content across the org. Knows what exists, what's outdated, what's missing, and what's performing."
+          ]}
+        ]
+      },
+      competitive: {
+        title: "Competitive Intel",
+        subtitle: "How AI-Ready Is Your Competitive Program?",
+        intro: "Your competitive function is the intelligence layer of the PMM org — win/loss analysis, battlecards, market mapping. AI is turning quarterly research projects into always-on signal detection. Where does your competitive program fall?",
+        benchAvg: [1.9, 2.1, 1.6, 1.4, 2.0, 1.7],
+        benchTenx: [4.7, 4.5, 4.3, 4.0, 4.5, 4.2],
+        dims: [
+          { key: "signals", short: "Signals", label: "Signal Monitoring", levels: [
+            "Ad hoc Google alerts and occasional competitor website checks. No systematic monitoring.",
+            "Manual tracking of 2-3 key competitors. Analyst reports reviewed when published. Mostly reactive.",
+            "Structured monitoring program with defined sources per competitor. AI assists research synthesis.",
+            "AI-monitored signals across pricing, positioning, hiring, product changes, and earnings for all tracked competitors.",
+            "Always-on agent-driven system: real-time detection of competitor moves across web, social, job boards, patent filings, and SEC filings."
+          ]},
+          { key: "battlecards", short: "Battlecards", label: "Battlecard Operations", levels: [
+            "Battlecards are static PDFs updated quarterly or less. Sales may not know they exist.",
+            "Battlecards maintained in a wiki or portal. Updated monthly by competitive PMM. Sales adoption is mixed.",
+            "Structured card program with defined update cadence. Cards accessible in CRM or sales tool. Reps trained on usage.",
+            "Near-real-time card updates triggered by competitive signals. Cards surfaced contextually in deal workflows.",
+            "Auto-updating battlecards integrated into CRM. AI generates situational talk tracks based on deal context, competitor, and buyer persona."
+          ]},
+          { key: "winloss", short: "Win/Loss", label: "Win/Loss Intelligence", levels: [
+            "Anecdotal sales feedback is the primary source. No structured win/loss process.",
+            "Win/loss interviews conducted sporadically. Insights shared in occasional slide decks.",
+            "Structured win/loss program with regular interviews. Themes tracked and reported quarterly.",
+            "AI-assisted win/loss analysis: call recordings transcribed and analyzed for patterns. Quantitative win rates tracked per competitor.",
+            "AI-analyzed call recordings feed continuous win/loss intelligence. Patterns detected across hundreds of deals. Insights flow into positioning in real time."
+          ]},
+          { key: "modeling", short: "Modeling", label: "Competitor Modeling", levels: [
+            "Reactive to competitor moves after they happen. No forward-looking analysis.",
+            "Periodic competitive landscape reviews. SWOT analysis updated at planning cycles.",
+            "Competitor strategy hypotheses maintained and updated. Leading indicators tracked (hiring, partnerships, funding).",
+            "Structured predictive signals: AI tracks hiring patterns, patent filings, job posts, and partnership announcements to anticipate moves.",
+            "Predictive competitor modeling: AI synthesizes across signal types to forecast product launches, pricing changes, and market entries before announced."
+          ]},
+          { key: "enablement", short: "Enablement", label: "Sales Enablement Integration", levels: [
+            "Battlecards exist but reps don't use them. Competitive intel flows through tribal knowledge.",
+            "Competitive content available in sales portal. Reps access it when they remember to look.",
+            "Competitive insights integrated into sales onboarding and regular enablement sessions. Usage tracked.",
+            "Competitive intelligence embedded in sales workflows — surfaced in CRM at deal level. AI-recommended talk tracks.",
+            "AI-coached competitive selling: reps get real-time objection handling, competitive positioning, and deal-specific intelligence during calls."
+          ]},
+          { key: "landscape", short: "Landscape", label: "Market Landscape & Category", levels: [
+            "Static TAM slides updated annually. Category defined by what analysts say.",
+            "Periodic market maps maintained. Category positioning reviewed at planning cycles.",
+            "Dynamic market landscape with regular updates. Emerging competitors and adjacent threats tracked.",
+            "AI-tracked category evolution: analyst sentiment, funding flows, M&A signals, and emerging players monitored continuously.",
+            "Living market intelligence: AI maintains dynamic category map with real-time positioning shifts, alliance structures, and category boundary changes."
+          ]}
+        ]
+      },
+      demandgen: {
+        title: "Demand Gen",
+        subtitle: "How AI-Ready Is Your Demand Engine?",
+        intro: "Your demand gen function turns positioning into pipeline — campaigns, targeting, personalization, measurement. AI is collapsing the cycle from brief to live and making personalization at scale actually achievable. Where does your demand engine fall?",
+        benchAvg: [2.3, 2.0, 1.7, 1.9, 2.1, 1.8],
+        benchTenx: [4.5, 4.4, 4.6, 4.3, 4.4, 4.5],
+        dims: [
+          { key: "campaign", short: "Campaigns", label: "Campaign Production", levels: [
+            "Weeks from brief to launch. Creative and copy produced manually with heavy review cycles.",
+            "Some AI assistance in copywriting or image generation, but the process is still largely manual and sequential.",
+            "AI-accelerated creative workflows: first-draft copy, variant generation, and image concepts produced in hours.",
+            "Templatized AI campaign workflows: brief-to-draft in hours, variant testing built into the process, multi-channel assets from single brief.",
+            "Near-autonomous campaign production: AI generates full campaign packages from strategic brief, human PMMs approve and refine."
+          ]},
+          { key: "targeting", short: "Targeting", label: "Audience Targeting & Segmentation", levels: [
+            "Static segments based on firmographics and job title. Same audience for most campaigns.",
+            "Basic behavioral segmentation added to firmographics. Segments updated quarterly.",
+            "Dynamic segmentation incorporating intent signals and engagement data. Segments refreshed regularly.",
+            "AI-driven segmentation using predictive scoring, intent data, and behavioral clustering. Segments evolve continuously.",
+            "Real-time AI audience modeling: dynamic segments built from intent, behavior, product usage, and market signals."
+          ]},
+          { key: "personalization", short: "Personal.", label: "Personalization at Scale", levels: [
+            "One message, many audiences. Personalization limited to merge fields (first name, company).",
+            "2-3 message variants per campaign segmented by persona or vertical. Manual creation of each variant.",
+            "AI-generated content variants per segment. Personalization extends to subject lines, CTAs, and key proof points.",
+            "Dynamic personalization across email, web, and ads. AI tailors content to persona, buying stage, and engagement history.",
+            "Hyper-personalized journeys: AI generates unique content sequences per account or buyer, adapting in real time."
+          ]},
+          { key: "attribution", short: "Attribution", label: "Attribution & Measurement", levels: [
+            "Last-touch attribution in a spreadsheet. Pipeline impact of marketing is debated, not measured.",
+            "Basic multi-touch attribution in MAP or CRM. Reports generated monthly. Some visibility into campaign influence.",
+            "Multi-touch attribution with reasonable model. Campaign ROI tracked. Marketing and sales aligned on definitions.",
+            "AI-enhanced attribution: algorithmic weighting across touchpoints, real-time pipeline visibility, and predictive pipeline modeling.",
+            "Full-funnel AI attribution: every touchpoint weighted algorithmically, real-time revenue dashboards, AI budget reallocation recommendations."
+          ]},
+          { key: "scoring", short: "Scoring", label: "Lead Scoring & Routing", levels: [
+            "MQL threshold based on form fills and email opens. All leads routed the same way.",
+            "Basic scoring model with demographic and behavioral factors. Manual thresholds reviewed periodically.",
+            "Scoring model includes intent data and engagement patterns. Routing rules differentiate by segment or score tier.",
+            "AI-scored leads using behavioral signals, content consumption, and product engagement. Routing by predicted conversion probability.",
+            "Predictive lead intelligence: AI scores, routes, and prioritizes leads in real time. Sales receives leads with context and recommended next action."
+          ]},
+          { key: "channels", short: "Channels", label: "Channel Optimization", levels: [
+            "Manual bid management and budget allocation. Channels run independently with periodic review.",
+            "Some automation in paid channels (auto-bidding). Budget allocation reviewed monthly based on performance.",
+            "Cross-channel performance dashboards. Budget shifts made based on data but still manually executed.",
+            "AI-optimized spend allocation across channels. Automated budget shifting based on real-time performance and pipeline signals.",
+            "Autonomous channel optimization: AI manages cross-channel budget allocation, bidding, and creative rotation. Human sets strategy; AI executes."
+          ]}
+        ]
+      }
+    };
 
-const SCORECARDS = {
-  content: {
-    title: "Content PMM",
-    subtitle: "How AI-Ready Is Your Content Operation?",
-    intro: "Your content team is the production engine of product marketing — positioning docs, blog posts, sales assets, launch materials. AI is compressing production timelines from weeks to hours. Where does your content operation fall?",
-    benchAvg: [2.2, 1.7, 1.8, 2.0, 1.5, 1.6],
-    benchTenx: [4.6, 4.3, 4.5, 4.2, 4.3, 4.5],
-    dims: [
-      { key: "drafting", short: "Drafting", label: "Drafting & Production", levels: [
-        "All-human content workflows. Writers start from blank page every time. Major assets take weeks.",
-        "Individual writers experimenting with ChatGPT or Claude for first drafts. No shared standards or prompts.",
-        "AI-first drafting is the team standard for most content types. Human editing layer for voice and accuracy. Days per asset.",
-        "Templatized AI workflows per content type. RAG-powered knowledge base feeds consistent positioning into every draft. Same-day turnaround.",
-        "Automated content pipeline: AI generates drafts from product telemetry, competitive signals, and positioning frameworks. Humans focus on strategy and judgment."
-      ]},
-      { key: "voice", short: "Brand Voice", label: "Brand Voice & Consistency", levels: [
-        "Brand voice is tribal knowledge — lives in people's heads. Consistency depends on who writes it.",
-        "Style guide exists as a document but isn't systematically applied. AI outputs sound generic.",
-        "Codified style guide actively used to prompt AI. Results are recognizably on-brand most of the time.",
-        "Style guide integrated into AI workflows via system prompts or fine-tuning. Consistent voice at scale across writers.",
-        "AI writing system trained on your corpus with RAG-powered style enforcement. Voice is indistinguishable from your best human writer."
-      ]},
-      { key: "repurpose", short: "Repurposing", label: "Content Repurposing & Atomization", levels: [
-        "Each channel gets its own content created from scratch. A blog post is a blog post — it doesn't become anything else.",
-        "Ad hoc manual repurposing — someone reformats the webinar into a blog post when they have time.",
-        "Structured repurposing workflow: one anchor asset deliberately planned to feed multiple channels.",
-        "AI-assisted atomization: one asset generates blog, social, email, sales snippet, and slide deck variants with human review.",
-        "One-to-many content engine: anchor assets auto-atomized into 10+ formats. AI handles adaptation per channel, persona, and buying stage."
-      ]},
-      { key: "performance", short: "Performance", label: "Performance & Optimization", levels: [
-        "Publish and hope. Content performance measured sporadically if at all. No feedback loop into strategy.",
-        "Basic analytics tracked (views, downloads) but not systematically used to inform what gets created next.",
-        "Content performance data reviewed monthly. High performers identified and replicated. Low performers retired.",
-        "AI-driven analysis of content performance patterns. A/B testing on headlines, formats, and CTAs. Insights feed editorial calendar.",
-        "Closed-loop system: engagement and pipeline data flow back into content strategy in real time. AI recommends what to create next based on performance signals."
-      ]},
-      { key: "geo", short: "GEO", label: "GEO & AI Discoverability", levels: [
-        "No awareness of how LLMs surface your content. Optimization is traditional SEO only.",
-        "Aware of GEO as a concept. Have tested LLM queries about your product but taken no action.",
-        "Actively restructuring key pages with structured claims, evidence citations, and schema markup for AI readability.",
-        "Systematic GEO program: evidence-rich content, structured data, regular LLM result monitoring across models.",
-        "AI-optimized content pipeline feeding all major LLMs. MCP-ready product data. Agent-discoverable across every discovery surface."
-      ]},
-      { key: "knowledge", short: "Knowledge Infra", label: "Knowledge Infrastructure", levels: [
-        "Content lives in Google Drive folders and Confluence pages that nobody can find. Institutional knowledge walks out the door with people.",
-        "Some content indexed in a shared repository, but search is poor and most people rely on asking colleagues.",
-        "Centralized content library with decent search and tagging. PMMs can find existing assets before creating new ones.",
-        "RAG-powered knowledge base: AI can retrieve and reference any existing asset. Positioning consistency enforced through retrieval.",
-        "Living content intelligence layer: AI indexes, relates, and surfaces content across the org. Knows what exists, what's outdated, what's missing, and what's performing."
-      ]}
-    ]
-  },
-  competitive: {
-    title: "Competitive Intel",
-    subtitle: "How AI-Ready Is Your Competitive Program?",
-    intro: "Your competitive function is the intelligence layer of the PMM org — win/loss analysis, battlecards, market mapping. AI is turning quarterly research projects into always-on signal detection. Where does your competitive program fall?",
-    benchAvg: [1.9, 2.1, 1.6, 1.4, 2.0, 1.7],
-    benchTenx: [4.7, 4.5, 4.3, 4.0, 4.5, 4.2],
-    dims: [
-      { key: "signals", short: "Signal Monitoring", label: "Signal Monitoring", levels: [
-        "Ad hoc Google alerts and occasional competitor website checks. No systematic monitoring.",
-        "Manual tracking of 2-3 key competitors. Analyst reports reviewed when published. Mostly reactive.",
-        "Structured monitoring program with defined sources per competitor. AI assists research synthesis.",
-        "AI-monitored signals across pricing, positioning, hiring, product changes, and earnings for all tracked competitors.",
-        "Always-on agent-driven system: real-time detection of competitor moves across web, social, job boards, patent filings, and SEC filings. Alerts before your sales team hears about it."
-      ]},
-      { key: "battlecards", short: "Battlecards", label: "Battlecard Operations", levels: [
-        "Battlecards are static PDFs updated quarterly or less. Sales may not know they exist.",
-        "Battlecards maintained in a wiki or portal. Updated monthly by competitive PMM. Sales adoption is mixed.",
-        "Structured card program with defined update cadence. Cards accessible in CRM or sales tool. Reps trained on usage.",
-        "Near-real-time card updates triggered by competitive signals. Cards surfaced contextually in deal workflows.",
-        "Auto-updating battlecards integrated into CRM. AI generates situational talk tracks based on deal context, competitor, and buyer persona."
-      ]},
-      { key: "winloss", short: "Win/Loss Intel", label: "Win/Loss Intelligence", levels: [
-        "Anecdotal sales feedback is the primary source. No structured win/loss process.",
-        "Win/loss interviews conducted sporadically. Insights shared in occasional slide decks.",
-        "Structured win/loss program with regular interviews. Themes tracked and reported quarterly.",
-        "AI-assisted win/loss analysis: call recordings transcribed and analyzed for patterns. Quantitative win rates tracked per competitor.",
-        "AI-analyzed call recordings feed continuous win/loss intelligence. Patterns detected across hundreds of deals. Insights flow into positioning and enablement in real time."
-      ]},
-      { key: "modeling", short: "Competitor Modeling", label: "Competitor Modeling", levels: [
-        "Reactive to competitor moves after they happen. No forward-looking analysis.",
-        "Periodic competitive landscape reviews. SWOT analysis updated at planning cycles.",
-        "Competitor strategy hypotheses maintained and updated. Leading indicators tracked (hiring, partnerships, funding).",
-        "Structured predictive signals: AI tracks hiring patterns, patent filings, job posts, and partnership announcements to anticipate moves.",
-        "Predictive competitor modeling: AI synthesizes across signal types to forecast product launches, pricing changes, and market entries before they're announced."
-      ]},
-      { key: "enablement", short: "Sales Integration", label: "Sales Enablement Integration", levels: [
-        "Battlecards exist but reps don't use them. Competitive intel flows through tribal knowledge.",
-        "Competitive content available in sales portal. Reps access it when they remember to look.",
-        "Competitive insights integrated into sales onboarding and regular enablement sessions. Usage tracked.",
-        "Competitive intelligence embedded in sales workflows — surfaced in CRM at deal level. AI-recommended talk tracks.",
-        "AI-coached competitive selling: reps get real-time objection handling, competitive positioning, and deal-specific intelligence during prep and live calls."
-      ]},
-      { key: "landscape", short: "Market Landscape", label: "Market Landscape & Category", levels: [
-        "Static TAM slides updated annually. Category defined by what analysts say.",
-        "Periodic market maps maintained. Category positioning reviewed at planning cycles.",
-        "Dynamic market landscape with regular updates. Emerging competitors and adjacent threats tracked.",
-        "AI-tracked category evolution: analyst sentiment, funding flows, M&A signals, and emerging players monitored continuously.",
-        "Living market intelligence: AI maintains dynamic category map with real-time positioning shifts, alliance structures, and category boundary changes. Feeds strategic planning continuously."
-      ]}
-    ]
-  },
-  demandgen: {
-    title: "Demand Gen",
-    subtitle: "How AI-Ready Is Your Demand Engine?",
-    intro: "Your demand gen function turns positioning into pipeline — campaigns, targeting, personalization, measurement. AI is collapsing the cycle from brief to live and making personalization at scale actually achievable. Where does your demand engine fall?",
-    benchAvg: [2.3, 2.0, 1.7, 1.9, 2.1, 1.8],
-    benchTenx: [4.5, 4.4, 4.6, 4.3, 4.4, 4.5],
-    dims: [
-      { key: "campaign", short: "Campaigns", label: "Campaign Production", levels: [
-        "Weeks from brief to launch. Creative and copy produced manually with heavy review cycles.",
-        "Some AI assistance in copywriting or image generation, but the process is still largely manual and sequential.",
-        "AI-accelerated creative workflows: first-draft copy, variant generation, and image concepts produced in hours. Human creative direction and approval.",
-        "Templatized AI campaign workflows: brief-to-draft in hours, variant testing built into the process, multi-channel assets generated from a single brief.",
-        "Near-autonomous campaign production: AI generates full campaign packages from strategic brief, human PMMs approve and refine. Days from concept to live across channels."
-      ]},
-      { key: "targeting", short: "Targeting", label: "Audience Targeting & Segmentation", levels: [
-        "Static segments based on firmographics and job title. Same audience for most campaigns.",
-        "Basic behavioral segmentation added to firmographics. Segments updated quarterly.",
-        "Dynamic segmentation incorporating intent signals and engagement data. Segments refreshed regularly.",
-        "AI-driven segmentation using predictive scoring, intent data, and behavioral clustering. Segments evolve continuously.",
-        "Real-time AI audience modeling: dynamic segments built from intent, behavior, product usage, and market signals. Micro-segments targeted with precision."
-      ]},
-      { key: "personalization", short: "Personalization", label: "Personalization at Scale", levels: [
-        "One message, many audiences. Personalization limited to merge fields (first name, company).",
-        "2-3 message variants per campaign segmented by persona or vertical. Manual creation of each variant.",
-        "AI-generated content variants per segment. Personalization extends to subject lines, CTAs, and key proof points.",
-        "Dynamic personalization across email, web, and ads. AI tailors content to persona, buying stage, and engagement history.",
-        "Hyper-personalized journeys: AI generates unique content sequences per account or buyer, adapting in real time based on engagement signals."
-      ]},
-      { key: "attribution", short: "Attribution", label: "Attribution & Measurement", levels: [
-        "Last-touch attribution in a spreadsheet. Pipeline impact of marketing is debated, not measured.",
-        "Basic multi-touch attribution in MAP or CRM. Reports generated monthly. Some visibility into campaign influence.",
-        "Multi-touch attribution with reasonable model. Campaign ROI tracked. Marketing and sales aligned on definitions.",
-        "AI-enhanced attribution: algorithmic weighting across touchpoints, real-time pipeline visibility, and predictive pipeline modeling.",
-        "Full-funnel AI attribution: every touchpoint weighted algorithmically, real-time revenue impact dashboards, and AI-generated recommendations for budget reallocation."
-      ]},
-      { key: "scoring", short: "Lead Scoring", label: "Lead Scoring & Routing", levels: [
-        "MQL threshold based on form fills and email opens. All leads routed the same way.",
-        "Basic scoring model with demographic and behavioral factors. Manual thresholds reviewed periodically.",
-        "Scoring model includes intent data and engagement patterns. Routing rules differentiate by segment or score tier.",
-        "AI-scored leads using behavioral signals, content consumption, and product engagement. Routing optimized by predicted conversion probability.",
-        "Predictive lead intelligence: AI scores, routes, and prioritizes leads in real time. Sales receives leads with context, predicted value, and recommended next action."
-      ]},
-      { key: "channels", short: "Channel Optimization", label: "Channel Optimization", levels: [
-        "Manual bid management and budget allocation. Channels run independently with periodic review.",
-        "Some automation in paid channels (auto-bidding). Budget allocation reviewed monthly based on performance.",
-        "Cross-channel performance dashboards. Budget shifts made based on data but still manually executed.",
-        "AI-optimized spend allocation across channels. Automated budget shifting based on real-time performance and pipeline signals.",
-        "Autonomous channel optimization: AI manages cross-channel budget allocation, bidding, and creative rotation. Human sets strategy and constraints; AI executes and optimizes continuously."
-      ]}
-    ]
-  }
-};
-
-const TABS = [
-  { key: "content", icon: "✏️", label: "Content" },
-  { key: "competitive", icon: "🎯", label: "Competitive" },
-  { key: "demandgen", icon: "📈", label: "Demand Gen" },
-  { key: "org", icon: "◉", label: "Full Org" },
-];
-
-const getGrade = (avg) => {
-  if (avg >= 4.5) return { grade: "10x PMM", color: "#22c55e", msg: "Your team is operating at the frontier — competing through AI, not just using it. The gap between you and the median org is structural and widening." };
-  if (avg >= 3.5) return { grade: "Scaling", color: "#3b82f6", msg: "Past experimentation into real capability building. The next step is connecting these capabilities into an integrated system." };
-  if (avg >= 2.5) return { grade: "Implementing", color: "#f59e0b", msg: "Past awareness and into action, but fragmented. Individuals are using AI; the team isn't yet operating as an AI-native unit." };
-  if (avg >= 1.5) return { grade: "Exploring", color: "#f97316", msg: "Your team knows AI matters but hasn't operationalized it. This is where 60% of enterprises sit — but the gap is compounding every quarter." };
-  return { grade: "Pre-AI", color: "#ef4444", msg: "Running a pre-AI playbook. The biggest gains come from moving from 1 to 3, not from 3 to 5. Start with your weakest dimension." };
-};
-
-const mono = "'JetBrains Mono', monospace";
-const serif = "Georgia, 'Times New Roman', serif";
-
-function ScorecardFlow({ cardKey, onComplete }) {
-  const card = SCORECARDS[cardKey];
-  const [scores, setScores] = useState([0,0,0,0,0,0]);
-  const [dimIdx, setDimIdx] = useState(-1);
-  
-  const setScore = (i, v) => { const n = [...scores]; n[i] = v; setScores(n); };
-  const allDone = scores.every(s => s > 0);
-  const avg = allDone ? scores.reduce((a,b) => a+b,0) / 6 : 0;
-  const grade = getGrade(avg);
-  
-  const chartData = card.dims.map((d, i) => ({
-    dim: d.short,
-    You: scores[i],
-    Avg: card.benchAvg[i],
-    "10x": card.benchTenx[i],
-  }));
-  
-  if (dimIdx === -1) {
-    return (
-      <div style={{ maxWidth: 620, margin: "0 auto", padding: "36px 20px" }}>
-        <div style={{ fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase", color: "#64748b", marginBottom: 12, fontFamily: mono }}>{card.title}</div>
-        <h2 style={{ fontSize: 28, fontWeight: 700, color: "#f1f5f9", margin: "0 0 12px 0", fontFamily: serif }}>{card.subtitle}</h2>
-        <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#94a3b8", margin: "0 0 28px 0" }}>{card.intro}</p>
-        <button onClick={() => setDimIdx(0)} style={{ background: "#e2e8f0", color: "#0f172a", border: "none", padding: "12px 28px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: mono }}>
-          Start Assessment →
-        </button>
-      </div>
-    );
-  }
-  
-  if (dimIdx < 6) {
-    const dim = card.dims[dimIdx];
-    const sel = scores[dimIdx];
-    return (
-      <div style={{ maxWidth: 660, margin: "0 auto", padding: "28px 20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: "#64748b", fontFamily: mono }}>
-            {card.title} — {dimIdx + 1} of 6
+    // State
+    let state = {
+      activeTab: 'content',
+      completed: {},
+      currentScores: [0,0,0,0,0,0],
+      questionIndex: -1
+    };
+    
+    // Helpers
+    function getGrade(avg) {
+      if (avg >= 4.5) return { grade: "10x PMM", color: "#22c55e", msg: "Your team is operating at the frontier — competing through AI, not just using it. The gap between you and the median org is structural and widening." };
+      if (avg >= 3.5) return { grade: "Scaling", color: "#3b82f6", msg: "Past experimentation into real capability building. The next step is connecting these capabilities into an integrated system." };
+      if (avg >= 2.5) return { grade: "Implementing", color: "#f59e0b", msg: "Past awareness and into action, but fragmented. Individuals are using AI; the team isn't yet operating as an AI-native unit." };
+      if (avg >= 1.5) return { grade: "Exploring", color: "#f97316", msg: "Your team knows AI matters but hasn't operationalized it. This is where 60% of enterprises sit — but the gap is compounding every quarter." };
+      return { grade: "Pre-AI", color: "#ef4444", msg: "Running a pre-AI playbook. The biggest gains come from moving from 1 to 3, not from 3 to 5. Start with your weakest dimension." };
+    }
+    
+    function render() {
+      updateTabs();
+      const area = document.getElementById('content-area');
+      
+      if (state.activeTab === 'org') {
+        area.innerHTML = renderOrgView();
+      } else {
+        const card = SCORECARDS[state.activeTab];
+        if (state.completed[state.activeTab]) {
+          area.innerHTML = renderResults(card, state.completed[state.activeTab]);
+        } else if (state.questionIndex === -1) {
+          area.innerHTML = renderIntro(card);
+        } else {
+          area.innerHTML = renderQuestion(card);
+        }
+      }
+      
+      attachEvents();
+    }
+    
+    function updateTabs() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        const key = tab.dataset.tab;
+        const isActive = key === state.activeTab;
+        const isDone = key !== 'org' && state.completed[key];
+        
+        tab.classList.toggle('active', isActive);
+        
+        const iconSpan = tab.querySelector('.icon');
+        const checkSpan = tab.querySelector('.check');
+        
+        if (isDone && !checkSpan) {
+          const check = document.createElement('span');
+          check.className = 'check';
+          check.textContent = '✓';
+          if (iconSpan) iconSpan.replaceWith(check);
+        }
+      });
+    }
+    
+    function renderIntro(card) {
+      return `
+        <div class="card-intro">
+          <div class="label mono">${card.title}</div>
+          <h2 class="serif">${card.subtitle}</h2>
+          <p>${card.intro}</p>
+          <button class="btn mono" onclick="startAssessment()">Start Assessment →</button>
+        </div>
+      `;
+    }
+    
+    function renderQuestion(card) {
+      const dim = card.dims[state.questionIndex];
+      const selected = state.currentScores[state.questionIndex];
+      
+      let optionsHtml = '';
+      dim.levels.forEach((level, i) => {
+        const lv = i + 1;
+        const isSelected = selected === lv;
+        optionsHtml += `
+          <button class="option ${isSelected ? 'selected' : ''}" onclick="selectScore(${lv})">
+            <div class="num mono">${lv}</div>
+            <div class="text">${level}</div>
+          </button>
+        `;
+      });
+      
+      let progressHtml = '';
+      for (let i = 0; i < 6; i++) {
+        let cls = 'step';
+        if (i < state.questionIndex) cls += ' done';
+        if (i === state.questionIndex) cls += ' current';
+        progressHtml += `<div class="${cls}"></div>`;
+      }
+      
+      const canNext = selected > 0;
+      const nextLabel = state.questionIndex < 5 ? 'Next →' : 'See Results →';
+      
+      return `
+        <div class="question-view">
+          <div class="question-header">
+            <div class="label mono">${card.title} — ${state.questionIndex + 1} of 6</div>
+            <div class="progress-bar">${progressHtml}</div>
           </div>
-          <div style={{ display: "flex", gap: 5 }}>
-            {[0,1,2,3,4,5].map(i => (
-              <div key={i} style={{ width: 28, height: 3, background: i < dimIdx ? "#e2e8f0" : i === dimIdx ? "#3b82f6" : "#1e293b" }} />
-            ))}
+          <h3 class="serif">${dim.label}</h3>
+          <div class="options">${optionsHtml}</div>
+          <div class="question-nav">
+            <button class="btn-outline mono" onclick="prevQuestion()">← Back</button>
+            <button class="btn mono" ${canNext ? '' : 'disabled'} onclick="nextQuestion()">${nextLabel}</button>
           </div>
         </div>
-        <h3 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", margin: "0 0 20px 0", fontFamily: serif }}>{dim.label}</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {dim.levels.map((desc, li) => {
-            const lv = li + 1;
-            const active = sel === lv;
-            return (
-              <button key={lv} onClick={() => setScore(dimIdx, lv)} style={{ display: "flex", alignItems: "flex-start", gap: 12, background: active ? "#1e293b" : "transparent", border: active ? "1px solid #334155" : "1px solid #1e293b", padding: "12px 14px", cursor: "pointer", textAlign: "left" }}>
-                <div style={{ minWidth: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, flexShrink: 0, fontFamily: mono, background: active ? "#3b82f6" : "#0f172a", color: active ? "#fff" : "#64748b", border: active ? "none" : "1px solid #334155" }}>{lv}</div>
-                <div style={{ fontSize: 13, lineHeight: 1.6, color: active ? "#e2e8f0" : "#94a3b8" }}>{desc}</div>
-              </button>
-            );
-          })}
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 28 }}>
-          <button onClick={() => setDimIdx(dimIdx - 1)} style={{ background: "transparent", border: "1px solid #334155", color: "#94a3b8", padding: "9px 18px", fontSize: 12, cursor: "pointer", fontFamily: mono }}>← Back</button>
-          <button onClick={() => setDimIdx(dimIdx + 1)} disabled={sel === 0} style={{ background: sel > 0 ? "#e2e8f0" : "#1e293b", color: sel > 0 ? "#0f172a" : "#475569", border: "none", padding: "9px 22px", fontSize: 12, fontWeight: 600, cursor: sel > 0 ? "pointer" : "default", fontFamily: mono, opacity: sel > 0 ? 1 : 0.5 }}>{dimIdx < 5 ? "Next →" : "See Results →"}</button>
-        </div>
-      </div>
-    );
-  }
-  
-  // Results
-  const weakIdx = scores.indexOf(Math.min(...scores));
-  const strongIdx = scores.indexOf(Math.max(...scores));
-  const gap = ((card.benchTenx.reduce((a,b)=>a+b,0)/6) - avg).toFixed(1);
-  
-  return (
-    <div style={{ maxWidth: 700, margin: "0 auto", padding: "28px 20px" }}>
-      <div style={{ fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase", color: "#64748b", marginBottom: 12, fontFamily: mono }}>{card.title} — Results</div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6 }}>
-        <span style={{ fontSize: 48, fontWeight: 700, color: grade.color, fontFamily: mono, lineHeight: 1 }}>{avg.toFixed(1)}</span>
-        <span style={{ fontSize: 18, color: "#64748b" }}>/ 5.0</span>
-      </div>
-      <div style={{ display: "inline-block", padding: "3px 10px", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: grade.color, border: `1px solid ${grade.color}`, marginBottom: 12, fontFamily: mono }}>{grade.grade}</div>
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: "#cbd5e1", margin: "0 0 24px 0" }}>{grade.msg}</p>
+      `;
+    }
+    
+    function renderResults(card, scores) {
+      const avg = scores.reduce((a,b) => a+b, 0) / 6;
+      const grade = getGrade(avg);
+      const weakIdx = scores.indexOf(Math.min(...scores));
+      const strongIdx = scores.indexOf(Math.max(...scores));
+      const tenxAvg = card.benchTenx.reduce((a,b) => a+b, 0) / 6;
+      const gap = (tenxAvg - avg).toFixed(1);
       
-      <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: 20, marginBottom: 24 }}>
-        <ResponsiveContainer width="100%" height={300}>
-          <RadarChart data={chartData} outerRadius="70%">
-            <PolarGrid stroke="#1e293b" />
-            <PolarAngleAxis dataKey="dim" tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: mono }} />
-            <PolarRadiusAxis angle={90} domain={[0,5]} tick={{ fill: "#475569", fontSize: 9 }} tickCount={6} />
-            <Radar name="Your Team" dataKey="You" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} strokeWidth={2} />
-            <Radar name="Avg PMM" dataKey="Avg" stroke="#f59e0b" fill="transparent" strokeWidth={1.5} strokeDasharray="4 3" />
-            <Radar name="10x PMM" dataKey="10x" stroke="#22c55e" fill="transparent" strokeWidth={1.5} strokeDasharray="4 3" />
-            <Legend wrapperStyle={{ fontSize: 10, fontFamily: mono }} />
-          </RadarChart>
-        </ResponsiveContainer>
-      </div>
-      
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 24 }}>
-        {[
-          { lbl: "Strongest", val: card.dims[strongIdx].short, num: scores[strongIdx], clr: "#22c55e" },
-          { lbl: "Weakest", val: card.dims[weakIdx].short, num: scores[weakIdx], clr: "#f59e0b" },
-          { lbl: "Gap to 10x", val: "Points behind", num: gap, clr: "#3b82f6" },
-        ].map((c, i) => (
-          <div key={i} style={{ background: "#0f172a", border: "1px solid #1e293b", padding: 16 }}>
-            <div style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 6, fontFamily: mono }}>{c.lbl}</div>
-            <div style={{ fontSize: 13, color: "#e2e8f0", fontWeight: 600 }}>{c.val}</div>
-            <div style={{ fontSize: 22, color: c.clr, fontWeight: 700, marginTop: 4, fontFamily: mono }}>{c.num}{typeof c.num === 'number' ? '/5' : ''}</div>
+      // Bar chart
+      let barsHtml = '';
+      card.dims.forEach((dim, i) => {
+        const you = scores[i];
+        const avgB = card.benchAvg[i];
+        const tenx = card.benchTenx[i];
+        barsHtml += `
+          <div class="bar-row">
+            <div class="dim-label mono">${dim.short}</div>
+            <div class="bar-group">
+              <div class="bar-line">
+                <div class="bar-label mono">You</div>
+                <div class="bar-track"><div class="bar-fill you" style="width: ${you * 20}%"></div></div>
+                <div class="bar-value mono">${you}</div>
+              </div>
+              <div class="bar-line">
+                <div class="bar-label mono">Avg</div>
+                <div class="bar-track"><div class="bar-fill avg" style="width: ${avgB * 20}%"></div></div>
+                <div class="bar-value mono">${avgB.toFixed(1)}</div>
+              </div>
+              <div class="bar-line">
+                <div class="bar-label mono">10x</div>
+                <div class="bar-track"><div class="bar-fill tenx" style="width: ${tenx * 20}%"></div></div>
+                <div class="bar-value mono">${tenx.toFixed(1)}</div>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
+        `;
+      });
       
-      {card.dims.map((d, i) => (
-        <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid #1e293b" }}>
-          <div style={{ flex: 1, fontSize: 13, color: "#cbd5e1" }}>{d.label}</div>
-          <div style={{ display: "flex", gap: 3 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 24, height: 5, background: n <= scores[i] ? "#3b82f6" : "#1e293b" }} />)}</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", width: 20, textAlign: "right", fontFamily: mono }}>{scores[i]}</div>
-        </div>
-      ))}
-      
-      <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
-        <button onClick={() => { setScores([0,0,0,0,0,0]); setDimIdx(-1); }} style={{ background: "transparent", border: "1px solid #334155", color: "#94a3b8", padding: "9px 18px", fontSize: 12, cursor: "pointer", fontFamily: mono }}>Retake</button>
-        <button onClick={() => { if (onComplete) onComplete(cardKey, scores); }} style={{ background: "#e2e8f0", color: "#0f172a", border: "none", padding: "9px 22px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: mono }}>
-          Save & Continue →
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function OrgView({ completed }) {
-  const keys = Object.keys(completed);
-  
-  if (keys.length === 0) {
-    return (
-      <div style={{ maxWidth: 620, margin: "0 auto", padding: "36px 20px", textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>◉</div>
-        <h2 style={{ fontSize: 24, color: "#f1f5f9", margin: "0 0 12px 0", fontFamily: serif }}>Full Org View</h2>
-        <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>Complete at least one assessment to see your org-level profile. Take all three for the full picture.</p>
-      </div>
-    );
-  }
-  
-  const allScores = keys.flatMap(k => completed[k]);
-  const orgAvg = allScores.reduce((a,b) => a+b,0) / allScores.length;
-  const orgGrade = getGrade(orgAvg);
-  
-  const cardSummaries = keys.map(k => {
-    const sc = completed[k];
-    const a = sc.reduce((x,y) => x+y,0) / 6;
-    return { key: k, title: SCORECARDS[k].title, avg: a, grade: getGrade(a) };
-  });
-  
-  const orgChartData = keys.map(k => {
-    const sc = completed[k];
-    const a = sc.reduce((x,y) => x+y,0) / 6;
-    const benchA = SCORECARDS[k].benchAvg.reduce((x,y) => x+y,0) / 6;
-    const bench10 = SCORECARDS[k].benchTenx.reduce((x,y) => x+y,0) / 6;
-    return { dim: SCORECARDS[k].title, You: parseFloat(a.toFixed(1)), Avg: parseFloat(benchA.toFixed(1)), "10x": parseFloat(bench10.toFixed(1)) };
-  });
-  
-  return (
-    <div style={{ maxWidth: 700, margin: "0 auto", padding: "28px 20px" }}>
-      <div style={{ fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase", color: "#64748b", marginBottom: 12, fontFamily: mono }}>Full Org View</div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6 }}>
-        <span style={{ fontSize: 48, fontWeight: 700, color: orgGrade.color, fontFamily: mono, lineHeight: 1 }}>{orgAvg.toFixed(1)}</span>
-        <span style={{ fontSize: 18, color: "#64748b" }}>/ 5.0 composite</span>
-      </div>
-      <div style={{ display: "inline-block", padding: "3px 10px", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: orgGrade.color, border: `1px solid ${orgGrade.color}`, marginBottom: 12, fontFamily: mono }}>{orgGrade.grade}</div>
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: "#cbd5e1", margin: "0 0 24px 0" }}>{orgGrade.msg}</p>
-      
-      {keys.length > 1 && (
-        <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: 20, marginBottom: 24 }}>
-          <ResponsiveContainer width="100%" height={280}>
-            <RadarChart data={orgChartData} outerRadius="70%">
-              <PolarGrid stroke="#1e293b" />
-              <PolarAngleAxis dataKey="dim" tick={{ fill: "#94a3b8", fontSize: 11, fontFamily: mono }} />
-              <PolarRadiusAxis angle={90} domain={[0,5]} tick={{ fill: "#475569", fontSize: 9 }} tickCount={6} />
-              <Radar name="Your Org" dataKey="You" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} strokeWidth={2} />
-              <Radar name="Avg PMM" dataKey="Avg" stroke="#f59e0b" fill="transparent" strokeWidth={1.5} strokeDasharray="4 3" />
-              <Radar name="10x PMM" dataKey="10x" stroke="#22c55e" fill="transparent" strokeWidth={1.5} strokeDasharray="4 3" />
-              <Legend wrapperStyle={{ fontSize: 10, fontFamily: mono }} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-      
-      <div style={{ display: "grid", gridTemplateColumns: keys.length === 3 ? "1fr 1fr 1fr" : keys.length === 2 ? "1fr 1fr" : "1fr", gap: 12, marginBottom: 24 }}>
-        {cardSummaries.map(cs => (
-          <div key={cs.key} style={{ background: "#0f172a", border: "1px solid #1e293b", padding: 20 }}>
-            <div style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontFamily: mono }}>{cs.title}</div>
-            <div style={{ fontSize: 28, fontWeight: 700, color: cs.grade.color, fontFamily: mono }}>{cs.avg.toFixed(1)}</div>
-            <div style={{ fontSize: 11, color: cs.grade.color, fontWeight: 600, marginTop: 4, fontFamily: mono }}>{cs.grade.grade}</div>
+      // Dimension list
+      let dimsHtml = '';
+      card.dims.forEach((dim, i) => {
+        let barsInner = '';
+        for (let n = 1; n <= 5; n++) {
+          barsInner += `<div class="mini-bar ${n <= scores[i] ? 'filled' : ''}"></div>`;
+        }
+        dimsHtml += `
+          <div class="dim-item">
+            <div class="dim-name">${dim.label}</div>
+            <div class="mini-bars">${barsInner}</div>
+            <div class="dim-score mono">${scores[i]}</div>
           </div>
-        ))}
-      </div>
+        `;
+      });
       
-      {keys.length < 3 && (
-        <div style={{ background: "#0f172a", border: "1px solid #334155", padding: 16, marginBottom: 24 }}>
-          <p style={{ fontSize: 13, color: "#94a3b8", margin: 0, lineHeight: 1.6 }}>
-            {keys.length === 1 ? "You've completed 1 of 3 assessments. Take the remaining two to see your full org profile." : "You've completed 2 of 3 assessments. Take the last one to complete your full org profile."}
-          </p>
+      return `
+        <div class="results-view">
+          <div class="label mono">${card.title} — Results</div>
+          <div class="score-big">
+            <span class="num mono" style="color: ${grade.color}">${avg.toFixed(1)}</span>
+            <span class="max">/ 5.0</span>
+          </div>
+          <div class="grade-badge mono" style="color: ${grade.color}; border-color: ${grade.color}">${grade.grade}</div>
+          <p>${grade.msg}</p>
+          
+          <div class="chart-box">
+            <div class="bar-chart">${barsHtml}</div>
+            <div class="legend">
+              <div class="legend-item"><div class="dot" style="background: #3b82f6"></div> Your Team</div>
+              <div class="legend-item"><div class="dot" style="background: #f59e0b"></div> Avg PMM</div>
+              <div class="legend-item"><div class="dot" style="background: #22c55e"></div> 10x PMM</div>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label mono">Strongest</div>
+              <div class="stat-name">${card.dims[strongIdx].short}</div>
+              <div class="stat-value mono" style="color: #22c55e">${scores[strongIdx]}/5</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label mono">Weakest</div>
+              <div class="stat-name">${card.dims[weakIdx].short}</div>
+              <div class="stat-value mono" style="color: #f59e0b">${scores[weakIdx]}/5</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label mono">Gap to 10x</div>
+              <div class="stat-name">Points behind</div>
+              <div class="stat-value mono" style="color: #3b82f6">${gap}</div>
+            </div>
+          </div>
+          
+          <div class="dim-list">${dimsHtml}</div>
+          
+          <div class="results-actions">
+            <button class="btn-outline mono" onclick="retake()">Retake</button>
+            <button class="btn mono" onclick="saveAndContinue()">Save & Continue →</button>
+          </div>
         </div>
-      )}
+      `;
+    }
+    
+    function renderOrgView() {
+      const keys = Object.keys(state.completed);
       
-      <button onClick={() => {
-        const lines = cardSummaries.map(cs => `${cs.title}: ${cs.avg.toFixed(1)}/5 (${cs.grade.grade})`);
-        const text = `My 10x PMM Org Score: ${orgAvg.toFixed(1)}/5.0\n${lines.join('\n')}\n\nTake yours → futureofpmm.com/10x-scorecard`;
-        navigator.clipboard?.writeText(text);
+      if (keys.length === 0) {
+        return `
+          <div class="org-empty">
+            <div class="icon">◉</div>
+            <h2 class="serif">Full Org View</h2>
+            <p>Complete at least one assessment to see your org-level profile. Take all three for the full picture.</p>
+          </div>
+        `;
+      }
+      
+      const allScores = keys.flatMap(k => state.completed[k]);
+      const orgAvg = allScores.reduce((a,b) => a+b, 0) / allScores.length;
+      const orgGrade = getGrade(orgAvg);
+      
+      // Card summaries
+      let summariesHtml = '';
+      keys.forEach(k => {
+        const scores = state.completed[k];
+        const avg = scores.reduce((a,b) => a+b, 0) / 6;
+        const grade = getGrade(avg);
+        summariesHtml += `
+          <div class="card-summary">
+            <div class="cs-title mono">${SCORECARDS[k].title}</div>
+            <div class="cs-score mono" style="color: ${grade.color}">${avg.toFixed(1)}</div>
+            <div class="cs-grade mono" style="color: ${grade.color}">${grade.grade}</div>
+          </div>
+        `;
+      });
+      
+      const colsClass = keys.length === 3 ? 'cols-3' : keys.length === 2 ? 'cols-2' : 'cols-1';
+      
+      let incompleteHtml = '';
+      if (keys.length < 3) {
+        const msg = keys.length === 1 
+          ? "You've completed 1 of 3 assessments. Take the remaining two to see your full org profile."
+          : "You've completed 2 of 3 assessments. Take the last one to complete your full org profile.";
+        incompleteHtml = `<div class="incomplete-note"><p>${msg}</p></div>`;
+      }
+      
+      return `
+        <div class="results-view">
+          <div class="label mono">Full Org View</div>
+          <div class="score-big">
+            <span class="num mono" style="color: ${orgGrade.color}">${orgAvg.toFixed(1)}</span>
+            <span class="max">/ 5.0 composite</span>
+          </div>
+          <div class="grade-badge mono" style="color: ${orgGrade.color}; border-color: ${orgGrade.color}">${orgGrade.grade}</div>
+          <p>${orgGrade.msg}</p>
+          
+          <div class="card-summaries ${colsClass}">${summariesHtml}</div>
+          
+          ${incompleteHtml}
+          
+          <button class="btn mono" onclick="copyResults()">Copy Org Results</button>
+        </div>
+      `;
+    }
+    
+    // Event handlers
+    function attachEvents() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.onclick = () => {
+          const key = tab.dataset.tab;
+          if (key !== state.activeTab) {
+            state.activeTab = key;
+            if (key !== 'org' && !state.completed[key]) {
+              state.currentScores = [0,0,0,0,0,0];
+              state.questionIndex = -1;
+            }
+            render();
+          }
+        };
+      });
+    }
+    
+    window.startAssessment = function() {
+      state.questionIndex = 0;
+      state.currentScores = [0,0,0,0,0,0];
+      render();
+    };
+    
+    window.selectScore = function(val) {
+      state.currentScores[state.questionIndex] = val;
+      render();
+    };
+    
+    window.prevQuestion = function() {
+      if (state.questionIndex > 0) {
+        state.questionIndex--;
+      } else {
+        state.questionIndex = -1;
+      }
+      render();
+    };
+    
+    window.nextQuestion = function() {
+      if (state.currentScores[state.questionIndex] > 0) {
+        if (state.questionIndex < 5) {
+          state.questionIndex++;
+        } else {
+          // Show results
+          state.completed[state.activeTab] = [...state.currentScores];
+          state.questionIndex = -1;
+        }
+        render();
+      }
+    };
+    
+    window.retake = function() {
+      delete state.completed[state.activeTab];
+      state.currentScores = [0,0,0,0,0,0];
+      state.questionIndex = -1;
+      render();
+    };
+    
+    window.saveAndContinue = function() {
+      const order = ['content', 'competitive', 'demandgen'];
+      const idx = order.indexOf(state.activeTab);
+      if (idx < 2) {
+        state.activeTab = order[idx + 1];
+        state.currentScores = [0,0,0,0,0,0];
+        state.questionIndex = -1;
+      } else {
+        state.activeTab = 'org';
+      }
+      render();
+    };
+    
+    window.copyResults = function() {
+      const keys = Object.keys(state.completed);
+      const allScores = keys.flatMap(k => state.completed[k]);
+      const orgAvg = allScores.reduce((a,b) => a+b, 0) / allScores.length;
+      const orgGrade = getGrade(orgAvg);
+      
+      const lines = keys.map(k => {
+        const scores = state.completed[k];
+        const avg = scores.reduce((a,b) => a+b, 0) / 6;
+        const grade = getGrade(avg);
+        return `${SCORECARDS[k].title}: ${avg.toFixed(1)}/5 (${grade.grade})`;
+      });
+      
+      const text = `My 10x PMM Org Score: ${orgAvg.toFixed(1)}/5.0 (${orgGrade.grade})\n${lines.join('\n')}\n\nTake yours → futureofpmm.com/10x-scorecard`;
+      
+      navigator.clipboard.writeText(text).then(() => {
         alert('Results copied to clipboard!');
-      }} style={{ background: "#e2e8f0", color: "#0f172a", border: "none", padding: "9px 22px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: mono }}>
-        Copy Org Results
-      </button>
-    </div>
-  );
-}
-
-function App() {
-  const [activeTab, setActiveTab] = useState("content");
-  const [completed, setCompleted] = useState({});
-  
-  const handleComplete = (key, scores) => {
-    setCompleted(prev => ({ ...prev, [key]: scores }));
-    const order = ["content", "competitive", "demandgen"];
-    const idx = order.indexOf(key);
-    if (idx < 2) setActiveTab(order[idx + 1]);
-    else setActiveTab("org");
-  };
-  
-  return (
-    <div style={{ minHeight: "calc(100vh - 200px)", background: "#0a0f1a", color: "#e2e8f0", fontFamily: serif }}>
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 20px 0" }}>
-        <div style={{ fontSize: 11, letterSpacing: 2.5, textTransform: "uppercase", color: "#64748b", fontFamily: mono, marginBottom: 8 }}>The Future of PMM</div>
-        <h1 style={{ fontSize: 30, fontWeight: 700, color: "#f1f5f9", margin: "0 0 20px 0", fontFamily: "'Instrument Serif', Georgia, serif" }}>The 10x PMM Scorecard</h1>
-        <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #1e293b", marginBottom: 8, flexWrap: "wrap" }}>
-          {TABS.map(t => {
-            const isActive = activeTab === t.key;
-            const isDone = t.key !== "org" && completed[t.key];
-            return (
-              <button key={t.key} onClick={() => setActiveTab(t.key)} style={{ background: "transparent", border: "none", borderBottom: isActive ? "2px solid #3b82f6" : "2px solid transparent", padding: "10px 16px", cursor: "pointer", color: isActive ? "#e2e8f0" : "#64748b", fontSize: 12, fontFamily: mono, fontWeight: isActive ? 700 : 400, display: "flex", alignItems: "center", gap: 6 }}>
-                {isDone ? <span style={{ color: "#22c55e", fontSize: 10 }}>✓</span> : <span style={{ fontSize: 12 }}>{t.icon}</span>}
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      {activeTab !== "org" ? (
-        <ScorecardFlow key={activeTab} cardKey={activeTab} onComplete={handleComplete} />
-      ) : (
-        <OrgView completed={completed} />
-      )}
-    </div>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('scorecard-root'));
-root.render(<App />);
+      });
+    };
+    
+    // Mobile menu
+    document.getElementById('hamburger').addEventListener('click', function() {
+      this.classList.toggle('active');
+      document.getElementById('main-nav').classList.toggle('open');
+    });
+    
+    // Init
+    render();
     </script>
 </body>
 </html>
