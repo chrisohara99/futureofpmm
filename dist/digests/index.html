@@ -12,53 +12,77 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
     <style>
-        :root{--pmm-blue:#3b82f6;--pmm-dark:#1e3a5f;--pmm-light:#F5F6F7;--text-primary:#1D2D3E;--text-secondary:#5A6978;--border:#E5E7EB}
+        :root{--pmm-blue:#3b82f6;--pmm-dark:#1e3a5f;--pmm-light:#F5F6F7;--text-primary:#1D2D3E;--text-secondary:#5A6978;--border:#E5E7EB;--green:#10b981;--red:#ef4444}
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'Inter',-apple-system,sans-serif;color:var(--text-primary);background:var(--pmm-light);line-height:1.6}
         nav{background:var(--pmm-dark);padding:16px 24px}
-        .nav-inner{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+        .nav-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
         .nav-brand{color:white;text-decoration:none;font-weight:600;font-size:18px}
         .nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;margin-left:24px;font-size:14px}
         .header{background:linear-gradient(135deg,var(--pmm-dark) 0%,#0f172a 100%);color:white;padding:40px 24px 30px;text-align:center}
         .header h1{font-size:32px;font-weight:700;margin-bottom:8px}
         .header p{font-size:16px;opacity:0.9;max-width:600px;margin:0 auto}
-        .container{max-width:1000px;margin:0 auto;padding:30px 24px}
+        .container{max-width:1100px;margin:0 auto;padding:30px 24px}
         
         /* Dashboard Styles */
         .dashboard{background:white;border-radius:16px;padding:24px;margin-bottom:30px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
         .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
         .dashboard-title{font-size:20px;font-weight:700;color:var(--pmm-dark)}
         .dashboard-subtitle{font-size:13px;color:var(--text-secondary)}
-        .dashboard-stats{display:flex;gap:16px;flex-wrap:wrap}
-        .stat-box{background:var(--pmm-light);padding:12px 16px;border-radius:8px;text-align:center;min-width:100px}
-        .stat-value{font-size:24px;font-weight:700;color:var(--pmm-blue)}
-        .stat-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px}
+        .dashboard-stats{display:flex;gap:12px;flex-wrap:wrap}
+        .stat-box{background:var(--pmm-light);padding:10px 14px;border-radius:8px;text-align:center;min-width:80px}
+        .stat-value{font-size:20px;font-weight:700;color:var(--pmm-blue)}
+        .stat-label{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px}
         
-        .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-        @media(max-width:768px){.dashboard-grid{grid-template-columns:1fr}}
+        .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        @media(max-width:900px){.dashboard-grid{grid-template-columns:1fr}}
         
-        .dashboard-section{background:var(--pmm-light);border-radius:12px;padding:20px}
-        .section-title{font-size:14px;font-weight:600;color:var(--pmm-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .section-title span{font-size:16px}
+        .dashboard-section{background:var(--pmm-light);border-radius:12px;padding:16px}
+        .section-title{font-size:13px;font-weight:600;color:var(--pmm-dark);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .section-title span{font-size:14px}
         
-        #wordcloud-container{width:100%;height:250px;background:#fff;border-radius:8px}
-        #trends-chart{width:100%;height:250px}
+        #wordcloud-container{width:100%;height:200px;background:#fff;border-radius:8px}
+        #trends-chart{width:100%;height:200px}
         
+        /* Rising/Falling Terms */
+        .movers-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+        @media(max-width:600px){.movers-grid{grid-template-columns:1fr}}
+        .movers-section{background:var(--pmm-light);border-radius:12px;padding:16px}
+        .mover-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+        .mover-item:last-child{border-bottom:none}
+        .mover-term{font-weight:500;font-size:13px}
+        .mover-change{font-weight:700;font-size:12px;padding:2px 8px;border-radius:12px}
+        .mover-change.up{background:#dcfce7;color:#166534}
+        .mover-change.down{background:#fef2f2;color:#dc2626}
+        
+        /* Source Leaderboard */
+        .source-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+        .source-item:last-child{border-bottom:none}
+        .source-rank{width:20px;font-weight:700;color:var(--pmm-blue);font-size:12px}
+        .source-name{flex:1;font-size:13px}
+        .source-count{background:var(--pmm-blue);color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+        
+        /* Google Trends */
+        .trends-embed{background:#fff;border-radius:8px;padding:12px;margin-top:16px}
+        .trends-embed iframe{width:100%;border:none;height:300px}
+        
+        /* Hot Terms Pills */
         .top-terms{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
         .term-pill{background:white;border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px}
         .term-pill .count{background:var(--pmm-blue);color:white;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600}
-        .term-up{color:#10b981}
-        .term-down{color:#ef4444}
+        .term-pill .arrow{font-size:10px}
+        .term-pill .arrow.up{color:var(--green)}
+        .term-pill .arrow.down{color:var(--red)}
         
         /* Digest List */
         .digest-section-title{font-size:18px;font-weight:600;color:var(--pmm-dark);margin:30px 0 16px;display:flex;align-items:center;gap:8px}
-        .digest-list{display:flex;flex-direction:column;gap:12px}
-        .digest-card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px;text-decoration:none;color:inherit;transition:box-shadow 0.2s,transform 0.2s;display:block}
+        .digest-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+        .digest-card{background:white;border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;color:inherit;transition:box-shadow 0.2s,transform 0.2s;display:block}
         .digest-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1);transform:translateY(-2px)}
-        .digest-date{font-size:12px;color:var(--pmm-blue);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
-        .digest-title{font-size:16px;font-weight:600;margin-bottom:6px;line-height:1.4}
-        .digest-stories{display:flex;gap:6px;flex-wrap:wrap}
-        .story-tag{font-size:11px;background:var(--pmm-light);color:var(--text-secondary);padding:3px 8px;border-radius:4px}
+        .digest-date{font-size:11px;color:var(--pmm-blue);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+        .digest-title{font-size:14px;font-weight:600;margin-bottom:6px;line-height:1.4}
+        .digest-stories{display:flex;gap:4px;flex-wrap:wrap}
+        .story-tag{font-size:10px;background:var(--pmm-light);color:var(--text-secondary);padding:2px 6px;border-radius:4px}
         .subscribe-box{background:linear-gradient(135deg,var(--pmm-dark) 0%,#0f172a 100%);color:white;padding:32px;border-radius:12px;text-align:center;margin-top:30px}
         .subscribe-box h3{font-size:22px;margin-bottom:10px}
         .subscribe-box p{opacity:0.9;margin-bottom:16px}
@@ -89,7 +113,7 @@
             <div class="dashboard-header">
                 <div>
                     <div class="dashboard-title">📊 Trends Dashboard</div>
-                    <div class="dashboard-subtitle">Keyword intensity and emerging topics from <span id="digest-count">49</span> digests</div>
+                    <div class="dashboard-subtitle">Updated daily • <span id="digest-count">49</span> digests analyzed</div>
                 </div>
                 <div class="dashboard-stats">
                     <div class="stat-box">
@@ -101,8 +125,8 @@
                         <div class="stat-label">Tracked</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-value" id="top-term">AI Agents</div>
-                        <div class="stat-label">Trending</div>
+                        <div class="stat-value" id="top-rising">—</div>
+                        <div class="stat-label">🔥 Rising</div>
                     </div>
                 </div>
             </div>
@@ -121,9 +145,39 @@
                 </div>
             </div>
             
-            <!-- Top Terms This Week -->
-            <div style="margin-top:20px">
-                <div class="section-title"><span>🔥</span> Hot This Week</div>
+            <!-- Rising/Falling + Sources -->
+            <div class="movers-grid">
+                <!-- Rising Terms -->
+                <div class="movers-section">
+                    <div class="section-title"><span>🚀</span> Rising This Week</div>
+                    <div id="rising-terms">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Source Leaderboard -->
+                <div class="movers-section">
+                    <div class="section-title"><span>📰</span> Top Sources</div>
+                    <div id="source-leaderboard">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Google Trends Embed -->
+            <div class="dashboard-section" style="margin-top:16px">
+                <div class="section-title"><span>🔍</span> Google Trends: AI Marketing</div>
+                <div class="trends-embed">
+                    <script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3940_RC01/embed_loader.js"></script>
+                    <script type="text/javascript">
+                        trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"AI marketing","geo":"US","time":"today 3-m"},{"keyword":"agentic AI","geo":"US","time":"today 3-m"},{"keyword":"AI agents","geo":"US","time":"today 3-m"}],"category":0,"property":""}, {"exploreQuery":"q=AI%20marketing,agentic%20AI,AI%20agents&geo=US&date=today 3-m","guestPath":"https://trends.google.com:443/trends/embed/"});
+                    </script>
+                </div>
+            </div>
+            
+            <!-- Hot Terms This Week -->
+            <div style="margin-top:16px">
+                <div class="section-title"><span>🔥</span> Hot Terms (with trend)</div>
                 <div class="top-terms" id="top-terms">
                     <!-- Populated by JS -->
                 </div>
@@ -133,19 +187,18 @@
         <!-- Digest Archive -->
         <div class="digest-section-title">📚 Archive</div>
         <div class="digest-list" id="digest-list">
-            <!-- Populated by existing content - will load dynamically in future -->
             <a href="/digests/2026-03-18.html" class="digest-card">
                 <div class="digest-date">Wednesday, March 18, 2026</div>
-                <div class="digest-title">Alibaba Launches Wukong, AI Maturity Gap Hits 47%, Adobe + NVIDIA Target Marketing Automation</div>
+                <div class="digest-title">Alibaba Launches Wukong, AI Maturity Gap Hits 47%, Adobe + NVIDIA Target Marketing</div>
                 <div class="digest-stories">
                     <span class="story-tag">Economic Times</span>
-                    <span class="story-tag">Market Research</span>
                     <span class="story-tag">TechGenyz</span>
+                    <span class="story-tag">Salsify</span>
                 </div>
             </a>
             <a href="/digests/2026-03-17.html" class="digest-card">
                 <div class="digest-date">Tuesday, March 17, 2026</div>
-                <div class="digest-title">NVIDIA Launches AI Agent Platform at GTC, OpenAI Courts PE Giants, Anthropic Commits $100M</div>
+                <div class="digest-title">NVIDIA Launches AI Agent Platform at GTC, OpenAI Courts PE Giants</div>
                 <div class="digest-stories">
                     <span class="story-tag">VentureBeat</span>
                     <span class="story-tag">Reuters</span>
@@ -158,7 +211,6 @@
                 <div class="digest-stories">
                     <span class="story-tag">JB Impact</span>
                     <span class="story-tag">Motley Fool</span>
-                    <span class="story-tag">Windows News</span>
                 </div>
             </a>
             <a href="/digests/2026-03-15.html" class="digest-card">
@@ -167,48 +219,75 @@
                 <div class="digest-stories">
                     <span class="story-tag">NVIDIA</span>
                     <span class="story-tag">Gartner</span>
-                    <span class="story-tag">Capgemini</span>
                 </div>
             </a>
             <a href="/digests/2026-03-14.html" class="digest-card">
                 <div class="digest-date">Saturday, March 14, 2026</div>
-                <div class="digest-title">ServiceNow CEO: Grad Unemployment Could Hit 30%+, Perplexity Claims 3.25 Years of Work</div>
+                <div class="digest-title">ServiceNow CEO: Grad Unemployment Could Hit 30%+, Perplexity Claims 3.25 Years</div>
                 <div class="digest-stories">
                     <span class="story-tag">CNBC</span>
                     <span class="story-tag">PYMNTS</span>
-                    <span class="story-tag">Futurum</span>
                 </div>
             </a>
             <a href="/digests/2026-03-13.html" class="digest-card">
                 <div class="digest-date">Friday, March 13, 2026</div>
-                <div class="digest-title">Gartner: AI Skills Mandatory in Hiring by 2027, Mastercard + Google Launch "Verifiable Intent"</div>
+                <div class="digest-title">Gartner: AI Skills Mandatory by 2027, Mastercard + Google "Verifiable Intent"</div>
                 <div class="digest-stories">
                     <span class="story-tag">Gartner</span>
-                    <span class="story-tag">MarTech Cube</span>
                     <span class="story-tag">Mastercard</span>
                 </div>
             </a>
             <a href="/digests/2026-03-12.html" class="digest-card">
                 <div class="digest-date">Thursday, March 12, 2026</div>
-                <div class="digest-title">Salesforce Rebrands to "Agentforce Marketing," NVIDIA: 64% Using AI, Gartner: $2.52T</div>
+                <div class="digest-title">Salesforce Rebrands to "Agentforce Marketing," NVIDIA: 64% Using AI</div>
                 <div class="digest-stories">
                     <span class="story-tag">Salesforce Ben</span>
                     <span class="story-tag">NVIDIA</span>
-                    <span class="story-tag">Gartner</span>
                 </div>
             </a>
             <a href="/digests/2026-03-11.html" class="digest-card">
                 <div class="digest-date">Wednesday, March 11, 2026</div>
-                <div class="digest-title">Perplexity's "Computer" Replaces $225K Stack, 42% of B2B Buyers Now Use AI Search</div>
+                <div class="digest-title">Perplexity's "Computer" Replaces $225K Stack, 42% B2B Buyers Use AI Search</div>
                 <div class="digest-stories">
                     <span class="story-tag">Moneycontrol</span>
-                    <span class="story-tag">Technobezz</span>
                     <span class="story-tag">GrackerAI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-10.html" class="digest-card">
+                <div class="digest-date">Tuesday, March 10, 2026</div>
+                <div class="digest-title">Mega Raises $11.5M for AI Marketing Agents, AI Threatens $38B Retail Media</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forrester</span>
+                    <span class="story-tag">Digiday</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-09.html" class="digest-card">
+                <div class="digest-date">Monday, March 9, 2026</div>
+                <div class="digest-title">Karpathy's Autoresearch Runs 100 Experiments Overnight, Pro-Human AI Declaration</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">DigiTimes</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-08.html" class="digest-card">
+                <div class="digest-date">Sunday, March 8, 2026</div>
+                <div class="digest-title">Search Shifts from Answers to Actions, Identity Resolution Gets ML-Powered</div>
+                <div class="digest-stories">
+                    <span class="story-tag">WordStream</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-07.html" class="digest-card">
+                <div class="digest-date">Saturday, March 7, 2026</div>
+                <div class="digest-title">AI Agents Become Enterprise "Coworkers," Wharton Says AI Reshaping SaaS</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Wharton</span>
+                    <span class="story-tag">Josh Bersin</span>
                 </div>
             </a>
         </div>
         
-        <p style="text-align:center;margin-top:20px"><a href="#" onclick="loadMoreDigests()" style="color:var(--pmm-blue);font-weight:600">View older digests →</a></p>
+        <p style="text-align:center;margin-top:20px"><a href="/digests/archive.html" style="color:var(--pmm-blue);font-weight:600">View full archive →</a></p>
         
         <div class="subscribe-box">
             <h3>Get the Friday Note</h3>
@@ -245,10 +324,9 @@
         const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
         document.getElementById('date-range').textContent = days + 'd';
         
-        // Top trending term (exclude PMM and Marketing as they're always high)
-        const trending = trendsData.word_cloud.find(t => t.text !== 'PMM' && t.text !== 'Marketing');
-        if (trending) {
-            document.getElementById('top-term').textContent = trending.text;
+        // Top rising term
+        if (trendsData.rising_terms && trendsData.rising_terms.length > 0) {
+            document.getElementById('top-rising').textContent = trendsData.rising_terms[0].term;
         }
         
         // Render word cloud
@@ -257,7 +335,13 @@
         // Render trends chart
         renderTrendsChart();
         
-        // Render top terms
+        // Render rising terms
+        renderRisingTerms();
+        
+        // Render source leaderboard
+        renderSourceLeaderboard();
+        
+        // Render top terms with arrows
         renderTopTerms();
     }
     
@@ -268,7 +352,7 @@
         WordCloud(container, {
             list: words,
             gridSize: 8,
-            weightFactor: 3,
+            weightFactor: 2.5,
             fontFamily: 'Inter, sans-serif',
             color: function(word, weight) {
                 const colors = ['#3b82f6', '#1e3a5f', '#7c3aed', '#059669', '#dc2626', '#f59e0b'];
@@ -317,17 +401,17 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { boxWidth: 12, padding: 8, font: { size: 10 } }
+                        labels: { boxWidth: 10, padding: 6, font: { size: 9 } }
                     }
                 },
                 scales: {
                     x: {
                         grid: { display: false },
-                        ticks: { font: { size: 9 }, maxTicksLimit: 6 }
+                        ticks: { font: { size: 8 }, maxTicksLimit: 5 }
                     },
                     y: {
                         grid: { color: '#f0f0f0' },
-                        ticks: { font: { size: 9 } },
+                        ticks: { font: { size: 8 } },
                         beginAtZero: true
                     }
                 }
@@ -335,21 +419,56 @@
         });
     }
     
-    function renderTopTerms() {
-        const container = document.getElementById('top-terms');
-        const terms = trendsData.word_cloud.slice(0, 10);
+    function renderRisingTerms() {
+        const container = document.getElementById('rising-terms');
+        const rising = trendsData.rising_terms || [];
         
-        container.innerHTML = terms.map(t => `
-            <div class="term-pill">
-                ${t.text}
-                <span class="count">${t.value}</span>
+        if (rising.length === 0) {
+            container.innerHTML = '<p style="color:#666;font-size:12px">No significant movers this week</p>';
+            return;
+        }
+        
+        container.innerHTML = rising.map(t => `
+            <div class="mover-item">
+                <span class="mover-term">${t.term}</span>
+                <span class="mover-change up">↑ ${t.change > 0 ? '+' : ''}${t.change}%</span>
             </div>
         `).join('');
     }
     
-    function loadMoreDigests() {
-        // Could implement lazy loading of older digests
-        alert('Full archive coming soon!');
+    function renderSourceLeaderboard() {
+        const container = document.getElementById('source-leaderboard');
+        const sources = trendsData.sources || [];
+        
+        if (sources.length === 0) {
+            container.innerHTML = '<p style="color:#666;font-size:12px">No source data available</p>';
+            return;
+        }
+        
+        container.innerHTML = sources.slice(0, 8).map((s, i) => `
+            <div class="source-item">
+                <span class="source-rank">${i + 1}</span>
+                <span class="source-name">${s.name}</span>
+                <span class="source-count">${s.count}</span>
+            </div>
+        `).join('');
+    }
+    
+    function renderTopTerms() {
+        const container = document.getElementById('top-terms');
+        const terms = trendsData.word_cloud.slice(0, 12);
+        
+        container.innerHTML = terms.map(t => {
+            const arrow = t.change > 10 ? '<span class="arrow up">▲</span>' : 
+                          t.change < -10 ? '<span class="arrow down">▼</span>' : '';
+            return `
+                <div class="term-pill">
+                    ${t.text}
+                    <span class="count">${t.value}</span>
+                    ${arrow}
+                </div>
+            `;
+        }).join('');
     }
     
     // Initialize
