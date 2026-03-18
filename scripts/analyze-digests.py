@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from html.parser import HTMLParser
 
 # Keywords to track (AI + Marketing focused)
+# Excluding 'PMM' and 'AI' as they're implicit in every search
 TRACKED_TERMS = {
     # AI Companies
     'openai': 'OpenAI', 'anthropic': 'Anthropic', 'google': 'Google', 
@@ -19,13 +20,13 @@ TRACKED_TERMS = {
     'salesforce': 'Salesforce', 'hubspot': 'HubSpot', 'adobe': 'Adobe',
     'oracle': 'Oracle', 'workday': 'Workday', 'sap': 'SAP',
     
-    # AI Concepts
-    'agentic': 'Agentic AI', 'agent': 'AI Agents', 'agents': 'AI Agents',
+    # AI Concepts (excluding generic "AI")
+    'agentic': 'Agentic', 'agent': 'Agents', 'agents': 'Agents',
     'llm': 'LLM', 'gpt': 'GPT', 'claude': 'Claude', 'copilot': 'Copilot',
-    'automation': 'Automation', 'genai': 'GenAI', 'generative': 'Generative AI',
+    'automation': 'Automation', 'genai': 'GenAI', 'generative': 'Generative',
     
-    # Marketing Terms
-    'pmm': 'PMM', 'marketing': 'Marketing', 'content': 'Content',
+    # Marketing Terms (excluding generic "PMM" and "Marketing")
+    'content': 'Content',
     'seo': 'SEO', 'geo': 'GEO', 'personalization': 'Personalization',
     'martech': 'MarTech', 'cdp': 'CDP', 'crm': 'CRM',
     
