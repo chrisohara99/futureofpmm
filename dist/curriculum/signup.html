@@ -386,34 +386,34 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-// Debug
-console.log('Script loaded');
-alert('Page loaded - checking Supabase...');
-
 // Supabase configuration
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
 // Initialize Supabase client
 let supabaseClient = null;
-try {
-    const { createClient } = supabase;
-    supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('Supabase initialized successfully');
-} catch (err) {
-    console.error('Supabase init error:', err);
-    alert('Supabase error: ' + err.message);
+if (typeof supabase !== 'undefined' && supabase.createClient) {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase ready');
+} else {
+    console.log('Using localStorage fallback');
 }
 
-const form = document.getElementById('enrollForm');
-const errorMessage = document.getElementById('errorMessage');
-const successMessage = document.getElementById('successMessage');
-const signupForm = document.getElementById('signupForm');
-const submitBtn = document.getElementById('submitBtn');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('enrollForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const signupForm = document.getElementById('signupForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (!form) {
+        console.error('Form not found!');
+        return;
+    }
 
-form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    alert('Form submitted!');
+    console.log('Form submitted');
     
     submitBtn.disabled = true;
     submitBtn.textContent = 'Creating account...';
@@ -483,6 +483,7 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Create Account & Start Learning';
     }
+    });
 });
 </script>
 
