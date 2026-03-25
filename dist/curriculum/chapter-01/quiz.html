@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Chapter 1 | Modern Product Marketing in the Agentic Era</title>
+    <meta name="description" content="Test your understanding of Chapter 1: The Old Playbook Is Dead">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .logo img { height: 45px; }
+        .logo-text { color: white; font-weight: 600; font-size: 1rem; }
+        .nav { display: flex; gap: 1.5rem; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 2.5rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero .breadcrumb {
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        .hero .breadcrumb a { color: white; text-decoration: none; }
+        .hero .breadcrumb a:hover { text-decoration: underline; }
+        .hero h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .hero .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: 8px;
+        }
+        .quiz-progress-text {
+            font-weight: 600;
+            color: var(--dark-slate);
+        }
+        .quiz-progress-bar {
+            width: 200px;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--sap-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .quiz-question {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .quiz-question.answered.correct {
+            border-left-color: var(--green);
+            background: #F8FDF8;
+        }
+        .quiz-question.answered.incorrect {
+            border-left-color: #E57373;
+            background: #FFFAFA;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-slate);
+            font-size: 1.05rem;
+        }
+        .question-num {
+            color: var(--sap-orange);
+            margin-right: 0.5rem;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            background: var(--bg);
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--sap-blue);
+            background: #F5F8FF;
+        }
+        .quiz-option.selected {
+            border-color: var(--sap-blue);
+            background: #E3ECFA;
+        }
+        .quiz-option.correct {
+            border-color: var(--green);
+            background: #E8F5E9;
+        }
+        .quiz-option.incorrect {
+            border-color: #E57373;
+            background: #FFEBEE;
+        }
+        .quiz-option.disabled {
+            cursor: default;
+        }
+        .option-marker {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #666;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .quiz-option.selected .option-marker {
+            background: var(--sap-blue);
+            border-color: var(--sap-blue);
+            color: white;
+        }
+        .quiz-option.correct .option-marker {
+            background: var(--green);
+            border-color: var(--green);
+            color: white;
+        }
+        .quiz-option.incorrect .option-marker {
+            background: #E57373;
+            border-color: #E57373;
+            color: white;
+        }
+        .option-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+        .feedback {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback.correct {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .feedback.incorrect {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .quiz-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .quiz-submit {
+            background: var(--sap-blue);
+            color: white;
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .quiz-submit:hover {
+            background: var(--dark-slate);
+        }
+        .quiz-submit:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+        }
+        
+        .quiz-results {
+            text-align: center;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--dark-slate), var(--sap-blue));
+            border-radius: 12px;
+            color: white;
+            margin-top: 2rem;
+            display: none;
+        }
+        .quiz-results.show { display: block; }
+        .quiz-score {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .quiz-score-pct {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        .quiz-score-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        .quiz-message {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .quiz-result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .quiz-retry {
+            background: var(--gold);
+            color: var(--dark-slate);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .quiz-retry:hover {
+            background: #FFD54F;
+        }
+        .quiz-next {
+            background: white;
+            color: var(--dark-slate);
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .quiz-next:hover {
+            background: var(--light-gray);
+        }
+        
+        .footer {
+            background: var(--dark-slate);
+            color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        .footer p { opacity: 0.8; font-size: 0.9rem; }
+        .footer a { color: var(--gold); }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.4rem; }
+            .quiz-question { padding: 1rem; }
+            .quiz-progress { flex-direction: column; gap: 0.75rem; }
+            .quiz-progress-bar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+            <span class="logo-text">Future of PMM</span>
+        </a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/chapter-01/">Chapter 1</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="breadcrumb">
+        <a href="/curriculum/">Curriculum</a> → <a href="/curriculum/chapter-01/">Chapter 1</a> → Quiz
+    </div>
+    <h1>Chapter 1 Quiz</h1>
+    <p class="subtitle">The Old Playbook Is Dead — Test Your Understanding</p>
+</section>
+
+<main>
+    <div class="quiz-progress">
+        <span class="quiz-progress-text"><span id="answeredCount">0</span>/10 Questions Answered</span>
+        <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+    </div>
+    
+    <!-- Question 1 -->
+    <div class="quiz-question" data-question="1" data-correct="c">
+        <div class="question-text"><span class="question-num">1.</span> What is the "Visibility Gap" in the context of agentic marketing?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">The time delay between content creation and publication</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">The difference between SEO rankings and actual traffic</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">The delta between what AI agents can access vs. what remains invisible to them</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">The gap between marketing and sales alignment</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 2 -->
+    <div class="quiz-question" data-question="2" data-correct="b">
+        <div class="question-text"><span class="question-num">2.</span> How does GEO (Generative Engine Optimization) differ from traditional SEO?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">GEO focuses on more keywords than SEO</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">GEO optimizes for citation in synthesized answers; SEO optimizes for ranking on a list</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">GEO is only applicable to B2C companies</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">GEO requires paid advertising while SEO is organic only</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 3 -->
+    <div class="quiz-question" data-question="3" data-correct="a">
+        <div class="question-text"><span class="question-num">3.</span> In the Pragmatic 37 framework, which cluster includes activities like market sizing and sales tools production?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">Cluster One: Automated — agents can perform the majority of this work</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Cluster Two: Augmented — human essential, agent accelerates</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Cluster Three: Elevated — irreducibly human</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Cluster Four: Deprecated — no longer relevant</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 4 -->
+    <div class="quiz-question" data-question="4" data-correct="d">
+        <div class="question-text"><span class="question-num">4.</span> What does the "10x thesis" in this curriculum actually mean?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">Working ten times more hours per week</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Using ten different AI tools simultaneously</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Producing ten times more content output</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Operating at a fundamentally different level of strategic impact by offloading mechanical work</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 5 -->
+    <div class="quiz-question" data-question="5" data-correct="c">
+        <div class="question-text"><span class="question-num">5.</span> Why can't AI agents access most traditional B2B marketing content?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">The content is written in specialized jargon AI doesn't understand</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">AI agents are blocked by corporate firewalls</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">It's gated behind forms, in email sequences, or rendered by JavaScript</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Marketing teams haven't given AI explicit permission</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 6 -->
+    <div class="quiz-question" data-question="6" data-correct="b">
+        <div class="question-text"><span class="question-num">6.</span> What happened to Sarah's sales cycle in the story that opens Chapter 1?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">It increased from 11 weeks to 15 weeks</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Two enterprise deals closed in under 3 weeks instead of the typical 11</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Sales cycles stayed the same but deal sizes decreased</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Her pipeline completely dried up</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 7 -->
+    <div class="quiz-question" data-question="7" data-correct="c">
+        <div class="question-text"><span class="question-num">7.</span> In the "Three Eras of Enterprise Data," what characterizes Era Three (Data Fabric)?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">ETL batch jobs and quarterly reports</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Customer data platforms and journey mapping</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Agentic AI, federated metadata, and agents that monitor, adjust, and generate</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Static data warehouses with manual analysis</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 8 -->
+    <div class="quiz-question" data-question="8" data-correct="a">
+        <div class="question-text"><span class="question-num">8.</span> Which of these is an example of a Cluster Three (Elevated) activity?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">Thought leadership and stakeholder management</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Market sizing and competitive research</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Creating battlecards and sales one-pagers</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Event logistics and content repurposing</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 9 -->
+    <div class="quiz-question" data-question="9" data-correct="d">
+        <div class="question-text"><span class="question-num">9.</span> What is the recommended "GEO Audit" exercise from Chapter 1?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">Review your Google Analytics for the past quarter</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Analyze your competitors' backlink profiles</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Survey your sales team about win/loss reasons</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Ask Claude, ChatGPT, or Perplexity to evaluate vendors in your category and see if you appear</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <!-- Question 10 -->
+    <div class="quiz-question" data-question="10" data-correct="b">
+        <div class="question-text"><span class="question-num">10.</span> According to the CMO Perspective, what is wrong with how most marketing departments talk about AI?</div>
+        <div class="quiz-options">
+            <label class="quiz-option" data-value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">They focus too much on creative applications</span>
+            </label>
+            <label class="quiz-option" data-value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">They focus on efficiency (same outputs, fewer people) instead of fundamentally different outputs</span>
+            </label>
+            <label class="quiz-option" data-value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">They underestimate the cost of AI tools</span>
+            </label>
+            <label class="quiz-option" data-value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">They overestimate how quickly AI will replace marketers</span>
+            </label>
+        </div>
+        <div class="feedback"></div>
+    </div>
+    
+    <div class="quiz-actions">
+        <button class="quiz-submit" id="submitQuiz" disabled>Submit All Answers</button>
+    </div>
+    
+    <div class="quiz-results" id="quizResults">
+        <div class="quiz-score" id="quizScore">0/10</div>
+        <div class="quiz-score-pct" id="quizScorePct">0%</div>
+        <div class="quiz-score-label">Correct Answers</div>
+        <div class="quiz-message" id="quizMessage"></div>
+        <div class="quiz-result-actions">
+            <button class="quiz-retry" onclick="resetQuiz()">Try Again</button>
+            <a href="/curriculum/chapter-01/" class="quiz-next">← Back to Chapter</a>
+            <a href="/curriculum/chapter-02/" class="quiz-next">Next Chapter →</a>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>Modern Product Marketing in the Agentic Era · <a href="/">futureofpmm.com</a> · Chris O'Hara & Dan Yu</p>
+</footer>
+
+<script>
+const quiz = {
+    answers: {},
+    submitted: false,
+    totalQuestions: 10,
+    
+    init() {
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', () => this.selectOption(option));
+        });
+        document.getElementById('submitQuiz').addEventListener('click', () => this.submit());
+        this.updateProgress();
+    },
+    
+    selectOption(option) {
+        if (this.submitted) return;
+        
+        const question = option.closest('.quiz-question');
+        const questionNum = question.dataset.question;
+        const value = option.dataset.value;
+        
+        question.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        
+        option.classList.add('selected');
+        this.answers[questionNum] = value;
+        this.updateProgress();
+    },
+    
+    updateProgress() {
+        const answered = Object.keys(this.answers).length;
+        document.getElementById('answeredCount').textContent = answered;
+        document.getElementById('progressFill').style.width = (answered / this.totalQuestions * 100) + '%';
+        document.getElementById('submitQuiz').disabled = answered < this.totalQuestions;
+    },
+    
+    submit() {
+        if (this.submitted) return;
+        this.submitted = true;
+        
+        let correct = 0;
+        
+        document.querySelectorAll('.quiz-question').forEach(question => {
+            const questionNum = question.dataset.question;
+            const correctAnswer = question.dataset.correct;
+            const userAnswer = this.answers[questionNum];
+            const feedback = question.querySelector('.feedback');
+            
+            question.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (opt.dataset.value === userAnswer && userAnswer !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            if (userAnswer === correctAnswer) {
+                correct++;
+                question.classList.add('answered', 'correct');
+                feedback.textContent = '✓ Correct!';
+                feedback.classList.add('show', 'correct');
+            } else {
+                question.classList.add('answered', 'incorrect');
+                feedback.textContent = '✗ Incorrect. The correct answer is highlighted.';
+                feedback.classList.add('show', 'incorrect');
+            }
+        });
+        
+        // Show results
+        document.getElementById('submitQuiz').style.display = 'none';
+        const results = document.getElementById('quizResults');
+        results.classList.add('show');
+        
+        const pct = Math.round((correct / this.totalQuestions) * 100);
+        document.getElementById('quizScore').textContent = `${correct}/${this.totalQuestions}`;
+        document.getElementById('quizScorePct').textContent = `${pct}%`;
+        
+        let message = '';
+        if (pct === 100) {
+            message = '🎉 Perfect score! You\'ve completely mastered Chapter 1. You\'re ready to move on!';
+        } else if (pct >= 80) {
+            message = '👏 Excellent work! You have a strong grasp of the foundational concepts.';
+        } else if (pct >= 70) {
+            message = '👍 Good job! Consider reviewing the questions you missed before moving on.';
+        } else if (pct >= 60) {
+            message = '📖 You\'re on the right track. Review the chapter sections related to the questions you missed.';
+        } else {
+            message = '📚 We recommend re-reading Chapter 1 before attempting the quiz again.';
+        }
+        document.getElementById('quizMessage').textContent = message;
+        
+        // Save to localStorage
+        const progress = JSON.parse(localStorage.getItem('pmmCurriculumProgress') || '{"activities":[],"chapters":[],"quizScores":{}}');
+        progress.quizScores = progress.quizScores || {};
+        progress.quizScores['chapter-01'] = { score: correct, total: this.totalQuestions, pct: pct, date: new Date().toISOString() };
+        if (pct >= 70 && !progress.chapters.includes(1)) {
+            progress.chapters.push(1);
+        }
+        localStorage.setItem('pmmCurriculumProgress', JSON.stringify(progress));
+        
+        // Scroll to results
+        results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+};
+
+function resetQuiz() {
+    quiz.answers = {};
+    quiz.submitted = false;
+    
+    document.querySelectorAll('.quiz-question').forEach(question => {
+        question.classList.remove('answered', 'correct', 'incorrect');
+        question.querySelector('.feedback').classList.remove('show', 'correct', 'incorrect');
+        question.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+        });
+    });
+    
+    document.getElementById('submitQuiz').style.display = 'block';
+    document.getElementById('submitQuiz').disabled = true;
+    document.getElementById('quizResults').classList.remove('show');
+    quiz.updateProgress();
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+quiz.init();
+</script>
+
+</body>
+</html>
