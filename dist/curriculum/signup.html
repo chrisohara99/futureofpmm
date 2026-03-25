@@ -384,19 +384,16 @@
     <p>Modern Product Marketing in the Agentic Era · <a href="/">futureofpmm.com</a></p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 // Supabase configuration
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
 // Initialize Supabase client
-let supabase;
-try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} catch (e) {
-    console.log('Supabase not initialized - using localStorage fallback');
-}
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('Supabase initialized:', supabaseClient ? 'yes' : 'no');
 
 const form = document.getElementById('enrollForm');
 const errorMessage = document.getElementById('errorMessage');
@@ -421,9 +418,9 @@ form.addEventListener('submit', async (e) => {
     };
     
     try {
-        if (supabase) {
+        if (supabaseClient) {
             // Sign up with Supabase
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await supabaseClient.auth.signUp({
                 email: formData.email,
                 password: formData.password,
                 options: {
@@ -440,7 +437,7 @@ form.addEventListener('submit', async (e) => {
             
             // Store user profile
             if (data.user) {
-                await supabase.from('profiles').upsert({
+                await supabaseClient.from('profiles').upsert({
                     id: data.user.id,
                     first_name: formData.firstName,
                     last_name: formData.lastName,
