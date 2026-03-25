@@ -446,18 +446,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (error) throw error;
             
-            // Store user profile
-            if (data.user) {
-                await supabaseClient.from('profiles').upsert({
-                    id: data.user.id,
-                    first_name: formData.firstName,
-                    last_name: formData.lastName,
-                    email: formData.email,
-                    company: formData.company,
-                    role: formData.role,
-                    created_at: new Date().toISOString()
-                });
-            }
+            // Profile is created automatically by database trigger
+            // Just store in localStorage for quick access
+            localStorage.setItem('pmmCurrentUser', JSON.stringify({
+                id: data.user?.id,
+                email: formData.email,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                company: formData.company,
+                role: formData.role
+            }));
         } else {
             // Fallback: store in localStorage
             const users = JSON.parse(localStorage.getItem('pmmUsers') || '[]');
