@@ -66,6 +66,45 @@
         .nav { display: flex; gap: 1.5rem; align-items: center; }
         .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; }
         .nav a:hover { color: white; }
+        .nav-btn {
+            background: var(--sap-orange);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .nav-btn:hover { background: #d66a1f; }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 0.9rem;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--sap-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .sign-out-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.85);
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .sign-out-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
         
         /* Hero */
         .hero {
@@ -407,6 +446,10 @@
             <a href="/curriculum/">Curriculum</a>
             <a href="/digests/">Digests</a>
             <a href="/newsletters.html">Newsletter</a>
+            <span id="authSection">
+                <a href="/curriculum/login.html">Sign In</a>
+                <a href="/curriculum/signup.html" class="nav-btn">Enroll Free</a>
+            </span>
         </nav>
     </div>
 </header>
@@ -781,7 +824,46 @@ document.querySelectorAll('.activity-tile[data-id]').forEach(tile => {
 
 // Initialize
 updateUI();
+
+// Auth handling
+async function checkAuth() {
+    const authSection = document.getElementById('authSection');
+    if (!authSection) return;
+    
+    // Check localStorage first for quick display
+    const storedUser = localStorage.getItem('pmmCurrentUser');
+    if (storedUser) {
+        const user = JSON.parse(storedUser);
+        const initials = (user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase();
+        authSection.innerHTML = `
+            <div class="user-menu">
+                <div class="user-avatar">${initials}</div>
+                <span>${user.firstName || user.email}</span>
+                <button class="sign-out-btn" onclick="signOut()">Sign Out</button>
+            </div>
+        `;
+    }
+}
+
+async function signOut() {
+    // Try Supabase signout
+    if (typeof supabase !== 'undefined') {
+        try {
+            const client = supabase.createClient(
+                'https://yyqzkczutlidhgyiyawc.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
+            );
+            await client.auth.signOut();
+        } catch (e) {}
+    }
+    localStorage.removeItem('pmmCurrentUser');
+    location.reload();
+}
+
+// Check auth on load
+checkAuth();
 </script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 </body>
 </html>
