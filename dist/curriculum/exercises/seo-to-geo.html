@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO to GEO Matching | SAP Data & Analytics Product Marketing</title>
+    <meta name="description" content="Interactive exercise: Match SEO concepts to their GEO equivalents. From ranking to citation, from keywords to entity authority.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--dark-slate) 0%, #1e3a5f 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover { color: white; }
+        
+        .exercise-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .exercise-header {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .exercise-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .exercise-body {
+            padding: 2rem;
+        }
+        
+        .instructions {
+            background: #f0f7ff;
+            border-left: 4px solid var(--sap-blue);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .instructions h3 {
+            font-size: 0.9rem;
+            color: var(--sap-blue);
+            margin-bottom: 0.5rem;
+        }
+        .instructions p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0;
+        }
+        
+        .matching-game {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+        
+        .column {
+            flex: 1;
+            max-width: 280px;
+        }
+        
+        .column-header {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .column-header.seo {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        .column-header.geo {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        .match-item {
+            padding: 1rem 1.25rem;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .seo-item {
+            cursor: pointer;
+        }
+        .seo-item:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .seo-item.selected {
+            border-color: var(--sap-blue);
+            background: #f0f7ff;
+            box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.2);
+        }
+        .seo-item.matched {
+            border-color: var(--green);
+            background: #e8f5e9;
+        }
+        .seo-item.incorrect {
+            border-color: #dc3545;
+            background: #ffebee;
+            animation: shake 0.4s ease;
+        }
+        
+        .geo-item {
+            cursor: pointer;
+        }
+        .geo-item:hover {
+            border-color: var(--sap-orange);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .geo-item.matched {
+            border-color: var(--green);
+            background: #e8f5e9;
+        }
+        .geo-item.incorrect {
+            border-color: #dc3545;
+            background: #ffebee;
+            animation: shake 0.4s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .match-label {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .match-desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+        
+        .match-number {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: var(--green);
+            color: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .match-item.matched .match-number {
+            display: flex;
+        }
+        
+        .arrow-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 3rem;
+        }
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--sap-orange);
+            margin: 1.5rem 0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: var(--sap-blue);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--dark-slate); }
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        .btn-secondary:hover { background: #d5d4d4; }
+        
+        .result {
+            text-align: center;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        .result.partial {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            color: #856404;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+        .score strong {
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .matching-game { flex-direction: column; align-items: center; }
+            .arrow-column { display: none; }
+            .column { max-width: 100%; }
+            .exercise-header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/curriculum/chapter-01/" class="back-link">← Back to Chapter 1</a>
+    
+    <div class="exercise-card">
+        <div class="exercise-header">
+            <h1>🔄 From SEO to GEO</h1>
+            <p>Match each SEO concept to its GEO equivalent</p>
+        </div>
+        
+        <div class="exercise-body">
+            <div class="instructions">
+                <h3>How to Play</h3>
+                <p>Click an SEO concept on the left, then click its matching GEO equivalent on the right. Get all 6 matches to complete the challenge!</p>
+            </div>
+            
+            <div class="matching-game">
+                <div class="column">
+                    <div class="column-header seo">SEO</div>
+                    <div class="match-item seo-item" data-match="1">
+                        <div class="match-label">Ranking on a list</div>
+                        <div class="match-desc">Optimize for position #1</div>
+                        <span class="match-number">1</span>
+                    </div>
+                    <div class="match-item seo-item" data-match="2">
+                        <div class="match-label">Keywords</div>
+                        <div class="match-desc">Compete on search terms</div>
+                        <span class="match-number">2</span>
+                    </div>
+                    <div class="match-item seo-item" data-match="3">
+                        <div class="match-label">Backlinks</div>
+                        <div class="match-desc">Build authority through links</div>
+                        <span class="match-number">3</span>
+                    </div>
+                    <div class="match-item seo-item" data-match="4">
+                        <div class="match-label">Title tag</div>
+                        <div class="match-desc">What matters for ranking</div>
+                        <span class="match-number">4</span>
+                    </div>
+                    <div class="match-item seo-item" data-match="5">
+                        <div class="match-label">More content helps</div>
+                        <div class="match-desc">Volume effect</div>
+                        <span class="match-number">5</span>
+                    </div>
+                    <div class="match-item seo-item" data-match="6">
+                        <div class="match-label">Blue links</div>
+                        <div class="match-desc">What buyers see</div>
+                        <span class="match-number">6</span>
+                    </div>
+                </div>
+                
+                <div class="arrow-column">
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                </div>
+                
+                <div class="column">
+                    <div class="column-header geo">GEO</div>
+                    <div class="match-item geo-item" data-match="4">
+                        <div class="match-label">Schema markup</div>
+                        <div class="match-desc">What matters for citation</div>
+                        <span class="match-number">4</span>
+                    </div>
+                    <div class="match-item geo-item" data-match="1">
+                        <div class="match-label">Citation in a synthesis</div>
+                        <div class="match-desc">Optimize for being quoted</div>
+                        <span class="match-number">1</span>
+                    </div>
+                    <div class="match-item geo-item" data-match="6">
+                        <div class="match-label">Synthesized answer</div>
+                        <div class="match-desc">What buyers see</div>
+                        <span class="match-number">6</span>
+                    </div>
+                    <div class="match-item geo-item" data-match="3">
+                        <div class="match-label">Structured proof points</div>
+                        <div class="match-desc">Build authority through data</div>
+                        <span class="match-number">3</span>
+                    </div>
+                    <div class="match-item geo-item" data-match="5">
+                        <div class="match-label">Better structure helps</div>
+                        <div class="match-desc">Quality over quantity</div>
+                        <span class="match-number">5</span>
+                    </div>
+                    <div class="match-item geo-item" data-match="2">
+                        <div class="match-label">Entity authority</div>
+                        <div class="match-desc">Compete on expertise signals</div>
+                        <span class="match-number">2</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="score">Matches: <strong id="matchCount">0</strong> / 6</div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="resetGame()">🔄 Reset</button>
+            </div>
+            
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedSeo = null;
+let matchedPairs = 0;
+const totalPairs = 6;
+
+document.querySelectorAll('.seo-item').forEach(item => {
+    item.addEventListener('click', function() {
+        if (this.classList.contains('matched')) return;
+        
+        // Deselect previous
+        document.querySelectorAll('.seo-item').forEach(i => i.classList.remove('selected'));
+        
+        // Select this one
+        this.classList.add('selected');
+        selectedSeo = this;
+    });
+});
+
+document.querySelectorAll('.geo-item').forEach(item => {
+    item.addEventListener('click', function() {
+        if (!selectedSeo || this.classList.contains('matched')) return;
+        
+        const seoMatch = selectedSeo.dataset.match;
+        const geoMatch = this.dataset.match;
+        
+        if (seoMatch === geoMatch) {
+            // Correct match!
+            selectedSeo.classList.remove('selected');
+            selectedSeo.classList.add('matched');
+            this.classList.add('matched');
+            matchedPairs++;
+            updateScore();
+            
+            if (matchedPairs === totalPairs) {
+                showResult();
+            }
+        } else {
+            // Wrong match
+            selectedSeo.classList.add('incorrect');
+            this.classList.add('incorrect');
+            
+            setTimeout(() => {
+                selectedSeo.classList.remove('incorrect', 'selected');
+                this.classList.remove('incorrect');
+                selectedSeo = null;
+            }, 600);
+            return;
+        }
+        
+        selectedSeo = null;
+    });
+});
+
+function updateScore() {
+    document.getElementById('matchCount').textContent = matchedPairs;
+}
+
+function showResult() {
+    const result = document.getElementById('result');
+    result.className = 'result show success';
+    result.innerHTML = '🎉 Perfect! You\'ve mastered the SEO → GEO shift!<br><a href="/curriculum/chapter-01/" style="color: inherit;">← Continue reading Chapter 1</a>';
+}
+
+function resetGame() {
+    selectedSeo = null;
+    matchedPairs = 0;
+    updateScore();
+    
+    document.querySelectorAll('.match-item').forEach(item => {
+        item.classList.remove('selected', 'matched', 'incorrect');
+    });
+    
+    document.getElementById('result').className = 'result';
+}
+</script>
+
+</body>
+</html>
