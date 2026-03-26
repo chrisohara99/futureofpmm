@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Visibility Gap | SAP Data & Analytics Product Marketing</title>
+    <meta name="description" content="Interactive exercise: Sort content types into what AI agents can process vs. what they skip entirely.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --green: #0d9488;
+            --red: #991b1b;
+            --light-gray: #E7E6E6;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--dark-slate) 0%, #1e3a5f 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover { color: white; }
+        
+        .exercise-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .exercise-header {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, #374151 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .exercise-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .exercise-body {
+            padding: 2rem;
+        }
+        
+        .instructions {
+            background: #f0f7ff;
+            border-left: 4px solid var(--dark-slate);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .instructions h3 {
+            font-size: 0.9rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+        }
+        .instructions p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0;
+        }
+        
+        /* Source items pool */
+        .source-pool {
+            background: #f8f9fa;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            min-height: 100px;
+        }
+        .source-pool-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        .source-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        /* Draggable items */
+        .drag-item {
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 2px solid var(--dark-slate);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .drag-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .drag-item:active {
+            cursor: grabbing;
+        }
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        .drag-item.correct {
+            border-color: var(--green);
+            background: #d1fae5;
+        }
+        .drag-item.incorrect {
+            border-color: var(--red);
+            background: #fee2e2;
+            animation: shake 0.4s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Drop zones */
+        .drop-zones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .drop-zone {
+            border-radius: 12px;
+            padding: 1.25rem;
+            min-height: 280px;
+        }
+        .drop-zone.can-process {
+            background: #ecfdf5;
+            border: 2px solid var(--green);
+        }
+        .drop-zone.agents-skip {
+            background: #fef2f2;
+            border: 2px solid var(--red);
+        }
+        .drop-zone.drag-over {
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+        }
+        .drop-zone.drag-over.can-process {
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.3);
+        }
+        .drop-zone.drag-over.agents-skip {
+            box-shadow: 0 0 0 4px rgba(153, 27, 27, 0.3);
+        }
+        
+        .drop-zone-header {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .can-process .drop-zone-header {
+            background: var(--green);
+            color: white;
+        }
+        .agents-skip .drop-zone-header {
+            background: var(--red);
+            color: white;
+        }
+        
+        .drop-zone-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .drop-zone-items .drag-item {
+            width: 100%;
+        }
+        .can-process .drag-item {
+            border-color: var(--green);
+        }
+        .agents-skip .drag-item {
+            border-color: var(--red);
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: var(--green);
+            color: white;
+        }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        .btn-secondary:hover { background: #d5d4d4; }
+        
+        .score {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+        .score strong {
+            color: var(--dark-slate);
+            font-size: 1.1rem;
+        }
+        
+        .result {
+            text-align: center;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result.success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+        .result.partial {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+        
+        .callout {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-style: italic;
+            color: #92400e;
+            display: none;
+        }
+        .callout.show { display: block; }
+        
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .drop-zones { grid-template-columns: 1fr; }
+            .exercise-header h1 { font-size: 1.4rem; }
+            .drag-item { font-size: 0.8rem; padding: 0.6rem 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/curriculum/chapter-01/" class="back-link">← Back to Chapter 1</a>
+    
+    <div class="exercise-card">
+        <div class="exercise-header">
+            <h1>🔍 The Visibility Gap</h1>
+            <p>What AI agents surface vs. what most PMM teams produce</p>
+        </div>
+        
+        <div class="exercise-body">
+            <div class="instructions">
+                <h3>How to Play</h3>
+                <p>Drag each content type to the correct column: things AI agents <strong>can process</strong> (green) or things they <strong>skip entirely</strong> (red). Sort all 10 to complete the challenge!</p>
+            </div>
+            
+            <!-- Source pool -->
+            <div class="source-pool">
+                <div class="source-pool-label">📦 Content Types — Drag to sort</div>
+                <div class="source-items" id="source-items">
+                    <!-- Items will be inserted here by JS, shuffled -->
+                </div>
+            </div>
+            
+            <!-- Drop zones -->
+            <div class="drop-zones">
+                <div class="drop-zone can-process" id="zone-process" data-zone="process">
+                    <div class="drop-zone-header">✓ What Agents Can Process</div>
+                    <div class="drop-zone-items"></div>
+                </div>
+                <div class="drop-zone agents-skip" id="zone-skip" data-zone="skip">
+                    <div class="drop-zone-header">✗ What Agents Skip</div>
+                    <div class="drop-zone-items"></div>
+                </div>
+            </div>
+            
+            <div class="score">Sorted: <strong id="sortedCount">0</strong> / 10</div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="resetGame()">🔄 Reset</button>
+                <button class="btn btn-primary" onclick="checkAnswers()">✓ Check Answers</button>
+            </div>
+            
+            <div class="result" id="result"></div>
+            <div class="callout" id="callout">
+                The Visibility Gap is not a technology problem — it is a <strong>prioritization problem</strong>.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const items = [
+    { id: 1, text: "Structured comparison data (schema.org)", zone: "process" },
+    { id: 2, text: "Third-party review rankings (G2, Capterra)", zone: "process" },
+    { id: 3, text: "Technical documentation & APIs", zone: "process" },
+    { id: 4, text: "Machine-readable pricing structures", zone: "process" },
+    { id: 5, text: "News with verifiable citations", zone: "process" },
+    { id: 6, text: "Narrative product pages", zone: "skip" },
+    { id: 7, text: "Video testimonials & demos", zone: "skip" },
+    { id: 8, text: "Gated PDF case studies & ebooks", zone: "skip" },
+    { id: 9, text: "JavaScript-rendered content", zone: "skip" },
+    { id: 10, text: "Email nurture sequences", zone: "skip" }
+];
+
+let draggedItem = null;
+let placements = {}; // { itemId: 'process' | 'skip' | null }
+
+// Shuffle array
+function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// Initialize
+function initGame() {
+    const sourceContainer = document.getElementById('source-items');
+    sourceContainer.innerHTML = '';
+    
+    document.querySelectorAll('.drop-zone-items').forEach(z => z.innerHTML = '');
+    
+    placements = {};
+    items.forEach(item => placements[item.id] = null);
+    
+    const shuffled = shuffle(items);
+    shuffled.forEach(item => {
+        const el = createDragItem(item);
+        sourceContainer.appendChild(el);
+    });
+    
+    updateScore();
+    document.getElementById('result').className = 'result';
+    document.getElementById('callout').className = 'callout';
+}
+
+function createDragItem(item) {
+    const el = document.createElement('div');
+    el.className = 'drag-item';
+    el.draggable = true;
+    el.dataset.id = item.id;
+    el.dataset.correctZone = item.zone;
+    el.textContent = item.text;
+    
+    // Desktop drag
+    el.addEventListener('dragstart', handleDragStart);
+    el.addEventListener('dragend', handleDragEnd);
+    
+    // Touch
+    el.addEventListener('touchstart', handleTouchStart, { passive: false });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd);
+    
+    return el;
+}
+
+// Desktop drag handlers
+function handleDragStart(e) {
+    draggedItem = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+}
+
+// Drop zone handlers
+document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', e => {
+        zone.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (draggedItem) {
+            const itemsContainer = zone.querySelector('.drop-zone-items');
+            itemsContainer.appendChild(draggedItem);
+            placements[draggedItem.dataset.id] = zone.dataset.zone;
+            updateScore();
+        }
+        draggedItem = null;
+    });
+});
+
+// Source pool also accepts drops (to undo)
+const sourcePool = document.getElementById('source-items');
+sourcePool.parentElement.addEventListener('dragover', e => {
+    e.preventDefault();
+});
+sourcePool.parentElement.addEventListener('drop', e => {
+    e.preventDefault();
+    if (draggedItem) {
+        sourcePool.appendChild(draggedItem);
+        placements[draggedItem.dataset.id] = null;
+        updateScore();
+    }
+    draggedItem = null;
+});
+
+// Touch handlers
+let touchItem = null;
+let touchClone = null;
+
+function handleTouchStart(e) {
+    touchItem = this;
+    const touch = e.touches[0];
+    
+    touchClone = this.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.left = (touch.clientX - 100) + 'px';
+    touchClone.style.top = (touch.clientY - 25) + 'px';
+    touchClone.style.width = '220px';
+    touchClone.style.opacity = '0.9';
+    touchClone.style.zIndex = '1000';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+    document.body.appendChild(touchClone);
+    
+    this.classList.add('dragging');
+}
+
+function handleTouchMove(e) {
+    if (!touchItem || !touchClone) return;
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - 100) + 'px';
+    touchClone.style.top = (touch.clientY - 25) + 'px';
+    
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = elementBelow?.closest('.drop-zone');
+    
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    if (dropZone) {
+        dropZone.classList.add('drag-over');
+    }
+}
+
+function handleTouchEnd(e) {
+    if (!touchItem) return;
+    
+    touchItem.classList.remove('dragging');
+    if (touchClone) {
+        touchClone.remove();
+        touchClone = null;
+    }
+    
+    const touch = e.changedTouches[0];
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = elementBelow?.closest('.drop-zone');
+    const sourceArea = elementBelow?.closest('.source-pool');
+    
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    
+    if (dropZone) {
+        const itemsContainer = dropZone.querySelector('.drop-zone-items');
+        itemsContainer.appendChild(touchItem);
+        placements[touchItem.dataset.id] = dropZone.dataset.zone;
+        updateScore();
+    } else if (sourceArea) {
+        document.getElementById('source-items').appendChild(touchItem);
+        placements[touchItem.dataset.id] = null;
+        updateScore();
+    }
+    
+    touchItem = null;
+}
+
+function updateScore() {
+    const sorted = Object.values(placements).filter(v => v !== null).length;
+    document.getElementById('sortedCount').textContent = sorted;
+}
+
+function checkAnswers() {
+    let correct = 0;
+    let total = items.length;
+    
+    document.querySelectorAll('.drop-zone .drag-item').forEach(el => {
+        const correctZone = el.dataset.correctZone;
+        const currentZone = placements[el.dataset.id];
+        
+        el.classList.remove('correct', 'incorrect');
+        
+        if (currentZone === correctZone) {
+            el.classList.add('correct');
+            correct++;
+        } else if (currentZone !== null) {
+            el.classList.add('incorrect');
+        }
+    });
+    
+    const result = document.getElementById('result');
+    const callout = document.getElementById('callout');
+    
+    if (correct === total) {
+        result.className = 'result show success';
+        result.innerHTML = '🎉 Perfect! You understand the Visibility Gap!<br><a href="/curriculum/chapter-01/" style="color: inherit;">← Continue reading Chapter 1</a>';
+        callout.className = 'callout show';
+    } else {
+        result.className = 'result show partial';
+        result.innerHTML = `${correct}/${total} correct. Items in red are in the wrong column — try again!`;
+    }
+}
+
+function resetGame() {
+    document.querySelectorAll('.drag-item').forEach(el => {
+        el.classList.remove('correct', 'incorrect');
+    });
+    initGame();
+}
+
+// Start
+initGame();
+</script>
+
+</body>
+</html>
