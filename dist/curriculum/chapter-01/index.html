@@ -871,69 +871,32 @@
     
     <p><strong>Customer Empathy</strong> is the one that surprises people, but it shouldn't. An agent can analyze ten thousand support tickets and tell you that 23% mention onboarding friction. A human can sit across from a customer, watch their face, and understand that the real problem isn't the onboarding UX—it's that the customer doesn't have executive sponsorship and they're trying to drive adoption bottom-up in a top-down culture. That's a completely different product marketing challenge, and no amount of ticket analysis will surface it.</p>
     
-    <!-- Interactive Cluster Exercise -->
-    <div class="cluster-exercise" id="clusterExercise">
-        <div class="exercise-header">
-            <h4>🎯 Sort the Activities</h4>
-            <p>Drag each PMM activity into the cluster where it belongs</p>
-        </div>
-        
-        <div class="drag-items" id="dragItems">
-            <div class="drag-item" draggable="true" data-correct="automated">Market sizing</div>
-            <div class="drag-item" draggable="true" data-correct="elevated">Stakeholder management</div>
-            <div class="drag-item" draggable="true" data-correct="augmented">Win/loss analysis</div>
-            <div class="drag-item" draggable="true" data-correct="automated">Derivative content</div>
-            <div class="drag-item" draggable="true" data-correct="elevated">Customer empathy</div>
-            <div class="drag-item" draggable="true" data-correct="augmented">Positioning</div>
-            <div class="drag-item" draggable="true" data-correct="automated">Event logistics</div>
-            <div class="drag-item" draggable="true" data-correct="augmented">Buyer personas</div>
-            <div class="drag-item" draggable="true" data-correct="elevated">Thought leadership</div>
-            <div class="drag-item" draggable="true" data-correct="automated">Sales tools production</div>
-            <div class="drag-item" draggable="true" data-correct="augmented">Pricing strategy</div>
-        </div>
-        
-        <div class="drop-zones">
-            <div class="drop-zone c1" data-zone="automated">
-                <div class="drop-zone-header">
-                    <h5>Cluster 1</h5>
-                    <h4>Automated</h4>
-                </div>
-                <div class="drop-zone-items"></div>
-            </div>
-            <div class="drop-zone c2" data-zone="augmented">
-                <div class="drop-zone-header">
-                    <h5>Cluster 2</h5>
-                    <h4>Augmented</h4>
-                </div>
-                <div class="drop-zone-items"></div>
-            </div>
-            <div class="drop-zone c3" data-zone="elevated">
-                <div class="drop-zone-header">
-                    <h5>Cluster 3</h5>
-                    <h4>Elevated</h4>
-                </div>
-                <div class="drop-zone-items"></div>
-            </div>
-        </div>
-        
-        <div class="exercise-controls">
-            <button class="exercise-btn secondary" onclick="resetExercise()">Reset</button>
-            <button class="exercise-btn primary" onclick="checkAnswers()">Check Answers</button>
-        </div>
-        
-        <div class="exercise-result" id="exerciseResult"></div>
-    </div>
-    
-    <div class="cluster-grid" style="margin-top: 1.5rem;">
+    <div class="cluster-grid">
         <div class="cluster-card c1">
-            <p style="font-size: 0.8rem;"><em>If your value is producing artifacts, the automation wave is not your friend.</em></p>
+            <h4>Cluster 1</h4>
+            <h5>Automated</h5>
+            <p>Market sizing, derivative content, event logistics, sales tools production.</p>
+            <p style="margin-top: 0.75rem; font-size: 0.8rem;"><em>If your value is producing artifacts, the automation wave is not your friend.</em></p>
         </div>
         <div class="cluster-card c2">
-            <p style="font-size: 0.8rem;"><em>Operating without agents becomes a competitive disadvantage.</em></p>
+            <h4>Cluster 2</h4>
+            <h5>Augmented</h5>
+            <p>Positioning, win/loss analysis, buyer personas, pricing strategy.</p>
+            <p style="margin-top: 0.75rem; font-size: 0.8rem;"><em>Operating without agents becomes a competitive disadvantage.</em></p>
         </div>
         <div class="cluster-card c3">
-            <p style="font-size: 0.8rem;"><em>These become MORE important because machines can't do them.</em></p>
+            <h4>Cluster 3</h4>
+            <h5>Elevated</h5>
+            <p>Stakeholder management, customer empathy, thought leadership.</p>
+            <p style="margin-top: 0.75rem; font-size: 0.8rem;"><em>These become MORE important because machines can't do them.</em></p>
         </div>
+    </div>
+    
+    <div class="radar-cta">
+        <a href="/curriculum/exercises/cluster-sort.html" class="radar-btn">
+            <span class="radar-btn-text">🎯 Test Your Knowledge: Cluster Sort Challenge</span>
+            <span class="radar-btn-arrow">→</span>
+        </a>
     </div>
     
     <h2>The Curriculum Architecture</h2>
@@ -1024,112 +987,6 @@
 <footer class="footer">
     <p>The Future of Product Marketing · <a href="/">futureofpmm.com</a> · Chris O'Hara & Dan Yu</p>
 </footer>
-
-<script>
-// Drag and Drop Exercise
-let draggedItem = null;
-
-document.querySelectorAll('.drag-item').forEach(item => {
-    item.addEventListener('dragstart', function(e) {
-        draggedItem = this;
-        this.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-    });
-    
-    item.addEventListener('dragend', function() {
-        this.classList.remove('dragging');
-        draggedItem = null;
-        document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
-    });
-});
-
-document.querySelectorAll('.drop-zone').forEach(zone => {
-    zone.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        this.classList.add('drag-over');
-    });
-    
-    zone.addEventListener('dragleave', function() {
-        this.classList.remove('drag-over');
-    });
-    
-    zone.addEventListener('drop', function(e) {
-        e.preventDefault();
-        this.classList.remove('drag-over');
-        if (draggedItem) {
-            const itemsContainer = this.querySelector('.drop-zone-items');
-            itemsContainer.appendChild(draggedItem);
-            draggedItem.classList.remove('correct', 'incorrect');
-        }
-    });
-});
-
-// Allow dragging back to source
-document.getElementById('dragItems').addEventListener('dragover', function(e) {
-    e.preventDefault();
-});
-
-document.getElementById('dragItems').addEventListener('drop', function(e) {
-    e.preventDefault();
-    if (draggedItem) {
-        this.appendChild(draggedItem);
-        draggedItem.classList.remove('correct', 'incorrect');
-    }
-});
-
-function checkAnswers() {
-    const items = document.querySelectorAll('.drop-zone .drag-item');
-    let correct = 0;
-    let total = document.querySelectorAll('.drag-item').length;
-    
-    items.forEach(item => {
-        const zone = item.closest('.drop-zone');
-        const zoneType = zone.dataset.zone;
-        const correctZone = item.dataset.correct;
-        
-        if (zoneType === correctZone) {
-            item.classList.add('correct');
-            item.classList.remove('incorrect');
-            correct++;
-        } else {
-            item.classList.add('incorrect');
-            item.classList.remove('correct');
-        }
-    });
-    
-    // Check items still in source
-    document.querySelectorAll('#dragItems .drag-item').forEach(item => {
-        item.classList.remove('correct', 'incorrect');
-    });
-    
-    const placed = items.length;
-    const result = document.getElementById('exerciseResult');
-    
-    if (placed === 0) {
-        result.className = 'exercise-result show partial';
-        result.textContent = 'Drag the activities into the clusters first!';
-    } else if (correct === total && placed === total) {
-        result.className = 'exercise-result show success';
-        result.textContent = '🎉 Perfect! You nailed all ' + total + ' activities!';
-    } else if (correct === placed && placed > 0) {
-        result.className = 'exercise-result show success';
-        result.textContent = '✓ ' + correct + '/' + placed + ' correct so far! Place the remaining activities.';
-    } else {
-        result.className = 'exercise-result show partial';
-        result.textContent = correct + '/' + placed + ' correct. The red ones are in the wrong cluster.';
-    }
-}
-
-function resetExercise() {
-    const source = document.getElementById('dragItems');
-    document.querySelectorAll('.drop-zone .drag-item').forEach(item => {
-        item.classList.remove('correct', 'incorrect');
-        source.appendChild(item);
-    });
-    document.getElementById('exerciseResult').className = 'exercise-result';
-}
-</script>
 
 </body>
 </html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Cluster Sort | SAP Data & Analytics Product Marketing</title>
+    <meta name="description" content="Interactive exercise: Sort PMM activities into the three clusters — Automated, Augmented, or Elevated.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover { color: white; }
+        
+        .exercise-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .exercise-header {
+            background: var(--dark-slate);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .exercise-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .exercise-body {
+            padding: 2rem;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid var(--sap-orange);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .instructions h3 {
+            font-size: 0.9rem;
+            color: var(--sap-orange);
+            margin-bottom: 0.5rem;
+        }
+        .instructions p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0;
+        }
+        
+        .drag-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            min-height: 100px;
+            border: 2px dashed #ccc;
+        }
+        .drag-items-label {
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        .drag-item {
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .drag-item:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .drag-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .drag-item.correct {
+            background: #d4edda;
+            border-color: var(--green);
+        }
+        .drag-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+        
+        .drop-zone {
+            min-height: 250px;
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.c1 { background: linear-gradient(180deg, var(--light-gray) 0%, #d8d7d5 100%); }
+        .drop-zone.c2 { background: linear-gradient(180deg, var(--sap-blue) 0%, #3860a8 100%); }
+        .drop-zone.c3 { background: linear-gradient(180deg, var(--sap-orange) 0%, #d66a1f 100%); }
+        
+        .drop-zone-header {
+            text-align: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+        .drop-zone.c1 .drop-zone-header { border-color: rgba(0,0,0,0.1); }
+        
+        .drop-zone-header .cluster-num {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.25rem;
+        }
+        .drop-zone.c1 .cluster-num { color: #666; }
+        .drop-zone.c2 .cluster-num,
+        .drop-zone.c3 .cluster-num { color: rgba(255,255,255,0.7); }
+        
+        .drop-zone-header h3 {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        .drop-zone.c1 h3 { color: var(--text); }
+        .drop-zone.c2 h3,
+        .drop-zone.c3 h3 { color: white; }
+        
+        .drop-zone-desc {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        .drop-zone.c1 .drop-zone-desc { color: #666; }
+        .drop-zone.c2 .drop-zone-desc,
+        .drop-zone.c3 .drop-zone-desc { color: rgba(255,255,255,0.8); }
+        
+        .drop-zone-items {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .drop-zone.drag-over {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 4px white;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: var(--sap-blue);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--dark-slate); }
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        .btn-secondary:hover { background: #d5d4d4; }
+        
+        .result {
+            text-align: center;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        .result.partial {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            color: #856404;
+        }
+        
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+        }
+        .progress-dot.filled {
+            background: var(--green);
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .drop-zones { grid-template-columns: 1fr; }
+            .exercise-header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/curriculum/chapter-01/" class="back-link">← Back to Chapter 1</a>
+    
+    <div class="exercise-card">
+        <div class="exercise-header">
+            <h1>🎯 Cluster Sort Challenge</h1>
+            <p>Which PMM activities belong in each cluster?</p>
+        </div>
+        
+        <div class="exercise-body">
+            <div class="instructions">
+                <h3>How to Play</h3>
+                <p>Drag each activity card into the correct cluster. <strong>Automated</strong> = agents handle it today. <strong>Augmented</strong> = human + agent collaboration. <strong>Elevated</strong> = irreducibly human.</p>
+            </div>
+            
+            <div class="drag-items" id="dragItems">
+                <div class="drag-items-label">👇 Drag these activities to the correct cluster</div>
+                <div class="drag-item" draggable="true" data-correct="automated">Market sizing</div>
+                <div class="drag-item" draggable="true" data-correct="elevated">Stakeholder management</div>
+                <div class="drag-item" draggable="true" data-correct="augmented">Win/loss analysis</div>
+                <div class="drag-item" draggable="true" data-correct="automated">Derivative content</div>
+                <div class="drag-item" draggable="true" data-correct="elevated">Customer empathy</div>
+                <div class="drag-item" draggable="true" data-correct="augmented">Positioning</div>
+                <div class="drag-item" draggable="true" data-correct="automated">Event logistics</div>
+                <div class="drag-item" draggable="true" data-correct="augmented">Buyer personas</div>
+                <div class="drag-item" draggable="true" data-correct="elevated">Thought leadership</div>
+                <div class="drag-item" draggable="true" data-correct="automated">Sales tools production</div>
+                <div class="drag-item" draggable="true" data-correct="augmented">Pricing strategy</div>
+            </div>
+            
+            <div class="drop-zones">
+                <div class="drop-zone c1" data-zone="automated">
+                    <div class="drop-zone-header">
+                        <div class="cluster-num">Cluster 1</div>
+                        <h3>Automated</h3>
+                        <div class="drop-zone-desc">Agents do most of this today</div>
+                    </div>
+                    <div class="drop-zone-items"></div>
+                </div>
+                <div class="drop-zone c2" data-zone="augmented">
+                    <div class="drop-zone-header">
+                        <div class="cluster-num">Cluster 2</div>
+                        <h3>Augmented</h3>
+                        <div class="drop-zone-desc">Human essential, agent accelerates</div>
+                    </div>
+                    <div class="drop-zone-items"></div>
+                </div>
+                <div class="drop-zone c3" data-zone="elevated">
+                    <div class="drop-zone-header">
+                        <div class="cluster-num">Cluster 3</div>
+                        <h3>Elevated</h3>
+                        <div class="drop-zone-desc">Irreducibly human</div>
+                    </div>
+                    <div class="drop-zone-items"></div>
+                </div>
+            </div>
+            
+            <div class="progress-indicator" id="progress">
+                <!-- Filled dynamically -->
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="resetExercise()">🔄 Reset</button>
+                <button class="btn btn-primary" onclick="checkAnswers()">✓ Check Answers</button>
+            </div>
+            
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let draggedItem = null;
+const totalItems = document.querySelectorAll('.drag-item').length;
+
+// Initialize progress dots
+function initProgress() {
+    const progress = document.getElementById('progress');
+    progress.innerHTML = '';
+    for (let i = 0; i < totalItems; i++) {
+        progress.innerHTML += '<div class="progress-dot"></div>';
+    }
+}
+initProgress();
+
+function updateProgress() {
+    const placed = document.querySelectorAll('.drop-zone .drag-item').length;
+    const dots = document.querySelectorAll('.progress-dot');
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('filled', i < placed);
+    });
+}
+
+document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('dragstart', function(e) {
+        draggedItem = this;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    
+    item.addEventListener('dragend', function() {
+        this.classList.remove('dragging');
+        draggedItem = null;
+        document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+        updateProgress();
+    });
+    
+    // Touch support
+    item.addEventListener('touchstart', function(e) {
+        draggedItem = this;
+        this.classList.add('dragging');
+    });
+});
+
+document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        this.classList.add('drag-over');
+    });
+    
+    zone.addEventListener('dragleave', function() {
+        this.classList.remove('drag-over');
+    });
+    
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('drag-over');
+        if (draggedItem) {
+            const itemsContainer = this.querySelector('.drop-zone-items');
+            itemsContainer.appendChild(draggedItem);
+            draggedItem.classList.remove('correct', 'incorrect');
+            updateProgress();
+        }
+    });
+});
+
+// Allow dragging back to source
+document.getElementById('dragItems').addEventListener('dragover', function(e) {
+    e.preventDefault();
+});
+
+document.getElementById('dragItems').addEventListener('drop', function(e) {
+    e.preventDefault();
+    if (draggedItem) {
+        this.appendChild(draggedItem);
+        draggedItem.classList.remove('correct', 'incorrect');
+        updateProgress();
+    }
+});
+
+function checkAnswers() {
+    const items = document.querySelectorAll('.drop-zone .drag-item');
+    let correct = 0;
+    
+    items.forEach(item => {
+        const zone = item.closest('.drop-zone');
+        const zoneType = zone.dataset.zone;
+        const correctZone = item.dataset.correct;
+        
+        if (zoneType === correctZone) {
+            item.classList.add('correct');
+            item.classList.remove('incorrect');
+            correct++;
+        } else {
+            item.classList.add('incorrect');
+            item.classList.remove('correct');
+        }
+    });
+    
+    // Clear styling from unplaced items
+    document.querySelectorAll('#dragItems .drag-item').forEach(item => {
+        item.classList.remove('correct', 'incorrect');
+    });
+    
+    const placed = items.length;
+    const result = document.getElementById('result');
+    
+    if (placed === 0) {
+        result.className = 'result show partial';
+        result.innerHTML = '👆 Drag the activities into the clusters first!';
+    } else if (correct === totalItems && placed === totalItems) {
+        result.className = 'result show success';
+        result.innerHTML = '🎉 Perfect! You understand the three clusters!<br><a href="/curriculum/chapter-01/" style="color: inherit;">← Continue reading Chapter 1</a>';
+    } else if (correct === placed && placed > 0) {
+        result.className = 'result show success';
+        result.innerHTML = '✓ ' + correct + '/' + placed + ' correct so far! Keep going — place the rest.';
+    } else {
+        result.className = 'result show partial';
+        result.innerHTML = correct + '/' + placed + ' correct. Red cards are in the wrong cluster — try again!';
+    }
+}
+
+function resetExercise() {
+    const source = document.getElementById('dragItems');
+    const label = source.querySelector('.drag-items-label');
+    document.querySelectorAll('.drop-zone .drag-item').forEach(item => {
+        item.classList.remove('correct', 'incorrect');
+        source.appendChild(item);
+    });
+    // Keep label at top
+    if (label) source.insertBefore(label, source.firstChild);
+    document.getElementById('result').className = 'result';
+    updateProgress();
+}
+</script>
+
+</body>
+</html>
