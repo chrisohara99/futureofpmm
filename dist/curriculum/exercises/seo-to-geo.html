@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEO to GEO Matching | SAP Data & Analytics Product Marketing</title>
-    <meta name="description" content="Interactive exercise: Match SEO concepts to their GEO equivalents. From ranking to citation, from keywords to entity authority.">
+    <meta name="description" content="Interactive exercise: Drag SEO concepts to their GEO equivalents. From ranking to citation, from keywords to entity authority.">
     <link rel="icon" type="image/png" href="/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -31,7 +31,7 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
         
@@ -92,13 +92,14 @@
         
         .matching-game {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             justify-content: center;
+            align-items: flex-start;
         }
         
         .column {
             flex: 1;
-            max-width: 280px;
+            max-width: 300px;
         }
         
         .column-header {
@@ -118,102 +119,112 @@
             color: white;
         }
         
-        .match-item {
-            padding: 1rem 1.25rem;
+        /* Draggable SEO items */
+        .drag-item {
+            padding: 0.875rem 1rem;
             background: white;
-            border: 2px solid var(--light-gray);
+            border: 2px solid var(--sap-blue);
             border-radius: 8px;
-            margin-bottom: 0.75rem;
-            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .drag-item:hover {
+            box-shadow: 0 4px 12px rgba(68, 114, 196, 0.3);
+            transform: translateY(-2px);
+        }
+        .drag-item:active {
+            cursor: grabbing;
+        }
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        .drag-item .label {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .drag-item .desc {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.2rem;
+        }
+        
+        /* Drop zones */
+        .drop-zone {
+            min-height: 70px;
+            border: 2px dashed var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s ease;
             position: relative;
+            background: #fafafa;
         }
-        
-        .seo-item {
-            cursor: pointer;
-        }
-        .seo-item:hover {
-            border-color: var(--sap-blue);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .seo-item.selected {
-            border-color: var(--sap-blue);
-            background: #f0f7ff;
-            box-shadow: 0 0 0 3px rgba(68, 114, 196, 0.2);
-        }
-        .seo-item.matched {
-            border-color: var(--green);
-            background: #e8f5e9;
-        }
-        .seo-item.incorrect {
-            border-color: #dc3545;
-            background: #ffebee;
-            animation: shake 0.4s ease;
-        }
-        
-        .geo-item {
-            cursor: pointer;
-        }
-        .geo-item:hover {
+        .drop-zone.drag-over {
             border-color: var(--sap-orange);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #fff5ee;
+            box-shadow: 0 0 0 3px rgba(237, 125, 49, 0.2);
         }
-        .geo-item.matched {
-            border-color: var(--green);
+        .drop-zone.matched {
+            border: 2px solid var(--green);
             background: #e8f5e9;
         }
-        .geo-item.incorrect {
+        .drop-zone.incorrect {
             border-color: #dc3545;
             background: #ffebee;
             animation: shake 0.4s ease;
+        }
+        
+        .drop-label {
+            text-align: center;
+            padding: 0.5rem;
+            color: #999;
+            font-size: 0.8rem;
+        }
+        .drop-label .geo-label {
+            font-weight: 600;
+            color: var(--sap-orange);
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        
+        /* Dropped item styling */
+        .drop-zone .drag-item {
+            margin: 0.5rem;
+            width: calc(100% - 1rem);
+            border-color: var(--green);
+            background: #e8f5e9;
+            cursor: default;
+        }
+        .drop-zone .drag-item:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Arrow column */
+        .arrow-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding-top: 3.5rem;
+            gap: 2.35rem;
+        }
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--sap-orange);
         }
         
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
-        }
-        
-        .match-label {
-            font-weight: 600;
-            color: var(--text);
-        }
-        .match-desc {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 0.25rem;
-        }
-        
-        .match-number {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 24px;
-            height: 24px;
-            background: var(--green);
-            color: white;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-        .match-item.matched .match-number {
-            display: flex;
-        }
-        
-        .arrow-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-top: 3rem;
-        }
-        .arrow {
-            font-size: 1.5rem;
-            color: var(--sap-orange);
-            margin: 1.5rem 0;
         }
         
         .controls {
@@ -234,16 +245,22 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .btn-primary {
-            background: var(--sap-blue);
-            color: white;
-        }
-        .btn-primary:hover { background: var(--dark-slate); }
         .btn-secondary {
             background: var(--light-gray);
             color: var(--text);
         }
         .btn-secondary:hover { background: #d5d4d4; }
+        
+        .score {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+        .score strong {
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+        }
         
         .result {
             text-align: center;
@@ -259,27 +276,30 @@
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
         }
-        .result.partial {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
-            color: #856404;
+        
+        /* Touch-friendly styles */
+        @media (pointer: coarse) {
+            .drag-item {
+                padding: 1rem 1.25rem;
+            }
+            .drop-zone {
+                min-height: 80px;
+            }
         }
         
-        .score {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 1rem;
-        }
-        .score strong {
-            color: var(--sap-blue);
-            font-size: 1.1rem;
-        }
-        
-        @media (max-width: 700px) {
+        @media (max-width: 750px) {
             body { padding: 1rem; }
-            .matching-game { flex-direction: column; align-items: center; }
-            .arrow-column { display: none; }
-            .column { max-width: 100%; }
+            .matching-game { 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            .arrow-column { 
+                flex-direction: row;
+                padding: 1rem 0;
+                gap: 1rem;
+            }
+            .arrow { transform: rotate(90deg); }
+            .column { max-width: 100%; width: 100%; }
             .exercise-header h1 { font-size: 1.4rem; }
         }
     </style>
@@ -292,47 +312,41 @@
     <div class="exercise-card">
         <div class="exercise-header">
             <h1>🔄 From SEO to GEO</h1>
-            <p>Match each SEO concept to its GEO equivalent</p>
+            <p>Drag each SEO concept to its GEO equivalent</p>
         </div>
         
         <div class="exercise-body">
             <div class="instructions">
                 <h3>How to Play</h3>
-                <p>Click an SEO concept on the left, then click its matching GEO equivalent on the right. Get all 6 matches to complete the challenge!</p>
+                <p>Drag the SEO concepts from the left and drop them onto their matching GEO equivalent on the right. Match all 6 to complete the challenge!</p>
             </div>
             
             <div class="matching-game">
-                <div class="column">
-                    <div class="column-header seo">SEO</div>
-                    <div class="match-item seo-item" data-match="1">
-                        <div class="match-label">Ranking on a list</div>
-                        <div class="match-desc">Optimize for position #1</div>
-                        <span class="match-number">1</span>
+                <div class="column" id="seo-column">
+                    <div class="column-header seo">SEO Concepts</div>
+                    <div class="drag-item" draggable="true" data-match="1">
+                        <div class="label">Ranking on a list</div>
+                        <div class="desc">Optimize for position #1</div>
                     </div>
-                    <div class="match-item seo-item" data-match="2">
-                        <div class="match-label">Keywords</div>
-                        <div class="match-desc">Compete on search terms</div>
-                        <span class="match-number">2</span>
+                    <div class="drag-item" draggable="true" data-match="2">
+                        <div class="label">Keywords</div>
+                        <div class="desc">Compete on search terms</div>
                     </div>
-                    <div class="match-item seo-item" data-match="3">
-                        <div class="match-label">Backlinks</div>
-                        <div class="match-desc">Build authority through links</div>
-                        <span class="match-number">3</span>
+                    <div class="drag-item" draggable="true" data-match="3">
+                        <div class="label">Backlinks</div>
+                        <div class="desc">Build authority through links</div>
                     </div>
-                    <div class="match-item seo-item" data-match="4">
-                        <div class="match-label">Title tag</div>
-                        <div class="match-desc">What matters for ranking</div>
-                        <span class="match-number">4</span>
+                    <div class="drag-item" draggable="true" data-match="4">
+                        <div class="label">Title tag</div>
+                        <div class="desc">What matters for ranking</div>
                     </div>
-                    <div class="match-item seo-item" data-match="5">
-                        <div class="match-label">More content helps</div>
-                        <div class="match-desc">Volume effect</div>
-                        <span class="match-number">5</span>
+                    <div class="drag-item" draggable="true" data-match="5">
+                        <div class="label">More content helps</div>
+                        <div class="desc">Volume effect</div>
                     </div>
-                    <div class="match-item seo-item" data-match="6">
-                        <div class="match-label">Blue links</div>
-                        <div class="match-desc">What buyers see</div>
-                        <span class="match-number">6</span>
+                    <div class="drag-item" draggable="true" data-match="6">
+                        <div class="label">Blue links</div>
+                        <div class="desc">What buyers see</div>
                     </div>
                 </div>
                 
@@ -345,37 +359,43 @@
                     <div class="arrow">→</div>
                 </div>
                 
-                <div class="column">
-                    <div class="column-header geo">GEO</div>
-                    <div class="match-item geo-item" data-match="4">
-                        <div class="match-label">Schema markup</div>
-                        <div class="match-desc">What matters for citation</div>
-                        <span class="match-number">4</span>
+                <div class="column" id="geo-column">
+                    <div class="column-header geo">GEO Equivalents</div>
+                    <div class="drop-zone" data-match="1">
+                        <div class="drop-label">
+                            <span class="geo-label">Citation in a synthesis</span>
+                            Optimize for being quoted
+                        </div>
                     </div>
-                    <div class="match-item geo-item" data-match="1">
-                        <div class="match-label">Citation in a synthesis</div>
-                        <div class="match-desc">Optimize for being quoted</div>
-                        <span class="match-number">1</span>
+                    <div class="drop-zone" data-match="2">
+                        <div class="drop-label">
+                            <span class="geo-label">Entity authority</span>
+                            Compete on expertise signals
+                        </div>
                     </div>
-                    <div class="match-item geo-item" data-match="6">
-                        <div class="match-label">Synthesized answer</div>
-                        <div class="match-desc">What buyers see</div>
-                        <span class="match-number">6</span>
+                    <div class="drop-zone" data-match="3">
+                        <div class="drop-label">
+                            <span class="geo-label">Structured proof points</span>
+                            Build authority through data
+                        </div>
                     </div>
-                    <div class="match-item geo-item" data-match="3">
-                        <div class="match-label">Structured proof points</div>
-                        <div class="match-desc">Build authority through data</div>
-                        <span class="match-number">3</span>
+                    <div class="drop-zone" data-match="4">
+                        <div class="drop-label">
+                            <span class="geo-label">Schema markup</span>
+                            What matters for citation
+                        </div>
                     </div>
-                    <div class="match-item geo-item" data-match="5">
-                        <div class="match-label">Better structure helps</div>
-                        <div class="match-desc">Quality over quantity</div>
-                        <span class="match-number">5</span>
+                    <div class="drop-zone" data-match="5">
+                        <div class="drop-label">
+                            <span class="geo-label">Better structure helps</span>
+                            Quality over quantity
+                        </div>
                     </div>
-                    <div class="match-item geo-item" data-match="2">
-                        <div class="match-label">Entity authority</div>
-                        <div class="match-desc">Compete on expertise signals</div>
-                        <span class="match-number">2</span>
+                    <div class="drop-zone" data-match="6">
+                        <div class="drop-label">
+                            <span class="geo-label">Synthesized answer</span>
+                            What buyers see
+                        </div>
                     </div>
                 </div>
             </div>
@@ -392,35 +412,168 @@
 </div>
 
 <script>
-let selectedSeo = null;
 let matchedPairs = 0;
 const totalPairs = 6;
+let draggedItem = null;
 
-document.querySelectorAll('.seo-item').forEach(item => {
-    item.addEventListener('click', function() {
-        if (this.classList.contains('matched')) return;
-        
-        // Deselect previous
-        document.querySelectorAll('.seo-item').forEach(i => i.classList.remove('selected'));
-        
-        // Select this one
-        this.classList.add('selected');
-        selectedSeo = this;
-    });
+// Desktop drag events
+document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragend', handleDragEnd);
 });
 
-document.querySelectorAll('.geo-item').forEach(item => {
-    item.addEventListener('click', function() {
-        if (!selectedSeo || this.classList.contains('matched')) return;
+document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', handleDragOver);
+    zone.addEventListener('dragleave', handleDragLeave);
+    zone.addEventListener('drop', handleDrop);
+});
+
+function handleDragStart(e) {
+    draggedItem = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.dataset.match);
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('drag-over');
+    });
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!this.classList.contains('matched')) {
+        this.classList.add('drag-over');
+    }
+}
+
+function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    this.classList.remove('drag-over');
+    
+    if (this.classList.contains('matched') || !draggedItem) return;
+    
+    const dragMatch = draggedItem.dataset.match;
+    const dropMatch = this.dataset.match;
+    
+    if (dragMatch === dropMatch) {
+        // Correct match!
+        this.classList.add('matched');
+        this.innerHTML = '';
         
-        const seoMatch = selectedSeo.dataset.match;
-        const geoMatch = this.dataset.match;
+        const clonedItem = draggedItem.cloneNode(true);
+        clonedItem.draggable = false;
+        clonedItem.classList.remove('dragging');
+        this.appendChild(clonedItem);
         
-        if (seoMatch === geoMatch) {
-            // Correct match!
-            selectedSeo.classList.remove('selected');
-            selectedSeo.classList.add('matched');
-            this.classList.add('matched');
+        draggedItem.remove();
+        matchedPairs++;
+        updateScore();
+        
+        if (matchedPairs === totalPairs) {
+            showResult();
+        }
+    } else {
+        // Wrong match - shake and reject
+        this.classList.add('incorrect');
+        setTimeout(() => {
+            this.classList.remove('incorrect');
+        }, 500);
+    }
+    
+    draggedItem = null;
+}
+
+// Touch support for mobile
+let touchItem = null;
+let touchClone = null;
+let touchStartX, touchStartY;
+
+document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('touchstart', handleTouchStart, { passive: false });
+    item.addEventListener('touchmove', handleTouchMove, { passive: false });
+    item.addEventListener('touchend', handleTouchEnd);
+});
+
+function handleTouchStart(e) {
+    if (this.closest('.drop-zone')) return; // Already matched
+    
+    touchItem = this;
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    
+    // Create visual clone for dragging
+    touchClone = this.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.left = (touch.clientX - 100) + 'px';
+    touchClone.style.top = (touch.clientY - 30) + 'px';
+    touchClone.style.width = '200px';
+    touchClone.style.opacity = '0.9';
+    touchClone.style.zIndex = '1000';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+    document.body.appendChild(touchClone);
+    
+    this.classList.add('dragging');
+}
+
+function handleTouchMove(e) {
+    if (!touchItem || !touchClone) return;
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - 100) + 'px';
+    touchClone.style.top = (touch.clientY - 30) + 'px';
+    
+    // Highlight drop zone under finger
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = elementBelow?.closest('.drop-zone');
+    
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    if (dropZone && !dropZone.classList.contains('matched')) {
+        dropZone.classList.add('drag-over');
+    }
+}
+
+function handleTouchEnd(e) {
+    if (!touchItem) return;
+    
+    touchItem.classList.remove('dragging');
+    
+    if (touchClone) {
+        touchClone.remove();
+        touchClone = null;
+    }
+    
+    // Find drop zone under last touch position
+    const touch = e.changedTouches[0];
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = elementBelow?.closest('.drop-zone');
+    
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    
+    if (dropZone && !dropZone.classList.contains('matched')) {
+        const dragMatch = touchItem.dataset.match;
+        const dropMatch = dropZone.dataset.match;
+        
+        if (dragMatch === dropMatch) {
+            // Correct!
+            dropZone.classList.add('matched');
+            dropZone.innerHTML = '';
+            
+            const clonedItem = touchItem.cloneNode(true);
+            clonedItem.draggable = false;
+            dropZone.appendChild(clonedItem);
+            
+            touchItem.remove();
             matchedPairs++;
             updateScore();
             
@@ -428,21 +581,14 @@ document.querySelectorAll('.geo-item').forEach(item => {
                 showResult();
             }
         } else {
-            // Wrong match
-            selectedSeo.classList.add('incorrect');
-            this.classList.add('incorrect');
-            
-            setTimeout(() => {
-                selectedSeo.classList.remove('incorrect', 'selected');
-                this.classList.remove('incorrect');
-                selectedSeo = null;
-            }, 600);
-            return;
+            // Wrong
+            dropZone.classList.add('incorrect');
+            setTimeout(() => dropZone.classList.remove('incorrect'), 500);
         }
-        
-        selectedSeo = null;
-    });
-});
+    }
+    
+    touchItem = null;
+}
 
 function updateScore() {
     document.getElementById('matchCount').textContent = matchedPairs;
@@ -455,15 +601,12 @@ function showResult() {
 }
 
 function resetGame() {
-    selectedSeo = null;
     matchedPairs = 0;
     updateScore();
-    
-    document.querySelectorAll('.match-item').forEach(item => {
-        item.classList.remove('selected', 'matched', 'incorrect');
-    });
-    
     document.getElementById('result').className = 'result';
+    
+    // Restore original state
+    location.reload();
 }
 </script>
 
