@@ -254,13 +254,38 @@
         .activity-tile.has-article {
             border: 2px solid var(--sap-orange);
             font-weight: 500;
+            position: relative;
         }
         .activity-tile.has-article::before {
-            content: '📄';
+            content: '';
             position: absolute;
-            top: -8px;
-            right: -4px;
-            font-size: 0.65rem;
+            top: -3px;
+            right: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--sap-orange);
+            border-radius: 50%;
+            animation: radar-pulse 2s ease-out infinite;
+        }
+        .activity-tile.has-article::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 10px;
+            height: 10px;
+            background: var(--sap-orange);
+            border-radius: 50%;
+        }
+        @keyframes radar-pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
         }
         
         /* Category dot */
@@ -323,9 +348,31 @@
         .legend-reset {
             color: #999;
             font-size: 0.75rem;
+            display: none;
+        }
+        .legend-reset.visible {
+            display: flex;
         }
         .legend-reset:hover {
             color: var(--sap-orange);
+        }
+        .show-all-btn {
+            background: var(--sap-orange);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 1rem;
+            display: none;
+        }
+        .show-all-btn.visible {
+            display: inline-block;
+        }
+        .show-all-btn:hover {
+            background: #d66a1f;
         }
         
         /* Filtering state */
@@ -338,6 +385,95 @@
             transform: scale(1.02);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 10;
+        }
+        
+        /* Category Info Modal */
+        .category-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .category-modal.open {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modal-in 0.3s ease;
+        }
+        @keyframes modal-in {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .modal-header .cat-dot {
+            width: 16px;
+            height: 16px;
+        }
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: var(--dark-slate);
+            flex: 1;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            padding: 0.25rem;
+        }
+        .modal-close:hover { color: var(--dark-slate); }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+        .modal-section:last-child { margin-bottom: 0; }
+        .modal-section h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--sap-blue);
+            margin-bottom: 0.5rem;
+        }
+        .modal-section p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #444;
+        }
+        .modal-activities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .modal-activity-tag {
+            background: var(--light-gray);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text);
         }
         
         /* Chapters Section */
@@ -684,8 +820,9 @@
             <div class="legend-item" data-category="programs" onclick="filterCategory('programs')"><span class="cat-dot programs"></span>Programs</div>
             <div class="legend-item" data-category="enablement" onclick="filterCategory('enablement')"><span class="cat-dot enablement"></span>Enablement</div>
             <div class="legend-item" data-category="support" onclick="filterCategory('support')"><span class="cat-dot support"></span>Support</div>
-            <div class="legend-item legend-reset" onclick="filterCategory(null)">✕ Clear</div>
+            <button class="show-all-btn" id="showAllBtn" onclick="filterCategory(null)">Show All</button>
         </div>
+        <p style="text-align: center; margin-top: 0.75rem; font-size: 0.8rem; color: #888;">Click a category to filter • Click again to learn more</p>
     </div>
     
     <!-- Chapters Section -->
@@ -744,23 +881,102 @@
     </div>
 </main>
 
+<!-- Category Info Modal -->
+<div class="category-modal" id="categoryModal" onclick="closeModalOutside(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <span class="cat-dot" id="modalDot"></span>
+            <h3 id="modalTitle">Category</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
+</div>
+
 <footer class="footer">
     <p>Modern Product Marketing in the Agentic Era · <a href="/">futureofpmm.com</a> · Chris O'Hara & Dan Yu</p>
 </footer>
 
 <script>
+// Category info content
+const categoryInfo = {
+    market: {
+        name: 'Market',
+        color: '#4472C4',
+        oldWay: 'Quarterly competitive reviews, annual market sizing, periodic win/loss analysis conducted by consultants or internal teams over weeks.',
+        newWay: 'Continuous competitive intelligence via AI monitoring. Real-time market signals. Agents processing hundreds of win/loss records to surface patterns in hours, not months.',
+        activities: ['Market Problems', 'Market Definition', 'Competitive Landscape', 'Buyer Personas', 'Win/Loss Analysis', 'User Personas'],
+        cluster: 'Augmented — Human judgment essential, but agents dramatically accelerate data synthesis'
+    },
+    focus: {
+        name: 'Focus',
+        color: '#70AD47',
+        oldWay: 'Long planning cycles, annual strategy offsites, static segmentation models updated quarterly.',
+        newWay: 'Dynamic segmentation that updates with real-time data. Agents continuously validating ICP assumptions against actual pipeline data.',
+        activities: ['Use Scenarios', 'Requirements', 'Innovation'],
+        cluster: 'Augmented — Strategic prioritization remains human, data gathering automated'
+    },
+    business: {
+        name: 'Business',
+        color: '#FFC000',
+        oldWay: 'Spreadsheet-based pricing models, quarterly business reviews, manual pipeline analysis.',
+        newWay: 'AI-powered pricing optimization responding to competitive moves in real-time. Continuous revenue modeling and scenario planning.',
+        activities: ['Pricing', 'Revenue Growth', 'Business Plan', 'Channels', 'Buy/Build/Partner', 'Product Portfolio', 'Product Profitability'],
+        cluster: 'Augmented — Financial modeling accelerated, strategic decisions remain human'
+    },
+    planning: {
+        name: 'Planning',
+        color: '#ED7D31',
+        oldWay: 'Annual product launches, quarterly messaging refreshes, static positioning documents that age quickly.',
+        newWay: 'Continuous positioning that adapts to what agents are surfacing in real-time. GEO-optimized content that agents can cite.',
+        activities: ['Positioning', 'Distinctive Comp', 'Marketing Plan', 'Product Roadmap'],
+        cluster: 'Elevated — Positioning is irreducibly human; agents inform but don\'t decide'
+    },
+    programs: {
+        name: 'Programs',
+        color: '#9E5FCF',
+        oldWay: 'Campaign-centric marketing, content calendars planned months ahead, manual content production.',
+        newWay: 'Agent-first content strategy. Structured data for AI consumption. Content that earns citations, not just clicks.',
+        activities: ['Content', 'Programs', 'Buyer Experience', 'Nurturing', 'Events', 'Advocacy'],
+        cluster: 'Automated (production) + Elevated (strategy) — Content generation automated, editorial judgment human'
+    },
+    enablement: {
+        name: 'Enablement',
+        color: '#00B0A8',
+        oldWay: 'Static battlecards, quarterly sales training, manual demo prep, PDF-based sales tools.',
+        newWay: 'Dynamic battlecards updated in real-time. AI-assisted demo customization. Sales tools that integrate with deal intelligence.',
+        activities: ['Sales Tools', 'Sales Alignment', 'Channel Training', 'Launch'],
+        cluster: 'Automated — Battlecard generation, tool updates, training content can be largely automated'
+    },
+    support: {
+        name: 'Support',
+        color: '#5B9BD5',
+        oldWay: 'Periodic measurement, quarterly reporting, manual stakeholder updates, annual asset audits.',
+        newWay: 'Real-time dashboards, automated stakeholder briefings, continuous measurement tied to revenue outcomes.',
+        activities: ['Measurement', 'Stakeholder Comm', 'Operations', 'Asset Assessment', 'Distribution', 'Revenue Retention', 'Awareness'],
+        cluster: 'Automated — Reporting and measurement largely automated, allowing focus on interpretation'
+    }
+};
+
 // Category filtering
 let activeCategory = null;
+let categoryClickCount = {};
 
 function filterCategory(category) {
     const funnelMap = document.querySelector('.funnel-map');
     const legendItems = document.querySelectorAll('.legend-item[data-category]');
     const tiles = document.querySelectorAll('.activity-tile');
+    const showAllBtn = document.getElementById('showAllBtn');
     
-    // Toggle off if same category clicked
-    if (activeCategory === category) {
-        category = null;
+    // Track clicks for double-click to open modal
+    if (category && activeCategory === category) {
+        // Second click on same category - open modal
+        openCategoryModal(category);
+        return;
     }
+    
     activeCategory = category;
     
     // Update legend active state
@@ -771,6 +987,13 @@ function filterCategory(category) {
             item.classList.remove('active');
         }
     });
+    
+    // Show/hide Show All button
+    if (category) {
+        showAllBtn.classList.add('visible');
+    } else {
+        showAllBtn.classList.remove('visible');
+    }
     
     // Apply filtering
     if (category) {
@@ -787,6 +1010,59 @@ function filterCategory(category) {
         tiles.forEach(tile => tile.classList.remove('highlighted'));
     }
 }
+
+function openCategoryModal(category) {
+    const info = categoryInfo[category];
+    if (!info) return;
+    
+    const modal = document.getElementById('categoryModal');
+    const dot = document.getElementById('modalDot');
+    const title = document.getElementById('modalTitle');
+    const body = document.getElementById('modalBody');
+    
+    dot.style.background = info.color;
+    title.textContent = info.name + ' Activities';
+    
+    body.innerHTML = `
+        <div class="modal-section">
+            <h4>🕰️ The Old Way</h4>
+            <p>${info.oldWay}</p>
+        </div>
+        <div class="modal-section">
+            <h4>⚡ The Agentic Shift</h4>
+            <p>${info.newWay}</p>
+        </div>
+        <div class="modal-section">
+            <h4>🎯 Cluster Classification</h4>
+            <p>${info.cluster}</p>
+        </div>
+        <div class="modal-section">
+            <h4>📋 Activities in this Category</h4>
+            <div class="modal-activities">
+                ${info.activities.map(a => `<span class="modal-activity-tag">${a}</span>`).join('')}
+            </div>
+        </div>
+    `;
+    
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('categoryModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function closeModalOutside(event) {
+    if (event.target.classList.contains('category-modal')) {
+        closeModal();
+    }
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
 
 // Progress tracking with localStorage
 const STORAGE_KEY = 'pmmCurriculumProgress';
