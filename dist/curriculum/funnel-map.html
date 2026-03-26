@@ -549,13 +549,18 @@
             justify-content: flex-end;
         }
         .btn {
-            padding: 0.6rem 1.25rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
             border: none;
+            white-space: nowrap;
+        }
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1rem;
         }
         .btn-primary {
             background: var(--green);
@@ -573,6 +578,58 @@
         }
         .btn-secondary:hover {
             background: #d5d4d4;
+        }
+        
+        /* Login prompt */
+        .login-prompt {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            border: 1px solid var(--sap-blue);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .login-prompt-icon {
+            font-size: 1.5rem;
+        }
+        .login-prompt-text {
+            flex: 1;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        .login-prompt-text strong {
+            color: var(--sap-blue);
+        }
+        .login-prompt .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark-slate);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background: var(--green);
         }
         
         /* Chapters Section */
@@ -714,6 +771,9 @@
     <div class="progress-bar-container">
         <div class="progress-bar" id="progressBar" style="width: 0%;">0/37</div>
     </div>
+    <p id="loginPrompt" style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.9;">
+        <a href="/curriculum/login.html" style="color: var(--gold); text-decoration: underline;">Sign in</a> to save your progress across devices
+    </p>
 </section>
 
 <main>
@@ -1033,6 +1093,9 @@
         </div>
     </div>
 </div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
 
 <footer class="footer">
     <p>SAP Data & Analytics Product Marketing · <a href="/">futureofpmm.com</a> · Chris O'Hara</p>
@@ -1706,8 +1769,8 @@ function openStageModal(stage) {
         </div>
         <div class="modal-section">
             ${info.chapter === 1 
-                ? `<a href="/curriculum/chapter-01/" class="btn btn-primary" style="display: inline-block; text-decoration: none;">📖 Go to Chapter 1</a>`
-                : `<span class="btn btn-secondary" style="cursor: default;">📖 Chapter ${info.chapter} — Coming Soon</span>`
+                ? `<a href="/curriculum/chapter-01/" class="btn btn-lg btn-primary" style="display: inline-block; text-decoration: none;">📖 Go to Chapter 1</a>`
+                : `<span class="btn btn-lg btn-secondary" style="cursor: default;">📖 Chapter ${info.chapter} — Coming Soon</span>`
             }
         </div>
     `;
@@ -1735,16 +1798,39 @@ function closeStageModal(event) {
     if (event.target.classList.contains('modal-overlay')) closeModal('stageModal');
 }
 
+// Toast notification
+function showToast(message, type = '') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast' + (type ? ' ' + type : '');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
 // Toggle current activity completion
 function toggleCurrentActivity() {
     if (currentActivityId) {
+        const wasCompleted = getProgress().activities.includes(currentActivityId);
         toggleActivity(currentActivityId);
+        
         // Update button state
         const progress = getProgress();
         const isCompleted = progress.activities.includes(currentActivityId);
         const btn = document.getElementById('activityCompleteBtn');
         btn.textContent = isCompleted ? '✓ Completed' : 'Mark Complete';
         btn.classList.toggle('completed', isCompleted);
+        
+        // Visual feedback - brief pulse
+        btn.style.transform = 'scale(1.05)';
+        setTimeout(() => btn.style.transform = 'scale(1)', 150);
+        
+        // Show toast
+        const activityName = activityContent[currentActivityId]?.name || 'Activity';
+        if (isCompleted) {
+            showToast(`✓ ${activityName} marked complete!`, 'success');
+        } else {
+            showToast(`${activityName} marked incomplete`);
+        }
     }
 }
 
