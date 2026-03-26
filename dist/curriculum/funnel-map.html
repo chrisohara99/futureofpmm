@@ -303,6 +303,41 @@
             gap: 0.4rem;
             font-size: 0.8rem;
             color: #666;
+            cursor: pointer;
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .legend-item:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .legend-item.active {
+            background: var(--dark-slate);
+            color: white;
+            border-color: var(--dark-slate);
+        }
+        .legend-item.active .cat-dot {
+            box-shadow: 0 0 0 2px white;
+        }
+        .legend-reset {
+            color: #999;
+            font-size: 0.75rem;
+        }
+        .legend-reset:hover {
+            color: var(--sap-orange);
+        }
+        
+        /* Filtering state */
+        .funnel-map.filtering .activity-tile {
+            opacity: 0.15;
+            transform: scale(0.95);
+        }
+        .funnel-map.filtering .activity-tile.highlighted {
+            opacity: 1;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10;
         }
         
         /* Chapters Section */
@@ -640,15 +675,16 @@
             </div>
         </div>
         
-        <!-- Legend -->
+        <!-- Legend (clickable to filter) -->
         <div class="legend">
-            <div class="legend-item"><span class="cat-dot market"></span>Market</div>
-            <div class="legend-item"><span class="cat-dot focus"></span>Focus</div>
-            <div class="legend-item"><span class="cat-dot business"></span>Business</div>
-            <div class="legend-item"><span class="cat-dot planning"></span>Planning</div>
-            <div class="legend-item"><span class="cat-dot programs"></span>Programs</div>
-            <div class="legend-item"><span class="cat-dot enablement"></span>Enablement</div>
-            <div class="legend-item"><span class="cat-dot support"></span>Support</div>
+            <div class="legend-item" data-category="market" onclick="filterCategory('market')"><span class="cat-dot market"></span>Market</div>
+            <div class="legend-item" data-category="focus" onclick="filterCategory('focus')"><span class="cat-dot focus"></span>Focus</div>
+            <div class="legend-item" data-category="business" onclick="filterCategory('business')"><span class="cat-dot business"></span>Business</div>
+            <div class="legend-item" data-category="planning" onclick="filterCategory('planning')"><span class="cat-dot planning"></span>Planning</div>
+            <div class="legend-item" data-category="programs" onclick="filterCategory('programs')"><span class="cat-dot programs"></span>Programs</div>
+            <div class="legend-item" data-category="enablement" onclick="filterCategory('enablement')"><span class="cat-dot enablement"></span>Enablement</div>
+            <div class="legend-item" data-category="support" onclick="filterCategory('support')"><span class="cat-dot support"></span>Support</div>
+            <div class="legend-item legend-reset" onclick="filterCategory(null)">✕ Clear</div>
         </div>
     </div>
     
@@ -713,6 +749,45 @@
 </footer>
 
 <script>
+// Category filtering
+let activeCategory = null;
+
+function filterCategory(category) {
+    const funnelMap = document.querySelector('.funnel-map');
+    const legendItems = document.querySelectorAll('.legend-item[data-category]');
+    const tiles = document.querySelectorAll('.activity-tile');
+    
+    // Toggle off if same category clicked
+    if (activeCategory === category) {
+        category = null;
+    }
+    activeCategory = category;
+    
+    // Update legend active state
+    legendItems.forEach(item => {
+        if (item.dataset.category === category) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+    
+    // Apply filtering
+    if (category) {
+        funnelMap.classList.add('filtering');
+        tiles.forEach(tile => {
+            if (tile.classList.contains(category)) {
+                tile.classList.add('highlighted');
+            } else {
+                tile.classList.remove('highlighted');
+            }
+        });
+    } else {
+        funnelMap.classList.remove('filtering');
+        tiles.forEach(tile => tile.classList.remove('highlighted'));
+    }
+}
+
 // Progress tracking with localStorage
 const STORAGE_KEY = 'pmmCurriculumProgress';
 
