@@ -141,11 +141,17 @@
             border-color: var(--old-journey);
             animation: shake 0.4s ease;
         }
-        .drag-item.old-item {
+        /* Items in source pool are neutral - no color hints */
+        .source-items .drag-item {
+            border-color: var(--dark-slate);
+            background: white;
+        }
+        /* Only show colors once placed in a journey */
+        .old-journey .drag-item {
             border-color: var(--old-journey);
             background: #fef2f2;
         }
-        .drag-item.new-item {
+        .new-journey .drag-item {
             border-color: var(--new-journey);
             background: #f0fdfa;
         }
@@ -341,6 +347,55 @@
             color: #92400e;
         }
         
+        .solution {
+            margin-top: 1.5rem;
+            border: 2px solid var(--dark-slate);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .solution-header {
+            background: var(--dark-slate);
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+        .solution-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        .solution-track {
+            padding: 1rem;
+        }
+        .solution-track.old {
+            background: #fef2f2;
+            border-right: 1px solid #e5e7eb;
+        }
+        .solution-track.new {
+            background: #f0fdfa;
+        }
+        .solution-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+        .solution-track.old .solution-title { color: var(--old-journey); }
+        .solution-track.new .solution-title { color: var(--new-journey); }
+        .solution-track ol {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+        .solution-track li {
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+            color: var(--text);
+        }
+        @media (max-width: 800px) {
+            .solution-grid { grid-template-columns: 1fr; }
+            .solution-track.old { border-right: none; border-bottom: 1px solid #e5e7eb; }
+        }
+        
         .callout {
             background: #fffbeb;
             border: 2px solid #f59e0b;
@@ -415,9 +470,41 @@
             <div class="controls">
                 <button class="btn btn-secondary" onclick="resetGame()">🔄 Reset</button>
                 <button class="btn btn-primary" onclick="checkAnswers()">✓ Check Answers</button>
+                <button class="btn btn-secondary" id="showSolutionBtn" onclick="showSolution()" style="display: none;">📖 Show Solution</button>
             </div>
             
             <div class="result" id="result"></div>
+            
+            <!-- Solution display -->
+            <div class="solution" id="solution" style="display: none;">
+                <div class="solution-header">✓ Correct Sequence</div>
+                <div class="solution-grid">
+                    <div class="solution-track old">
+                        <div class="solution-title">Old Reality (Human-Led) — ~6 weeks</div>
+                        <ol>
+                            <li>Problem awareness</li>
+                            <li>Google search</li>
+                            <li>Content consumption</li>
+                            <li>Vendor shortlist</li>
+                            <li>Demo requests</li>
+                            <li>Internal alignment</li>
+                            <li>Decision</li>
+                        </ol>
+                    </div>
+                    <div class="solution-track new">
+                        <div class="solution-title">New Reality (Agent-Mediated) — ~Days</div>
+                        <ol>
+                            <li>Problem + constraints to agent</li>
+                            <li>Agent synthesizes market</li>
+                            <li>Structured comparison delivered</li>
+                            <li>Human reviews output</li>
+                            <li>Targeted demos (if any)</li>
+                            <li>Decision</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
             <div class="callout" id="callout">
                 Steps 2–4 of the old journey — where most PMM content lived — now happen inside an AI's context window in <strong>90 seconds</strong>.
             </div>
@@ -516,11 +603,7 @@ function createSlot(journey, num) {
 function createDragItem(item) {
     const el = document.createElement('div');
     el.className = 'drag-item';
-    if (item.id.startsWith('old')) {
-        el.classList.add('old-item');
-    } else {
-        el.classList.add('new-item');
-    }
+    // No color hints in the pool - items get colored when placed in a journey
     el.draggable = true;
     el.dataset.id = item.id;
     el.dataset.journey = item.id.startsWith('old') ? 'old' : 'new';
@@ -714,16 +797,27 @@ function checkAnswers() {
         result.className = 'result show success';
         result.innerHTML = '🎉 Perfect! You understand the buyer journey compression!<br><a href="/curriculum/chapter-01/" style="color: inherit;">← Continue reading Chapter 1</a>';
         callout.className = 'callout show';
+        document.getElementById('showSolutionBtn').style.display = 'none';
     } else {
         result.className = 'result show partial';
-        result.innerHTML = `${correct}/${total} correct. Green = right place, Red = wrong place or journey. Try again!`;
+        result.innerHTML = `${correct}/${total} correct. Green = right place, Red = wrong place or journey.`;
+        // Show the "Show Solution" button
+        document.getElementById('showSolutionBtn').style.display = 'inline-block';
     }
+}
+
+function showSolution() {
+    document.getElementById('solution').style.display = 'block';
+    document.getElementById('showSolutionBtn').style.display = 'none';
+    document.getElementById('callout').className = 'callout show';
 }
 
 function resetGame() {
     document.querySelectorAll('.drag-item').forEach(el => {
         el.classList.remove('correct', 'incorrect');
     });
+    document.getElementById('solution').style.display = 'none';
+    document.getElementById('showSolutionBtn').style.display = 'none';
     initGame();
 }
 
