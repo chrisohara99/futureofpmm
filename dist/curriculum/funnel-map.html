@@ -92,26 +92,32 @@
             opacity: 0.9;
             margin-bottom: 1.5rem;
         }
-        .progress-bar-container {
+        .progress-wrapper {
             max-width: 500px;
             margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .progress-bar-container {
+            flex: 1;
             background: rgba(255,255,255,0.2);
             border-radius: 20px;
             padding: 4px;
+            height: 28px;
         }
         .progress-bar {
-            height: 28px;
+            height: 100%;
             background: var(--gold);
             border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--dark-slate);
             transition: width 0.5s ease;
-            min-width: 120px;
-            padding: 0 1rem;
+            min-width: 8px;
+        }
+        .progress-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
         }
         
         /* Main content */
@@ -769,8 +775,11 @@
 <section class="hero">
     <h1>Modern Product Marketing in the Agentic Era</h1>
     <p class="subtitle">The Pragmatic 37 → Agentic Funnel Map</p>
-    <div class="progress-bar-container">
-        <div class="progress-bar" id="progressBar" style="width: 0%;">0/37</div>
+    <div class="progress-wrapper">
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+        </div>
+        <div class="progress-text" id="progressText">0/37 activities</div>
     </div>
     <p id="loginPrompt" style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.9;">
         <a href="/curriculum/login.html" style="color: var(--gold); text-decoration: underline;">Sign in</a> to save your progress across devices
@@ -1859,8 +1868,9 @@ function updateUI() {
     const completed = progress.activities.length;
     const pct = Math.round((completed / total) * 100);
     const bar = document.getElementById('progressBar');
-    bar.style.width = Math.max(pct, 8) + '%';
-    bar.textContent = `${completed}/${total} activities`;
+    const text = document.getElementById('progressText');
+    bar.style.width = pct + '%';
+    text.textContent = `${completed}/${total} activities`;
 }
 
 // Right-click and double-click to toggle completion
