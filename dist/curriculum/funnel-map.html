@@ -1781,8 +1781,12 @@ function updateUI() {
         }
     });
     
-    // Update progress bar
-    const total = document.querySelectorAll('.activity-tile[data-id]').length;
+    // Update progress bar (count unique activity IDs)
+    const allIds = new Set();
+    document.querySelectorAll('.activity-tile[data-id]').forEach(tile => {
+        allIds.add(tile.dataset.id);
+    });
+    const total = allIds.size;
     const completed = progress.activities.length;
     const pct = Math.round((completed / total) * 100);
     const bar = document.getElementById('progressBar');
