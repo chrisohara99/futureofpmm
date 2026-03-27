@@ -330,15 +330,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     }));
                 }
                 
-                // Redirect to curriculum
-                window.location.href = '/curriculum/';
+                // Redirect to original page or curriculum
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect') || '/curriculum/';
+                window.location.href = redirect;
             } else {
                 // Fallback: check localStorage
                 const users = JSON.parse(localStorage.getItem('pmmUsers') || '[]');
                 const user = users.find(u => u.email === email && u.password === password);
                 if (!user) throw new Error('Invalid email or password');
                 localStorage.setItem('pmmCurrentUser', JSON.stringify(user));
-                window.location.href = '/curriculum/';
+                const urlParams2 = new URLSearchParams(window.location.search);
+                const redirect2 = urlParams2.get('redirect') || '/curriculum/';
+                window.location.href = redirect2;
             }
         } catch (error) {
             errorMessage.textContent = error.message || 'Invalid email or password';
