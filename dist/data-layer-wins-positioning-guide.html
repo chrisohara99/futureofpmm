@@ -53,11 +53,23 @@
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; margin: 0; line-height: 1.8; }
         .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
         header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
-        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
         .logo img { height: 135px; width: auto; }
-        nav a { margin-left: 2rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
-        nav a:hover { color: var(--pmm-blue); }
-        @media (max-width: 900px) { .logo img { height: 70px; } nav { display: none; } }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: var(--pmm-blue); background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; margin: 0; }
+        .nav-menu a:hover { background: #f3f4f6; color: var(--pmm-blue); }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; transition: all 0.3s ease; }
+        @media (max-width: 900px) { .hamburger { display: flex !important; } .logo img { height: 70px !important; } nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; } nav.open { display: flex !important; right: 0 !important; } nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; } } nav { display: none; } }
         
         .hero { background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%); color: white; padding: 3rem 0; }
         .hero h1 { font-size: 2.25rem; margin: 0 0 0.75rem; font-weight: 700; line-height: 1.2; }
