@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 Quiz | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        .hero { background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%); padding: 2.5rem 2rem; color: white; text-align: center; }
+        .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .quiz-container { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .question { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--light-gray); }
+        .question:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-number { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--sap-blue); font-weight: 600; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.1rem; font-weight: 500; margin-bottom: 1rem; color: var(--dark-slate); }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; background: var(--bg); border: 2px solid transparent; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { background: var(--light-gray); }
+        .option.selected { border-color: var(--sap-blue); background: #E3F2FD; }
+        .option.correct { border-color: var(--green); background: #E8F5E9; }
+        .option.incorrect { border-color: var(--red); background: #FFEBEE; }
+        .option input { display: none; }
+        .option-marker { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; color: #888; flex-shrink: 0; }
+        .option.selected .option-marker { border-color: var(--sap-blue); background: var(--sap-blue); color: white; }
+        .option.correct .option-marker { border-color: var(--green); background: var(--green); color: white; }
+        .option.incorrect .option-marker { border-color: var(--red); background: var(--red); color: white; }
+        .option-text { font-size: 0.95rem; }
+        .submit-section { margin-top: 2rem; text-align: center; }
+        .submit-btn { background: var(--sap-orange); color: white; border: none; padding: 1rem 3rem; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .results-container { display: none; }
+        .results-container.show { display: block; }
+        .results-header { text-align: center; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .results-header.pass { background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); }
+        .results-header.fail { background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%); }
+        .results-score { font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .results-header.pass .results-score { color: var(--green); }
+        .results-header.fail .results-score { color: var(--red); }
+        .results-message { font-size: 1.2rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .results-detail { color: #666; }
+        .next-steps { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .next-steps h3 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1.5rem; }
+        .step-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .step-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1.5rem; background: var(--bg); border-radius: 8px; text-decoration: none; color: var(--text); transition: transform 0.2s; }
+        .step-card:hover { transform: translateY(-2px); }
+        .step-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .step-card .label { font-weight: 600; font-size: 0.95rem; }
+        @media (max-width: 768px) { .logo img { height: 70px; } .header { padding: 0.5rem 1rem; } main { padding: 1rem; } .quiz-container { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/intro.html">Curriculum</a>
+            <a href="/curriculum/chapter-04/">← Chapter 4</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>Chapter 4: Knowledge Check</h1>
+    <p>10 questions • ~10 minutes</p>
+</section>
+
+<main>
+    <div class="quiz-container" id="quizForm">
+        
+        <div class="question">
+            <div class="question-number">Question 1 of 10</div>
+            <div class="question-text">What is the "compression problem" in AI-mediated buying?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q1" value="a"><span class="option-marker">A</span><span class="option-text">AI tools compress file sizes too much</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q1" value="b"><span class="option-marker">B</span><span class="option-text">Your detailed positioning gets distilled into brief bullets, losing nuance</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q1" value="c"><span class="option-marker">C</span><span class="option-text">Buyers don't have time to read long content</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q1" value="d"><span class="option-marker">D</span><span class="option-text">Data gets compressed during transmission</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 2 of 10</div>
+            <div class="question-text">What does CRISP stand for in the Crisp Claim Framework?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q2" value="a"><span class="option-marker">A</span><span class="option-text">Clear, Relevant, Impactful, Structured, Practical</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q2" value="b"><span class="option-marker">B</span><span class="option-text">Concrete, Remarkable, Independent, Speakable, Provable</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q2" value="c"><span class="option-marker">C</span><span class="option-text">Competitive, Reliable, Innovative, Simple, Powerful</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q2" value="d"><span class="option-marker">D</span><span class="option-text">Creative, Rapid, Integrated, Scalable, Precise</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 3 of 10</div>
+            <div class="question-text">Which type of claim survives AI compression best?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q3" value="a"><span class="option-marker">A</span><span class="option-text">"We're the leading platform with best-in-class capabilities"</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q3" value="b"><span class="option-marker">B</span><span class="option-text">"SAP Datasphere connects to 150+ data sources with built-in AI governance"</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q3" value="c"><span class="option-marker">C</span><span class="option-text">"Our innovative solution transforms how enterprises leverage data"</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q3" value="d"><span class="option-marker">D</span><span class="option-text">"Many Fortune 500 companies trust our platform"</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 4 of 10</div>
+            <div class="question-text">What gets stripped first during AI summarization?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q4" value="a"><span class="option-marker">A</span><span class="option-text">Specific numbers and statistics</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q4" value="b"><span class="option-marker">B</span><span class="option-text">Product names and brand mentions</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q4" value="c"><span class="option-marker">C</span><span class="option-text">Qualifiers, nuance, and emotional language</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q4" value="d"><span class="option-marker">D</span><span class="option-text">Customer testimonials</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 5 of 10</div>
+            <div class="question-text">Why is "The only platform that..." more defensible than "The best platform for..."?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q5" value="a"><span class="option-marker">A</span><span class="option-text">It sounds more confident</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q5" value="b"><span class="option-marker">B</span><span class="option-text">It's categorical uniqueness vs. subjective comparison</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q5" value="c"><span class="option-marker">C</span><span class="option-text">Lawyers prefer this language</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q5" value="d"><span class="option-marker">D</span><span class="option-text">It's shorter and easier to read</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 6 of 10</div>
+            <div class="question-text">What is the most powerful positioning strategy according to the chapter?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q6" value="a"><span class="option-marker">A</span><span class="option-text">Win on existing comparison criteria</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q6" value="b"><span class="option-marker">B</span><span class="option-text">Introduce new criteria where you excel</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q6" value="c"><span class="option-marker">C</span><span class="option-text">Copy competitor positioning</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q6" value="d"><span class="option-marker">D</span><span class="option-text">Use more emotional language</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 7 of 10</div>
+            <div class="question-text">Which type of content helps AI make competitive comparisons?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q7" value="a"><span class="option-marker">A</span><span class="option-text">Blog posts about company culture</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q7" value="b"><span class="option-marker">B</span><span class="option-text">"[Your Product] vs [Competitor]" comparison pages</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q7" value="c"><span class="option-marker">C</span><span class="option-text">Press releases about funding rounds</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q7" value="d"><span class="option-marker">D</span><span class="option-text">Executive biography pages</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 8 of 10</div>
+            <div class="question-text">What is a "red flag" when testing AI summarization of your positioning?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q8" value="a"><span class="option-marker">A</span><span class="option-text">The AI includes your product name</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q8" value="b"><span class="option-marker">B</span><span class="option-text">The summary says "enterprise platform" or "innovative solution"</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q8" value="c"><span class="option-marker">C</span><span class="option-text">The AI mentions specific capabilities</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q8" value="d"><span class="option-marker">D</span><span class="option-text">The summary includes customer names</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 9 of 10</div>
+            <div class="question-text">What does "migration guide" content signal to AI agents?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q9" value="a"><span class="option-marker">A</span><span class="option-text">Your product is difficult to implement</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q9" value="b"><span class="option-marker">B</span><span class="option-text">You're the upgrade from competitors</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q9" value="c"><span class="option-marker">C</span><span class="option-text">Your platform is new to the market</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q9" value="d"><span class="option-marker">D</span><span class="option-text">Customers frequently leave your platform</span></label>
+            </div>
+        </div>
+        
+        <div class="question">
+            <div class="question-number">Question 10 of 10</div>
+            <div class="question-text">What is the recommended approach when a key differentiator gets dropped in AI summarization?</div>
+            <div class="options">
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q10" value="a"><span class="option-marker">A</span><span class="option-text">Use longer descriptions</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q10" value="b"><span class="option-marker">B</span><span class="option-text">Add more emotional language</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q10" value="c"><span class="option-marker">C</span><span class="option-text">Make it more concrete with specific facts</span></label>
+                <label class="option" onclick="selectOption(this)"><input type="radio" name="q10" value="d"><span class="option-marker">D</span><span class="option-text">Remove the differentiator entirely</span></label>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+    </div>
+    
+    <div class="results-container" id="resultsContainer">
+        <div class="results-header" id="resultsHeader">
+            <div class="results-score" id="resultsScore">0/10</div>
+            <div class="results-message" id="resultsMessage">Great job!</div>
+            <div class="results-detail" id="resultsDetail">You passed the Chapter 4 quiz.</div>
+        </div>
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <div class="step-grid">
+                <a href="chapter-04-guide.html" class="step-card"><span class="icon">📄</span><span class="label">Download PDF Guide</span></a>
+                <a href="resources.html" class="step-card"><span class="icon">📚</span><span class="label">Additional Resources</span></a>
+                <a href="/curriculum/chapter-05/" class="step-card"><span class="icon">➡️</span><span class="label">Continue to Chapter 5</span></a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const correctAnswers = { q1: 'b', q2: 'b', q3: 'b', q4: 'c', q5: 'b', q6: 'b', q7: 'b', q8: 'b', q9: 'b', q10: 'c' };
+
+function selectOption(element) {
+    const options = element.parentElement.querySelectorAll('.option');
+    options.forEach(opt => opt.classList.remove('selected'));
+    element.classList.add('selected');
+    element.querySelector('input').checked = true;
+}
+
+async function submitQuiz() {
+    let correct = 0;
+    const total = Object.keys(correctAnswers).length;
+    
+    for (const [question, answer] of Object.entries(correctAnswers)) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        const questionDiv = document.querySelector(`[name="${question}"]`).closest('.question');
+        const options = questionDiv.querySelectorAll('.option');
+        
+        options.forEach(opt => {
+            opt.classList.remove('selected', 'correct', 'incorrect');
+            const input = opt.querySelector('input');
+            if (input.value === answer) opt.classList.add('correct');
+            else if (selected && input.value === selected.value) opt.classList.add('incorrect');
+        });
+        
+        if (selected && selected.value === answer) correct++;
+    }
+    
+    const percentage = Math.round((correct / total) * 100);
+    const passed = percentage >= 80;
+    
+    document.getElementById('quizForm').querySelector('.submit-section').style.display = 'none';
+    document.getElementById('resultsContainer').classList.add('show');
+    
+    const header = document.getElementById('resultsHeader');
+    header.classList.add(passed ? 'pass' : 'fail');
+    
+    document.getElementById('resultsScore').textContent = `${correct}/${total}`;
+    document.getElementById('resultsMessage').textContent = passed ? '🎉 Great job!' : '📚 Keep learning!';
+    document.getElementById('resultsDetail').textContent = passed 
+        ? `You scored ${percentage}% and passed the Chapter 4 quiz.`
+        : `You scored ${percentage}%. Review the chapter and try again (80% required).`;
+    
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            await supabaseClient.from('quiz_scores').insert({
+                user_id: session.user.id, chapter: 4, score: correct, total: total, percentage: percentage, passed: passed
+            });
+        }
+    } catch (error) { console.error('Error saving quiz score:', error); }
+    
+    document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

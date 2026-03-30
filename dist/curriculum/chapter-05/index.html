@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: Winning the Technical Deep Dive | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar {
+            background: var(--light-gray);
+            height: 4px;
+        }
+        .progress-fill {
+            background: var(--sap-orange);
+            height: 100%;
+            width: 56%;
+            transition: width 0.3s;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .chapter-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        .funnel-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .hero .time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin: 2rem 0 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+        
+        ul, ol {
+            margin: 0.5rem 0 1.5rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        
+        .objectives-box h2 {
+            border: none;
+            padding: 0;
+            margin-bottom: 1rem;
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+        }
+        
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .objectives-box li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        
+        .key-concept h4 {
+            color: var(--sap-orange);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .key-concept p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        
+        .comparison-card.old {
+            border-top: 4px solid #888;
+        }
+        
+        .comparison-card.new {
+            border-top: 4px solid var(--green);
+        }
+        
+        .comparison-card h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-card.old h4 { color: #888; }
+        .comparison-card.new h4 { color: var(--green); }
+        
+        .comparison-card ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.95rem;
+        }
+        
+        .highlight-box {
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .tactic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tactic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        
+        .tactic-card h4 {
+            color: var(--sap-blue);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tactic-card p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0;
+        }
+        
+        .exercise-box {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--green);
+        }
+        
+        .exercise-box h3 {
+            color: var(--green);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .exercise-box ol {
+            margin-bottom: 0;
+        }
+        
+        .chapter-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        
+        .chapter-actions h2 {
+            border: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .action-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .action-card .label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .action-card .sublabel {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        .action-card.primary {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        .action-card.primary .sublabel {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn.prev {
+            background: var(--light-gray);
+            color: var(--dark-slate);
+        }
+        
+        .nav-btn.next {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .logo img { height: 70px; }
+            .header { padding: 0.5rem 1rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .hero { padding: 2rem 1.5rem; }
+            main { padding: 2rem 1rem; }
+            .comparison-box { grid-template-columns: 1fr; }
+            .action-grid { grid-template-columns: 1fr; }
+            .chapter-nav { flex-direction: column; gap: 1rem; }
+            .nav-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+        </a>
+        <nav class="nav">
+            <a href="/curriculum/intro.html">Curriculum</a>
+            <a href="/digests/">Digests</a>
+            <a href="/newsletters.html">Newsletter</a>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar">
+    <div class="progress-fill"></div>
+</div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <p class="chapter-label">Chapter 5 <span class="funnel-badge">Evaluation</span></p>
+        <h1>Winning the Technical Deep Dive</h1>
+        <p class="time">⏱️ 60 minutes</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand how technical buyers use AI agents to evaluate vendors</li>
+            <li>Structure documentation for agent-assisted research</li>
+            <li>Prepare demo content that answers AI-generated questions</li>
+            <li>Create POC materials that close capability gaps</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The AI-Assisted Champion</h2>
+        
+        <p>Your internal champion used to spend weeks gathering requirements, reading documentation, and building internal proposals. Now they have an AI assistant that can process your entire documentation set in minutes and surface answers to any technical question instantly.</p>
+        
+        <p>This is the AI-assisted champion — a technical buyer armed with unprecedented research velocity. They're asking deeper questions earlier, validating claims faster, and building more comprehensive business cases than ever before.</p>
+        
+        <div class="key-concept">
+            <h4>Key Insight</h4>
+            <p>Your champion's AI assistant is now your first technical evaluator. If it can't find clear answers in your documentation, you're creating friction in the deal.</p>
+        </div>
+        
+        <h3>How Technical Buyers Use AI Agents</h3>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>📋 Requirements Mapping</h4>
+                <p>"Does this platform support X? What about Y? List all integration capabilities." Champions use AI to systematically check requirements against your documentation.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>🔍 Deep Technical Queries</h4>
+                <p>"Explain how SAP Datasphere handles real-time data synchronization." Specific architectural questions that require detailed technical content to answer.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📊 Comparison Analysis</h4>
+                <p>"Compare the security models of Vendor A vs Vendor B." AI synthesizes technical details from multiple sources to build comparison matrices.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📝 Proposal Building</h4>
+                <p>"Draft an internal proposal for implementing this platform." Champions use AI to create business cases from your marketing and technical content.</p>
+            </div>
+        </div>
+        
+        <h3>The Speed Advantage</h3>
+        
+        <p>Technical evaluation that once took 4-6 weeks now happens in days. Your champion can:</p>
+        
+        <ul>
+            <li>Ingest your entire documentation library overnight</li>
+            <li>Cross-reference technical claims against third-party sources</li>
+            <li>Generate detailed questions for your technical team</li>
+            <li>Build comparison matrices across multiple vendors simultaneously</li>
+            <li>Draft implementation proposals before the first technical call</li>
+        </ul>
+    </section>
+    
+    <section>
+        <h2>Documentation for Agents</h2>
+        
+        <p>Your documentation is no longer just for human readers — it's a primary data source for AI agents conducting technical evaluation. This requires a fundamental rethink of how you structure and present technical content.</p>
+        
+        <h3>The Three Principles of Agent-Ready Documentation</h3>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>🏗️ Structured</h4>
+                <p>Clear hierarchies, consistent formatting, explicit headers. AI agents rely on structure to understand content relationships and find specific information.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>🔎 Queryable</h4>
+                <p>Every technical claim should be answerable with a direct excerpt. If someone asks "Does X support Y?", the answer should be explicitly stated.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📚 Comprehensive</h4>
+                <p>Gaps in documentation become gaps in AI responses. If a capability isn't documented, AI assumes it doesn't exist or downgrades confidence in your product.</p>
+            </div>
+        </div>
+        
+        <div class="comparison-box">
+            <div class="comparison-card old">
+                <h4>Documentation Before</h4>
+                <ul>
+                    <li>Written for linear reading</li>
+                    <li>Marketing language mixed with technical</li>
+                    <li>Capabilities implied, not stated</li>
+                    <li>Scattered across PDFs and web pages</li>
+                </ul>
+            </div>
+            <div class="comparison-card new">
+                <h4>Documentation Now</h4>
+                <ul>
+                    <li>Written for non-linear querying</li>
+                    <li>Technical precision throughout</li>
+                    <li>Explicit capability statements</li>
+                    <li>Unified, crawlable documentation site</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h3>Documentation Checklist</h3>
+        
+        <ul>
+            <li><strong>Integration matrix</strong> — Complete list of supported integrations with explicit yes/no capability markers</li>
+            <li><strong>Architecture diagrams</strong> — With text descriptions that AI can parse (diagrams alone aren't enough)</li>
+            <li><strong>API reference</strong> — Complete endpoint documentation with examples</li>
+            <li><strong>Security documentation</strong> — Compliance certifications, encryption specs, access controls</li>
+            <li><strong>Performance benchmarks</strong> — Quantified performance claims with methodology</li>
+            <li><strong>Deployment options</strong> — Clear documentation of cloud, on-prem, hybrid capabilities</li>
+        </ul>
+        
+        <div class="highlight-box">
+            Every technical question your champion might ask should have an explicit answer in your documentation.
+        </div>
+    </section>
+    
+    <section>
+        <h2>Demo Strategy</h2>
+        
+        <p>Before the demo call, your champion's AI has already prepared a list of questions based on gaps it identified in your documentation. The demo is now a validation exercise, not a discovery session.</p>
+        
+        <h3>What AI Will Ask About Your Product</h3>
+        
+        <ul>
+            <li><strong>Edge cases</strong> — "How does the platform handle [unusual scenario]?"</li>
+            <li><strong>Scalability limits</strong> — "What are the documented limits? What happens when you hit them?"</li>
+            <li><strong>Integration specifics</strong> — "Show me the actual integration with [their system]"</li>
+            <li><strong>Security in practice</strong> — "Walk me through how [security feature] actually works"</li>
+            <li><strong>Failure modes</strong> — "What happens when [component] fails?"</li>
+        </ul>
+        
+        <div class="key-concept">
+            <h4>The Demo Shift</h4>
+            <p><strong>Before:</strong> "Let me show you our key features."<br><br>
+            <strong>After:</strong> "I see your AI identified these 5 technical questions. Let me address each one directly."</p>
+        </div>
+        
+        <h3>Preparing for AI-Generated Questions</h3>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>🎯 Pre-Demo Query Simulation</h4>
+                <p>Before major demos, feed your documentation to AI and ask it to generate technical questions. These are the questions your champion's AI is generating.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📝 Gap Documentation</h4>
+                <p>For any question AI can't answer from your docs, create explicit documentation. The gap exists for every buyer using AI.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>🔬 Deep Dive Content</h4>
+                <p>Create detailed technical content for common AI-generated questions. If AI asks frequently, make the answer comprehensive.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📊 Validation Assets</h4>
+                <p>Screenshots, videos, and recorded demos that prove capabilities. AI will tell champions to "verify during demo" — be ready.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>POC Content</h2>
+        
+        <p>Proof of concept is where deals are won or lost. The AI-assisted champion enters POC with a detailed checklist of capability gaps to validate. Your POC content strategy must anticipate and close these gaps.</p>
+        
+        <h3>The Capability Gap Framework</h3>
+        
+        <p>Every technical requirement falls into one of four categories:</p>
+        
+        <ul>
+            <li><strong>Verified</strong> — AI found explicit documentation confirming capability</li>
+            <li><strong>Probable</strong> — AI inferred capability from related documentation</li>
+            <li><strong>Uncertain</strong> — AI couldn't find clear evidence either way</li>
+            <li><strong>Gap</strong> — AI found evidence suggesting limitation</li>
+        </ul>
+        
+        <p>Your POC content must move requirements from Uncertain → Verified and reframe Gaps with alternative approaches.</p>
+        
+        <h3>POC Content Assets</h3>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>✅ Capability Validation Guides</h4>
+                <p>Step-by-step guides that champions can follow to verify specific capabilities. "To verify real-time sync, follow these steps..."</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📐 Reference Architectures</h4>
+                <p>Pre-built architectures for common use cases that demonstrate best practices and full capability utilization.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>🧪 Test Scripts</h4>
+                <p>Documented test scenarios with expected outcomes. Makes POC validation systematic and defensible.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>📋 Success Criteria Templates</h4>
+                <p>Pre-defined success metrics that align with your strengths. Help champions structure POC evaluation in your favor.</p>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>POC Intelligence</h4>
+            <p>If your champion's AI generates a question you can't answer, that's intelligence. Document it, create content for it, and close the gap for future deals.</p>
+        </div>
+    </section>
+    
+    <section class="exercise-box">
+        <h3>🎯 Interactive Exercise: Technical Query Simulation</h3>
+        
+        <p>Stress test your technical documentation with AI:</p>
+        
+        <ol>
+            <li><strong>Gather your technical documentation</strong> — Product docs, API reference, architecture guides</li>
+            <li><strong>Feed to ChatGPT or Claude:</strong>
+                <ul>
+                    <li>"Based on this documentation, what technical questions can't you answer?"</li>
+                    <li>"If you were evaluating this product for enterprise deployment, what gaps would you identify?"</li>
+                    <li>"Generate 10 tough technical questions a buyer might ask"</li>
+                </ul>
+            </li>
+            <li><strong>Categorize the results:</strong>
+                <ul>
+                    <li>Questions with clear answers in docs ✅</li>
+                    <li>Questions where docs are vague ⚠️</li>
+                    <li>Questions with no documented answer ❌</li>
+                </ul>
+            </li>
+            <li><strong>Create a gap remediation plan</strong> — Prioritize by frequency and deal impact</li>
+            <li><strong>Draft new documentation</strong> for the top 3 gaps</li>
+        </ol>
+        
+        <p><em>Time: ~25 minutes</em></p>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li>Technical buyers now use AI to accelerate evaluation from weeks to days</li>
+            <li>Documentation must be structured, queryable, and comprehensive for agent consumption</li>
+            <li>Demos have shifted from discovery to validation — AI prepares questions in advance</li>
+            <li>POC content should close capability gaps identified by AI research</li>
+            <li>Every unanswered AI question is an opportunity to improve documentation</li>
+        </ul>
+    </section>
+    
+    <div class="chapter-actions">
+        <h2>✓ Complete This Chapter</h2>
+        <div class="action-grid">
+            <a href="quiz.html" class="action-card primary">
+                <span class="icon">📝</span>
+                <span class="label">Take the Quiz</span>
+                <span class="sublabel">10 questions • 10 min</span>
+            </a>
+            <a href="resources.html" class="action-card">
+                <span class="icon">📚</span>
+                <span class="label">Additional Resources</span>
+                <span class="sublabel">Deep dive reading</span>
+            </a>
+            <a href="chapter-05-guide.html" class="action-card">
+                <span class="icon">📄</span>
+                <span class="label">Download PDF Guide</span>
+                <span class="sublabel">Take-home summary</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav class="chapter-nav">
+        <a href="/curriculum/chapter-04/" class="nav-btn prev">← Chapter 4</a>
+        <a href="/curriculum/chapter-06/" class="nav-btn next">Chapter 6: Pricing & Packaging →</a>
+    </nav>
+    
+</main>
+
+</body>
+</html>
