@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to SAP's Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 4rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+        
+        /* Info Cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-blue);
+        }
+        
+        .info-card h3 {
+            font-size: 1rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-card p {
+            font-size: 0.95rem;
+            margin: 0;
+            color: #555;
+        }
+        
+        /* Curriculum Table */
+        .curriculum-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .curriculum-table th {
+            background: var(--dark-slate);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .curriculum-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            vertical-align: top;
+        }
+        
+        .curriculum-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .curriculum-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .ch-number {
+            font-weight: 700;
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+        }
+        
+        .ch-title {
+            font-weight: 600;
+            color: var(--dark-slate);
+        }
+        
+        .ch-summary {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .ch-time {
+            font-size: 0.85rem;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .ch-stage {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--light-gray);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--dark-slate);
+        }
+        
+        .ch-stage.awareness { background: #E3F2FD; color: #1565C0; }
+        .ch-stage.consideration { background: #FFF3E0; color: #E65100; }
+        .ch-stage.evaluation { background: #F3E5F5; color: #7B1FA2; }
+        .ch-stage.commercialization { background: #FFF8E1; color: #F9A825; }
+        .ch-stage.decision { background: #E8F5E9; color: #2E7D32; }
+        .ch-stage.adoption { background: #ECEFF1; color: #455A64; }
+        
+        /* Total Time */
+        .total-time {
+            text-align: right;
+            padding: 1rem;
+            background: var(--light-gray);
+            font-weight: 600;
+            color: var(--dark-slate);
+        }
+        
+        /* Benefits List */
+        .benefits-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .benefits-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .benefits-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .benefits-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: 700;
+        }
+        
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+            border-radius: 16px;
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        .cta-section h2 {
+            color: white;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo img { height: 70px; }
+            .header { padding: 0.5rem 1rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero { padding: 2.5rem 1.5rem; }
+            main { padding: 2rem 1rem; }
+            
+            .curriculum-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+        </a>
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/digests/">Digests</a>
+            <a href="/newsletters.html">Newsletter</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>Welcome to SAP's Future of PMM Training</h1>
+    <p class="subtitle">A guided learning program for product marketers navigating the AI transformation</p>
+</section>
+
+<main>
+    
+    <section>
+        <h2>What This Is</h2>
+        <p>A hands-on curriculum with assessments, exercises, and practical frameworks you can apply immediately. Not a textbook to read — a learning journey to complete.</p>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>📚 Guided Learning</h3>
+                <p>Each chapter builds on the last, with clear objectives and knowledge checks along the way.</p>
+            </div>
+            <div class="info-card">
+                <h3>🎯 Practical Focus</h3>
+                <p>Real exercises using frameworks you'll apply to actual products and campaigns.</p>
+            </div>
+            <div class="info-card">
+                <h3>⏱️ Self-Paced</h3>
+                <p>~8 hours total. Complete on your schedule — pick up where you left off anytime.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Why We Need This</h2>
+        <p>The way buyers discover, evaluate, and purchase enterprise software has fundamentally changed. AI agents now mediate the research process. Committees make decisions with AI-generated shortlists. The old playbook — launch, enable, wait for leads — no longer works.</p>
+        <p>This program teaches the skills modern PMMs need to stay relevant and drive impact in the new era.</p>
+    </section>
+    
+    <section>
+        <h2>Curriculum Overview</h2>
+        
+        <table class="curriculum-table">
+            <thead>
+                <tr>
+                    <th>Ch</th>
+                    <th>Title</th>
+                    <th>Summary</th>
+                    <th>Time</th>
+                    <th>Stage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="ch-number">1</span></td>
+                    <td><span class="ch-title">The Skills We Will Teach</span></td>
+                    <td><span class="ch-summary">Take the baseline assessment, understand the fundamental shifts in PMM, and preview your learning journey.</span></td>
+                    <td><span class="ch-time">45 min</span></td>
+                    <td><span class="ch-stage">Foundation</span></td>
+                </tr>
+                <tr>
+                    <td><span class="ch-number">3</span></td>
+                    <td><span class="ch-title">Visibility in the Age of Agents</span></td>
+                    <td><span class="ch-summary">How AI agents discover and filter vendors. Building presence where LLMs look: structured data, authoritative content, entity relationships.</span></td>
+                    <td><span class="ch-time">60 min</span></td>
+                    <td><span class="ch-stage awareness">Awareness</span></td>
+                </tr>
+                <tr>
+                    <td><span class="ch-number">4</span></td>
+                    <td><span class="ch-title">Shaping the AI-Mediated Shortlist</span></td>
+                    <td><span class="ch-summary">Positioning that survives AI summarization. Competitive differentiation when buyers see synthesized comparisons, not your messaging.</span></td>
+                    <td><span class="ch-time">60 min</span></td>
+                    <td><span class="ch-stage consideration">Consideration</span></td>
+                </tr>
+                <tr>
+                    <td><span class="ch-number">5</span></td>
+                    <td><span class="ch-title">Winning the Technical Deep Dive</span></td>
+                    <td><span class="ch-summary">Enabling champions with the right proof points. Technical validation, demos, POCs, and content that closes capability gaps.</span></td>
+                    <td><span class="ch-time">60 min</span></td>
+                    <td><span class="ch-stage evaluation">Evaluation</span></td>
+                </tr>
+                <tr>
+                    <td><span class="ch-number">6</span></td>
+                    <td><span class="ch-title">Pricing, Packaging, Positioning</span></td>
+                    <td><span class="ch-summary">Commercialization strategy for enterprise deals. Bundling, pricing tiers, competitive response, and value articulation.</span></td>
+                    <td><span class="ch-time">75 min</span></td>
+                    <td><span class="ch-stage commercialization">Commercialization</span></td>
+                </tr>
+                <tr>
+                    <td><span class="ch-number">7</span></td>
+                    <td><span class="ch-title">Closing in a Committee World</span></td>
+                    <td><span class="ch-summary">Navigating multi-stakeholder decisions. Economic buyers, technical validators, procurement — and the content each needs.</span></td>
+                    <td><span class="ch-time">60 min</span></td>
+                    <td><span class="ch-stage decision">Decision</span></td>
+                </tr>
+                <tr>
+                    <td><span class="ch-number">8</span></td>
+                    <td><span class="ch-title">From Signed to Advocate</span></td>
+                    <td><span class="ch-summary">Adoption, expansion, and customer marketing. Turning launches into renewals and customers into references.</span></td>
+                    <td><span class="ch-time">60 min</span></td>
+                    <td><span class="ch-stage adoption">Adoption + Expansion</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total-time">Total Program Time: ~8 hours</div>
+    </section>
+    
+    <section>
+        <h2>What You'll Walk Away With</h2>
+        <ul class="benefits-list">
+            <li>A clear understanding of how AI is reshaping B2B buying behavior</li>
+            <li>Practical frameworks for positioning, GTM, and competitive strategy</li>
+            <li>Hands-on experience with exercises you can apply to real products</li>
+            <li>Confidence to lead product marketing in the new era</li>
+            <li>A certificate of completion to share with your team</li>
+        </ul>
+    </section>
+    
+    <div class="cta-section">
+        <h2>Ready to Begin?</h2>
+        <p>Start with Chapter 1 to take your baseline assessment and map your learning journey.</p>
+        <a href="/curriculum/chapter-01/" class="cta-btn">Start Chapter 1 →</a>
+    </div>
+    
+</main>
+
+</body>
+</html>
