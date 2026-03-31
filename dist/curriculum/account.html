@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 2.5rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--sap-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .profile-info h2 { font-size: 1.5rem; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .profile-info p { color: #666; font-size: 0.95rem; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+        
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--sap-blue); }
+        .stat-label { font-size: 0.85rem; color: #666; }
+        
+        h3 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .chapter-progress {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .chapter-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+        
+        .chapter-status {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .chapter-status.completed { background: var(--green); color: white; }
+        .chapter-status.in-progress { background: var(--gold); color: var(--dark-slate); }
+        .chapter-status.not-started { background: var(--light-gray); color: #888; }
+        
+        .chapter-info { flex: 1; }
+        .chapter-title { font-weight: 600; color: var(--dark-slate); }
+        .chapter-meta { font-size: 0.85rem; color: #666; }
+        
+        .chapter-score {
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .chapter-score.pass { background: #E8F5E9; color: var(--green); }
+        .chapter-score.fail { background: #FFEBEE; color: var(--red); }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--sap-orange); color: white; }
+        .btn-secondary { background: var(--light-gray); color: var(--dark-slate); }
+        .btn-danger { background: #FFEBEE; color: var(--red); }
+        
+        @media (max-width: 768px) {
+            .logo img { height: 70px; }
+            .header { padding: 0.5rem 1rem; }
+            main { padding: 1.5rem 1rem; }
+            .profile-header { flex-direction: column; text-align: center; }
+            .actions { flex-direction: column; }
+            .btn { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/intro.html">Curriculum</a>
+            <a href="/digests/">Digests</a>
+            <a href="/newsletters.html">Newsletter</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <h1>📊 My Progress</h1>
+        <p>Track your curriculum completion and quiz scores</p>
+    </div>
+</section>
+
+<main>
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">👤</div>
+            <div class="profile-info">
+                <h2 id="profileName">Loading...</h2>
+                <p id="profileEmail">Loading...</p>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="chaptersCompleted">0</div>
+                <div class="stat-label">Chapters Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="quizzesPassed">0</div>
+                <div class="stat-label">Quizzes Passed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgScore">-</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="progress-section">
+        <h3>Chapter Progress</h3>
+        <div class="chapter-progress" id="chapterProgress">
+            <div class="chapter-row">
+                <div class="chapter-status not-started">1</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">Chapter 1: The Skills We Will Teach</div>
+                    <div class="chapter-meta">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <a href="/curriculum/intro.html" class="btn btn-primary">← Back to Curriculum</a>
+        <button class="btn btn-danger" id="logoutBtn">🚪 Sign Out</button>
+    </div>
+</main>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const chapters = [
+    { num: 1, title: 'The Skills We Will Teach', available: true },
+    { num: 2, title: 'Visibility in the Age of Agents', available: true },
+    { num: 3, title: 'Shaping the AI-Mediated Shortlist', available: false },
+    { num: 4, title: 'Winning the Technical Deep Dive', available: false },
+    { num: 5, title: 'Pricing, Packaging, Positioning', available: false },
+    { num: 6, title: 'Closing in a Committee World', available: false },
+    { num: 7, title: 'From Signed to Advocate', available: false }
+];
+
+async function loadProfile() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    
+    if (session && session.user) {
+        const metadata = session.user.user_metadata || {};
+        const firstName = metadata.first_name || '';
+        const lastName = metadata.last_name || '';
+        const email = session.user.email;
+        
+        document.getElementById('profileName').textContent = `${firstName} ${lastName}`.trim() || email.split('@')[0];
+        document.getElementById('profileEmail').textContent = email;
+        document.getElementById('profileAvatar').textContent = (firstName[0] || email[0]).toUpperCase();
+        
+        // Load quiz scores
+        loadQuizScores(session.user.id);
+    }
+}
+
+async function loadQuizScores(userId) {
+    const { data: scores, error } = await supabaseClient
+        .from('quiz_scores')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+    
+    // Get best score per chapter
+    const bestScores = {};
+    if (scores) {
+        scores.forEach(score => {
+            if (!bestScores[score.chapter] || score.percentage > bestScores[score.chapter].percentage) {
+                bestScores[score.chapter] = score;
+            }
+        });
+    }
+    
+    // Calculate stats
+    const passed = Object.values(bestScores).filter(s => s.passed).length;
+    const total = Object.values(bestScores).length;
+    const avgScore = total > 0 
+        ? Math.round(Object.values(bestScores).reduce((sum, s) => sum + s.percentage, 0) / total)
+        : '-';
+    
+    document.getElementById('chaptersCompleted').textContent = passed;
+    document.getElementById('quizzesPassed').textContent = passed;
+    document.getElementById('avgScore').textContent = avgScore !== '-' ? `${avgScore}%` : '-';
+    
+    // Render chapter progress
+    const progressHtml = chapters.map(ch => {
+        const score = bestScores[ch.num];
+        let statusClass = 'not-started';
+        let statusIcon = ch.num;
+        let meta = ch.available ? 'Not started' : 'Coming soon';
+        let scoreHtml = '';
+        
+        if (score) {
+            statusClass = score.passed ? 'completed' : 'in-progress';
+            statusIcon = score.passed ? '✓' : ch.num;
+            meta = `Completed ${new Date(score.created_at).toLocaleDateString()}`;
+            scoreHtml = `<span class="chapter-score ${score.passed ? 'pass' : 'fail'}">${score.percentage}%</span>`;
+        }
+        
+        return `
+            <div class="chapter-row">
+                <div class="chapter-status ${statusClass}">${statusIcon}</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">Chapter ${ch.num}: ${ch.title}</div>
+                    <div class="chapter-meta">${meta}</div>
+                </div>
+                ${scoreHtml}
+            </div>
+        `;
+    }).join('');
+    
+    document.getElementById('chapterProgress').innerHTML = progressHtml;
+}
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+    localStorage.removeItem('pmmCurrentUser');
+    window.location.href = '/curriculum/login.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProfile();
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+});
+</script>
+</body>
+</html>
