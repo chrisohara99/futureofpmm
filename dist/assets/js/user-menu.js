@@ -4,8 +4,8 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
     function createUserMenu() {
-        // Find nav element
-        const nav = document.querySelector('.nav');
+        // Find nav element (try multiple selectors)
+        const nav = document.querySelector('nav') || document.querySelector('.nav') || document.querySelector('#main-nav');
         if (!nav) return;
 
         // Create user menu container
@@ -23,10 +23,10 @@
                 </div>
                 <div class="user-menu-divider"></div>
                 <a href="/curriculum/account.html" class="user-menu-item">
-                    <span>📊</span> My Progress
+                    <span>📊</span><span>My Stats</span>
                 </a>
                 <button class="user-menu-item" id="logoutBtn">
-                    <span>🚪</span> Sign Out
+                    <span>🚪</span><span>Sign Out</span>
                 </button>
             </div>
         `;
