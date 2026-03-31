@@ -344,8 +344,9 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="email">SAP Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="yourname@sap.com">
+                    <small style="color: #666; font-size: 0.8rem; margin-top: 0.25rem; display: block;">Access restricted to @sap.com addresses</small>
                 </div>
                 
                 <div class="form-group">
@@ -462,6 +463,15 @@ document.addEventListener('DOMContentLoaded', function() {
         company: document.getElementById('company').value.trim(),
         role: document.getElementById('role').value
     };
+    
+    // Validate SAP email domain
+    if (!formData.email.toLowerCase().endsWith('@sap.com')) {
+        errorMessage.textContent = 'Access is restricted to SAP employees. Please use your @sap.com email address.';
+        errorMessage.classList.add('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account & Start Learning';
+        return;
+    }
     
     try {
         if (supabaseClient) {
