@@ -228,12 +228,19 @@
     </div>
     
     <div class="progress-section">
-        <h3>Chapter Progress</h3>
+        <h3>Assessments</h3>
+        <div class="chapter-progress" id="assessmentProgress">
+            <p style="color: #666; font-size: 0.9rem;">Loading...</p>
+        </div>
+    </div>
+    
+    <div class="progress-section">
+        <h3>Unit Progress</h3>
         <div class="chapter-progress" id="chapterProgress">
             <div class="chapter-row">
                 <div class="chapter-status not-started">1</div>
                 <div class="chapter-info">
-                    <div class="chapter-title">Chapter 1: The Skills We Will Teach</div>
+                    <div class="chapter-title">Unit 1: The Evolution of PMM</div>
                     <div class="chapter-meta">Loading...</div>
                 </div>
             </div>
@@ -276,9 +283,102 @@ async function loadProfile() {
         document.getElementById('profileEmail').textContent = email;
         document.getElementById('profileAvatar').textContent = (firstName[0] || email[0]).toUpperCase();
         
-        // Load quiz scores
+        // Load quiz scores and assessments
         loadQuizScores(session.user.id);
+        loadAssessments(session.user.id);
     }
+}
+
+async function loadAssessments(userId) {
+    const { data: assessments, error } = await supabaseClient
+        .from('assessment_results')
+        .select('*')
+        .eq('user_id', userId)
+        .order('completed_at', { ascending: false });
+    
+    const container = document.getElementById('assessmentProgress');
+    
+    if (error || !assessments || assessments.length === 0) {
+        container.innerHTML = `
+            <div class="chapter-row" style="opacity: 0.6;">
+                <div class="chapter-status not-started">🧠</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">Where Do You Sit?</div>
+                    <div class="chapter-meta"><a href="/where-do-you-sit.html">Take assessment →</a></div>
+                </div>
+            </div>
+            <div class="chapter-row" style="opacity: 0.6;">
+                <div class="chapter-status not-started">📊</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">10x PMM Scorecard</div>
+                    <div class="chapter-meta"><a href="/10x-scorecard.html">Take assessment →</a></div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Group assessments
+    const whereDoYouSit = assessments.find(a => a.assessment_type === 'where-do-you-sit');
+    const scorecardContent = assessments.find(a => a.assessment_type === '10x-scorecard-content');
+    const scorecardCompetitive = assessments.find(a => a.assessment_type === '10x-scorecard-competitive');
+    const scorecardDemandgen = assessments.find(a => a.assessment_type === '10x-scorecard-demandgen');
+    
+    let html = '';
+    
+    // Where Do You Sit
+    if (whereDoYouSit) {
+        html += `
+            <div class="chapter-row">
+                <div class="chapter-status completed">✓</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">Where Do You Sit?</div>
+                    <div class="chapter-meta">Result: <strong>${whereDoYouSit.result_name}</strong> • ${new Date(whereDoYouSit.completed_at).toLocaleDateString()}</div>
+                </div>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="chapter-row" style="opacity: 0.6;">
+                <div class="chapter-status not-started">🧠</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">Where Do You Sit?</div>
+                    <div class="chapter-meta"><a href="/where-do-you-sit.html">Take assessment →</a></div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 10x Scorecard
+    const scorecardComplete = scorecardContent && scorecardCompetitive && scorecardDemandgen;
+    if (scorecardContent || scorecardCompetitive || scorecardDemandgen) {
+        const parts = [];
+        if (scorecardContent) parts.push('Content');
+        if (scorecardCompetitive) parts.push('Competitive');
+        if (scorecardDemandgen) parts.push('Demand Gen');
+        
+        html += `
+            <div class="chapter-row">
+                <div class="chapter-status ${scorecardComplete ? 'completed' : 'in-progress'}">${scorecardComplete ? '✓' : '◐'}</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">10x PMM Scorecard</div>
+                    <div class="chapter-meta">Completed: ${parts.join(', ')}${!scorecardComplete ? ' • <a href="/10x-scorecard.html">Continue →</a>' : ''}</div>
+                </div>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="chapter-row" style="opacity: 0.6;">
+                <div class="chapter-status not-started">📊</div>
+                <div class="chapter-info">
+                    <div class="chapter-title">10x PMM Scorecard</div>
+                    <div class="chapter-meta"><a href="/10x-scorecard.html">Take assessment →</a></div>
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
 }
 
 async function loadQuizScores(userId) {

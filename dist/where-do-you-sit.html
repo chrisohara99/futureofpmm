@@ -730,10 +730,38 @@ function selectOption(score, btn) {
     }, 500);
 }
 
+async function saveAssessmentResult(roleKey, role, dims) {
+    try {
+        if (typeof supabase === 'undefined') return;
+        const client = supabase.createClient(
+            'https://yyqzkczutlidhgyiyawc.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
+        );
+        const { data: { session } } = await client.auth.getSession();
+        if (!session) return;
+        
+        await client.from('assessment_results').upsert({
+            user_id: session.user.id,
+            assessment_type: 'where-do-you-sit',
+            result_key: roleKey,
+            result_name: role.name,
+            result_data: { dimensions: dims, sovereignty: role.sovereignty },
+            completed_at: new Date().toISOString()
+        }, { onConflict: 'user_id,assessment_type' });
+        
+        console.log('Assessment saved');
+    } catch (e) {
+        console.error('Error saving assessment:', e);
+    }
+}
+
 function showResults() {
     const roleKey = getRoleKey();
     const role = ROLES[roleKey];
     const dims = getDimensions();
+    
+    // Save to Supabase
+    saveAssessmentResult(roleKey, role, dims);
     
     // Role card
     document.getElementById('role-card').style.background = role.color;
@@ -878,6 +906,6 @@ function fadeIn(screenId) {
     setTimeout(() => screen.classList.remove('fade-out'), 50);
 }
 </script>
-
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </body>
 </html>

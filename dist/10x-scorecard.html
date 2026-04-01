@@ -1261,10 +1261,40 @@
           // Show results
           state.completed[state.activeTab] = [...state.currentScores];
           state.questionIndex = -1;
+          // Save to Supabase
+          saveScorecardResult(state.activeTab, [...state.currentScores]);
         }
         render();
       }
     };
+    
+    async function saveScorecardResult(category, scores) {
+      try {
+        if (typeof supabase === 'undefined') return;
+        const client = supabase.createClient(
+          'https://yyqzkczutlidhgyiyawc.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
+        );
+        const { data: { session } } = await client.auth.getSession();
+        if (!session) return;
+        
+        const avg = scores.reduce((a,b) => a+b, 0) / 6;
+        const grade = getGrade(avg);
+        
+        await client.from('assessment_results').upsert({
+          user_id: session.user.id,
+          assessment_type: '10x-scorecard-' + category,
+          result_key: grade.grade,
+          result_name: SCORECARDS[category].title + ': ' + avg.toFixed(1) + '/5',
+          result_data: { category, scores, average: avg, grade: grade.grade },
+          completed_at: new Date().toISOString()
+        }, { onConflict: 'user_id,assessment_type' });
+        
+        console.log('Scorecard saved:', category);
+      } catch (e) {
+        console.error('Error saving scorecard:', e);
+      }
+    }
     
     window.retake = function() {
       delete state.completed[state.activeTab];
@@ -1324,5 +1354,6 @@
     // Init
     render();
     </script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </body>
 </html>
