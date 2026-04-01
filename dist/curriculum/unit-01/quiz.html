@@ -610,10 +610,15 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-// Supabase client
-const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase client (wrapped in try-catch to not break quiz if Supabase fails)
+let supabaseClient = null;
+try {
+    const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch (e) {
+    console.error('Supabase init failed:', e);
+}
 
 // Correct answers for Unit 1
 const correctAnswers = {
@@ -697,6 +702,10 @@ document.getElementById('submitBtn').addEventListener('click', function() {
 // Save quiz score to Supabase
 async function saveQuizScore(score, total, percentage) {
     try {
+        if (!supabaseClient) {
+            console.log('Supabase not available - score not saved');
+            return;
+        }
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) {
             console.log('No session - score not saved');
