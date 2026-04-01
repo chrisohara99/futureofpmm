@@ -108,8 +108,9 @@
                 padding: 0.75rem 1rem;
                 border: none;
                 background: none;
-                color: #333;
-                font-size: 0.9rem;
+                color: #1a1a2e;
+                font-size: 0.95rem;
+                font-weight: 500;
                 text-decoration: none;
                 cursor: pointer;
                 transition: background 0.15s;
@@ -117,11 +118,13 @@
                 text-align: left;
             }
             .user-menu-item:hover {
-                background: #f5f5f5;
+                background: #f0f0f5;
+                color: #000;
             }
             .user-menu-item:last-child {
                 border-radius: 0 0 8px 8px;
                 color: #c00;
+                font-weight: 400;
             }
         `;
         document.head.appendChild(style);
