@@ -254,13 +254,13 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const chapters = [
-    { num: 1, title: 'The Skills We Will Teach', available: true },
-    { num: 2, title: 'Visibility in the Age of Agents', available: true },
-    { num: 3, title: 'Shaping the AI-Mediated Shortlist', available: false },
-    { num: 4, title: 'Winning the Technical Deep Dive', available: false },
-    { num: 5, title: 'Pricing, Packaging, Positioning', available: false },
-    { num: 6, title: 'Closing in a Committee World', available: false },
-    { num: 7, title: 'From Signed to Advocate', available: false }
+    { id: 'unit-01', num: 1, title: 'The Evolution of PMM', available: true },
+    { id: 'unit-02', num: 2, title: 'Creating Awareness through AI Discoverability', available: false },
+    { id: 'unit-03', num: 3, title: 'Building Positioning that Survives Summarization', available: false },
+    { id: 'unit-04', num: 4, title: 'Enabling AI-Mediated Evaluation', available: false },
+    { id: 'unit-05', num: 5, title: 'Messaging for Consumption-Based Models', available: false },
+    { id: 'unit-06', num: 6, title: 'Supporting the AI-Assisted Decision', available: false },
+    { id: 'unit-07', num: 7, title: 'Retention in the Age of Agents', available: false }
 ];
 
 async function loadProfile() {
@@ -286,7 +286,11 @@ async function loadQuizScores(userId) {
         .from('quiz_scores')
         .select('*')
         .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .order('completed_at', { ascending: false });
+    
+    if (error) {
+        console.error('Error loading scores:', error);
+    }
     
     // Get best score per chapter
     const bestScores = {};
@@ -298,37 +302,38 @@ async function loadQuizScores(userId) {
         });
     }
     
-    // Calculate stats
-    const passed = Object.values(bestScores).filter(s => s.passed).length;
+    // Calculate stats (passed = 80%+)
+    const passedScores = Object.values(bestScores).filter(s => s.percentage >= 80);
     const total = Object.values(bestScores).length;
     const avgScore = total > 0 
         ? Math.round(Object.values(bestScores).reduce((sum, s) => sum + s.percentage, 0) / total)
         : '-';
     
-    document.getElementById('chaptersCompleted').textContent = passed;
-    document.getElementById('quizzesPassed').textContent = passed;
+    document.getElementById('chaptersCompleted').textContent = passedScores.length;
+    document.getElementById('quizzesPassed').textContent = passedScores.length;
     document.getElementById('avgScore').textContent = avgScore !== '-' ? `${avgScore}%` : '-';
     
     // Render chapter progress
     const progressHtml = chapters.map(ch => {
-        const score = bestScores[ch.num];
+        const score = bestScores[ch.id];
+        const passed = score && score.percentage >= 80;
         let statusClass = 'not-started';
         let statusIcon = ch.num;
         let meta = ch.available ? 'Not started' : 'Coming soon';
         let scoreHtml = '';
         
         if (score) {
-            statusClass = score.passed ? 'completed' : 'in-progress';
-            statusIcon = score.passed ? '✓' : ch.num;
-            meta = `Completed ${new Date(score.created_at).toLocaleDateString()}`;
-            scoreHtml = `<span class="chapter-score ${score.passed ? 'pass' : 'fail'}">${score.percentage}%</span>`;
+            statusClass = passed ? 'completed' : 'in-progress';
+            statusIcon = passed ? '✓' : ch.num;
+            meta = `Completed ${new Date(score.completed_at).toLocaleDateString()}`;
+            scoreHtml = `<span class="chapter-score ${passed ? 'pass' : 'fail'}">${score.percentage}%</span>`;
         }
         
         return `
             <div class="chapter-row">
                 <div class="chapter-status ${statusClass}">${statusIcon}</div>
                 <div class="chapter-info">
-                    <div class="chapter-title">Chapter ${ch.num}: ${ch.title}</div>
+                    <div class="chapter-title">Unit ${ch.num}: ${ch.title}</div>
                     <div class="chapter-meta">${meta}</div>
                 </div>
                 ${scoreHtml}

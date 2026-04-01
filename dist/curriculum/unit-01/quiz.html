@@ -608,7 +608,13 @@
         </div>
     </main>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+// Supabase client
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // Correct answers for Unit 1
 const correctAnswers = {
     q1: 'c',   // 22% efficiency gains
@@ -683,7 +689,59 @@ document.getElementById('submitBtn').addEventListener('click', function() {
     
     // Scroll to results
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
+    
+    // Save to Supabase
+    saveQuizScore(correct, total, percentage);
 });
+
+// Save quiz score to Supabase
+async function saveQuizScore(score, total, percentage) {
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+            console.log('No session - score not saved');
+            return;
+        }
+        
+        const userId = session.user.id;
+        
+        // Save quiz score
+        const { error: scoreError } = await supabaseClient
+            .from('quiz_scores')
+            .insert({
+                user_id: userId,
+                chapter: 'unit-01',
+                score: score,
+                total: total,
+                percentage: percentage
+            });
+        
+        if (scoreError) {
+            console.error('Error saving quiz score:', scoreError);
+            return;
+        }
+        
+        // Update chapter progress if passed (80%+)
+        if (percentage >= 80) {
+            const { error: progressError } = await supabaseClient
+                .from('chapter_progress')
+                .upsert({
+                    user_id: userId,
+                    chapter: 'unit-01',
+                    completed: true,
+                    completed_at: new Date().toISOString()
+                }, { onConflict: 'user_id,chapter' });
+            
+            if (progressError) {
+                console.error('Error updating progress:', progressError);
+            }
+        }
+        
+        console.log('Quiz score saved successfully');
+    } catch (err) {
+        console.error('Error saving score:', err);
+    }
+}
 </script>
 
 <script src="/assets/js/user-menu.js"></script>
