@@ -22,8 +22,8 @@
                     <div class="user-email" id="userEmail">Loading...</div>
                 </div>
                 <div class="user-menu-divider"></div>
-                <a href="/curriculum/account.html" class="user-menu-item">
-                    <span>📊</span><span>My Stats</span>
+                <a href="/curriculum/account.html" class="user-menu-item user-menu-stats">
+                    <span>📊</span><span style="color: #1a1a2e !important;">My Stats</span>
                 </a>
                 <button class="user-menu-item" id="logoutBtn">
                     <span>🚪</span><span>Sign Out</span>
@@ -120,6 +120,12 @@
             .user-menu-item:hover {
                 background: #f0f0f5;
                 color: #000;
+            }
+            .user-menu-stats {
+                color: #1a1a2e !important;
+            }
+            .user-menu-stats span {
+                color: #1a1a2e !important;
             }
             .user-menu-item:last-child {
                 border-radius: 0 0 8px 8px;
