@@ -81,8 +81,8 @@
         const gate = document.getElementById('curriculumGate');
         
         function checkCode() {
-            const code = codeInput.value;
-            if (code === 'Porsche911') {
+            const code = codeInput.value.trim().toLowerCase();
+            if (code === 'porsche911') {
                 sessionStorage.setItem('curriculum_access', 'granted');
                 gate.style.display = 'none';
             } else {
