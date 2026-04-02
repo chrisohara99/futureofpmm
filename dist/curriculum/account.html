@@ -255,10 +255,14 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let supabaseClient = null;
+try {
+    const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch (e) {
+    console.error('Supabase init failed:', e);
+}
 
 const chapters = [
     { id: 'unit-01', num: 1, title: 'The Evolution of PMM', available: true },
@@ -271,6 +275,11 @@ const chapters = [
 ];
 
 async function loadProfile() {
+    if (!supabaseClient) {
+        document.getElementById('profileName').textContent = 'Error loading';
+        document.getElementById('profileEmail').textContent = 'Supabase unavailable';
+        return;
+    }
     const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (session && session.user) {
@@ -445,8 +454,11 @@ async function loadQuizScores(userId) {
 }
 
 async function logout() {
-    await supabaseClient.auth.signOut();
+    if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+    }
     localStorage.removeItem('pmmCurrentUser');
+    sessionStorage.removeItem('curriculum_access');
     window.location.href = '/curriculum/login.html';
 }
 
