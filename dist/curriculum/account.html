@@ -337,24 +337,32 @@ async function loadAssessments(userId) {
     
     // Where Do You Sit
     if (whereDoYouSit) {
+        const dims = whereDoYouSit.result_data?.dimensions || {};
+        const sovereignty = whereDoYouSit.result_data?.sovereignty || '?';
         html += `
-            <div class="chapter-row">
+            <a href="/where-do-you-sit.html" class="chapter-row" style="text-decoration: none; color: inherit; cursor: pointer;">
                 <div class="chapter-status completed">✓</div>
                 <div class="chapter-info">
                     <div class="chapter-title">Where Do You Sit?</div>
-                    <div class="chapter-meta">Result: <strong>${whereDoYouSit.result_name}</strong> • ${new Date(whereDoYouSit.completed_at).toLocaleDateString()}</div>
+                    <div class="chapter-meta">
+                        <strong>${whereDoYouSit.result_name}</strong> • Sovereignty: ${sovereignty}/9<br>
+                        <span style="font-size: 0.8rem; color: #888;">
+                            CP: ${dims.CP ? '✓' : '✗'} | IC: ${dims.IC ? '✓' : '✗'} | SP: ${dims.SP ? '✓' : '✗'}
+                        </span>
+                        • <span style="color: #3b82f6;">Retake →</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         `;
     } else {
         html += `
-            <div class="chapter-row" style="opacity: 0.6;">
+            <a href="/where-do-you-sit.html" class="chapter-row" style="text-decoration: none; color: inherit; opacity: 0.6;">
                 <div class="chapter-status not-started">🧠</div>
                 <div class="chapter-info">
                     <div class="chapter-title">Where Do You Sit?</div>
-                    <div class="chapter-meta"><a href="/where-do-you-sit.html">Take assessment →</a></div>
+                    <div class="chapter-meta">Take assessment →</div>
                 </div>
-            </div>
+            </a>
         `;
     }
     
@@ -362,28 +370,42 @@ async function loadAssessments(userId) {
     const scorecardComplete = scorecardContent && scorecardCompetitive && scorecardDemandgen;
     if (scorecardContent || scorecardCompetitive || scorecardDemandgen) {
         const parts = [];
-        if (scorecardContent) parts.push('Content');
-        if (scorecardCompetitive) parts.push('Competitive');
-        if (scorecardDemandgen) parts.push('Demand Gen');
+        const scores = [];
+        if (scorecardContent) {
+            parts.push('Content');
+            scores.push(`Content: ${scorecardContent.result_data?.average?.toFixed(1) || '?'}/5`);
+        }
+        if (scorecardCompetitive) {
+            parts.push('Competitive');
+            scores.push(`Competitive: ${scorecardCompetitive.result_data?.average?.toFixed(1) || '?'}/5`);
+        }
+        if (scorecardDemandgen) {
+            parts.push('Demand Gen');
+            scores.push(`Demand Gen: ${scorecardDemandgen.result_data?.average?.toFixed(1) || '?'}/5`);
+        }
         
         html += `
-            <div class="chapter-row">
+            <a href="/10x-scorecard.html" class="chapter-row" style="text-decoration: none; color: inherit; cursor: pointer;">
                 <div class="chapter-status ${scorecardComplete ? 'completed' : 'in-progress'}">${scorecardComplete ? '✓' : '◐'}</div>
                 <div class="chapter-info">
                     <div class="chapter-title">10x PMM Scorecard</div>
-                    <div class="chapter-meta">Completed: ${parts.join(', ')}${!scorecardComplete ? ' • <a href="/10x-scorecard.html">Continue →</a>' : ''}</div>
+                    <div class="chapter-meta">
+                        ${scores.join(' | ')}<br>
+                        <span style="font-size: 0.8rem; color: #888;">${parts.join(', ')}</span>
+                        ${!scorecardComplete ? ' • <span style="color: #3b82f6;">Continue →</span>' : ' • <span style="color: #3b82f6;">Retake →</span>'}
+                    </div>
                 </div>
-            </div>
+            </a>
         `;
     } else {
         html += `
-            <div class="chapter-row" style="opacity: 0.6;">
+            <a href="/10x-scorecard.html" class="chapter-row" style="text-decoration: none; color: inherit; opacity: 0.6;">
                 <div class="chapter-status not-started">📊</div>
                 <div class="chapter-info">
                     <div class="chapter-title">10x PMM Scorecard</div>
-                    <div class="chapter-meta"><a href="/10x-scorecard.html">Take assessment →</a></div>
+                    <div class="chapter-meta">Take assessment →</div>
                 </div>
-            </div>
+            </a>
         `;
     }
     
