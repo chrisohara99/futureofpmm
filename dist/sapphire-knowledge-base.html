@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Sapphire Knowledge Base from the Autonomous Enterprise Corpus | The Future of PMM</title>
+    <meta name="description" content="A practical guide for the Data & Analytics PMM team on building a queryable knowledge base from SAP's Autonomous Enterprise narrative documents.">
+    <meta property="og:title" content="Building a Sapphire Knowledge Base from the Autonomous Enterprise Corpus">
+    <meta property="og:description" content="Load the Autonomous Enterprise narrative, competitive intelligence, and positioning work into a shared knowledge base for Sapphire 2026.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://futureofpmm.com/sapphire-knowledge-base.html">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Building a Sapphire Knowledge Base from the Autonomous Enterprise Corpus",
+      "description": "A practical guide for the Data & Analytics PMM team on building a queryable knowledge base from SAP's Autonomous Enterprise narrative documents.",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "url": "https://chrisohara.com"
+      },
+      "datePublished": "2026-04-07",
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      }
+    }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #faf9f7;
+            --accent: #c84b31;
+            --muted: #6b7280;
+            --border: #e5e2dd;
+            --section-bg: #f3f1ed;
+            --link: #2563eb;
+            --purple: #7c3aed;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Source Sans 3', -apple-system, sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.7;
+        }
+        
+        /* Header */
+        header { background: var(--ink); padding: 16px 24px; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        nav a { margin-left: 2rem; text-decoration: none; color: rgba(255,255,255,0.8); font-size: 0.9rem; font-weight: 500; }
+        nav a:hover { color: white; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: white; border-radius: 2px; transition: all 0.3s ease; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            nav { display: flex !important; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--ink); flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { right: 0 !important; }
+            nav a { margin: 0 0 1.5rem 0; font-size: 1.1rem; }
+        }
+        
+        /* Article */
+        .article-container { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+        .article-header { margin-bottom: 2.5rem; }
+        .article-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+        .article-title { font-family: 'Playfair Display', Georgia, serif; font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+        @media (max-width: 600px) { .article-title { font-size: 1.8rem; } }
+        .article-meta { color: var(--muted); font-size: 0.95rem; }
+        .article-meta a { color: var(--link); text-decoration: none; }
+        
+        /* Content */
+        .article-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; margin: 2.5rem 0 1rem; }
+        .article-content h3 { font-size: 1.2rem; font-weight: 600; margin: 2rem 0 0.75rem; }
+        .article-content p { margin-bottom: 1.25rem; }
+        .article-content ul, .article-content ol { margin: 0 0 1.25rem 1.5rem; }
+        .article-content li { margin-bottom: 0.5rem; }
+        .article-content a { color: var(--link); text-decoration: none; }
+        .article-content a:hover { text-decoration: underline; }
+        .article-content strong { font-weight: 600; }
+        .article-content em { font-style: italic; }
+        .article-content blockquote {
+            background: var(--section-bg);
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--muted);
+        }
+        .article-content code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--section-bg);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .article-content pre {
+            background: var(--ink);
+            color: #e5e5e5;
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2.5rem 0;
+        }
+        .article-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .article-content .figure {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .article-content .figure img {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .article-content .figure-caption {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+        
+        /* Callout boxes */
+        .callout {
+            background: var(--section-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Document list */
+        .doc-list {
+            background: var(--section-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .doc-list h4 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        .doc-list ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+        .doc-list li {
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Footer */
+        footer { background: var(--ink); color: rgba(255,255,255,0.7); padding: 3rem 1.5rem; text-align: center; margin-top: 4rem; }
+        footer a { color: rgba(255,255,255,0.9); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <img src="/assets/images/logo-white.svg" alt="The Future of PMM">
+            </a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/curriculum/">Learn</a>
+                <a href="/newsletters">Newsletter</a>
+                <a href="/blog.html">Resources</a>
+            </nav>
+        </div>
+    </header>
+    
+    <article class="article-container">
+        <header class="article-header">
+            <div class="article-label">Practical Guide</div>
+            <h1 class="article-title">Building a Sapphire Knowledge Base from the Autonomous Enterprise Corpus</h1>
+            <p class="article-meta">April 7, 2026 · <a href="https://chrisohara.com">Chris O'Hara</a></p>
+        </header>
+        
+        <div class="article-content">
+            <p><em>A practical guide for the Data & Analytics PMM team.</em></p>
+            
+            <hr>
+            
+            <h2>What This Is</h2>
+            
+            <p>SAP has published a set of internal documents that define the Autonomous Enterprise narrative, messaging framework, naming conventions, and portfolio architecture for Sapphire 2026. These documents — the SAP 2.0 Strategic Narrative, the Messaging & Naming Storyboard, and the L0 presentation deck — represent the canonical source material for everything the company will say at Sapphire.</p>
+            
+            <p>Rather than reading these once, extracting what seems relevant, and filing them away, we should load them — alongside our own team's competitive intelligence, customer evidence, and positioning work — into a shared knowledge base that any PMM can query while building Sapphire deliverables.</p>
+            
+            <p>The goal is to ensure that every piece of content we produce is grounded in the full strategic context, not just the parts we individually remember. This guide covers how to do that.</p>
+            
+            <div class="figure">
+                <img src="/assets/images/sapphire-knowledge-base-architecture.png" alt="SAP Autonomous Enterprise Architecture: Joule at the top, SAP Autonomous Suite with domains in the middle, and SAP Business AI Platform at the foundation">
+                <p class="figure-caption">The Autonomous Enterprise architecture: Joule orchestrates agents across the Autonomous Suite, all grounded in the Business AI Platform's Knowledge Graph.</p>
+            </div>
+            
+            <hr>
+            
+            <h2>The Source Documents</h2>
+            
+            <div class="doc-list">
+                <h4>From the Autonomous Enterprise Corpus</h4>
+                <ul>
+                    <li><strong>SAP 2.0 Narrative — LIVE DRAFT</strong> (.docx) — The master strategic narrative. Covers market context, SAP's right to win, and the full portfolio walkthrough: Joule, Autonomous Suite, Autonomous Domains, Industry AI, Business AI Platform (Build / Contextualize & Reason / Govern), AI-led Transformation (RISE/GROW), the SAP Family of Models, and partner ecosystem strategy. This is the source-of-truth document.</li>
+                    <li><strong>Autonomous Enterprise Definition, Messaging & Naming Storyboard</strong> (.pptx) — The messaging strategy layer. Contains the approved definition of the Autonomous Enterprise, the three-promise messaging framework (Run it all in real-time / Move work up the value chain / Build anything with total control), five messaging imperatives, reasons to believe, elevator pitch drafts, and the full naming glossary for Joule Work, Joule Assistants, Joule Agents, Joule Studio, Autonomous Domains, and Industry AI. Also includes the "SAP Business Suite" deprecation guidance.</li>
+                    <li><strong>L0 Presentation — Working File</strong> (.pptx) — The customer/partner-facing deck. Five-beat arc: Joule → Autonomous Suite (with Spend domain example) → Industry AI (seven priority verticals) → Business AI Platform → AI-led Transformation. Includes proof points, platform stats, and speaker notes with detailed before/after scenarios for supply chain, finance, and HR.</li>
+                </ul>
+            </div>
+            
+            <div class="doc-list">
+                <h4>From Our Team (Add as Available)</h4>
+                <ul>
+                    <li>Competitive battlecards (Snowflake, Databricks, Salesforce Data Cloud, Oracle)</li>
+                    <li>Reltio acquisition analysis and BDC integration positioning</li>
+                    <li>Customer proof points and win/loss analyses</li>
+                    <li>Analyst briefing documents</li>
+                    <li>Pricing and packaging frameworks</li>
+                    <li>BDC and Knowledge Graph positioning docs</li>
+                    <li>Any updated materials from the Reltio integration workstream</li>
+                </ul>
+            </div>
+            
+            <hr>
+            
+            <h2>How to Build It</h2>
+            
+            <p>There are two paths depending on your comfort level with tooling. Both produce the same outcome — a queryable knowledge base grounded in these documents.</p>
+            
+            <h3>Path 1: Claude Projects (No Setup Required)</h3>
+            
+            <p>Claude's Projects feature lets you load documents into a persistent context that informs every conversation within the project.</p>
+            
+            <ol>
+                <li>Create a new Project in Claude. Name it something like "Sapphire 2026 — Data & Analytics."</li>
+                <li>Upload the three Autonomous Enterprise documents to the Project's knowledge base.</li>
+                <li>Upload your team documents — battlecards, positioning docs, customer evidence, Reltio materials.</li>
+                <li>Add a brief set of Project instructions that frames the context. Something like:</li>
+            </ol>
+            
+            <blockquote>
+                These documents represent SAP's Autonomous Enterprise narrative for Sapphire 2026, combined with competitive intelligence and positioning materials from the Data & Analytics PMM team. When I ask questions or request drafts, ground your responses in these specific documents. Our team owns the "Semantically Rich Business Data" differentiator — Business Data Cloud, SAP Knowledge Graph, and Reltio. Prioritize accuracy over speed. Flag when source documents conflict with each other.
+            </blockquote>
+            
+            <p>Every conversation within this Project now has access to the full corpus. You can query it for synthesis ("What proof points in the narrative support the BDC value proposition?"), for competitive framing ("How does the Autonomous Enterprise positioning handle the Salesforce/Informatica comparison?"), for consistency checks ("Does my draft use the approved naming for Joule Assistants?"), or for gap identification ("What customer evidence do we have for the Contextualize & Reason pillar?").</p>
+            
+            <p>This is the fastest path and requires no technical setup. The limitation is Claude's context window — if the combined corpus exceeds it, you'll need to prioritize which documents to include, or move to Path 2.</p>
+            
+            <h3>Path 2: RAG Knowledge Base (More Setup, More Scale)</h3>
+            
+            <p>For a team-wide resource that handles a larger document corpus and supports more granular retrieval, build a RAG (Retrieval-Augmented Generation) system. Olivier Duvelleroy on our research team built a working prototype — NEXUS — in a weekend using open-source tools. The architecture is straightforward:</p>
+            
+            <ol>
+                <li><strong>Ingest:</strong> Convert all documents (PPTX, DOCX, PDF) to text. Tools like <code>markitdown</code>, <code>python-docx</code>, or <code>pypdf</code> handle the extraction. Include speaker notes from the PowerPoint files — they contain substantial strategic context that doesn't appear on the slides themselves.</li>
+                <li><strong>Chunk and embed:</strong> Split the extracted text into semantically meaningful chunks (500–1000 tokens each, with overlap). Generate vector embeddings using an embedding model — OpenAI's <code>text-embedding-3-small</code> or Anthropic's embedding endpoint both work. Store the embeddings in a vector database (Pinecone, Weaviate, Chroma, or even a local FAISS index for a lightweight setup).</li>
+                <li><strong>Query:</strong> When a PMM asks a question, the system retrieves the most relevant chunks from the vector store and passes them as context to Claude (or another LLM) along with the question. The model's response is grounded in your actual documents rather than its general training data.</li>
+                <li><strong>Maintain:</strong> As new documents arrive — updated battlecards, new customer evidence, revised messaging — add them to the corpus. The knowledge base stays current.</li>
+            </ol>
+            
+            <p>If you want to start with Path 2, talk to Olivier. He's documented his setup and can walk through the architecture in about thirty minutes.</p>
+            
+            <hr>
+            
+            <h2>How to Use It</h2>
+            
+            <p>The knowledge base is most valuable at the point of creation — when you're sitting down to write a positioning doc, build a demo script, prepare an analyst briefing, or draft customer-facing content for Sapphire.</p>
+            
+            <p>A few specific use cases:</p>
+            
+            <div class="callout">
+                <p class="callout-title">Consistency Checks</p>
+                <p>The Autonomous Enterprise corpus has very specific naming conventions. "SAP Business Suite" is deprecated. Joule Assistants and Joule Agents are distinct concepts with distinct definitions. The three differentiators have approved language. Before you publish or present anything, query the knowledge base: "Does this draft use the correct terminology per the naming glossary?"</p>
+            </div>
+            
+            <div class="callout">
+                <p class="callout-title">Data Layer Threading</p>
+                <p>The L0 narrative is organized around Joule, Autonomous Suite, Industry AI, and Business AI Platform. Our team's story lives primarily in the "Contextualize & Reason" section of the platform layer. But the data layer shows up in every other section too — every autonomous domain depends on semantically rich business data, every industry AI application depends on the Knowledge Graph, every proof point has a data quality thread underneath it. Use the knowledge base to surface those connections: "Which proof points in the narrative have an implicit dependency on BDC or data quality?"</p>
+            </div>
+            
+            <div class="callout">
+                <p class="callout-title">Competitive Positioning</p>
+                <p>The narrative frames the competitive fight as "most AI providers are building from the outside in" but doesn't name competitors. Our battlecards do. Query across both: "How does the Autonomous Enterprise 'inside-out' positioning map to specific weaknesses in Snowflake's and Databricks' agent strategies?"</p>
+            </div>
+            
+            <div class="callout">
+                <p class="callout-title">Gap Identification</p>
+                <p>Query the knowledge base for what's missing: "What customer evidence do we have for BDC's role in autonomous supply chain operations?" If the answer is thin, that tells you where to invest time before Sapphire.</p>
+            </div>
+            
+            <div class="callout">
+                <p class="callout-title">Draft Grounding</p>
+                <p>When you're writing a Sapphire deliverable, paste your draft into the project and ask: "Does this draft accurately reflect the approved messaging? Where does it deviate, and where could it be strengthened with evidence from the source documents?"</p>
+            </div>
+            
+            <hr>
+            
+            <h2>What to Add Next</h2>
+            
+            <p>The knowledge base improves as the corpus grows. Priority additions before Sapphire:</p>
+            
+            <ul>
+                <li>Reltio product documentation and integration roadmap materials (as they become available)</li>
+                <li>Updated BDC positioning that reflects the Reltio acquisition</li>
+                <li>Industry-specific proof points, especially for the seven priority Industry AI verticals (Oil & Gas, Agribusiness, Industrial Manufacturing, Life Sciences, Consumer Products, Retail, Professional Services) where they intersect with data</li>
+                <li>Any Sapphire-specific messaging guidance that comes out of the corporate marketing team between now and the event</li>
+                <li>Field feedback and customer objection data from sales calls related to BDC, data governance, or the competitive data platform landscape</li>
+            </ul>
+            
+            <hr>
+            
+            <p>The documents are available. The tools exist. The time between now and Sapphire is finite. Build the knowledge base, use it for every deliverable, and treat Sapphire prep as the proof point that this way of working actually produces better output.</p>
+        </div>
+    </article>
+    
+    <footer>
+        <p><strong>The Future of PMM</strong></p>
+        <p style="margin-top: 0.5rem;">SAP Data and Analytics Product Marketing</p>
+        <p style="margin-top: 1rem;"><a href="/">futureofpmm.com</a></p>
+    </footer>
+</body>
+</html>
