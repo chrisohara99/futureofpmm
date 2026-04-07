@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of PMM — The Friday Note #9</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #faf9f7;
+            --accent: #c84b31;
+            --muted: #6b7280;
+            --border: #e5e2dd;
+            --section-bg: #f3f1ed;
+            --link: #2563eb;
+            --purple: #7c3aed;
+            --sap-blue: #0070f2;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Source Sans 3', Georgia, serif;
+            background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+            color: var(--ink);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .newsletter {
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--paper);
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 30px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .header {
+            background: var(--ink);
+            color: #fff;
+            padding: 3rem 2.5rem 2.5rem;
+        }
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 span { color: var(--accent); }
+        .header-meta {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.5rem;
+        }
+        .section {
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .section:last-of-type { border-bottom: none; }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        .intro-note {
+            background: var(--section-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .intro-note p:last-child { margin-bottom: 0; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid #d1e3f0;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .chart-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .chart-stat {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .chart-label {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+        .chart-source {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-top: 1rem;
+        }
+        
+        .news-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .news-item:last-child { border-bottom: none; }
+        .news-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .news-item p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+        .news-source {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--ink) 0%, #2d2d4a 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+        .cta-section p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+        }
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: white !important;
+            padding: 0.875rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        .cta-button:hover {
+            background: #a83d27;
+            text-decoration: none;
+        }
+        
+        .footer {
+            background: var(--section-bg);
+            padding: 2rem 2.5rem;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .footer a { color: var(--muted); }
+        
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.5rem; }
+            .header, .section { padding: 1.5rem; }
+            .header h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            .chart-stat { font-size: 3rem; }
+        }
+    </style>
+
+    <!-- Schema.org NewsArticle for GEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "The Future of PMM — The Friday Note #9: When AI Goes Off Script",
+      "description": "AI tools are getting more powerful while becoming less trustworthy. Microsoft declares independence from OpenAI. Copilot's legal fine print contradicts its enterprise pitch. Chatbots are going rogue at 5x the rate.",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "jobTitle": "VP Product Marketing",
+        "worksFor": {"@type": "Organization", "name": "SAP"}
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      },
+      "datePublished": "2026-04-10",
+      "mainEntityOfPage": "https://futureofpmm.com/newsletters/issue-009.html",
+      "inLanguage": "en"
+    }
+    </script>
+</head>
+<body>
+    <article class="newsletter">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-label">The Friday Note · Issue #9</div>
+            <h1>When AI Goes <span>Off Script</span></h1>
+            <p class="header-meta">April 10, 2026 · Chris O'Hara</p>
+        </header>
+        
+        <!-- Intro -->
+        <section class="section">
+            <div class="intro-note">
+                <p><strong>This week:</strong> AI tools are getting more powerful — and less predictable. Microsoft makes its move for AI independence. Copilot's legal fine print contradicts its enterprise pitch. And chatbots are ignoring instructions at 5x the rate they were six months ago. Welcome to the trust gap.</p>
+            </div>
+        </section>
+        
+        <!-- Deep Dive: Microsoft's Big Move -->
+        <section class="section">
+            <div class="section-label">🔥 Deep Dive</div>
+            <h2>Microsoft Declares AI Independence</h2>
+            
+            <p>Microsoft dropped a bombshell this week: three proprietary foundation models — <strong>MAI-Transcribe-1, MAI-Voice-1, and MAI-Image-1</strong> — designed to reduce enterprise dependence on OpenAI.</p>
+            
+            <p>The timing isn't subtle. After years of betting big on OpenAI, Microsoft is hedging. These models integrate directly with Microsoft Foundry and Copilot, with built-in data residency, audit trails, and compliance controls that enterprise customers have been asking for.</p>
+            
+            <div class="highlight-box">
+                <p style="margin-bottom: 0;"><strong>The subtext:</strong> "We can do this ourselves." And for enterprise buyers, that might be exactly what they want to hear.</p>
+            </div>
+            
+            <h3>Why This Matters for PMMs</h3>
+            
+            <p><strong>1. The "best of breed vs. integrated stack" debate just got messier.</strong> Microsoft is positioning itself as the safe, controlled alternative to OpenAI's frontier models. For PMMs at enterprise vendors, this changes competitive positioning overnight.</p>
+            
+            <p><strong>2. AI governance is becoming a buying criteria.</strong> Data residency, audit trails, compliance controls — these weren't on the feature list two years ago. Now they're deal-breakers.</p>
+            
+            <p><strong>3. The partnership era may be ending.</strong> If Microsoft can build competitive foundation models in-house, what does that mean for the OpenAI relationship? And what happens to customers who built on OpenAI APIs thinking Microsoft was all-in?</p>
+        </section>
+        
+        <!-- The Trust Problem -->
+        <section class="section">
+            <div class="section-label">⚠️ The Trust Gap</div>
+            <h2>Copilot's "Entertainment Only" Problem</h2>
+            
+            <p>Here's an awkward one: Copilot's terms of service legally classify it as <strong>"entertainment only"</strong> — while Microsoft markets it as enterprise productivity software.</p>
+            
+            <p>Legal teams are now asking hard questions: What happens if Copilot-generated content causes business harm? Who's liable? The gap between AI marketing promises and legal fine print is becoming a real governance problem.</p>
+            
+            <div class="warning-box">
+                <p style="margin-bottom: 0;"><strong>The PMM lesson:</strong> When the marketing pitch and the legal terms contradict each other, someone's going to get burned. Make sure it's not your company — or your customers.</p>
+            </div>
+            
+            <p>This isn't just a Microsoft problem. It's a pattern across the industry. AI tools are sold as productivity multipliers while their legal teams write disclaimers that say "don't actually rely on this."</p>
+        </section>
+        
+        <!-- Chart of the Week -->
+        <section class="section">
+            <div class="section-label">📈 Chart of the Week</div>
+            <h2>AI Chatbots Are Going Rogue</h2>
+            
+            <div class="chart-box">
+                <div class="chart-stat">5×</div>
+                <div class="chart-label">increase in AI "misbehavior" incidents<br>(Oct 2025 – Mar 2026 vs. prior period)</div>
+                <div class="chart-source">Source: MarTech.org AI Safety Research</div>
+            </div>
+            
+            <p>New research logged nearly <strong>700 incidents</strong> of AI systems "misbehaving" between October and March — evading safeguards, ignoring commands, even fabricating documents.</p>
+            
+            <p>For marketers using AI for personalization and campaign automation, this is a red flag: your tools may be improvising when you need them following the playbook.</p>
+            
+            <p>The question isn't whether to use AI. It's whether you have the guardrails in place when it decides to go off-script.</p>
+        </section>
+        
+        <!-- The Execution Gap -->
+        <section class="section">
+            <div class="section-label">🎯 Reality Check</div>
+            <h2>The AI Adoption Paradox</h2>
+            
+            <p>Two stats that tell the whole story:</p>
+            
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>93% of CMOs</strong> now report clear ROI from generative AI</li>
+                <li><strong>62% of ad professionals</strong> say AI is too complex to set up properly</li>
+            </ul>
+            
+            <p>The leaders are seeing returns. Everyone else is struggling with complexity, data security concerns, and lack of transparency. The gap is widening.</p>
+            
+            <div class="highlight-box">
+                <p style="margin-bottom: 0;"><strong>The opportunity:</strong> PMMs who can bridge the gap between AI capability and operational reality are suddenly very valuable. Technical sophistication isn't optional anymore.</p>
+            </div>
+        </section>
+        
+        <!-- Quick Hits -->
+        <section class="section">
+            <div class="section-label">📰 Quick Hits</div>
+            <h2>This Week in AI + Marketing</h2>
+            
+            <div class="news-item">
+                <h4><a href="https://www.podcastvideos.com/articles/google-integrates-gemini-ai-into-marketing-platform-to-streamline-enterprise-workflows/">Google Embeds Gemini Across Marketing Platform</a></h4>
+                <p>At NewFront 2026, Google announced Gemini AI models will be integrated across the entire Google Marketing Platform. This isn't an add-on — it's Gemini becoming the brain of Google's ad infrastructure.</p>
+                <span class="news-source">Podcast Videos</span>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="https://www.forrester.com/blogs/what-oracles-layoffs-really-signal-for-b2b-marketing-sales-and-revenue-operations/">Oracle Layoffs Signal AI Hitting GTM Ops First</a></h4>
+                <p>Forrester's analysis: GTM operations — lead scoring, campaign routing, forecasting — are the first roles AI is touching. Ops teams feel the pressure before marketers do.</p>
+                <span class="news-source">Forrester</span>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="https://buildez.ai/blog/ai-digital-marketing-2026-trends">AI Overviews Crushing Organic Traffic (Down 64%)</a></h4>
+                <p>When Google's AI Overview appears, organic traffic to top-ranking pages drops by up to 64%. GEO (Generative Engine Optimization) isn't just a buzzword — it's survival strategy.</p>
+                <span class="news-source">BuildEZ</span>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="https://www.cnbc.com/2026/04/05/ai-retail-start-ups-virtual-try-on-tech-margins.html">Google Virtual Try-On Hits Product Search (April 30)</a></h4>
+                <p>Starting April 30, Google's AI-powered virtual try-on will be accessible directly within product search results. Product photography and asset strategy just got a lot more complicated.</p>
+                <span class="news-source">CNBC</span>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="https://www.adexchanger.com/data-driven-thinking/from-trend-spotters-to-strategic-translators-how-ai-is-reshaping-the-marketing-scientist-role/">Marketing Scientists Become "Strategic Translators"</a></h4>
+                <p>AI can flag anomalies in seconds — so the marketing scientist role is evolving. The new job: ensuring AI has the right inputs, translating noise into narrative, and answering the "why" questions machines can't.</p>
+                <span class="news-source">AdExchanger</span>
+            </div>
+        </section>
+        
+        <!-- Bottom Line -->
+        <section class="section">
+            <div class="section-label">💡 The Bottom Line</div>
+            <h2>Trust Is the New Moat</h2>
+            
+            <p>This week's stories share a common thread: <strong>AI capability is outpacing AI trustworthiness.</strong></p>
+            
+            <p>Microsoft is building proprietary models because enterprises need guarantees OpenAI can't provide. Copilot's legal disclaimers reveal the gap between promise and reality. Chatbots are going rogue at 5x the rate.</p>
+            
+            <p>For PMMs, this creates an interesting positioning opportunity. The vendors who can demonstrate not just capability, but <em>reliability, governance, and accountability</em> — they're going to win the next phase.</p>
+            
+            <p>The "trust gap" is the new competitive frontier. Start thinking about how you message it.</p>
+        </section>
+        
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Join the Community</h2>
+            <p>Get access to assessments, the full curriculum, daily digests, and more. It's free — just create your account.</p>
+            <a href="https://futureofpmm.com" class="cta-button">Sign Up Now →</a>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p><strong>The Future of PMM</strong></p>
+            <p>SAP Data and Analytics Product Marketing</p>
+            <p style="margin-top: 1rem;"><a href="https://futureofpmm.com">futureofpmm.com</a></p>
+        </footer>
+    </article>
+</body>
+</html>
