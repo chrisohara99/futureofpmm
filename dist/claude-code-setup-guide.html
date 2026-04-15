@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started with Claude Code at SAP | The Future of PMM</title>
+    <meta name="description" content="A step-by-step guide to installing and using Claude Code at SAP. Part of the CE³ Agentic AI Enablement program.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pmm-blue: #3b82f6;
+            --pmm-dark: #1e3a5f;
+            --sap-blue: #0070f2;
+            --green: #10b981;
+            --orange: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; }
+        nav > a:hover { color: var(--pmm-blue); background: #f3f4f6; }
+        @media (max-width: 768px) { .logo img { height: 70px; } nav { display: none; } }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #0070f2 0%, #1e3a5f 100%);
+            padding: 4rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .hero h1 { font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2; }
+        .hero p { font-size: 1.1rem; opacity: 0.9; }
+        
+        /* Content */
+        .content { max-width: 800px; margin: 0 auto; padding: 3rem 2rem; }
+        .content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--sap-blue);
+        }
+        .content h3 { font-size: 1.2rem; font-weight: 600; color: var(--pmm-dark); margin: 2rem 0 0.75rem; }
+        .content p { font-size: 1.05rem; color: #4b5563; margin-bottom: 1rem; }
+        .content ul, .content ol { margin: 1rem 0 1.5rem 1.5rem; color: #4b5563; }
+        .content li { margin-bottom: 0.5rem; }
+        .content code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .content pre {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        
+        /* Boxes */
+        .intro-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+        .intro-box p { margin: 0; }
+        
+        .tip-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--orange);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        .tip-box p { margin: 0; color: #92400e; }
+        
+        .warning-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        .warning-box p { margin: 0; color: #991b1b; }
+        
+        .success-box {
+            background: #ecfdf5;
+            border-left: 4px solid var(--green);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        .success-box p { margin: 0; color: #065f46; }
+        
+        /* Persona Cards */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .persona-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .persona-card h4 {
+            font-size: 1rem;
+            color: var(--pmm-dark);
+            margin: 0 0 0.5rem;
+        }
+        .persona-card p {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        .persona-badge {
+            display: inline-block;
+            background: var(--sap-blue);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Scenario Table */
+        .scenario-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .scenario-table th {
+            background: var(--pmm-dark);
+            color: white;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        .scenario-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        .scenario-table tr:hover { background: #f9fafb; }
+        .time-old { color: #dc2626; font-weight: 500; }
+        .time-new { color: #059669; font-weight: 600; }
+        
+        /* Steps */
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        .step-num {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--sap-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        .step-content h4 { font-size: 1rem; margin: 0 0 0.5rem; color: var(--pmm-dark); }
+        .step-content p { margin: 0; font-size: 0.95rem; color: #4b5563; }
+        
+        /* Footer */
+        footer { background: var(--pmm-dark); color: white; padding: 2rem; text-align: center; }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo"><img src="/assets/images/logo.svg" alt="The Future of PMM"></a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="ai-tools.html">AI Tools</a>
+                <a href="curriculum/">Curriculum</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="hero-badge">CE³ Agentic AI Enablement</span>
+            <h1>Getting Started with Claude Code at SAP</h1>
+            <p>A step-by-step guide to installing the agentic AI toolchain. One script installs everything you need on Windows or macOS.</p>
+        </div>
+    </section>
+    
+    <main class="content">
+        <div class="intro-box">
+            <p><strong>What is this?</strong> SAP's CE³ team has released the <strong>Claude Code Automated Installer Bundle</strong> — a one-click setup that installs Claude Code and Cline on your machine. This is part of SAP's broader Agentic AI Enablement program, designed to help everyone from business innovators to engineers work faster with AI.</p>
+        </div>
+        
+        <h2>Who Is This For?</h2>
+        
+        <p>The installer works for three personas — no matter your technical background:</p>
+        
+        <div class="persona-grid">
+            <div class="persona-card">
+                <span class="persona-badge">Business AI Innovator</span>
+                <h4>Process & Product Leaders</h4>
+                <p>Define value, shape MVPs. You don't code — but you can use AI to build decks, analyze feedback, draft proposals, and summarize meetings.</p>
+            </div>
+            <div class="persona-card">
+                <span class="persona-badge">Citizen Developer</span>
+                <h4>Domain Experts</h4>
+                <p>You know the process. Build simple automations, workflows, and dashboards without writing production code.</p>
+            </div>
+            <div class="persona-card">
+                <span class="persona-badge">AI Engineer</span>
+                <h4>Builders</h4>
+                <p>Ship code daily. Use the toolchain for faster development, automated testing, migrations, and code reviews.</p>
+            </div>
+        </div>
+        
+        <h2>What Can You Do With It?</h2>
+        
+        <p>Here are real scenarios from SAP teams — showing what used to take hours or days, now takes minutes:</p>
+        
+        <table class="scenario-table">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Before</th>
+                    <th>With AI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Build a status deck from emails, sprint data, and last week's slides</td>
+                    <td class="time-old">~1.5 hours</td>
+                    <td class="time-new">~10 min</td>
+                </tr>
+                <tr>
+                    <td>Analyze 3 Excel exports of customer feedback for themes</td>
+                    <td class="time-old">~3 hours</td>
+                    <td class="time-new">~15 min</td>
+                </tr>
+                <tr>
+                    <td>Draft an MVP proposal from strategy docs</td>
+                    <td class="time-old">~1 week</td>
+                    <td class="time-new">~1 day</td>
+                </tr>
+                <tr>
+                    <td>Compare 3 vendor proposals and write recommendation</td>
+                    <td class="time-old">~4 hours</td>
+                    <td class="time-new">~20 min</td>
+                </tr>
+                <tr>
+                    <td>Build an expense approval workflow (&gt;10K needs manager sign-off)</td>
+                    <td class="time-old">~2 days</td>
+                    <td class="time-new">~2 hours</td>
+                </tr>
+                <tr>
+                    <td>Set up automated Friday Slack summary of Jira sprint status</td>
+                    <td class="time-old">~1 day</td>
+                    <td class="time-new">~1 hour</td>
+                </tr>
+                <tr>
+                    <td>Migrate 30 CDS files from CAP v5 to v7 syntax</td>
+                    <td class="time-old">~1 day</td>
+                    <td class="time-new">~1 hour</td>
+                </tr>
+                <tr>
+                    <td>Review a colleague's 800-line PR across 15 files</td>
+                    <td class="time-old">~2 hours</td>
+                    <td class="time-new">~20 min</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="tip-box">
+            <p><strong>💡 Key insight:</strong> The pattern isn't "AI writes everything." It's: drop your files, describe what you want, review the output. You stay in control — AI handles the grunt work.</p>
+        </div>
+        
+        <h2>How to Install</h2>
+        
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h4>Access the CE³ Enablement Portal</h4>
+                <p>Go to the CE³ Agentic AI Enablement Products page (internal SAP link). Find the <strong>"Claude Code Automated Installer Bundle"</strong> card.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h4>Download the Installer for Your OS</h4>
+                <p>Choose Windows or macOS. The bundle includes everything: Claude Code, Cline, and required dependencies.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h4>Run the Script</h4>
+                <p><strong>Windows:</strong> Open PowerShell as Administrator, navigate to the download folder, run the installer script.</p>
+                <p><strong>macOS:</strong> Open Terminal, navigate to the download folder, run <code>chmod +x install.sh && ./install.sh</code></p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h4>Authenticate</h4>
+                <p>Follow the prompts to sign in with your SAP credentials. This connects you to the licensed API endpoints.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <h4>Start Using It</h4>
+                <p>Open VS Code or your terminal. Try a simple task: "Summarize this document" or "Compare these two files."</p>
+            </div>
+        </div>
+        
+        <div class="success-box">
+            <p><strong>✅ That's it.</strong> One script installs everything. No manual dependency management, no API key configuration, no waiting for IT tickets.</p>
+        </div>
+        
+        <h2>What's Coming Next</h2>
+        
+        <p>The Claude Code installer is just the first module. Here's the full CE³ Agentic AI roadmap:</p>
+        
+        <ul>
+            <li><strong>April:</strong> MCP Server Implementation Reference Guide</li>
+            <li><strong>After April:</strong> Agentic Skills Repository, Skills for Teams/Outlook data</li>
+            <li><strong>July:</strong> AI Testing Foundations for QA Professionals</li>
+            <li><strong>August:</strong> Testing Agentic Systems with Tool Chains</li>
+        </ul>
+        
+        <h2>Questions?</h2>
+        
+        <p>Check the CE³ Enablement Portal for documentation, FAQs, and support channels. The team is actively collecting feedback to improve the installer and add new capabilities.</p>
+        
+        <p><em>Last updated: April 2026</em></p>
+    </main>
+    
+    <footer>
+        <p><strong>The Future of PMM</strong> · SAP Data and Analytics Product Marketing</p>
+    </footer>
+</body>
+</html>

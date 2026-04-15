@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&A PMM Weekly Update #10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #faf9f7;
+            --accent: #c84b31;
+            --muted: #6b7280;
+            --border: #e5e2dd;
+            --section-bg: #f3f1ed;
+            --link: #2563eb;
+            --green: #10b981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Source Sans 3', Georgia, serif;
+            background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+            color: var(--ink);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .newsletter {
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--paper);
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 30px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .header {
+            background: var(--ink);
+            color: #fff;
+            padding: 3rem 2.5rem 2.5rem;
+        }
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 span { color: var(--accent); }
+        .header-meta {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.5rem;
+        }
+        .section {
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .section:last-of-type { border-bottom: none; }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        .intro-note {
+            background: var(--section-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .intro-note p:last-child { margin-bottom: 0; }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid #d1e3f0;
+        }
+        
+        .lab-box {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .issue-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .news-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .news-item:last-child { border-bottom: none; }
+        .news-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .news-item p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--ink) 0%, #2d2d4a 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+        .cta-section p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+        }
+        .cta-button {
+            display: inline-block;
+            background: var(--green);
+            color: white !important;
+            padding: 0.875rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        
+        .footer {
+            background: var(--section-bg);
+            padding: 2rem 2.5rem;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 600px) {
+            body { padding: 1rem 0.5rem; }
+            .header, .section { padding: 1.5rem; }
+            .header h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <article class="newsletter">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-label">D&A PMM Weekly Update · Issue #10</div>
+            <h1>From the <span>Lab</span></h1>
+            <p class="header-meta">April 16, 2026 · Chris O'Hara</p>
+        </header>
+        
+        <!-- Intro -->
+        <section class="section">
+            <div class="intro-note">
+                <p><strong>This week:</strong> Our Google Antigravity beta test hits a friction point, CE³ launches the Agentic AI Enablement portal with a one-click installer, and this week's headlines worth your attention.</p>
+            </div>
+        </section>
+        
+        <!-- Google Antigravity Section -->
+        <section class="section">
+            <div class="section-label">🧪 From the Lab</div>
+            <h2>Our Google Antigravity Beta Test</h2>
+            
+            <p>SAP is one of the early enterprise testers of <strong>Google Antigravity</strong> — Google's new "agent-first" IDE that launched earlier this year. Unlike traditional coding assistants that autocomplete lines, Antigravity deploys autonomous agents that can plan, code, execute commands, and even browse the web to help you build.</p>
+            
+            <p>Think of it as a "Mission Control" for AI-powered development. It's powered by Gemini 3 and has hit 6% developer adoption in just two months — one of the fastest-growing AI dev tools on the market.</p>
+            
+            <p>I'm our team's representative on the SAP beta evaluation, and this week we hit our first real friction point.</p>
+            
+            <div class="lab-box">
+                <h3>🔧 What is Google Antigravity?</h3>
+                <p style="margin-bottom: 0;">An "agent-first" IDE that treats AI not as a sidebar assistant, but as an autonomous actor capable of planning, executing, and verifying complex engineering tasks. It can run commands, browse documentation, and chain multi-step workflows with minimal human intervention.</p>
+            </div>
+            
+            <h3>The Issue: Sandbox Mode Kills Network Access</h3>
+            
+            <p>When running Antigravity on Windows (via WSL2), the tool's "strict mode" — which Google recommends for enterprise security — enforces a sandbox that blocks <em>all</em> network access. Not just corporate network. All network. You can't even run <code>pip install</code>.</p>
+            
+            <div class="issue-box">
+                <p style="margin: 0;"><strong>The problem:</strong> Basic prompts work fine. But the moment Antigravity tries to execute actual code or commands, it fails. For a tool designed to autonomously build and deploy, this is a dealbreaker.</p>
+            </div>
+            
+            <h3>The Kicker: Mac Users Have Options, Windows Users Don't</h3>
+            
+            <p>Mac users see settings to toggle "allowed network for sandbox." Windows users don't see those options at all. Google is investigating whether this is a Windows-specific limitation or a configuration gap.</p>
+            
+            <h3>What This Means</h3>
+            
+            <p>Enterprise AI tooling is moving fast, but the security/usability tradeoff is real. Strict sandboxing makes sense for compliance — but if it makes the tool unusable, what's the point?</p>
+            
+            <p>We're working with Google to find a middle ground that works for SAP's security posture without neutering the core functionality.</p>
+            
+            <p><strong>Stay tuned for updates.</strong></p>
+        </section>
+        
+        <!-- CE³ Enablement Section -->
+        <section class="section">
+            <div class="section-label">🎓 New This Week</div>
+            <h2>CE³ Agentic AI Enablement Is Live</h2>
+            
+            <p>Speaking of tooling — CE³ just launched their <strong>Agentic AI Enablement Products</strong> portal. This is the official SAP program to get our teams up and running with AI coding tools.</p>
+            
+            <div class="highlight-box">
+                <h3 style="margin-top: 0;">📦 Available Now: Claude Code Automated Installer</h3>
+                <p style="margin-bottom: 0;">One script installs Claude Code + Cline on Windows or macOS. No IT tickets, no manual dependency management. Works for three personas: Business AI Innovators, Citizen Developers, and AI Engineers.</p>
+            </div>
+            
+            <p>The installer comes with a "Why Use It?" guide showing <strong>24 real SAP scenarios</strong> with before/after time comparisons. A few highlights:</p>
+            
+            <ul style="margin: 1rem 0 1.5rem 1.5rem;">
+                <li><strong>Build a status deck from emails + sprint data:</strong> 1.5 hours → 10 minutes</li>
+                <li><strong>Analyze 3 Excel exports for themes:</strong> 3 hours → 15 minutes</li>
+                <li><strong>Draft an MVP proposal:</strong> 1 week → 1 day</li>
+                <li><strong>Migrate 30 CDS files from CAP v5 to v7:</strong> 1 day → 1 hour</li>
+            </ul>
+            
+            <p>I've written up a <a href="https://futureofpmm.com/claude-code-setup-guide.html">step-by-step guide</a> for the team.</p>
+            
+            <h3>What's Coming</h3>
+            <ul style="margin: 1rem 0 1rem 1.5rem;">
+                <li><strong>April:</strong> MCP Server Implementation Guide</li>
+                <li><strong>After April:</strong> Agentic Skills Repository, Teams/Outlook integration</li>
+                <li><strong>July:</strong> AI Testing Foundations for QA</li>
+                <li><strong>August:</strong> Testing Agentic Systems with Tool Chains</li>
+            </ul>
+            
+            <p>This is the infrastructure layer for what we've been building toward. If you haven't set up the toolchain yet, now's the time.</p>
+        </section>
+        
+        <!-- This Week's Headlines -->
+        <section class="section">
+            <div class="section-label">📰 This Week in AI + PMM</div>
+            <h2>Headlines Worth Your Attention</h2>
+            
+            <div class="news-item">
+                <h4><a href="#">Canva Acquires Simtheory + Ortto</a></h4>
+                <p>Dual acquisition positions Canva as "AI platform with design at its core." Simtheory brings autonomous agents; Ortto adds CDP + multi-channel automation. The full-stack marketing platform play is here.</p>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="#">Claude Briefly Overtakes ChatGPT in Downloads</a></h4>
+                <p>Anthropic hit #1 in the App Store. Enterprise momentum is finally spilling into consumer mindshare.</p>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="#">Adobe CEO Steps Down After 18 Years</a></h4>
+                <p>Shantanu Narayen exits. The new CEO's top priority: "prepping for the age of agents."</p>
+            </div>
+            
+            <div class="news-item">
+                <h4><a href="#">HubSpot's Breeze AI Goes Outcome-Based: $0.50/Resolution</a></h4>
+                <p>The death of seat-based licensing? AI agents now priced on results, not users.</p>
+            </div>
+            
+            <!-- Add more news items as needed -->
+        </section>
+        
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Join the Site</h2>
+            <p>The AI Tools Guide, daily digests, assessments, and the full curriculum are all on futureofpmm.com. Free to sign up — takes 30 seconds.</p>
+            <a href="https://futureofpmm.com" class="cta-button">Create Your Account →</a>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p><strong>The Future of PMM</strong></p>
+            <p>SAP Data and Analytics Product Marketing</p>
+            <p style="margin-top: 1rem;"><a href="https://futureofpmm.com">futureofpmm.com</a></p>
+        </footer>
+    </article>
+</body>
+</html>
