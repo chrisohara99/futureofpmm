@@ -16,14 +16,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User of the Week: Lauren Cochrane — Building a Competitive Intelligence Engine at SAP Concur | Future of PMM</title>
-    <meta name="description" content="Meet Lauren Cochrane, who led the evaluation and rollout of Crayon and Clozd at SAP Concur — creating a centralized competitive intelligence engine for sales, marketing, and product teams.">
+    <meta name="description" content="Meet Lauren Cochrane, who is leading the rollout of Crayon and piloting Clozd at SAP Concur — creating a centralized competitive intelligence engine for sales, marketing, and product teams.">
     <!-- Schema.org Article markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "User of the Week: Lauren Cochrane — Building a Competitive Intelligence Engine at SAP Concur",
-      "description": "Meet Lauren Cochrane, who led the evaluation and rollout of Crayon and Clozd at SAP Concur — creating a centralized competitive intelligence engine for sales, marketing, and product teams.",
+      "description": "Meet Lauren Cochrane, who is leading the rollout of Crayon and piloting Clozd at SAP Concur — creating a centralized competitive intelligence engine for sales, marketing, and product teams.",
       "author": {
         "@type": "Person",
         "name": "Chris O'Hara",
@@ -318,24 +318,128 @@
             color: var(--accent);
             text-decoration: none;
         }
-        nav {
+        /* Header - matching site style */
+        header {
             background: #fff;
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        nav a {
-            color: var(--muted);
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            margin-right: 1.5rem;
         }
-        nav a:hover {
+        .logo img {
+            height: 160px;
+            width: auto;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        nav > a, .nav-dropdown > .nav-trigger {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger {
+            color: var(--accent);
+            background: #f3f4f6;
+        }
+        .nav-dropdown { position: relative; }
+        .nav-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+        .nav-trigger::after {
+            content: '';
+            border: solid #9ca3af;
+            border-width: 0 1.5px 1.5px 0;
+            padding: 2.5px;
+            transform: rotate(45deg);
+            margin-top: -2px;
+            transition: transform 0.2s;
+        }
+        .nav-dropdown:hover .nav-trigger::after {
+            transform: rotate(-135deg);
+            margin-top: 2px;
+        }
+        .nav-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            min-width: 200px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+        .nav-dropdown:hover .nav-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .nav-menu a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #374151;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+        .nav-menu a:hover {
+            background: #f3f4f6;
             color: var(--accent);
         }
-        nav a.brand {
-            font-weight: 600;
-            color: var(--ink);
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 28px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background: var(--ink);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            .logo img { height: 70px; }
+            nav { display: none; }
         }
         .outcome-grid {
             display: grid;
@@ -373,23 +477,44 @@
     </style>
 </head>
 <body>
-    <nav>
-        <a href="/" class="brand">Future of PMM</a>
-        <a href="/blog.html">Articles</a>
-        <a href="/ai-tools.html">AI Tools</a>
-        <a href="/about.html">About</a>
-        <a href="/newsletters.html">Newsletter</a>
-    </nav>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="The Future of PMM"></a>
+            <nav id="main-nav">
+                <a href="/">Home</a>
+                <div class="nav-dropdown">
+                    <button class="nav-trigger">Learn</button>
+                    <div class="nav-menu">
+                        <a href="/curriculum/">📚 Curriculum</a>
+                        <a href="/blog.html">📝 Articles</a>
+                        <a href="/where-do-you-sit-article.html">🧠 Assessments</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-trigger">Resources</button>
+                    <div class="nav-menu">
+                        <a href="/digests/">📰 Daily Digest</a>
+                        <a href="/competitive-intel.html">🎯 Competitive Intel</a>
+                        <a href="/ai-tools.html">🛠️ AI Tools Guide</a>
+                    </div>
+                </div>
+                <a href="/newsletters.html">Newsletter</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
 
     <div class="header">
         <div class="header-badge">⭐ User of the Week</div>
         <h1>Building a Competitive Intelligence Engine at SAP Concur</h1>
-        <p class="subtitle">Lauren Cochrane led the evaluation and rollout of Crayon and Clozd — creating a centralized competitive intelligence and win-loss system.</p>
+        <p class="subtitle">Lauren Cochrane is leading the rollout of Crayon and piloting Clozd — creating a centralized competitive intelligence and win-loss system.</p>
     </div>
     
     <div class="container">
         <div class="meta">
-            By Chris O'Hara · April 15, 2026 · 6 min read
+            By Chris O'Hara · April 15, 2026 · 12 min read
         </div>
         
         <p class="lead">
@@ -401,11 +526,11 @@
         </figure>
         
         <p>
-            Lauren is leading the evaluation and rollout of two vendors at SAP Concur: <strong>Crayon</strong> for competitive intelligence and <strong>Clozd</strong> for win-loss analysis. The goal? A centralized competitive intelligence engine that serves sales, marketing, and product teams — turning fragmented insights into systematic advantage.
+            Lauren is leading the rollout of <strong>Crayon</strong> for competitive intelligence and piloting <strong>Clozd</strong> for win-loss analysis at SAP Concur. The goal? An AI-driven centralized competitive intelligence engine that serves sales, marketing, and product teams — turning fragmented insights into systematic and scalable advantage.
         </p>
         
         <p>
-            The work is ongoing, and Lauren is navigating the realities of enterprise vendor onboarding in real-time. When I asked her how bringing on new vendors at SAP was going, her answer was refreshingly honest: <strong>"Not great."</strong>
+            The work is ongoing, and Lauren is navigating the realities of enterprise vendor onboarding in real-time — a process that anyone who's worked in large organizations knows can be challenging.
         </p>
         
         <p>
@@ -429,6 +554,10 @@
         
         <p>
             Together, these tools will give SAP Concur two complementary views: <strong>what competitors are doing</strong> (Crayon) and <strong>what buyers actually think</strong> (Clozd). The combination is powerful — competitive intelligence grounded in real deal outcomes.
+        </p>
+        
+        <p>
+            <em>Note: Clozd is currently being piloted with procurement approval for this year. Later this year, CMI will open an RFP to evaluate the current win-loss program.</em>
         </p>
         
         <h2>The Vision: What Success Looks Like</h2>
@@ -468,6 +597,98 @@
             This is the right way to think about competitive intelligence tools: not as a PMM silo, but as infrastructure that serves the entire go-to-market engine.
         </p>
         
+        <h2>The Engine in Action: From Signals to Field Enablement</h2>
+        
+        <p>
+            What does this look like in practice? Lauren recently presented to the SAP Concur sales community, showing how the "Compete Insights Engine" turns raw market signals into actionable field enablement. The framework makes the value chain concrete:
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); border-radius: 12px; padding: 2rem; margin: 2rem 0;">
+            <h4 style="font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--accent); margin-bottom: 1.5rem; text-align: center;">🔄 Compete Insights Engine — Signal to Action</h4>
+            <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center;">
+                <div style="background: white; border-radius: 8px; padding: 1rem;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 0.5rem; text-transform: uppercase;">Inputs</p>
+                    <ul style="margin: 0 0 0 1rem; font-size: 0.9rem; line-height: 1.6;">
+                        <li><strong>Salesforce Deal Data</strong> — what's happening</li>
+                        <li><strong>Voice of Field</strong> — seller perspective</li>
+                        <li><strong>Voice of Buyer</strong> — buyer truth (via Clozd)</li>
+                    </ul>
+                </div>
+                <div style="font-size: 1.5rem; color: var(--accent);">→</div>
+                <div style="background: white; border-radius: 8px; padding: 1rem;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 0.5rem; text-transform: uppercase;">Outputs</p>
+                    <ul style="margin: 0 0 0 1rem; font-size: 0.9rem; line-height: 1.6;">
+                        <li><strong>Insights for Sales</strong> — battlecards, alerts</li>
+                        <li><strong>Product Priorities</strong> — roadmap influence</li>
+                        <li><strong>Positioning & Messaging</strong> — marketing fuel</li>
+                        <li><strong>Leadership Influence</strong> — strategic decisions</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; margin: 1rem 0 0 0; font-size: 0.85rem; color: var(--muted);">Powered by Crayon++ with Clozd integration</p>
+        </div>
+        
+        <p>
+            The outputs aren't theoretical — they're already being produced. Here's the content matrix being built by the Compete team in partnership with Marketing:
+        </p>
+        
+        <div style="overflow-x: auto; margin: 1.5rem 0;">
+            <table style="width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 0.85rem;">
+                <thead>
+                    <tr style="background: var(--accent-light);">
+                        <th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid var(--accent);">Asset Type</th>
+                        <th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid var(--accent);">Status</th>
+                        <th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid var(--accent);">Competitors Covered</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>Battlecards</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">✅ Live</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">Navan, Coupa, Emburse, Ramp, Oracle, Workday</td>
+                    </tr>
+                    <tr style="background: #f9fafb;">
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>Head-to-Head Blogs</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">✅ Live</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">Navan, Coupa, Oracle</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>Head-to-Head Landing Pages</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">✅ Live</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">Expensify, Coupa, Navan, Workday, Ramp, Oracle</td>
+                    </tr>
+                    <tr style="background: #f9fafb;">
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>BOFU eBooks</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">✅ Navan live, more coming</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">Navan + expansion planned</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>Displacement Guides</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">🔜 Coming</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">Navan, Coupa, Workday, Oracle, Emburse, Ramp</td>
+                    </tr>
+                    <tr style="background: #f9fafb;">
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>Win-Loss QuickViews</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">✅ Live (US)</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">All strategic competitors</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);"><strong>Compete Alerts</strong></td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">✅ Live</td>
+                        <td style="padding: 0.6rem; border-bottom: 1px solid var(--border);">Real-time via Crayon</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p>
+            This is what "competitive intelligence as infrastructure" looks like: a systematic content engine that produces battlecards, landing pages, eBooks, and displacement guides — all grounded in deal data and buyer feedback. The content lives in a Highspot hub ("Competitive Takedown Hub") so sales can access everything in context.
+        </p>
+        
+        <p>
+            The competitors getting the most attention? <strong>Emburse, Ramp, Navan, and Oracle</strong> — the players that are "louder, bolder, and increasingly naming SAP directly," as Lauren put it to the sales team. That's the market reality driving the investment.
+        </p>
+        
         <h2>The SAP Vendor Reality</h2>
         
         <p>
@@ -478,17 +699,137 @@
             <h4>⚠️ Bringing New Vendors into SAP: The Reality</h4>
             <ul>
                 <li><strong>Procurement complexity</strong> — expect multiple rounds of review</li>
-                <li><strong>Security and compliance</strong> — particularly for tools handling competitive data</li>
+                <li><strong>Security and compliance</strong> — particularly for any data and AI tools</li>
                 <li><strong>Integration requirements</strong> — connecting to existing systems takes time</li>
                 <li><strong>Change management</strong> — getting teams to actually adopt new tools</li>
             </ul>
         </div>
         
         <p>
-            The "not great" experience isn't unique to these vendors — it's the reality of enterprise procurement at scale. What matters is whether the payoff justifies the friction. For Lauren's team, it clearly did.
+            The complexity isn't unique to these vendors — it's the reality of enterprise procurement at scale. What matters is whether the payoff justifies the effort. For Lauren's team, it clearly will.
         </p>
         
-        <!-- PLACEHOLDER: Add evaluation criteria section once deck is reviewed -->
+        <h2>The Current State: What They're Replacing</h2>
+        
+        <p>
+            Lauren's evaluation didn't happen in a vacuum. The Concur Compete team was already using tools that weren't meeting expectations — and lacked the automation and AI capabilities needed to scale. Here's what they were working with:
+        </p>
+        
+        <div class="problem-box">
+            <h4>🔴 Valona (Competitive News Tracking) — Pain Points</h4>
+            <ul>
+                <li><strong>Restrictive commercial model:</strong> Commercial model restricts the number of competitors tracked — research platform and AI agents additional cost</li>
+                <li><strong>Manual-heavy processes:</strong> Platform reliant on manual processes, not automated enough, with limited use cases</li>
+                <li><strong>Narrow content focus:</strong> Coverage limited to news only — no broader competitive intelligence</li>
+            </ul>
+        </div>
+        
+        <div class="problem-box">
+            <h4>🔴 Anova (Win-Loss) — Pain Points</h4>
+            <ul>
+                <li><strong>Falling short of expectations:</strong> Program not delivering the insights needed</li>
+                <li><strong>Lack of automation:</strong> Manual processes that don't scale</li>
+                <li><strong>Missing AI capabilities:</strong> No modern AI-powered analysis</li>
+                <li><strong>No interview recordings:</strong> Interviews aren't recorded, limiting ability to revisit and extract additional insights</li>
+                <li><strong>Limited global expertise:</strong> Lack of international experience and reach for global win-loss programs</li>
+            </ul>
+        </div>
+        
+        <p>
+            The pattern is clear: manual processes, limited coverage, outdated content cycles, and lack of integration or real-time insights. This is the reality at many enterprise compete teams — and why Lauren's evaluation matters beyond just SAP Concur.
+        </p>
+        
+        <h2>The Evaluation: Why Crayon + Clozd Won</h2>
+        
+        <p>
+            Lauren evaluated three primary vendors: <strong>Crayon</strong>, <strong>Clozd</strong>, and <strong>Klue</strong> (which offers both CI and win-loss in one platform). Here's how they stacked up:
+        </p>
+        
+        <h3>🖍️ Crayon — Recommended for Competitive Intelligence</h3>
+        
+        <div class="solution-box">
+            <h4>✅ Why Crayon Won</h4>
+            <ul>
+                <li><strong>AI-Powered Research Agent:</strong> Modern AI that allows users to ask specific questions and receive immediate, tailored insights</li>
+                <li><strong>Cost-Effective Pricing:</strong> Based on number of tracked competitors, not user count — more scalable</li>
+                <li><strong>Strong Integrations:</strong> Seamless connections with CRM, Teams, Clozd, and MCP</li>
+                <li><strong>Consultative Account Management:</strong> High-touch support model</li>
+            </ul>
+        </div>
+        
+        <h3>🎯 Clozd — Recommended for Win-Loss</h3>
+        
+        <div class="solution-box">
+            <h4>✅ Why Clozd Won</h4>
+            <ul>
+                <li><strong>Cost-Efficient Interview Model:</strong> Commercial structure allows higher volume of interviews at lower cost, with flexible timing</li>
+                <li><strong>Native Multilingual Capabilities:</strong> Non-English interviews conducted by trained Clozd employees — no external translators needed</li>
+                <li><strong>Global Platform Access Controls:</strong> Role-based access for compliance with data privacy regulations</li>
+                <li><strong>Robust Integrations:</strong> Seamless Salesforce and Crayon integration for data flow</li>
+                <li><strong>Automated Outreach:</strong> Highly customizable workflows streamline scheduling and follow-ups at scale</li>
+                <li><strong>Exceptional Account Experience:</strong> Strong marks from industry professionals for high-touch engagement</li>
+            </ul>
+        </div>
+        
+        <h3>🔄 Klue — Why We Chose Differently</h3>
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+            <h4 style="font-family: 'Inter', sans-serif; font-size: 1rem; color: #475569; margin-bottom: 0.75rem;">Considerations That Informed Our Decision</h4>
+            <ul style="margin: 0 0 0 1.25rem; color: #475569;">
+                <li><strong>Pricing model:</strong> Based on 3,000 provisioned users — different scalability tradeoffs</li>
+                <li><strong>No interview carryovers:</strong> Unused interviews don't roll over</li>
+                <li><strong>+$500 per non-English interview:</strong> Higher surcharge for global programs</li>
+                <li><strong>All-in-one vs. best-of-breed:</strong> We decided the specialist approach better fit our needs</li>
+            </ul>
+        </div>
+        
+        <p>
+            The lesson here: <strong>best-of-breed often beats all-in-one</strong>. Crayon and Clozd each excel at their core function, and the integration between them (Clozd has native Crayon integration) creates a more powerful combined solution than a single platform trying to do both.
+        </p>
+        
+        <h2>Pricing Transparency</h2>
+        
+        <p>
+            One of the most valuable aspects of Lauren's evaluation is the pricing transparency. Here's how the costs compare:
+        </p>
+        
+        <div style="overflow-x: auto; margin: 1.5rem 0;">
+            <table style="width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 0.9rem;">
+                <thead>
+                    <tr style="background: var(--accent-light);">
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--accent);">Vendor</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--accent);">Category</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--accent);">Pricing Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);"><strong>Valona</strong> (current)</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Competitive Intelligence</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Based on # of competitors</td>
+                    </tr>
+                    <tr style="background: #f0fdf4;">
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);"><strong>Crayon</strong> ✅</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Competitive Intelligence</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Based on # of PRO competitors (10 Pro + unlimited Standard); unlimited users, battlecards, newsletters, AI queries, integrations</td>
+                    </tr>
+                    <tr style="background: #f0fdf4;">
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);"><strong>Clozd</strong> ✅</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Win-Loss</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Based on 20 annual interviews; +$300/non-English interview (Spanish, Portuguese, German, French, Italian, Korean, Japanese)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);"><strong>Klue</strong></td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">CI + Win-Loss</td>
+                        <td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">Based on 3,000 provisioned users; no interview carryovers; +$500/non-English interview</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p>
+            The key insight: <strong>Crayon's unlimited user model</strong> scales better for large organizations, and <strong>Clozd's native multilingual support</strong> ($300 vs. $500 for non-English) makes global win-loss programs more affordable.
+        </p>
         
         <h2>Early Lessons for the Broader SAP PMM Community</h2>
         
@@ -549,7 +890,7 @@
         <div class="cta-box">
             <h3>Are You Building Something Similar?</h3>
             <p>We want to hear from PMM teams using AI or new tools to transform their work. Share your story and you could be our next User of the Week.</p>
-            <a href="mailto:chris@futureofpmm.com">Submit Your Story →</a>
+            <a href="mailto:christopher.ohara@sap.com">Submit Your Story →</a>
         </div>
         
         <p>
