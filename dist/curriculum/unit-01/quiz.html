@@ -329,20 +329,99 @@
             font-size: 0.9rem;
         }
         
-        .match-arrow { color: #999; font-size: 1.5rem; }
-        
-        .match-select {
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--light-gray);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: white;
-            cursor: pointer;
+        /* Funnel Diagram */
+        .funnel-container {
+            margin-top: 1.5rem;
         }
         
-        .match-select:focus { border-color: var(--sap-blue); outline: none; }
-        .match-select.correct { border-color: var(--green); background: #e8f5e9; }
-        .match-select.incorrect { border-color: var(--red); background: #ffebee; }
+        .funnel-stages {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .funnel-stage {
+            flex: 1;
+            min-width: 120px;
+            background: linear-gradient(180deg, #f0f4f8 0%, #e4e8ec 100%);
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .funnel-stage::after {
+            content: '▶';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ccc;
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+        
+        .funnel-stage:last-child::after { display: none; }
+        
+        .funnel-stage:hover {
+            border-color: var(--sap-blue);
+            background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+        
+        .funnel-stage.active {
+            border-color: var(--sap-orange);
+            background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%);
+        }
+        
+        .funnel-stage-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+        }
+        
+        .funnel-stage-num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+            opacity: 0.3;
+            margin-bottom: 0.5rem;
+        }
+        
+        .funnel-stage-items {
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .funnel-stage-items .sort-item {
+            font-size: 0.75rem;
+            padding: 0.35rem 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .funnel-stages {
+                flex-direction: column;
+            }
+            .funnel-stage {
+                min-width: auto;
+            }
+            .funnel-stage::after {
+                content: '▼';
+                right: 50%;
+                top: auto;
+                bottom: -12px;
+                transform: translateX(50%);
+            }
+        }
         
         /* Submit & Results */
         .submit-section { text-align: center; margin-top: 2rem; }
@@ -582,84 +661,60 @@
             <div class="feedback-box" id="feedback3"></div>
         </div>
         
-        <!-- Exercise 4: Funnel Matching -->
+        <!-- Exercise 4: Funnel Mapping -->
         <div class="exercise" id="exercise4">
             <div class="exercise-header">
                 <div>
                     <div class="exercise-number">Exercise 4 of 4</div>
-                    <div class="exercise-title">Funnel Stage Matching</div>
+                    <div class="exercise-title">Map Activities to the Funnel</div>
                 </div>
                 <div class="exercise-points">25 points</div>
             </div>
-            <p class="exercise-instructions">Match each activity to its PRIMARY funnel stage.</p>
+            <p class="exercise-instructions">Place each PMM activity into its PRIMARY funnel stage. Tap an activity, then tap the stage where it belongs.</p>
             
-            <div class="match-container">
-                <div class="match-row">
-                    <div class="match-activity">Thought Leadership</div>
-                    <div class="match-arrow">→</div>
-                    <select class="match-select" data-answer="awareness" id="match1">
-                        <option value="">Select...</option>
-                        <option value="awareness">Awareness</option>
-                        <option value="consideration">Consideration</option>
-                        <option value="evaluation">Evaluation</option>
-                        <option value="commercialization">Commercialization</option>
-                        <option value="decision">Decision</option>
-                        <option value="adoption">Adoption</option>
-                    </select>
-                </div>
-                <div class="match-row">
-                    <div class="match-activity">Competitive Differentiation</div>
-                    <div class="match-arrow">→</div>
-                    <select class="match-select" data-answer="consideration" id="match2">
-                        <option value="">Select...</option>
-                        <option value="awareness">Awareness</option>
-                        <option value="consideration">Consideration</option>
-                        <option value="evaluation">Evaluation</option>
-                        <option value="commercialization">Commercialization</option>
-                        <option value="decision">Decision</option>
-                        <option value="adoption">Adoption</option>
-                    </select>
-                </div>
-                <div class="match-row">
-                    <div class="match-activity">Sales Enablement</div>
-                    <div class="match-arrow">→</div>
-                    <select class="match-select" data-answer="evaluation" id="match3">
-                        <option value="">Select...</option>
-                        <option value="awareness">Awareness</option>
-                        <option value="consideration">Consideration</option>
-                        <option value="evaluation">Evaluation</option>
-                        <option value="commercialization">Commercialization</option>
-                        <option value="decision">Decision</option>
-                        <option value="adoption">Adoption</option>
-                    </select>
-                </div>
-                <div class="match-row">
-                    <div class="match-activity">ROI Modeling</div>
-                    <div class="match-arrow">→</div>
-                    <select class="match-select" data-answer="commercialization" id="match4">
-                        <option value="">Select...</option>
-                        <option value="awareness">Awareness</option>
-                        <option value="consideration">Consideration</option>
-                        <option value="evaluation">Evaluation</option>
-                        <option value="commercialization">Commercialization</option>
-                        <option value="decision">Decision</option>
-                        <option value="adoption">Adoption</option>
-                    </select>
-                </div>
-                <div class="match-row">
-                    <div class="match-activity">Customer Marketing</div>
-                    <div class="match-arrow">→</div>
-                    <select class="match-select" data-answer="adoption" id="match5">
-                        <option value="">Select...</option>
-                        <option value="awareness">Awareness</option>
-                        <option value="consideration">Consideration</option>
-                        <option value="evaluation">Evaluation</option>
-                        <option value="commercialization">Commercialization</option>
-                        <option value="decision">Decision</option>
-                        <option value="adoption">Adoption</option>
-                    </select>
+            <div class="sort-items" id="items4">
+                <div class="sort-item" data-answer="awareness" data-id="f1">Thought Leadership</div>
+                <div class="sort-item" data-answer="consideration" data-id="f2">Competitive Positioning</div>
+                <div class="sort-item" data-answer="evaluation" data-id="f3">Sales Enablement</div>
+                <div class="sort-item" data-answer="commercial" data-id="f4">ROI Modeling</div>
+                <div class="sort-item" data-answer="adoption" data-id="f5">Customer Marketing</div>
+            </div>
+            
+            <div class="funnel-container" id="zones4">
+                <div class="funnel-stages">
+                    <div class="funnel-stage sort-zone" data-zone="awareness">
+                        <div class="funnel-stage-num">1</div>
+                        <div class="funnel-stage-name">Awareness</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="consideration">
+                        <div class="funnel-stage-num">2</div>
+                        <div class="funnel-stage-name">Consideration</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="evaluation">
+                        <div class="funnel-stage-num">3</div>
+                        <div class="funnel-stage-name">Evaluation</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="commercial">
+                        <div class="funnel-stage-num">4</div>
+                        <div class="funnel-stage-name">Commercial</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="decision">
+                        <div class="funnel-stage-num">5</div>
+                        <div class="funnel-stage-name">Decision</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="adoption">
+                        <div class="funnel-stage-num">6</div>
+                        <div class="funnel-stage-name">Adoption</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
                 </div>
             </div>
+            <p class="help-text">Tap activity → Tap funnel stage to place</p>
             
             <div class="feedback-box" id="feedback4"></div>
         </div>
@@ -841,22 +896,22 @@ function submitAssessment() {
         'The 10x PMM uses AI for production work, then adds human strategic value.'
     );
     
-    // Exercise 4: Funnel Matching (25 points - 5 each)
+    // Exercise 4: Funnel Mapping (25 points - 5 each)
     let ex4Score = 0;
-    for (let i = 1; i <= 5; i++) {
-        const select = document.getElementById(`match${i}`);
-        if (select.value === select.dataset.answer) {
-            select.classList.add('correct');
+    document.querySelectorAll('#zones4 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
             ex4Score += 5;
         } else {
-            select.classList.add('incorrect');
+            item.classList.add('incorrect');
         }
-    }
+    });
     totalScore += ex4Score;
     updateScoreDisplay('score4', ex4Score, 25);
     showFeedback('feedback4', ex4Score === 25,
-        'Perfect funnel mapping!',
-        `You got ${ex4Score}/25. Review: Awareness→Thought Leadership, Consideration→Differentiation, etc.`
+        'Perfect funnel mapping! You know where each activity drives the most impact.',
+        `You got ${ex4Score}/25. Thought Leadership→Awareness, Positioning→Consideration, Enablement→Evaluation, ROI→Commercial, Customer Mktg→Adoption.`
     );
     
     // Calculate and show results
