@@ -227,7 +227,9 @@
     
     // Auto-init when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
-        // Check if we need to gate this page
+        // TEMPORARILY DISABLED for testing
+        // TODO: Re-enable once assessment flow is confirmed
+        /*
         const path = window.location.pathname;
         const unitMatch = path.match(/\/curriculum\/(unit-\d+)\//);
         
@@ -235,5 +237,7 @@
             const unitId = unitMatch[1];
             CurriculumProgress.gatePage(unitId);
         }
+        */
+        console.log('Curriculum gating temporarily disabled for testing');
     });
 })();
