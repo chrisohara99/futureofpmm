@@ -3,7 +3,6 @@
 <head>
 <script src="/assets/js/auth-guard.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<!-- curriculum-progress.js temporarily removed for testing -->
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,11 +55,7 @@
             color: white;
             text-align: center;
         }
-        .hero h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
+        .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
         .hero p { opacity: 0.9; }
         
         main {
@@ -83,6 +78,7 @@
             margin-top: 1rem;
             padding-top: 1rem;
             border-top: 1px solid var(--light-gray);
+            flex-wrap: wrap;
         }
         .scoring-info div {
             display: flex;
@@ -90,7 +86,6 @@
             gap: 0.5rem;
             font-size: 0.9rem;
         }
-        .scoring-info .icon { font-size: 1.2rem; }
         
         .exercise {
             background: white;
@@ -107,6 +102,8 @@
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid var(--light-gray);
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         
         .exercise-number {
@@ -138,111 +135,116 @@
             font-size: 0.95rem;
         }
         
-        /* Drag and Drop Styles */
-        .drag-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .drag-container { grid-template-columns: 1fr; }
-        }
-        
-        .drop-zone {
-            background: #f8f9fa;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            min-height: 180px;
-            padding: 1rem;
-        }
-        
-        .drop-zone.dragover {
-            border-color: var(--sap-blue);
-            background: #e3f2fd;
-        }
-        
-        .drop-zone-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #666;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .drop-zone.high .drop-zone-title { color: var(--red); }
-        .drop-zone.moderate .drop-zone-title { color: var(--gold); }
-        .drop-zone.human .drop-zone-title { color: var(--green); }
-        
-        .drag-items {
+        /* Click-to-place sorting */
+        .sort-items {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             padding: 1rem;
             background: #fff;
-            border: 1px solid var(--light-gray);
+            border: 2px solid var(--light-gray);
             border-radius: 8px;
+            margin-bottom: 1rem;
             min-height: 60px;
         }
         
-        .drag-item {
+        .sort-item {
             background: var(--dark-slate);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 6px;
             font-size: 0.85rem;
-            cursor: grab;
+            cursor: pointer;
             user-select: none;
             transition: all 0.2s;
+            border: 3px solid transparent;
         }
         
-        .drag-item:hover {
+        .sort-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
-        .drag-item.dragging {
-            opacity: 0.5;
+        .sort-item.selected {
+            border-color: var(--sap-orange);
+            box-shadow: 0 0 0 3px rgba(237,125,49,0.3);
         }
         
-        .drag-item.correct {
-            background: var(--green);
+        .sort-item.placed {
+            opacity: 0.6;
+            cursor: default;
         }
         
-        .drag-item.incorrect {
-            background: var(--red);
-        }
+        .sort-item.correct { background: var(--green); }
+        .sort-item.incorrect { background: var(--red); }
         
-        /* Two Column Sort */
-        .two-col-sort {
+        .sort-zones {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
         }
         
-        @media (max-width: 600px) {
-            .two-col-sort { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            .sort-zones { grid-template-columns: 1fr; }
         }
         
-        .sort-column {
+        .sort-zone {
             background: #f8f9fa;
             border: 2px dashed #ccc;
             border-radius: 8px;
-            min-height: 200px;
+            min-height: 150px;
             padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         
-        .sort-column.dragover {
+        .sort-zone:hover {
             border-color: var(--sap-blue);
-            background: #e3f2fd;
+            background: #f0f4f8;
         }
         
-        .sort-column.production .drop-zone-title { color: var(--sap-blue); }
-        .sort-column.strategic .drop-zone-title { color: var(--sap-orange); }
+        .sort-zone.active {
+            border-color: var(--sap-orange);
+            background: #fff8f0;
+        }
         
-        /* Scenario Styles */
+        .sort-zone-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .sort-zone.high .sort-zone-title { color: var(--red); }
+        .sort-zone.moderate .sort-zone-title { color: #b8860b; }
+        .sort-zone.human .sort-zone-title { color: var(--green); }
+        .sort-zone.production .sort-zone-title { color: var(--sap-blue); }
+        .sort-zone.strategic .sort-zone-title { color: var(--sap-orange); }
+        
+        .sort-zone-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .two-col-zones {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        @media (max-width: 600px) {
+            .two-col-zones { grid-template-columns: 1fr; }
+        }
+        
+        .help-text {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        /* Scenario & Options */
         .scenario-box {
             background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
             border-left: 4px solid var(--sap-blue);
@@ -278,18 +280,9 @@
         }
         
         .option:hover { background: var(--light-gray); }
-        .option.selected {
-            border-color: var(--sap-blue);
-            background: #e3f2fd;
-        }
-        .option.correct {
-            border-color: var(--green);
-            background: #e8f5e9;
-        }
-        .option.incorrect {
-            border-color: var(--red);
-            background: #ffebee;
-        }
+        .option.selected { border-color: var(--sap-blue); background: #e3f2fd; }
+        .option.correct { border-color: var(--green); background: #e8f5e9; }
+        .option.incorrect { border-color: var(--red); background: #ffebee; }
         
         .option input { display: none; }
         
@@ -307,32 +300,14 @@
             flex-shrink: 0;
         }
         
-        .option.selected .option-marker {
-            border-color: var(--sap-blue);
-            background: var(--sap-blue);
-            color: white;
-        }
-        
-        .option.correct .option-marker {
-            border-color: var(--green);
-            background: var(--green);
-            color: white;
-        }
-        
-        .option.incorrect .option-marker {
-            border-color: var(--red);
-            background: var(--red);
-            color: white;
-        }
+        .option.selected .option-marker { border-color: var(--sap-blue); background: var(--sap-blue); color: white; }
+        .option.correct .option-marker { border-color: var(--green); background: var(--green); color: white; }
+        .option.incorrect .option-marker { border-color: var(--red); background: var(--red); color: white; }
         
         .option-text { flex: 1; font-size: 0.95rem; }
         
-        /* Matching Exercise */
-        .match-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        /* Matching */
+        .match-container { display: flex; flex-direction: column; gap: 1rem; }
         
         .match-row {
             display: grid;
@@ -342,10 +317,7 @@
         }
         
         @media (max-width: 600px) {
-            .match-row {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-            }
+            .match-row { grid-template-columns: 1fr; gap: 0.5rem; }
             .match-arrow { display: none; }
         }
         
@@ -357,10 +329,7 @@
             font-size: 0.9rem;
         }
         
-        .match-arrow {
-            color: #999;
-            font-size: 1.5rem;
-        }
+        .match-arrow { color: #999; font-size: 1.5rem; }
         
         .match-select {
             padding: 0.75rem 1rem;
@@ -371,26 +340,12 @@
             cursor: pointer;
         }
         
-        .match-select:focus {
-            border-color: var(--sap-blue);
-            outline: none;
-        }
-        
-        .match-select.correct {
-            border-color: var(--green);
-            background: #e8f5e9;
-        }
-        
-        .match-select.incorrect {
-            border-color: var(--red);
-            background: #ffebee;
-        }
+        .match-select:focus { border-color: var(--sap-blue); outline: none; }
+        .match-select.correct { border-color: var(--green); background: #e8f5e9; }
+        .match-select.incorrect { border-color: var(--red); background: #ffebee; }
         
         /* Submit & Results */
-        .submit-section {
-            text-align: center;
-            margin-top: 2rem;
-        }
+        .submit-section { text-align: center; margin-top: 2rem; }
         
         .submit-btn {
             background: var(--sap-orange);
@@ -409,17 +364,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
-        .submit-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .results-container {
-            display: none;
-            margin-top: 2rem;
-        }
-        
+        .results-container { display: none; margin-top: 2rem; }
         .results-container.show { display: block; }
         
         .results-header {
@@ -429,29 +374,14 @@
             margin-bottom: 2rem;
         }
         
-        .results-header.pass {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-        }
+        .results-header.pass { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .results-header.fail { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
         
-        .results-header.fail {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-        }
-        
-        .results-score {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
+        .results-score { font-size: 3.5rem; font-weight: 700; margin-bottom: 0.5rem; }
         .results-header.pass .results-score { color: var(--green); }
         .results-header.fail .results-score { color: var(--red); }
         
-        .results-message {
-            font-size: 1.3rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
+        .results-message { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; }
         .results-detail { color: #666; }
         
         .results-breakdown {
@@ -462,11 +392,7 @@
             margin-bottom: 2rem;
         }
         
-        .results-breakdown h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: var(--dark-slate);
-        }
+        .results-breakdown h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
         
         .breakdown-row {
             display: flex;
@@ -474,9 +400,7 @@
             padding: 0.75rem 0;
             border-bottom: 1px solid var(--light-gray);
         }
-        
         .breakdown-row:last-child { border-bottom: none; }
-        
         .breakdown-label { color: #666; }
         .breakdown-score { font-weight: 600; }
         .breakdown-score.full { color: var(--green); }
@@ -490,7 +414,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             text-align: center;
         }
-        
         .next-steps h3 { margin-bottom: 1rem; }
         
         .next-btn {
@@ -501,19 +424,8 @@
             font-weight: 500;
             margin: 0.5rem;
         }
-        
-        .next-btn.primary {
-            background: var(--green);
-            color: white;
-        }
-        
-        .next-btn.secondary {
-            background: transparent;
-            color: var(--sap-blue);
-            border: 2px solid var(--sap-blue);
-        }
-        
-        .next-btn:hover { opacity: 0.9; }
+        .next-btn.primary { background: var(--green); color: white; }
+        .next-btn.secondary { background: transparent; color: var(--sap-blue); border: 2px solid var(--sap-blue); }
         
         .feedback-box {
             margin-top: 1rem;
@@ -522,18 +434,9 @@
             font-size: 0.9rem;
             display: none;
         }
-        
         .feedback-box.show { display: block; }
-        
-        .feedback-box.correct {
-            background: #e8f5e9;
-            border-left: 4px solid var(--green);
-        }
-        
-        .feedback-box.incorrect {
-            background: #ffebee;
-            border-left: 4px solid var(--red);
-        }
+        .feedback-box.correct { background: #e8f5e9; border-left: 4px solid var(--green); }
+        .feedback-box.incorrect { background: #ffebee; border-left: 4px solid var(--red); }
     </style>
 </head>
 <body>
@@ -557,11 +460,11 @@
     
     <main>
         <div class="assessment-intro">
-            <p>This assessment tests your ability to <strong>apply</strong> Unit 1 concepts, not just recall them. You'll sort activities, analyze scenarios, and match concepts to the funnel.</p>
+            <p>This assessment tests your ability to <strong>apply</strong> Unit 1 concepts. Tap an item to select it, then tap a zone to place it.</p>
             <div class="scoring-info">
-                <div><span class="icon">🎯</span> 100 points total</div>
-                <div><span class="icon">✅</span> 80+ to pass</div>
-                <div><span class="icon">🔓</span> Unlocks Unit 2</div>
+                <div><span>🎯</span> 100 points total</div>
+                <div><span>✅</span> 80+ to pass</div>
+                <div><span>🔓</span> Unlocks Unit 2</div>
             </div>
         </div>
         
@@ -574,28 +477,32 @@
                 </div>
                 <div class="exercise-points">30 points</div>
             </div>
-            <p class="exercise-instructions">Drag each PMM activity to its correct AI impact tier based on the AI Impact Matrix from Unit 1.</p>
+            <p class="exercise-instructions">Tap an activity, then tap the correct AI impact tier to place it.</p>
             
-            <div class="drag-items" id="dragSource1">
-                <div class="drag-item" draggable="true" data-answer="high" data-id="1">First-draft content</div>
-                <div class="drag-item" draggable="true" data-answer="high" data-id="2">Basic competitive research</div>
-                <div class="drag-item" draggable="true" data-answer="moderate" data-id="3">Analyst briefing prep</div>
-                <div class="drag-item" draggable="true" data-answer="moderate" data-id="4">Win/loss synthesis</div>
-                <div class="drag-item" draggable="true" data-answer="human" data-id="5">Executive engagement</div>
-                <div class="drag-item" draggable="true" data-answer="human" data-id="6">Category creation</div>
+            <div class="sort-items" id="items1">
+                <div class="sort-item" data-answer="high" data-id="1">First-draft content</div>
+                <div class="sort-item" data-answer="high" data-id="2">Basic competitive research</div>
+                <div class="sort-item" data-answer="moderate" data-id="3">Analyst briefing prep</div>
+                <div class="sort-item" data-answer="moderate" data-id="4">Win/loss synthesis</div>
+                <div class="sort-item" data-answer="human" data-id="5">Executive engagement</div>
+                <div class="sort-item" data-answer="human" data-id="6">Category creation</div>
             </div>
             
-            <div class="drag-container">
-                <div class="drop-zone high" data-zone="high">
-                    <div class="drop-zone-title">🔴 High Impact (80%+)</div>
+            <div class="sort-zones" id="zones1">
+                <div class="sort-zone high" data-zone="high">
+                    <div class="sort-zone-title">🔴 High Impact (80%+)</div>
+                    <div class="sort-zone-items"></div>
                 </div>
-                <div class="drop-zone moderate" data-zone="moderate">
-                    <div class="drop-zone-title">🟡 Moderate (50-79%)</div>
+                <div class="sort-zone moderate" data-zone="moderate">
+                    <div class="sort-zone-title">🟡 Moderate (50-79%)</div>
+                    <div class="sort-zone-items"></div>
                 </div>
-                <div class="drop-zone human" data-zone="human">
-                    <div class="drop-zone-title">🟢 Human-Led (&lt;30%)</div>
+                <div class="sort-zone human" data-zone="human">
+                    <div class="sort-zone-title">🟢 Human-Led (<30%)</div>
+                    <div class="sort-zone-items"></div>
                 </div>
             </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
             
             <div class="feedback-box" id="feedback1"></div>
         </div>
@@ -609,23 +516,26 @@
                 </div>
                 <div class="exercise-points">20 points</div>
             </div>
-            <p class="exercise-instructions">Sort these work examples into the correct mode. Remember: Production work is AI-accelerated; Strategic work is human-led but AI-augmented.</p>
+            <p class="exercise-instructions">Sort these into the correct mode. Production = AI-accelerated; Strategic = human-led, AI-augmented.</p>
             
-            <div class="drag-items" id="dragSource2">
-                <div class="drag-item" draggable="true" data-answer="production" data-id="a">Writing blog post first drafts</div>
-                <div class="drag-item" draggable="true" data-answer="strategic" data-id="b">Defining market positioning</div>
-                <div class="drag-item" draggable="true" data-answer="production" data-id="c">Generating RFP boilerplate</div>
-                <div class="drag-item" draggable="true" data-answer="strategic" data-id="d">Influencing C-suite decisions</div>
+            <div class="sort-items" id="items2">
+                <div class="sort-item" data-answer="production" data-id="a">Writing blog post first drafts</div>
+                <div class="sort-item" data-answer="strategic" data-id="b">Defining market positioning</div>
+                <div class="sort-item" data-answer="production" data-id="c">Generating RFP boilerplate</div>
+                <div class="sort-item" data-answer="strategic" data-id="d">Influencing C-suite decisions</div>
             </div>
             
-            <div class="two-col-sort">
-                <div class="sort-column production" data-zone="production">
-                    <div class="drop-zone-title">⚡ Production Work<br><small style="font-weight:400;text-transform:none;">(AI-Accelerated)</small></div>
+            <div class="sort-zones two-col-zones" id="zones2">
+                <div class="sort-zone production" data-zone="production">
+                    <div class="sort-zone-title">⚡ Production Work</div>
+                    <div class="sort-zone-items"></div>
                 </div>
-                <div class="sort-column strategic" data-zone="strategic">
-                    <div class="drop-zone-title">🧠 Strategic Work<br><small style="font-weight:400;text-transform:none;">(Human-Led, AI-Augmented)</small></div>
+                <div class="sort-zone strategic" data-zone="strategic">
+                    <div class="sort-zone-title">🧠 Strategic Work</div>
+                    <div class="sort-zone-items"></div>
                 </div>
             </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
             
             <div class="feedback-box" id="feedback2"></div>
         </div>
@@ -643,29 +553,29 @@
             <div class="scenario-box">
                 <h4>📋 Scenario</h4>
                 <p>Your sales director messages you at 2pm: "We're going head-to-head with Competitor X tomorrow morning. Can you get me a battlecard by end of day?"</p>
-                <p style="margin-top:0.75rem;">In the past, this would take you 6-8 hours. You have 4 hours. <strong>Using the 10x PMM approach from Unit 1, what's your best workflow?</strong></p>
+                <p style="margin-top:0.75rem;">In the past, this would take 6-8 hours. You have 4 hours. <strong>Using the 10x PMM approach, what's your best workflow?</strong></p>
             </div>
             
             <div class="options" id="scenario1">
                 <label class="option">
                     <input type="radio" name="scenario1" value="a">
                     <span class="option-marker">A</span>
-                    <span class="option-text">Tell sales you can't do it in 4 hours — quality matters more than speed. Promise it for tomorrow afternoon instead.</span>
+                    <span class="option-text">Tell sales you can't do it in 4 hours — quality matters more than speed.</span>
                 </label>
                 <label class="option">
                     <input type="radio" name="scenario1" value="b">
                     <span class="option-marker">B</span>
-                    <span class="option-text">Use AI to research and draft the battlecard, then spend your time adding strategic insights from actual deal experience and crafting the "why we win" narrative.</span>
+                    <span class="option-text">Use AI to research and draft, then add your strategic insights and "why we win" narrative.</span>
                 </label>
                 <label class="option">
                     <input type="radio" name="scenario1" value="c">
                     <span class="option-marker">C</span>
-                    <span class="option-text">Have AI generate the entire battlecard end-to-end and send it directly to sales — AI quality is good enough now.</span>
+                    <span class="option-text">Have AI generate the entire battlecard and send it directly to sales.</span>
                 </label>
                 <label class="option">
                     <input type="radio" name="scenario1" value="d">
                     <span class="option-marker">D</span>
-                    <span class="option-text">Skip AI entirely and do it manually — battlecards are strategic and AI can't handle competitive positioning.</span>
+                    <span class="option-text">Skip AI entirely — battlecards are strategic and AI can't handle them.</span>
                 </label>
             </div>
             
@@ -681,72 +591,72 @@
                 </div>
                 <div class="exercise-points">25 points</div>
             </div>
-            <p class="exercise-instructions">Match each PMM activity to its PRIMARY funnel stage from the 6-stage model covered in Unit 1.</p>
+            <p class="exercise-instructions">Match each activity to its PRIMARY funnel stage.</p>
             
             <div class="match-container">
                 <div class="match-row">
-                    <div class="match-activity">Thought Leadership Content</div>
+                    <div class="match-activity">Thought Leadership</div>
                     <div class="match-arrow">→</div>
                     <select class="match-select" data-answer="awareness" id="match1">
-                        <option value="">Select stage...</option>
+                        <option value="">Select...</option>
                         <option value="awareness">Awareness</option>
                         <option value="consideration">Consideration</option>
                         <option value="evaluation">Evaluation</option>
                         <option value="commercialization">Commercialization</option>
                         <option value="decision">Decision</option>
-                        <option value="adoption">Adoption & Expansion</option>
+                        <option value="adoption">Adoption</option>
                     </select>
                 </div>
                 <div class="match-row">
                     <div class="match-activity">Competitive Differentiation</div>
                     <div class="match-arrow">→</div>
                     <select class="match-select" data-answer="consideration" id="match2">
-                        <option value="">Select stage...</option>
+                        <option value="">Select...</option>
                         <option value="awareness">Awareness</option>
                         <option value="consideration">Consideration</option>
                         <option value="evaluation">Evaluation</option>
                         <option value="commercialization">Commercialization</option>
                         <option value="decision">Decision</option>
-                        <option value="adoption">Adoption & Expansion</option>
+                        <option value="adoption">Adoption</option>
                     </select>
                 </div>
                 <div class="match-row">
-                    <div class="match-activity">Sales Enablement & Technical Content</div>
+                    <div class="match-activity">Sales Enablement</div>
                     <div class="match-arrow">→</div>
                     <select class="match-select" data-answer="evaluation" id="match3">
-                        <option value="">Select stage...</option>
+                        <option value="">Select...</option>
                         <option value="awareness">Awareness</option>
                         <option value="consideration">Consideration</option>
                         <option value="evaluation">Evaluation</option>
                         <option value="commercialization">Commercialization</option>
                         <option value="decision">Decision</option>
-                        <option value="adoption">Adoption & Expansion</option>
+                        <option value="adoption">Adoption</option>
                     </select>
                 </div>
                 <div class="match-row">
-                    <div class="match-activity">ROI Modeling & Business Cases</div>
+                    <div class="match-activity">ROI Modeling</div>
                     <div class="match-arrow">→</div>
                     <select class="match-select" data-answer="commercialization" id="match4">
-                        <option value="">Select stage...</option>
+                        <option value="">Select...</option>
                         <option value="awareness">Awareness</option>
                         <option value="consideration">Consideration</option>
                         <option value="evaluation">Evaluation</option>
                         <option value="commercialization">Commercialization</option>
                         <option value="decision">Decision</option>
-                        <option value="adoption">Adoption & Expansion</option>
+                        <option value="adoption">Adoption</option>
                     </select>
                 </div>
                 <div class="match-row">
-                    <div class="match-activity">Customer Marketing & Renewals</div>
+                    <div class="match-activity">Customer Marketing</div>
                     <div class="match-arrow">→</div>
                     <select class="match-select" data-answer="adoption" id="match5">
-                        <option value="">Select stage...</option>
+                        <option value="">Select...</option>
                         <option value="awareness">Awareness</option>
                         <option value="consideration">Consideration</option>
                         <option value="evaluation">Evaluation</option>
                         <option value="commercialization">Commercialization</option>
                         <option value="decision">Decision</option>
-                        <option value="adoption">Adoption & Expansion</option>
+                        <option value="adoption">Adoption</option>
                     </select>
                 </div>
             </div>
@@ -796,24 +706,70 @@
     </main>
 
 <script>
-// Drag and Drop functionality
-let draggedItem = null;
+// Click-to-place sorting functionality
+let selectedItem = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize drag items
-    document.querySelectorAll('.drag-item').forEach(item => {
-        item.addEventListener('dragstart', handleDragStart);
-        item.addEventListener('dragend', handleDragEnd);
+    // Exercise 1 & 2: Click to select items
+    document.querySelectorAll('.sort-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('placed')) return;
+            
+            // Deselect others in same group
+            const parent = this.closest('.exercise');
+            parent.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+            
+            // Select this one
+            this.classList.add('selected');
+            selectedItem = this;
+            
+            // Highlight available zones
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.add('active'));
+        });
     });
     
-    // Initialize drop zones
-    document.querySelectorAll('.drop-zone, .sort-column, .drag-items').forEach(zone => {
-        zone.addEventListener('dragover', handleDragOver);
-        zone.addEventListener('dragleave', handleDragLeave);
-        zone.addEventListener('drop', handleDrop);
+    // Click zones to place
+    document.querySelectorAll('.sort-zone').forEach(zone => {
+        zone.addEventListener('click', function() {
+            if (!selectedItem) return;
+            
+            const parent = this.closest('.exercise');
+            
+            // Check if this item belongs to this exercise
+            if (!parent.contains(selectedItem)) return;
+            
+            // Move item to zone
+            const itemsContainer = this.querySelector('.sort-zone-items');
+            const clone = selectedItem.cloneNode(true);
+            clone.classList.remove('selected');
+            clone.classList.add('placed');
+            clone.dataset.placedZone = this.dataset.zone;
+            
+            // Allow removing by clicking placed item
+            clone.addEventListener('click', function() {
+                const original = parent.querySelector(`.sort-items .sort-item[data-id="${this.dataset.id}"]`);
+                if (original) {
+                    original.classList.remove('placed');
+                    original.style.display = '';
+                }
+                this.remove();
+            });
+            
+            itemsContainer.appendChild(clone);
+            
+            // Hide original
+            selectedItem.classList.add('placed');
+            selectedItem.style.display = 'none';
+            selectedItem.classList.remove('selected');
+            selectedItem = null;
+            
+            // Remove active state
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+        });
     });
     
-    // Option click handlers
+    // Option click handlers (Exercise 3)
     document.querySelectorAll('.option').forEach(option => {
         option.addEventListener('click', function() {
             const siblings = this.parentElement.querySelectorAll('.option');
@@ -827,102 +783,62 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('submitBtn').addEventListener('click', submitAssessment);
 });
 
-function handleDragStart(e) {
-    draggedItem = this;
-    this.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleDragEnd(e) {
-    this.classList.remove('dragging');
-    document.querySelectorAll('.drop-zone, .sort-column, .drag-items').forEach(zone => {
-        zone.classList.remove('dragover');
-    });
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    this.classList.add('dragover');
-}
-
-function handleDragLeave(e) {
-    this.classList.remove('dragover');
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    this.classList.remove('dragover');
-    if (draggedItem) {
-        this.appendChild(draggedItem);
-    }
-}
-
 function submitAssessment() {
     let totalScore = 0;
-    const maxScore = 100;
     
     // Exercise 1: AI Impact Sorting (30 points - 5 each)
     let ex1Score = 0;
-    document.querySelectorAll('.drop-zone').forEach(zone => {
-        const zoneType = zone.dataset.zone;
-        zone.querySelectorAll('.drag-item').forEach(item => {
-            if (item.dataset.answer === zoneType) {
-                item.classList.add('correct');
-                ex1Score += 5;
-            } else {
-                item.classList.add('incorrect');
-            }
-        });
+    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex1Score += 5;
+        } else {
+            item.classList.add('incorrect');
+        }
     });
     totalScore += ex1Score;
     updateScoreDisplay('score1', ex1Score, 30);
-    showFeedback('feedback1', ex1Score === 30, 
+    showFeedback('feedback1', ex1Score === 30,
         'Perfect! You correctly identified all AI impact tiers.',
-        `You got ${ex1Score}/30. Remember: First drafts and research are HIGH impact, while executive engagement and category creation remain HUMAN-LED.`
+        `You got ${ex1Score}/30. First drafts & research = HIGH. Executive engagement & category creation = HUMAN-LED.`
     );
     
     // Exercise 2: Production vs Strategic (20 points - 5 each)
     let ex2Score = 0;
-    document.querySelectorAll('.sort-column').forEach(zone => {
-        const zoneType = zone.dataset.zone;
-        zone.querySelectorAll('.drag-item').forEach(item => {
-            if (item.dataset.answer === zoneType) {
-                item.classList.add('correct');
-                ex2Score += 5;
-            } else {
-                item.classList.add('incorrect');
-            }
-        });
+    document.querySelectorAll('#zones2 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex2Score += 5;
+        } else {
+            item.classList.add('incorrect');
+        }
     });
     totalScore += ex2Score;
     updateScoreDisplay('score2', ex2Score, 20);
     showFeedback('feedback2', ex2Score === 20,
         'Excellent! You understand the difference between AI-accelerated and human-led work.',
-        `You got ${ex2Score}/20. Production work (drafts, boilerplate) is accelerated by AI. Strategic work (positioning, C-suite influence) is human-led but AI-augmented.`
+        `You got ${ex2Score}/20. Drafts & boilerplate = Production. Positioning & C-suite = Strategic.`
     );
     
     // Exercise 3: Scenario (25 points)
     let ex3Score = 0;
     const scenario1 = document.querySelector('input[name="scenario1"]:checked');
-    const correctAnswer = 'b';
-    
     document.querySelectorAll('#scenario1 .option').forEach(opt => {
         const input = opt.querySelector('input');
-        if (input.value === correctAnswer) {
+        if (input.value === 'b') {
             opt.classList.add('correct');
-        } else if (scenario1 && input.value === scenario1.value && input.value !== correctAnswer) {
+        } else if (scenario1 && input.value === scenario1.value && input.value !== 'b') {
             opt.classList.add('incorrect');
         }
     });
-    
-    if (scenario1 && scenario1.value === correctAnswer) {
-        ex3Score = 25;
-    }
+    if (scenario1 && scenario1.value === 'b') ex3Score = 25;
     totalScore += ex3Score;
     updateScoreDisplay('score3', ex3Score, 25);
     showFeedback('feedback3', ex3Score === 25,
-        'Correct! The 10x PMM approach: Let AI handle research and first draft, then YOU add the strategic insights and "why we win" narrative.',
-        'The correct answer is B. The 10x PMM uses AI to accelerate production work (research, drafting) while focusing human time on strategic value (deal insights, positioning). Neither skipping AI nor fully delegating to AI captures the model.'
+        'Correct! Let AI handle research & drafting, YOU add strategic insights.',
+        'The 10x PMM uses AI for production work, then adds human strategic value.'
     );
     
     // Exercise 4: Funnel Matching (25 points - 5 each)
@@ -939,114 +855,85 @@ function submitAssessment() {
     totalScore += ex4Score;
     updateScoreDisplay('score4', ex4Score, 25);
     showFeedback('feedback4', ex4Score === 25,
-        'Perfect funnel mapping! You understand where each activity drives the most impact.',
-        `You got ${ex4Score}/25. Review the funnel stages: Awareness (thought leadership), Consideration (differentiation), Evaluation (sales enablement), Commercialization (ROI/pricing), Adoption (customer marketing).`
+        'Perfect funnel mapping!',
+        `You got ${ex4Score}/25. Review: Awareness→Thought Leadership, Consideration→Differentiation, etc.`
     );
     
-    // Calculate percentage and show results
-    const percentage = Math.round((totalScore / maxScore) * 100);
+    // Calculate and show results
+    const percentage = totalScore;
     const passed = percentage >= 80;
     
-    // Hide submit button
     document.querySelector('.submit-section').style.display = 'none';
     
-    // Show results
     const resultsContainer = document.getElementById('resultsContainer');
-    const resultsHeader = document.getElementById('resultsHeader');
-    
     resultsContainer.classList.add('show');
-    resultsHeader.classList.add(passed ? 'pass' : 'fail');
-    
+    document.getElementById('resultsHeader').classList.add(passed ? 'pass' : 'fail');
     document.getElementById('resultsScore').textContent = `${percentage}%`;
     document.getElementById('resultsMessage').textContent = passed ? '🎉 Excellent Work!' : '📚 Keep Learning!';
-    document.getElementById('resultsDetail').textContent = passed 
-        ? `You scored ${totalScore}/100 and demonstrated strong understanding of Unit 1 concepts.`
-        : `You scored ${totalScore}/100. You need 80% to proceed. Review the unit and try again.`;
+    document.getElementById('resultsDetail').textContent = passed
+        ? `You scored ${totalScore}/100 and demonstrated strong understanding.`
+        : `You scored ${totalScore}/100. You need 80% to proceed.`;
     
-    // Update next steps
     const nextStepsTitle = document.getElementById('nextStepsTitle');
     const nextStepsText = document.getElementById('nextStepsText');
     const nextStepsButtons = document.getElementById('nextStepsButtons');
     
     if (passed) {
         nextStepsTitle.textContent = '🔓 Unit 2 Unlocked!';
-        nextStepsText.textContent = 'You\'ve mastered the foundations. Continue to learn about AI Discoverability.';
+        nextStepsText.textContent = 'Continue to learn about AI Discoverability.';
         nextStepsButtons.innerHTML = `
             <a href="/curriculum/unit-02/" class="next-btn primary">Continue to Unit 2 →</a>
             <a href="/curriculum/unit-01/" class="next-btn secondary">Review Unit 1</a>
         `;
     } else {
         nextStepsTitle.textContent = 'Almost There!';
-        nextStepsText.textContent = 'Review the unit content, focusing on the areas you missed, then try again.';
+        nextStepsText.textContent = 'Review the unit, then try again.';
         nextStepsButtons.innerHTML = `
             <a href="/curriculum/unit-01/" class="next-btn secondary">Review Unit 1</a>
             <a href="javascript:location.reload()" class="next-btn primary">Try Again</a>
         `;
     }
     
-    // Scroll to results
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
-    
-    // Save to Supabase
-    saveQuizScore(totalScore, maxScore, percentage);
+    saveQuizScore(totalScore, 100, percentage);
 }
 
-function updateScoreDisplay(elementId, score, max) {
-    const el = document.getElementById(elementId);
+function updateScoreDisplay(id, score, max) {
+    const el = document.getElementById(id);
     el.textContent = `${score}/${max}`;
-    if (score === max) {
-        el.classList.add('full');
-    } else if (score > 0) {
-        el.classList.add('partial');
-    } else {
-        el.classList.add('zero');
-    }
+    el.classList.add(score === max ? 'full' : score > 0 ? 'partial' : 'zero');
 }
 
-function showFeedback(elementId, isCorrect, correctMsg, incorrectMsg) {
-    const el = document.getElementById(elementId);
-    el.classList.add('show', isCorrect ? 'correct' : 'incorrect');
-    el.innerHTML = `<strong>${isCorrect ? '✓' : '✗'}</strong> ${isCorrect ? correctMsg : incorrectMsg}`;
+function showFeedback(id, correct, goodMsg, badMsg) {
+    const el = document.getElementById(id);
+    el.classList.add('show', correct ? 'correct' : 'incorrect');
+    el.innerHTML = `<strong>${correct ? '✓' : '✗'}</strong> ${correct ? goodMsg : badMsg}`;
 }
 
-// Supabase integration
 async function saveQuizScore(score, total, percentage) {
     try {
         const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-        
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const { data: { session } } = await client.auth.getSession();
+        if (!session) return;
         
-        if (!session) {
-            console.log('No session - score not saved');
-            return;
-        }
-        
-        const userId = session.user.id;
-        
-        // Save quiz score
         await client.from('quiz_scores').insert({
-            user_id: userId,
+            user_id: session.user.id,
             chapter: 'unit-01',
-            score: score,
-            total: total,
-            percentage: percentage
+            score, total, percentage
         });
         
-        // Update chapter progress if passed
         if (percentage >= 80) {
             await client.from('chapter_progress').upsert({
-                user_id: userId,
+                user_id: session.user.id,
                 chapter: 'unit-01',
                 completed: true,
                 completed_at: new Date().toISOString()
             }, { onConflict: 'user_id,chapter' });
         }
-        
-        console.log('Assessment score saved:', percentage + '%');
     } catch (err) {
-        console.error('Error saving score:', err);
+        console.error('Save error:', err);
     }
 }
 </script>
