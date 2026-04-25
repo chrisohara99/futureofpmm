@@ -119,7 +119,8 @@
         hasCompletedAssessments() {
             if (!this.userProgress) return false;
             const a = this.userProgress.assessments;
-            return !!(a['10x-scorecard'] && a['where-do-you-sit']);
+            // 10x-scorecard saves as '10x-scorecard-content' (Content section is required)
+            return !!(a['10x-scorecard-content'] && a['where-do-you-sit']);
         },
         
         // Check if a unit quiz was passed
@@ -227,9 +228,6 @@
     
     // Auto-init when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
-        // TEMPORARILY DISABLED for testing
-        // TODO: Re-enable once assessment flow is confirmed
-        /*
         const path = window.location.pathname;
         const unitMatch = path.match(/\/curriculum\/(unit-\d+)\//);
         
@@ -237,7 +235,5 @@
             const unitId = unitMatch[1];
             CurriculumProgress.gatePage(unitId);
         }
-        */
-        console.log('Curriculum gating temporarily disabled for testing');
     });
 })();
