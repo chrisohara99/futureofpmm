@@ -185,6 +185,24 @@
         
         .tab .check { color: #22c55e; font-size: 12px; }
         
+        .req-badge, .opt-badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-left: 6px;
+        }
+        .req-badge {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .opt-badge {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
         /* Card Intro */
         .card-intro {
             max-width: 620px;
@@ -758,22 +776,22 @@
 
     <section class="hero">
         <h1>The 10x PMM Scorecard</h1>
-        <p>Assess your team's AI readiness across Content, Competitive Intel, and Demand Gen. See where you stand vs. average PMM teams — and the 10x frontier.</p>
+        <p>Assess your AI readiness as a product marketer. Start with Content (required), then complete Competitive or Demand Gen if relevant to your role.</p>
     </section>
     
     <div class="main-content">
         <div class="tabs" id="tabs">
             <button class="tab active mono" data-tab="content">
-                <span class="icon">✏️</span> Content
+                <span class="icon">✏️</span> Content <span class="req-badge">Required</span>
             </button>
             <button class="tab mono" data-tab="competitive">
-                <span class="icon">🎯</span> Competitive
+                <span class="icon">🎯</span> Competitive <span class="opt-badge">Optional</span>
             </button>
             <button class="tab mono" data-tab="demandgen">
-                <span class="icon">📈</span> Demand Gen
+                <span class="icon">📈</span> Demand Gen <span class="opt-badge">Optional</span>
             </button>
             <button class="tab mono" data-tab="org">
-                <span class="icon">◉</span> Full Org
+                <span class="icon">◉</span> Results
             </button>
         </div>
         
@@ -843,7 +861,7 @@
       competitive: {
         title: "Competitive Intel",
         subtitle: "How AI-Ready Is Your Competitive Program?",
-        intro: "Your competitive function is the intelligence layer of the PMM org — win/loss analysis, battlecards, market mapping. AI is turning quarterly research projects into always-on signal detection. Where does your competitive program fall?",
+        intro: "<strong>Optional — complete if you work directly in competitive intelligence.</strong><br><br>Your competitive function is the intelligence layer of the PMM org — win/loss analysis, battlecards, market mapping. AI is turning quarterly research projects into always-on signal detection. Where does your competitive program fall?",
         benchAvg: [1.9, 2.1, 1.6, 1.4, 2.0, 1.7],
         benchTenx: [4.7, 4.5, 4.3, 4.0, 4.5, 4.2],
         dims: [
@@ -894,7 +912,7 @@
       demandgen: {
         title: "Demand Gen",
         subtitle: "How AI-Ready Is Your Demand Engine?",
-        intro: "Your demand gen function turns positioning into pipeline — campaigns, targeting, personalization, measurement. AI is collapsing the cycle from brief to live and making personalization at scale actually achievable. Where does your demand engine fall?",
+        intro: "<strong>Optional — complete if you work directly in demand generation.</strong><br><br>Your demand gen function turns positioning into pipeline — campaigns, targeting, personalization, measurement. AI is collapsing the cycle from brief to live and making personalization at scale actually achievable. Where does your demand engine fall?",
         benchAvg: [2.3, 2.0, 1.7, 1.9, 2.1, 1.8],
         benchTenx: [4.5, 4.4, 4.6, 4.3, 4.4, 4.5],
         dims: [
@@ -1163,8 +1181,8 @@
         return `
           <div class="org-empty">
             <div class="icon">◉</div>
-            <h2 class="serif">Full Org View</h2>
-            <p>Complete at least one assessment to see your org-level profile. Take all three for the full picture.</p>
+            <h2 class="serif">Your Results</h2>
+            <p>Complete the Content assessment (required) to see your baseline score. Competitive and Demand Gen are optional if relevant to your role.</p>
           </div>
         `;
       }
@@ -1191,16 +1209,19 @@
       const colsClass = keys.length === 3 ? 'cols-3' : keys.length === 2 ? 'cols-2' : 'cols-1';
       
       let incompleteHtml = '';
-      if (keys.length < 3) {
-        const msg = keys.length === 1 
-          ? "You've completed 1 of 3 assessments. Take the remaining two to see your full org profile."
-          : "You've completed 2 of 3 assessments. Take the last one to complete your full org profile.";
-        incompleteHtml = `<div class="incomplete-note"><p>${msg}</p></div>`;
+      if (keys.length < 3 && keys.length > 0) {
+        const remaining = ['content', 'competitive', 'demandgen'].filter(k => !keys.includes(k));
+        const optionalRemaining = remaining.filter(k => k !== 'content');
+        if (optionalRemaining.length > 0 && keys.includes('content')) {
+          incompleteHtml = `<div class="incomplete-note" style="background: #f0f9ff; border-color: #93c5fd;"><p style="color: #1e40af;">✓ Core assessment complete. Optionally add ${optionalRemaining.map(k => SCORECARDS[k].title).join(' or ')} if relevant to your role.</p></div>`;
+        } else if (!keys.includes('content')) {
+          incompleteHtml = `<div class="incomplete-note"><p>Complete the Content assessment (required) to establish your baseline.</p></div>`;
+        }
       }
       
       return `
         <div class="results-view">
-          <div class="label mono">Full Org View</div>
+          <div class="label mono">Your 10x PMM Score</div>
           <div class="score-big">
             <span class="num mono" style="color: ${orgGrade.color}">${orgAvg.toFixed(1)}</span>
             <span class="max">/ 5.0 composite</span>
@@ -1305,15 +1326,8 @@
     };
     
     window.saveAndContinue = function() {
-      const order = ['content', 'competitive', 'demandgen'];
-      const idx = order.indexOf(state.activeTab);
-      if (idx < 2) {
-        state.activeTab = order[idx + 1];
-        state.currentScores = [0,0,0,0,0,0];
-        state.questionIndex = -1;
-      } else {
-        state.activeTab = 'org';
-      }
+      // After any assessment, go to Results view
+      state.activeTab = 'org';
       render();
     };
     
