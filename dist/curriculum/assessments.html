@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseline Assessments | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        .hero h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 4rem;
+        }
+        
+        .intro-text {
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .assessments-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 700px) {
+            .assessments-grid { grid-template-columns: 1fr; }
+            .logo img { height: 70px; }
+        }
+        
+        .assessment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .assessment-card.completed {
+            border: 2px solid var(--green);
+        }
+        
+        .assessment-card .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge.required {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-badge.completed {
+            background: var(--green);
+            color: white;
+        }
+        
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .assessment-card h3 {
+            font-size: 1.25rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .assessment-card .measures {
+            font-size: 0.85rem;
+            color: var(--sap-blue);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .assessment-card p {
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .assessment-card .result {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .assessment-card .result strong {
+            color: var(--dark-slate);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--sap-orange);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        
+        .btn:hover { background: #d66a1e; }
+        
+        .btn.secondary {
+            background: var(--sap-blue);
+        }
+        .btn.secondary:hover { background: #3b62a3; }
+        
+        .btn.outline {
+            background: transparent;
+            border: 2px solid var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        .btn.outline:hover { background: #f0f4f8; }
+        
+        /* Combined Results Box */
+        .combined-results {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .combined-results.ready {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-color: var(--green);
+        }
+        
+        .combined-results h2 {
+            font-size: 1.25rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+        }
+        
+        .combined-results .pattern {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.75rem;
+        }
+        
+        .combined-results.ready .pattern {
+            color: #166534;
+        }
+        
+        .combined-results p {
+            font-size: 1rem;
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .score-pills {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .score-pill {
+            background: white;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Pending state */
+        .pending-box {
+            background: #f9fafb;
+            border: 1px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .pending-box h2 {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pending-box p {
+            font-size: 0.95rem;
+            color: #9ca3af;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+            </a>
+            <nav class="nav">
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/curriculum/intro.html">Intro</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-label">Step 1 of Your Learning Journey</div>
+        <h1>Know Your Baseline</h1>
+        <p>Two assessments that map where you stand — so the curriculum meets you where you are.</p>
+    </section>
+    
+    <main>
+        <p class="intro-text">Remember Maya and Trevor? Maya had the hard skills but no governance instinct. Trevor had the policies memorized but wasn't actually thinking with AI. <strong>These assessments tell you which pattern you're closer to</strong> — and which parts of the curriculum matter most for you.</p>
+        
+        <div class="assessments-grid">
+            <!-- 10x PMM Scorecard -->
+            <div class="assessment-card" id="tenx-card">
+                <span class="status-badge required" id="tenx-badge">Required</span>
+                <h3>📊 10x PMM Scorecard</h3>
+                <div class="measures">Measures: Hard Skills</div>
+                <p>How AI-ready is your content operation? Rate yourself across 6 dimensions of AI adoption in your PMM work.</p>
+                <div class="result hidden" id="tenx-result"></div>
+                <a href="/10x-scorecard.html" class="btn" id="tenx-btn">Take Scorecard →</a>
+            </div>
+            
+            <!-- Where Do You Sit? -->
+            <div class="assessment-card" id="cognitive-card">
+                <span class="status-badge required" id="cognitive-badge">Required</span>
+                <h3>🧠 Where Do You Sit?</h3>
+                <div class="measures">Measures: Thinking with AI</div>
+                <p>Based on Helen Edwards' Cognitive Sovereignty research. Are you using AI as a faster typist — or have you let it into your reasoning process?</p>
+                <div class="result hidden" id="cognitive-result"></div>
+                <a href="/where-do-you-sit.html" class="btn secondary" id="cognitive-btn">Take Assessment →</a>
+            </div>
+        </div>
+        
+        <!-- Pending state (neither done) -->
+        <div class="pending-box" id="pending-box">
+            <h2>Complete both assessments to see your prescriptive path</h2>
+            <p>~15 minutes total. Your results are saved and will inform your curriculum focus.</p>
+        </div>
+        
+        <!-- Combined results (both done) -->
+        <div class="combined-results hidden" id="combined-box">
+            <h2>🎯 Your Prescriptive Learning Path</h2>
+            <div class="score-pills" id="score-pills"></div>
+            <div class="pattern" id="pattern-name"></div>
+            <p id="recommendation"></p>
+            <a href="/curriculum/unit-01/" class="btn">Start Unit 1 →</a>
+        </div>
+    </main>
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="/assets/js/user-menu.js"></script>
+    <script>
+    const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+    
+    const COGNITIVE_ROLES = {
+        "0-0-0": { name: "The Doer", level: "low" },
+        "1-0-0": { name: "The Framer", level: "high" },
+        "0-0-1": { name: "The Catalyst", level: "low" },
+        "1-0-1": { name: "The Partner", level: "high" },
+        "1-1-0": { name: "The Builder", level: "high" },
+        "1-1-1": { name: "The Co-Author", level: "high" },
+        "0-1-0": { name: "The Outsourcer", level: "low" },
+        "0-1-1": { name: "The Creator", level: "low" },
+    };
+    
+    async function loadResults() {
+        try {
+            const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            const { data: { session } } = await client.auth.getSession();
+            if (!session) return;
+            
+            const { data: results } = await client
+                .from('assessment_results')
+                .select('*')
+                .eq('user_id', session.user.id);
+            
+            let tenxResult = null;
+            let cognitiveResult = null;
+            
+            if (results) {
+                tenxResult = results.find(r => r.assessment_type === '10x-scorecard-content');
+                cognitiveResult = results.find(r => r.assessment_type === 'where-do-you-sit');
+            }
+            
+            // Update 10x card
+            if (tenxResult && tenxResult.result_data) {
+                const score = tenxResult.result_data.average;
+                const grade = tenxResult.result_data.grade;
+                document.getElementById('tenx-card').classList.add('completed');
+                document.getElementById('tenx-badge').textContent = '✓ Complete';
+                document.getElementById('tenx-badge').className = 'status-badge completed';
+                document.getElementById('tenx-result').innerHTML = `<strong>${score.toFixed(1)}/5</strong> — ${grade}`;
+                document.getElementById('tenx-result').classList.remove('hidden');
+                document.getElementById('tenx-btn').textContent = 'Retake →';
+                document.getElementById('tenx-btn').classList.add('outline');
+            }
+            
+            // Update cognitive card
+            if (cognitiveResult && cognitiveResult.result_key) {
+                const roleName = cognitiveResult.result_name;
+                document.getElementById('cognitive-card').classList.add('completed');
+                document.getElementById('cognitive-badge').textContent = '✓ Complete';
+                document.getElementById('cognitive-badge').className = 'status-badge completed';
+                document.getElementById('cognitive-result').innerHTML = `<strong>${roleName}</strong>`;
+                document.getElementById('cognitive-result').classList.remove('hidden');
+                document.getElementById('cognitive-btn').textContent = 'Retake →';
+                document.getElementById('cognitive-btn').classList.add('outline');
+            }
+            
+            // Show combined if both done
+            if (tenxResult && tenxResult.result_data && cognitiveResult && cognitiveResult.result_key) {
+                showCombinedResults(tenxResult.result_data, cognitiveResult);
+            }
+            
+        } catch (e) {
+            console.error('Error loading results:', e);
+        }
+    }
+    
+    function showCombinedResults(tenxData, cognitiveData) {
+        document.getElementById('pending-box').classList.add('hidden');
+        document.getElementById('combined-box').classList.remove('hidden');
+        
+        const tenxScore = tenxData.average;
+        const tenxGrade = tenxData.grade;
+        const cognitiveKey = cognitiveData.result_key;
+        const cognitiveName = cognitiveData.result_name;
+        const cognitiveLevel = COGNITIVE_ROLES[cognitiveKey]?.level || 'low';
+        
+        const isHighTenx = tenxScore >= 3.0;
+        const isHighCognitive = cognitiveLevel === 'high';
+        
+        let pattern = '';
+        let recommendation = '';
+        
+        if (isHighTenx && isHighCognitive) {
+            pattern = '🚀 Ready for Prime Time';
+            recommendation = "You've got both the hard skills and the cognitive partnership. Use the curriculum as a reference library and focus on Soft Skills (Units 5-7) — policy embedding, AI communications, and culture building. You're ready to help scale this across the team.";
+            document.getElementById('combined-box').classList.add('ready');
+        } else if (isHighTenx && !isHighCognitive) {
+            pattern = '⚡ The Maya Pattern';
+            recommendation = "Strong on execution, but cognitive integration is your gap. You're producing with AI but not thinking with it. Focus on the 'Thinking With' sections in Units 2, 5, and 6 to unlock the strategic layer.";
+        } else if (!isHighTenx && isHighCognitive) {
+            pattern = '📚 The Trevor Pattern';
+            recommendation = "You're thinking with AI but need the technical foundations to match. Focus on the Hands-On builds in Units 2-4 to expand what you can actually create with that cognitive partnership.";
+        } else {
+            pattern = '🌱 Starting Out';
+            recommendation = "You're at the beginning of the journey — and that's fine. Start with Unit 1 to understand the framework, then work through Units 2-4 sequentially. Focus on both dimensions in parallel.";
+        }
+        
+        document.getElementById('score-pills').innerHTML = `
+            <span class="score-pill">📊 10x: ${tenxScore.toFixed(1)}/5 (${tenxGrade})</span>
+            <span class="score-pill">🧠 ${cognitiveName}</span>
+        `;
+        document.getElementById('pattern-name').textContent = pattern;
+        document.getElementById('recommendation').textContent = recommendation;
+    }
+    
+    // Load on page ready
+    if (typeof supabase !== 'undefined') {
+        loadResults();
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadResults, 500);
+        });
+    }
+    </script>
+</body>
+</html>
