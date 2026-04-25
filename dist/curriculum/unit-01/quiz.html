@@ -601,9 +601,10 @@
                 <div class="results-detail" id="resultsDetail"></div>
             </div>
             
-            <div class="next-steps">
-                <h3>Continue Learning</h3>
-                <a href="/curriculum/unit-01/" class="next-btn">← Back to Unit 1</a>
+            <div class="next-steps" id="nextSteps">
+                <h3 id="nextStepsTitle">Continue Learning</h3>
+                <p id="nextStepsText" style="color:#666; margin-bottom:1rem;"></p>
+                <div id="nextStepsButtons"></div>
             </div>
         </div>
     </main>
@@ -693,6 +694,27 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('resultsDetail').textContent = passed 
         ? `You scored ${percentage}% and passed the Unit 1 Knowledge Check.`
         : `You scored ${percentage}%. Review the unit and try again (80% required to pass).`;
+    
+    // Update next steps based on pass/fail
+    const nextStepsTitle = document.getElementById('nextStepsTitle');
+    const nextStepsText = document.getElementById('nextStepsText');
+    const nextStepsButtons = document.getElementById('nextStepsButtons');
+    
+    if (passed) {
+        nextStepsTitle.textContent = '🎉 You\'re Ready for Unit 2!';
+        nextStepsText.textContent = 'You\'ve mastered the foundations. Continue to Unit 2 to learn advanced strategies.';
+        nextStepsButtons.innerHTML = `
+            <a href="/curriculum/unit-02/" class="next-btn" style="background:var(--green); margin-right:1rem;">Continue to Unit 2 →</a>
+            <a href="/curriculum/unit-01/" class="next-btn" style="background:transparent; color:var(--sap-blue); border:2px solid var(--sap-blue);">Review Unit 1</a>
+        `;
+    } else {
+        nextStepsTitle.textContent = 'Keep Going!';
+        nextStepsText.textContent = 'Review the unit materials and try again when you\'re ready. You need 80% (8/10) to proceed.';
+        nextStepsButtons.innerHTML = `
+            <a href="/curriculum/unit-01/" class="next-btn" style="margin-right:1rem;">← Review Unit 1</a>
+            <a href="javascript:location.reload()" class="next-btn" style="background:var(--sap-orange);">Try Again</a>
+        `;
+    }
     
     // Scroll to results
     resultsContainer.scrollIntoView({ behavior: 'smooth' });

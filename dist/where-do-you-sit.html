@@ -535,6 +535,17 @@
         <div class="header-label">Future of PMM — Interactive Assessment</div>
         <h1>Where Do You Sit?</h1>
         <p>Mapping your cognitive relationship with AI — based on the Artificiality Institute's sovereignty research</p>
+        
+        <!-- Curriculum Flow Progress -->
+        <div id="curriculum-progress" class="hidden" style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: center; gap: 0.5rem;">
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #1A3A5C; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #E5E7EB; border-radius: 2px;"></div>
+            </div>
+            <p style="font-size: 0.85rem; color: #6B7280; margin-top: 0.5rem; text-align: center;">Step 3 of 4: Cognitive Assessment</p>
+        </div>
     </div>
     
     <!-- Intro Screen -->
@@ -626,6 +637,127 @@
 </div>
 
 <div class="toast" id="toast">Copied to clipboard!</div>
+
+<!-- Curriculum Flow Completion Modal -->
+<div id="completion-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #1A3A5C; border-radius: 2px;"></div>
+            </div>
+            <p style="font-size: 0.85rem; color: #6B7280;">Step 4 of 4: Your Learning Path</p>
+        </div>
+        
+        <h2 class="modal-title">🎯 Your Prescriptive Learning Path</h2>
+        
+        <div class="modal-scores" id="modal-scores">
+            <!-- Filled by JS -->
+        </div>
+        
+        <div class="modal-pattern" id="modal-pattern">
+            <!-- Filled by JS -->
+        </div>
+        
+        <p class="modal-recommendation" id="modal-recommendation">
+            <!-- Filled by JS -->
+        </p>
+        
+        <div class="modal-actions">
+            <a href="/curriculum/unit-01/" class="btn-primary modal-btn">Begin Unit 1 →</a>
+            <button class="btn-secondary modal-btn-secondary" onclick="closeModal()">View Full Results</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show {
+        opacity: 1;
+    }
+    .modal-overlay.hidden {
+        display: none;
+    }
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        max-width: 520px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        text-align: center;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+    .modal-overlay.show .modal-content {
+        transform: scale(1);
+    }
+    .modal-title {
+        font-size: 1.5rem;
+        color: #1A3A5C;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+    .modal-scores {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    .modal-score-pill {
+        background: #f3f4f6;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    .modal-pattern {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .modal-pattern.ready { color: #22c55e; }
+    .modal-pattern.maya { color: #f59e0b; }
+    .modal-pattern.trevor { color: #3b82f6; }
+    .modal-pattern.starting { color: #6b7280; }
+    .modal-recommendation {
+        font-size: 1rem;
+        color: #4b5563;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+    .modal-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .modal-btn {
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        text-align: center;
+    }
+    .modal-btn-secondary {
+        width: 100%;
+    }
+</style>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
@@ -910,6 +1042,25 @@ async function saveAssessmentResult(roleKey, role, dims) {
     }
 }
 
+// Curriculum flow helper
+function isCurriculumFlow() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('flow') === 'curriculum';
+}
+
+// Show curriculum progress indicator
+if (isCurriculumFlow()) {
+    document.getElementById('curriculum-progress').classList.remove('hidden');
+}
+
+// Close modal function
+window.closeModal = function() {
+    document.getElementById('completion-modal').classList.remove('show');
+    setTimeout(() => {
+        document.getElementById('completion-modal').classList.add('hidden');
+    }, 300);
+};
+
 async function showResults() {
     const roleKey = getRoleKey();
     const role = ROLES[roleKey];
@@ -917,6 +1068,11 @@ async function showResults() {
     
     // Save to Supabase
     saveAssessmentResult(roleKey, role, dims);
+    
+    // If in curriculum flow, show completion modal after a delay
+    if (isCurriculumFlow()) {
+        setTimeout(() => showCompletionModal(role, roleKey), 1500);
+    }
     
     // Role card
     document.getElementById('role-card').style.background = role.color;
@@ -1119,6 +1275,75 @@ function showToast(message) {
     toast.textContent = message;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+async function showCompletionModal(cognitiveRole, cognitiveKey) {
+    try {
+        const client = supabase.createClient(
+            'https://yyqzkczutlidhgyiyawc.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
+        );
+        
+        const { data: { session } } = await client.auth.getSession();
+        if (!session) return;
+        
+        // Get 10x Scorecard results
+        const { data: scorecardResult } = await client
+            .from('assessment_results')
+            .select('result_data')
+            .eq('user_id', session.user.id)
+            .eq('assessment_type', '10x-scorecard-content')
+            .single();
+        
+        if (!scorecardResult || !scorecardResult.result_data) return;
+        
+        const tenxScore = scorecardResult.result_data.average;
+        const tenxGrade = scorecardResult.result_data.grade;
+        const cognitiveLevel = cognitiveRole.cognitiveLevel;
+        
+        // Determine prescriptive path
+        const isHighTenx = tenxScore >= 3.0;
+        const isHighCognitive = cognitiveLevel === 'high';
+        
+        let pattern = '';
+        let patternClass = '';
+        let recommendation = '';
+        
+        if (isHighTenx && isHighCognitive) {
+            pattern = '🚀 Ready for Prime Time';
+            patternClass = 'ready';
+            recommendation = "You've got both the hard skills and the cognitive partnership. Focus on Soft Skills (Units 5-7) — policy embedding, AI communications, and culture building. You're ready to help scale this across the team.";
+        } else if (isHighTenx && !isHighCognitive) {
+            pattern = '⚡ The Maya Pattern';
+            patternClass = 'maya';
+            recommendation = "Strong on execution, but cognitive integration is your gap. You're producing with AI but not thinking with it. Focus on the 'Thinking With' sections to unlock the strategic layer — that's where true 10x leverage lives.";
+        } else if (!isHighTenx && isHighCognitive) {
+            pattern = '📚 The Trevor Pattern';
+            patternClass = 'trevor';
+            recommendation = "You're thinking with AI but need the technical foundations to match. Focus on the Hands-On builds in each unit to expand what you can actually create. The hard skills are learnable — you've already done the harder part.";
+        } else {
+            pattern = '🌱 Starting Your Journey';
+            patternClass = 'starting';
+            recommendation = "You're at the beginning — and that's the perfect place to start. Work through Unit 1 to understand the framework, then progress sequentially. Focus on both 'Thinking With' sections and Hands-On builds in parallel.";
+        }
+        
+        // Fill modal content
+        document.getElementById('modal-scores').innerHTML = `
+            <span class="modal-score-pill">📊 10x: ${tenxScore.toFixed(1)}/5 (${tenxGrade})</span>
+            <span class="modal-score-pill">🧠 ${cognitiveRole.name}</span>
+        `;
+        document.getElementById('modal-pattern').textContent = pattern;
+        document.getElementById('modal-pattern').className = 'modal-pattern ' + patternClass;
+        document.getElementById('modal-recommendation').textContent = recommendation;
+        
+        // Show modal
+        const modal = document.getElementById('completion-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.add('show'), 50);
+        
+    } catch (e) {
+        console.error('Error showing completion modal:', e);
+    }
 }
 
 function fadeOut(screenId, callback) {
