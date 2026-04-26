@@ -25,13 +25,20 @@ RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "re_RieSzpSV_EVieiVyPjC1GN8A9r
 DRY_RUN = "--dry-run" in sys.argv
 
 def load_subscribers():
-    """Load subscribers from JSON file."""
+    """Load subscribers from merged JSON file."""
     script_dir = Path(__file__).parent.parent
-    subs_file = script_dir / "subscribers.json"
     
+    # Use merged list if available, otherwise fall back to original
+    merged_file = script_dir / "subscribers-merged.json"
+    if merged_file.exists():
+        with open(merged_file, 'r') as f:
+            data = json.load(f)
+        return data.get('subscribers', [])
+    
+    # Fallback to original
+    subs_file = script_dir / "subscribers.json"
     with open(subs_file, 'r') as f:
         data = json.load(f)
-    
     return data.get('subscribers', [])
 
 def send_invite_email(email, name=None):
@@ -138,12 +145,14 @@ def main():
     
     for sub in subscribers:
         email = sub.get('email', '').lower().strip()
-        name = sub.get('name', '')
+        first_name = sub.get('first_name') or ''
+        last_name = sub.get('last_name') or ''
+        name = f"{first_name} {last_name}".strip() or sub.get('name', '')
         
         if not email:
             continue
         
-        print(f"Processing: {email}")
+        print(f"Processing: {email}" + (f" ({name})" if name else ""))
         
         if send_invite_email(email, name):
             sent += 1
