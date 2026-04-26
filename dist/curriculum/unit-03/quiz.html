@@ -631,17 +631,12 @@ function initSequenceExercise() {
             item.classList.remove('selected');
             selectedSeqItem = null;
         } else {
-            const items = Array.from(container.querySelectorAll('.sequence-item'));
-            const idx1 = items.indexOf(selectedSeqItem);
-            const idx2 = items.indexOf(item);
-            
-            if (idx1 < idx2) {
-                container.insertBefore(item, selectedSeqItem);
-                container.insertBefore(selectedSeqItem, items[idx2 + 1] || null);
-            } else {
-                container.insertBefore(selectedSeqItem, item);
-                container.insertBefore(item, items[idx1 + 1] || null);
-            }
+            // Swap using placeholder
+            const placeholder = document.createElement('div');
+            container.insertBefore(placeholder, selectedSeqItem);
+            container.insertBefore(selectedSeqItem, item);
+            container.insertBefore(item, placeholder);
+            container.removeChild(placeholder);
             
             selectedSeqItem.classList.remove('selected');
             selectedSeqItem = null;
