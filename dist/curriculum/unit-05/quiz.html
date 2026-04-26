@@ -753,49 +753,30 @@ function initSortExercise() {
         }
     });
     
-    // Click on zone to place selected item
+    // Click on zone to place or select items
     zones.forEach(zone => {
         zone.addEventListener('click', e => {
-            if (!selectedSortItem) return;
-            
-            // If clicking on an item already in zone, select it instead
             const clickedItem = e.target.closest('.sort-item');
+            
+            // If clicking on an item in the zone
             if (clickedItem) {
                 document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
                 clickedItem.classList.add('selected');
                 selectedSortItem = clickedItem;
+                zones.forEach(z => z.classList.add('active'));
                 return;
             }
             
+            // If no item selected, do nothing
+            if (!selectedSortItem) return;
+            
+            // Place the selected item in this zone
             zone.appendChild(selectedSortItem);
             selectedSortItem.classList.add('placed');
             selectedSortItem.classList.remove('selected');
             selectedSortItem = null;
             zones.forEach(z => z.classList.remove('active'));
         });
-    });
-    
-    // Allow clicking placed items in zones to select and move them
-    zones.forEach(zone => {
-        zone.addEventListener('click', e => {
-            const item = e.target.closest('.sort-item');
-            if (item && !selectedSortItem) {
-                document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
-                item.classList.add('selected');
-                selectedSortItem = item;
-                zones.forEach(z => z.classList.add('active'));
-            }
-        });
-    });
-    
-    // Click source area to return item
-    sourceContainer.addEventListener('click', e => {
-        if (selectedSortItem && selectedSortItem.classList.contains('placed') && !e.target.closest('.sort-item')) {
-            sourceContainer.appendChild(selectedSortItem);
-            selectedSortItem.classList.remove('placed', 'selected');
-            selectedSortItem = null;
-            zones.forEach(z => z.classList.remove('active'));
-        }
     });
 }
 
