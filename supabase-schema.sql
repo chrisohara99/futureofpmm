@@ -124,3 +124,14 @@ CREATE INDEX IF NOT EXISTS idx_quiz_scores_user ON quiz_scores(user_id);
 CREATE INDEX IF NOT EXISTS idx_chapter_progress_user ON chapter_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_activity_progress_user ON activity_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_assessment_results_user ON assessment_results(user_id);
+
+-- Newsletter unsubscribes (standalone, not tied to auth)
+CREATE TABLE IF NOT EXISTS unsubscribes (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    unsubscribed_at TIMESTAMPTZ DEFAULT NOW(),
+    source TEXT DEFAULT 'newsletter'  -- 'newsletter', 'digest', etc.
+);
+
+-- No RLS on unsubscribes - accessed via service key only
+CREATE INDEX IF NOT EXISTS idx_unsubscribes_email ON unsubscribes(email);

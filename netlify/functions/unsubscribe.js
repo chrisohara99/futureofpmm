@@ -2,10 +2,21 @@
 // URL: /.netlify/functions/unsubscribe?email=xxx&token=xxx
 
 const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
 
 // Simple secret for signing unsubscribe tokens
-// In production, use environment variable
 const UNSUBSCRIBE_SECRET = process.env.UNSUBSCRIBE_SECRET || 'pmm-unsub-2026';
+
+// Initialize Supabase (uses service key for write access)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+function getSupabase() {
+    if (!supabaseUrl || !supabaseServiceKey) {
+        return null;
+    }
+    return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 // Generate token for an email (use this when creating unsubscribe links)
 function generateToken(email) {
@@ -22,12 +33,12 @@ function verifyToken(email, token) {
 }
 
 exports.handler = async (event) => {
-    // Handle both GET (link click) and POST
     const params = event.queryStringParameters || {};
     const email = params.email;
     const token = params.token;
+    const source = params.source || 'newsletter';
     
-    // Missing params - show form or error
+    // Missing params
     if (!email || !token) {
         return {
             statusCode: 400,
@@ -76,14 +87,45 @@ exports.handler = async (event) => {
     }
     
     // Token valid - record the unsubscribe
-    // For now, we'll log it and show success
-    // In production, this would write to Supabase or a file
-    console.log(`UNSUBSCRIBE: ${email} at ${new Date().toISOString()}`);
+    const normalizedEmail = email.toLowerCase().trim();
+    let dbError = null;
     
-    // TODO: Write to Supabase unsubscribes table
-    // const { createClient } = require('@supabase/supabase-js');
-    // const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-    // await supabase.from('unsubscribes').upsert({ email: email.toLowerCase() });
+    const supabase = getSupabase();
+    if (supabase) {
+        try {
+            const { error } = await supabase
+                .from('unsubscribes')
+                .upsert({ 
+                    email: normalizedEmail,
+                    source: source,
+                    unsubscribed_at: new Date().toISOString()
+                }, { 
+                    onConflict: 'email' 
+                });
+            
+            if (error) {
+                console.error('Supabase error:', error);
+                dbError = error.message;
+            }
+        } catch (err) {
+            console.error('Supabase exception:', err);
+            dbError = err.message;
+        }
+    } else {
+        console.log(`UNSUBSCRIBE (no DB): ${normalizedEmail} at ${new Date().toISOString()}`);
+    }
+    
+    // Also update profile if user exists (for authenticated users)
+    if (supabase) {
+        try {
+            await supabase
+                .from('profiles')
+                .update({ newsletter_opt_in: false })
+                .eq('email', normalizedEmail);
+        } catch (err) {
+            // Ignore - user may not have a profile
+        }
+    }
     
     return {
         statusCode: 200,
@@ -102,7 +144,7 @@ exports.handler = async (event) => {
 <body>
     <h1>Unsubscribed</h1>
     <div class="success">
-        <p><strong>${email}</strong> has been removed from the Future of PMM newsletter.</p>
+        <p><strong>${normalizedEmail}</strong> has been removed from the Future of PMM newsletter.</p>
     </div>
     <p>Changed your mind? <a href="https://futureofpmm.com/subscribe.html">Re-subscribe here</a></p>
     <p><a href="https://futureofpmm.com">← Back to Future of PMM</a></p>
