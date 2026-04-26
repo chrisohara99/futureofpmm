@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Labs | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--sap-orange) 100%);
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.2rem; opacity: 0.95; max-width: 700px; margin: 0 auto; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; }
+        
+        .labs-intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .labs-intro h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .labs-intro p { color: #555; max-width: 600px; margin: 0 auto; }
+        
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .lab-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+        .lab-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .lab-card.coming-soon {
+            opacity: 0.7;
+            cursor: default;
+        }
+        .lab-card.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .lab-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .lab-unit {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--sap-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .lab-card h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.75rem;
+        }
+        
+        .lab-card p {
+            font-size: 0.9rem;
+            color: #666;
+            flex: 1;
+        }
+        
+        .lab-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        .lab-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .lab-badge.active { background: var(--green); color: white; }
+        .lab-badge.soon { background: var(--light-gray); color: #666; }
+        
+        .lab-output {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>🔬 AI Labs</h1>
+    <p>Apply what you've learned to real projects. Input your work, get AI-powered analysis and deliverables you can use Monday morning.</p>
+</section>
+
+<main>
+    <a href="/curriculum/" class="back-link">← Back to Curriculum</a>
+    
+    <div class="labs-intro">
+        <h2>Hands-On Practice</h2>
+        <p>Each lab takes concepts from the curriculum and turns them into actionable outputs for your actual products, content, and competitive challenges.</p>
+    </div>
+    
+    <div class="labs-grid">
+        
+        <a href="geo-visibility.html" class="lab-card">
+            <div class="lab-icon">🔍</div>
+            <div class="lab-unit">Unit 2: Visibility</div>
+            <h3>GEO Visibility Test</h3>
+            <p>Test how visible your product is to AI-assisted buyer research. Get a visibility score and specific recommendations to improve discoverability.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Analysis Report</span>
+            </div>
+        </a>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">🎯</div>
+            <div class="lab-unit">Unit 4: Positioning</div>
+            <h3>Agent Positioning Test</h3>
+            <p>Run the "Agent Test" on your product page. See how an AI procurement agent would evaluate your positioning and get specific rewrites.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Positioning Audit</span>
+            </div>
+        </div>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">⚔️</div>
+            <div class="lab-unit">Unit 3: Competitive</div>
+            <h3>CI Brief Generator</h3>
+            <p>Input competitor intel and deal context. Get a sales-ready competitive brief with trap-setting questions and objection handlers.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Sales Brief</span>
+            </div>
+        </div>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">🎬</div>
+            <div class="lab-unit">Unit 7: Demos</div>
+            <h3>Demo Narrative Builder</h3>
+            <p>Transform your product features into compelling transformation stories. Generate 3 ready-to-use demo narratives for your ICP.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Demo Scripts</span>
+            </div>
+        </div>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">📊</div>
+            <div class="lab-unit">Unit 6: Content</div>
+            <h3>Content Layer Audit</h3>
+            <p>Classify your recent content into Commodity/Strategic/Signature layers. Get a reallocation plan to shift effort toward higher-impact work.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Content Plan</span>
+            </div>
+        </div>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">🤖</div>
+            <div class="lab-unit">Unit 1: AI Impact</div>
+            <h3>PMM Activity Audit</h3>
+            <p>Analyze your weekly PMM activities for AI transformation potential. Get a prioritized automation roadmap with specific tool recommendations.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Automation Plan</span>
+            </div>
+        </div>
+        
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>
