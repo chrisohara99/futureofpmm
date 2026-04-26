@@ -172,6 +172,20 @@
         async gatePage(requiredUnit) {
             await this.init();
             
+            // Admin bypass: ?bypass=1 or specific admin users
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('bypass') === '1') {
+                console.log('Admin bypass active');
+                return true;
+            }
+            
+            // Check for admin user (Chris)
+            const { data: { session } } = await this.supabase.auth.getSession();
+            if (session && session.user.email === 'chrisohara1968@gmail.com') {
+                console.log('Admin user - gating bypassed');
+                return true;
+            }
+            
             if (!this.canAccessUnit(requiredUnit)) {
                 const next = this.getNextStep();
                 console.log(`Cannot access ${requiredUnit}, redirecting to ${next.url}`);
