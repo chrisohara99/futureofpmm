@@ -1,11 +1,563 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0;url=/curriculum/intro.html">
-    <title>Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Curriculum | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 2.5rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; font-size: 1.1rem; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #888;
+        }
+        .loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top-color: var(--sap-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .dashboard { display: none; }
+        .dashboard.show { display: block; }
+        
+        /* Progress Overview */
+        .progress-overview {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .progress-header h2 { font-size: 1.2rem; color: var(--dark-slate); }
+        .progress-percent {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+        }
+        .progress-bar-container {
+            background: var(--light-gray);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--sap-blue), var(--green));
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .progress-stats span { display: flex; align-items: center; gap: 0.5rem; }
+        
+        /* Continue Section */
+        .continue-section {
+            background: linear-gradient(135deg, var(--sap-orange), #F5A623);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .continue-section.complete {
+            background: linear-gradient(135deg, var(--green), #8BC34A);
+        }
+        .continue-info h3 { font-size: 1.1rem; margin-bottom: 0.25rem; opacity: 0.9; }
+        .continue-info p { font-size: 1.3rem; font-weight: 600; }
+        .continue-btn {
+            background: white;
+            color: var(--sap-orange);
+            padding: 0.85rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .continue-section.complete .continue-btn { color: var(--green); }
+        .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        
+        /* Units Grid */
+        .units-section { margin-bottom: 2rem; }
+        .units-section h2 {
+            font-size: 1.1rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .unit-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .unit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .unit-card.completed { border-color: var(--green); }
+        .unit-card.current { border-color: var(--sap-orange); }
+        .unit-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .unit-card.locked:hover { transform: none; }
+        
+        .unit-status {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .unit-card.completed .unit-status { background: var(--green); color: white; }
+        .unit-card.current .unit-status { background: var(--sap-orange); color: white; }
+        .unit-card.locked .unit-status { background: var(--light-gray); color: #888; }
+        .unit-card.available .unit-status { background: var(--sap-blue); color: white; }
+        
+        .unit-info { flex: 1; }
+        .unit-info h3 { font-size: 0.95rem; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .unit-info p { font-size: 0.85rem; color: #888; margin: 0; }
+        
+        .unit-score {
+            font-size: 0.8rem;
+            color: var(--green);
+            font-weight: 600;
+            margin-top: 0.35rem;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .quick-action {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 0.75rem 1.25rem;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .quick-action:hover {
+            border-color: var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        
+        /* Assessments Section */
+        .assessments-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .assessments-section h2 {
+            font-size: 1.1rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+        }
+        .assessment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .assessment-row:last-child { border-bottom: none; }
+        .assessment-name { font-size: 0.95rem; }
+        .assessment-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .assessment-status.done { color: var(--green); }
+        .assessment-status.pending { color: #888; }
+    </style>
 </head>
 <body>
-    <p>Redirecting to <a href="/curriculum/intro.html">curriculum intro</a>...</p>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <h1>My Curriculum</h1>
+        <p id="heroSubtitle">Loading your progress...</p>
+    </div>
+</section>
+
+<main>
+    <div class="loading" id="loadingState">
+        <div class="spinner"></div>
+        <p>Loading your progress...</p>
+    </div>
+    
+    <div class="dashboard" id="dashboard">
+        <!-- Progress Overview -->
+        <div class="progress-overview">
+            <div class="progress-header">
+                <h2>📊 Overall Progress</h2>
+                <span class="progress-percent" id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div class="progress-stats">
+                <span>✅ <span id="completedCount">0</span> units completed</span>
+                <span>📚 <span id="remainingCount">7</span> remaining</span>
+            </div>
+        </div>
+        
+        <!-- Continue Section -->
+        <div class="continue-section" id="continueSection">
+            <div class="continue-info">
+                <h3 id="continueLabel">Continue Learning</h3>
+                <p id="continueTitle">Loading...</p>
+            </div>
+            <a href="#" class="continue-btn" id="continueBtn">Continue →</a>
+        </div>
+        
+        <!-- Pre-requisite Assessments -->
+        <div class="assessments-section" id="assessmentsSection">
+            <h2>📋 Pre-Requisite Assessments</h2>
+            <div class="assessment-row">
+                <span class="assessment-name">10x PMM Scorecard (Content)</span>
+                <span class="assessment-status" id="scorecardStatus">
+                    <span>⏳</span> Not started
+                </span>
+            </div>
+            <div class="assessment-row">
+                <span class="assessment-name">Where Do You Sit?</span>
+                <span class="assessment-status" id="whereStatus">
+                    <span>⏳</span> Not started
+                </span>
+            </div>
+        </div>
+        
+        <!-- Units Grid -->
+        <div class="units-section">
+            <h2>📚 Course Units</h2>
+            <div class="units-grid" id="unitsGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/curriculum/labs/" class="quick-action">🔬 AI Labs</a>
+            <a href="/curriculum/intro.html" class="quick-action">📖 Review Intro</a>
+            <a href="/10x-scorecard.html" class="quick-action">📊 Retake Scorecard</a>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script>
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+
+const UNITS = [
+    { id: 'unit-01', num: 1, title: 'AI Impact on PMM', desc: 'The transformation landscape' },
+    { id: 'unit-02', num: 2, title: 'Visibility in the Age of Agents', desc: 'SEO → GEO' },
+    { id: 'unit-03', num: 3, title: 'Market Intelligence & Competitive Strategy', desc: 'Living CI systems' },
+    { id: 'unit-04', num: 4, title: 'Positioning for Two Audiences', desc: 'Humans + agents' },
+    { id: 'unit-05', num: 5, title: 'Sales Enablement', desc: 'Death of static battlecards' },
+    { id: 'unit-06', num: 6, title: 'Content & Thought Leadership', desc: 'The narrative advantage' },
+    { id: 'unit-07', num: 7, title: 'The Demo Stack', desc: 'Product storytelling reimagined' }
+];
+
+let client;
+let userProgress = {
+    assessments: {},
+    quizzes: {},
+    completedUnits: new Set()
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    const { data: { session } } = await client.auth.getSession();
+    
+    if (!session) {
+        // Not logged in - redirect to intro
+        window.location.href = '/curriculum/intro.html';
+        return;
+    }
+    
+    await loadProgress(session.user.id);
+    renderDashboard();
+});
+
+async function loadProgress(userId) {
+    try {
+        // Load assessment results
+        const { data: assessments } = await client
+            .from('assessment_results')
+            .select('assessment_type, result_key, completed_at')
+            .eq('user_id', userId);
+        
+        if (assessments) {
+            assessments.forEach(a => {
+                userProgress.assessments[a.assessment_type] = {
+                    completed: true,
+                    resultKey: a.result_key,
+                    completedAt: a.completed_at
+                };
+            });
+        }
+        
+        // Load quiz scores (best per unit)
+        const { data: quizzes } = await client
+            .from('quiz_scores')
+            .select('chapter, percentage, completed_at')
+            .eq('user_id', userId)
+            .order('percentage', { ascending: false });
+        
+        if (quizzes) {
+            quizzes.forEach(q => {
+                if (!userProgress.quizzes[q.chapter]) {
+                    userProgress.quizzes[q.chapter] = {
+                        bestScore: q.percentage,
+                        passed: q.percentage >= 80,
+                        completedAt: q.completed_at
+                    };
+                    if (q.percentage >= 80) {
+                        userProgress.completedUnits.add(q.chapter);
+                    }
+                }
+            });
+        }
+        
+    } catch (err) {
+        console.error('Error loading progress:', err);
+    }
+}
+
+function renderDashboard() {
+    const loadingEl = document.getElementById('loadingState');
+    const dashboardEl = document.getElementById('dashboard');
+    
+    // Calculate progress
+    const completedCount = userProgress.completedUnits.size;
+    const totalUnits = UNITS.length;
+    const progressPercent = Math.round((completedCount / totalUnits) * 100);
+    
+    // Update hero
+    document.getElementById('heroSubtitle').textContent = 
+        completedCount === totalUnits 
+            ? '🎓 Curriculum Complete!' 
+            : `${completedCount} of ${totalUnits} units completed`;
+    
+    // Update progress overview
+    document.getElementById('progressPercent').textContent = `${progressPercent}%`;
+    document.getElementById('progressBar').style.width = `${progressPercent}%`;
+    document.getElementById('completedCount').textContent = completedCount;
+    document.getElementById('remainingCount').textContent = totalUnits - completedCount;
+    
+    // Update assessments status
+    const hasScorecard = !!userProgress.assessments['10x-scorecard-content'];
+    const hasWhere = !!userProgress.assessments['where-do-you-sit'];
+    
+    document.getElementById('scorecardStatus').innerHTML = hasScorecard 
+        ? '<span class="done">✅ Complete</span>'
+        : '<span class="pending">⏳ Not started</span>';
+    
+    document.getElementById('whereStatus').innerHTML = hasWhere 
+        ? '<span class="done">✅ Complete</span>'
+        : '<span class="pending">⏳ Not started</span>';
+    
+    // Find next unit
+    let nextUnit = null;
+    const assessmentsDone = hasScorecard && hasWhere;
+    
+    if (!assessmentsDone) {
+        // Need to complete assessments first
+        document.getElementById('continueLabel').textContent = 'Complete Assessments First';
+        document.getElementById('continueTitle').textContent = !hasScorecard 
+            ? '10x PMM Scorecard' 
+            : 'Where Do You Sit?';
+        document.getElementById('continueBtn').href = !hasScorecard 
+            ? '/10x-scorecard.html?flow=curriculum' 
+            : '/where-do-you-sit.html?flow=curriculum';
+    } else {
+        // Find first incomplete unit
+        for (const unit of UNITS) {
+            if (!userProgress.completedUnits.has(unit.id)) {
+                nextUnit = unit;
+                break;
+            }
+        }
+        
+        if (nextUnit) {
+            document.getElementById('continueLabel').textContent = 'Continue Learning';
+            document.getElementById('continueTitle').textContent = `Unit ${nextUnit.num}: ${nextUnit.title}`;
+            document.getElementById('continueBtn').href = `/curriculum/${nextUnit.id}/`;
+        } else {
+            // All complete!
+            document.getElementById('continueSection').classList.add('complete');
+            document.getElementById('continueLabel').textContent = '🎓 Curriculum Complete!';
+            document.getElementById('continueTitle').textContent = 'Explore the AI Labs';
+            document.getElementById('continueBtn').textContent = 'Go to Labs →';
+            document.getElementById('continueBtn').href = '/curriculum/labs/';
+        }
+    }
+    
+    // Render units grid
+    const unitsGrid = document.getElementById('unitsGrid');
+    unitsGrid.innerHTML = '';
+    
+    UNITS.forEach((unit, index) => {
+        const isCompleted = userProgress.completedUnits.has(unit.id);
+        const quiz = userProgress.quizzes[unit.id];
+        
+        // Check if unlocked (previous unit completed or first unit with assessments done)
+        let isUnlocked = false;
+        if (index === 0) {
+            isUnlocked = assessmentsDone;
+        } else {
+            const prevUnit = UNITS[index - 1];
+            isUnlocked = userProgress.completedUnits.has(prevUnit.id);
+        }
+        
+        const isCurrent = isUnlocked && !isCompleted && (index === 0 || userProgress.completedUnits.has(UNITS[index - 1].id));
+        
+        let statusClass = 'locked';
+        let statusIcon = '🔒';
+        
+        if (isCompleted) {
+            statusClass = 'completed';
+            statusIcon = '✓';
+        } else if (isCurrent) {
+            statusClass = 'current';
+            statusIcon = '→';
+        } else if (isUnlocked) {
+            statusClass = 'available';
+            statusIcon = unit.num;
+        }
+        
+        const card = document.createElement('a');
+        card.className = `unit-card ${statusClass}`;
+        card.href = isUnlocked ? `/curriculum/${unit.id}/` : '#';
+        if (!isUnlocked) card.onclick = (e) => e.preventDefault();
+        
+        card.innerHTML = `
+            <div class="unit-status">${statusIcon}</div>
+            <div class="unit-info">
+                <h3>Unit ${unit.num}: ${unit.title}</h3>
+                <p>${unit.desc}</p>
+                ${quiz ? `<div class="unit-score">Score: ${quiz.bestScore}%</div>` : ''}
+            </div>
+        `;
+        
+        unitsGrid.appendChild(card);
+    });
+    
+    // Show dashboard
+    loadingEl.style.display = 'none';
+    dashboardEl.classList.add('show');
+}
+</script>
 </body>
 </html>
