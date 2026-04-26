@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 4: Positioning for Two Audiences | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--sap-orange); height: 100%; width: 57%; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--sap-blue); font-size: 1.1rem; }
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        .key-concept h4 { color: var(--sap-orange); font-size: 1rem; margin-bottom: 0.5rem; }
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        .case-study h4 { color: #F57C00; font-size: 1rem; margin-bottom: 0.75rem; }
+        
+        .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        @media (max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .comparison-card.audience-human { border-top: 4px solid var(--sap-orange); }
+        .comparison-card.audience-agent { border-top: 4px solid var(--sap-blue); }
+        .comparison-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .comparison-card.audience-human h4 { color: var(--sap-orange); }
+        .comparison-card.audience-agent h4 { color: var(--sap-blue); }
+        .comparison-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.95rem; }
+        
+        .layer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .layer-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+        
+        .layer-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+        .layer-card:nth-child(1) .layer-num { background: var(--sap-orange); }
+        .layer-card:nth-child(2) .layer-num { background: var(--sap-blue); }
+        .layer-card:nth-child(3) .layer-num { background: var(--green); }
+        .layer-card:nth-child(4) .layer-num { background: var(--dark-slate); }
+        
+        .layer-content h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--dark-slate); }
+        .layer-content p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        @media (max-width: 600px) { .before-after { grid-template-columns: 1fr; } }
+        
+        .before-after-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .before-after-card.before { border-top: 4px solid var(--red); }
+        .before-after-card.after { border-top: 4px solid var(--green); }
+        .before-after-card h4 { font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.75rem; }
+        .before-after-card.before h4 { color: var(--red); }
+        .before-after-card.after h4 { color: var(--green); }
+        .before-after-card p { font-size: 0.95rem; margin: 0; font-style: italic; }
+        
+        .highlight-box {
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .tactic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .tactic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tactic-card h4 { color: var(--sap-blue); font-size: 1rem; margin-bottom: 0.5rem; }
+        .tactic-card p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .chapter-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        .chapter-actions h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .action-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .action-card .label { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .action-card .sublabel { font-size: 0.8rem; color: #888; }
+        .action-card.primary { background: var(--sap-orange); color: white; }
+        .action-card.primary .sublabel { color: rgba(255,255,255,0.8); }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-btn.prev { background: var(--light-gray); color: var(--text); }
+        .nav-btn.next { background: var(--sap-blue); color: white; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <p class="unit-label">Unit 4 <span class="funnel-badge">Evaluation Stage</span></p>
+        <h1>Positioning for Two Audiences</h1>
+        <p class="time">⏱️ 45 minutes</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand the dual-audience problem: humans AND agents evaluate your positioning</li>
+            <li>Learn what agents actually read and how they evaluate vendors</li>
+            <li>Apply the Four-Layer Positioning Architecture</li>
+            <li>Kill vague value propositions and write agent-readable claims</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The Company A vs Company B Problem</h2>
+        
+        <p>Two companies sell the same thing: enterprise data platforms. Both serve Fortune 500 customers. Both have strong engineering teams. But they're built differently:</p>
+        
+        <div class="comparison-box">
+            <div class="comparison-card audience-human">
+                <h4>Company A (Native)</h4>
+                <ul>
+                    <li>Built platform natively over 15 years</li>
+                    <li>Data fabric, analytics, planning, AI — all designed together</li>
+                    <li>Common semantic model</li>
+                    <li>Unified governance framework</li>
+                </ul>
+            </div>
+            <div class="comparison-card audience-agent">
+                <h4>Company B (Acquired)</h4>
+                <ul>
+                    <li>Assembled via 5 acquisitions over 5 years</li>
+                    <li>Data warehouse + BI + integration + AI startup</li>
+                    <li>Stitched together with APIs</li>
+                    <li>"One platform" marketing narrative</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p>In the traditional buying process, both companies competed effectively. Company B's demo was choreographed to hide the seams. Their positioning emphasized breadth: "everything you need, one vendor." Human buyers responded to the story.</p>
+        
+        <p><strong>Then the agents showed up.</strong></p>
+        
+        <div class="key-concept">
+            <h4>"Acquisition as Confession"</h4>
+            <p>When an agent evaluates Company B, it reads <em>all</em> the documentation — not the curated demo. It notices three different authentication models across acquired products. It notices the "unified semantic model" on the marketing page doesn't match the integration guides. It notices the "one platform" claim is contradicted by separate troubleshooting paths for each component.</p>
+            <p style="margin-top: 0.75rem;"><strong>The agent doesn't care about the steak dinner.</strong> It cares about structural coherence — whether the architecture matches the claims.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Dual-Audience Problem</h2>
+        
+        <p>Your positioning now needs to work for <strong>two audiences simultaneously</strong>:</p>
+        
+        <div class="comparison-box">
+            <div class="comparison-card audience-human">
+                <h4>👤 Audience 1: Human Decision-Maker</h4>
+                <ul>
+                    <li>Responds to narrative, brand, emotion</li>
+                    <li>Wants to feel they're making a smart choice</li>
+                    <li>Needs to defend decision to their board</li>
+                    <li>Signs the contract</li>
+                </ul>
+            </div>
+            <div class="comparison-card audience-agent">
+                <h4>🤖 Audience 2: The Agent</h4>
+                <ul>
+                    <li>Responds to structured information</li>
+                    <li>Evaluates consistency & verifiable evidence</li>
+                    <li>Produces the shortlist humans choose from</li>
+                    <li>Pre-filters before humans see you</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="case-study">
+            <h4>💡 The Tension</h4>
+            <p>Traditional positioning: "Don't sell the drill, sell the hole." Great for humans.</p>
+            <p style="margin-top: 0.5rem;">But the agent isn't evaluating whether you <em>sell</em> the hole effectively — it's evaluating whether your drill actually <em>makes</em> the hole. It wants specifications, benchmarks, architecture details.</p>
+            <p style="margin-top: 0.5rem;"><strong>It wants the receipt, not the promise.</strong></p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>What Agents Actually Read</h2>
+        
+        <p>We ran an experiment: took 10 enterprise software product pages and fed them to Claude as a simulated procurement agent with specific requirements.</p>
+        
+        <h3>The Results</h3>
+        
+        <div class="comparison-box">
+            <div class="comparison-card audience-human">
+                <h4>❌ Vague Pages</h4>
+                <ul>
+                    <li>"The vendor <em>appears</em> to offer analytics but doesn't specify real-time"</li>
+                    <li>"Multi-cloud not explicitly confirmed"</li>
+                    <li>"Cannot evaluate — insufficient structured information"</li>
+                </ul>
+            </div>
+            <div class="comparison-card audience-agent">
+                <h4>✅ Specific Pages</h4>
+                <ul>
+                    <li>Clean, confident evaluations</li>
+                    <li>Capabilities mapped to requirements</li>
+                    <li>Gaps clearly identified</li>
+                    <li>Clear recommendation provided</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="highlight-box">
+            The lesson isn't "write for robots." The lesson is that vague positioning has always been a weakness — and agents are about to expose it at scale.
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Four-Layer Positioning Architecture</h2>
+        
+        <p>Good positioning in an agent-mediated world has four layers, each serving different functions:</p>
+        
+        <div class="layer-grid">
+            <div class="layer-card">
+                <div class="layer-num">1</div>
+                <div class="layer-content">
+                    <h4>Narrative Layer</h4>
+                    <p>Traditional positioning — the story, vision, "why us." Compelling, differentiated, emotionally resonant. What makes a CMO think "these are my people." <strong>Still essential.</strong></p>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">2</div>
+                <div class="layer-content">
+                    <h4>Capability Layer</h4>
+                    <p>Structured articulation of what you DO, mapped to buyer requirements. Not a feature list — a capability framework. "Native bidirectional integration with SAP S/4HANA" beats "seamless enterprise integration."</p>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">3</div>
+                <div class="layer-content">
+                    <h4>Evidence Layer</h4>
+                    <p>Proof points: named customer case studies with quantified outcomes, analyst recognition with specific criteria, benchmarks, certifications. Agents weight evidence heavily because it's verifiable.</p>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">4</div>
+                <div class="layer-content">
+                    <h4>Architecture Layer</h4>
+                    <p>The structural story: how it's built, how components relate, where data flows, what's native vs integrated vs third-party. This is where "acquisition as confession" plays out.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Killing the Vague Value Proposition</h2>
+        
+        <p>We confess: we've written vague value propositions. "Unlock the power of data-driven marketing." "Deliver the right message at the right time." They tested well in focus groups. They said exactly nothing.</p>
+        
+        <p><strong>The agentic era will kill vague value propositions.</strong> And honestly, good riddance.</p>
+        
+        <div class="before-after">
+            <div class="before-after-card before">
+                <h4>❌ Vague (Marketing Air)</h4>
+                <p>"Unlock actionable insights from your data"</p>
+            </div>
+            <div class="before-after-card after">
+                <h4>✅ Specific (Capability)</h4>
+                <p>"Real-time anomaly detection across supply chain data with automated alerting and root-cause analysis"</p>
+            </div>
+        </div>
+        
+        <div class="before-after">
+            <div class="before-after-card before">
+                <h4>❌ Vague</h4>
+                <p>"Seamless enterprise integration across your technology ecosystem"</p>
+            </div>
+            <div class="before-after-card after">
+                <h4>✅ Specific</h4>
+                <p>"Native bidirectional integration with SAP S/4HANA, Salesforce, and Workday for real-time data synchronization"</p>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>The Test</h4>
+            <p>If an agent can't find evidence that you actually do the thing you claim to do, you're invisible to that agent. And <strong>invisible to the agent increasingly means invisible to the buyer.</strong></p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Practitioner's Playbook</h2>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>1. Run the Agent Test</h4>
+                <p>Feed your product page to Claude/ChatGPT: "You are evaluating this vendor for [use case] with these requirements: [list 5-7]. Based only on this page, assess fit." If it hedges, you have a specificity gap.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>2. Audit Doc Consistency</h4>
+                <p>Marketing says "unified platform" — do the docs describe three separate config workflows? Marketing says "real-time" — do docs show 15-minute batch refresh? Agents will find these gaps.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>3. Build Capability-Up</h4>
+                <p>Traditional: start with story, find proof points. New approach: start with specific capabilities, map to use cases, quantify outcomes, <em>then</em> write narrative on top. Grounded in what's real.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li><strong>Positioning has two audiences now:</strong> humans (who decide) and agents (who pre-filter)</li>
+            <li><strong>Agents evaluate structural coherence:</strong> does architecture match claims?</li>
+            <li><strong>Four layers:</strong> Narrative → Capability → Evidence → Architecture</li>
+            <li><strong>Specificity beats vision:</strong> "150+ integrations" beats "seamless connectivity"</li>
+            <li><strong>Documentation consistency is positioning:</strong> agents read your docs, not just your marketing</li>
+        </ul>
+    </section>
+    
+    <div class="chapter-actions">
+        <h2>✓ Complete This Unit</h2>
+        <div class="action-grid">
+            <a href="quiz.html" class="action-card primary">
+                <span class="icon">📝</span>
+                <span class="label">Take the Assessment</span>
+                <span class="sublabel">Interactive • 15 min</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav class="chapter-nav">
+        <a href="/curriculum/unit-03/" class="nav-btn prev">← Unit 3</a>
+        <a href="/curriculum/unit-05/" class="nav-btn next">Unit 5 →</a>
+    </nav>
+    
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>
