@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 6: Content, Thought Leadership, and the Narrative Advantage | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--sap-orange); height: 100%; width: 86%; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--sap-blue); font-size: 1.1rem; }
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        .key-concept h4 { color: var(--sap-orange); font-size: 1rem; margin-bottom: 0.5rem; }
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        .case-study h4 { color: #F57C00; font-size: 1rem; margin-bottom: 0.75rem; }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #9C27B0;
+            text-align: center;
+        }
+        .stat-box .stat { font-size: 3rem; font-weight: 700; color: #7B1FA2; }
+        .stat-box .label { font-size: 1rem; color: #555; margin-top: 0.5rem; }
+        
+        .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        @media (max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .comparison-card.dying { border-top: 4px solid var(--red); }
+        .comparison-card.thriving { border-top: 4px solid var(--green); }
+        .comparison-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .comparison-card.dying h4 { color: var(--red); }
+        .comparison-card.thriving h4 { color: var(--green); }
+        .comparison-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.95rem; }
+        
+        .layer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .layer-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+        
+        .layer-badge {
+            text-align: center;
+        }
+        .layer-badge .percent {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.25rem;
+        }
+        .layer-card:nth-child(1) .percent { background: var(--light-gray); color: var(--text); }
+        .layer-card:nth-child(2) .percent { background: var(--sap-blue); }
+        .layer-card:nth-child(3) .percent { background: var(--sap-orange); }
+        .layer-badge .type { font-size: 0.75rem; color: #888; }
+        
+        .layer-content h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--dark-slate); }
+        .layer-content p { font-size: 0.9rem; color: #555; margin: 0; }
+        .layer-content .who { font-size: 0.85rem; color: var(--sap-blue); margin-top: 0.5rem; font-weight: 500; }
+        
+        .highlight-box {
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        @media (max-width: 600px) { .before-after { grid-template-columns: 1fr; } }
+        
+        .before-after-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .before-after-card.before { border-top: 4px solid var(--red); }
+        .before-after-card.after { border-top: 4px solid var(--green); }
+        .before-after-card h4 { font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.75rem; }
+        .before-after-card.before h4 { color: var(--red); }
+        .before-after-card.after h4 { color: var(--green); }
+        .before-after-card p { font-size: 0.95rem; margin: 0; font-style: italic; }
+        
+        .tactic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .tactic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tactic-card h4 { color: var(--sap-blue); font-size: 1rem; margin-bottom: 0.5rem; }
+        .tactic-card p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .chapter-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        .chapter-actions h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .action-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .action-card .label { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .action-card .sublabel { font-size: 0.8rem; color: #888; }
+        .action-card.primary { background: var(--sap-orange); color: white; }
+        .action-card.primary .sublabel { color: rgba(255,255,255,0.8); }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-btn.prev { background: var(--light-gray); color: var(--text); }
+        .nav-btn.next { background: var(--sap-blue); color: white; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <p class="unit-label">Unit 6 <span class="funnel-badge">Loyalty Stage</span></p>
+        <h1>Content, Thought Leadership, and the Narrative Advantage</h1>
+        <p class="time">⏱️ 45 minutes</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand the Content Collapse and why 80% of content is becoming invisible</li>
+            <li>Distinguish performative vs genuine thought leadership</li>
+            <li>Apply the Three-Layer Content Operating Model</li>
+            <li>Optimize content for GEO (Generative Engine Optimization)</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The 80/20 Pattern</h2>
+        
+        <p>We read every AI + PMM article from a daily digest for an entire month. 35 editions. 180 articles. The pattern was stark:</p>
+        
+        <div class="stat-box">
+            <div class="stat">80%</div>
+            <div class="label">Competent and interchangeable. Could have been written by any of a hundred people — or by no person at all.</div>
+        </div>
+        
+        <div class="comparison-box">
+            <div class="comparison-card dying">
+                <h4>❌ The 80% (Generic)</h4>
+                <ul>
+                    <li>Solid writing, reasonable arguments</li>
+                    <li>Nothing memorable 20 minutes later</li>
+                    <li>"5 Things Every CMO Needs to Know"</li>
+                    <li>Same frameworks with different metaphors</li>
+                    <li>Total information content: approximately zero</li>
+                </ul>
+            </div>
+            <div class="comparison-card thriving">
+                <h4>✅ The 20% (Differentiated)</h4>
+                <ul>
+                    <li>Specific experience from real work</li>
+                    <li>Contrarian takes backed by evidence</li>
+                    <li>Stories nobody else can tell</li>
+                    <li>Technical depth that can't be faked</li>
+                    <li>Voice that's recognizably human</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>The Ratio Is About to Get Worse</h4>
+            <p>The 80% that's competent and interchangeable is <strong>exactly the content that AI produces most easily</strong>. And the marginal cost of producing it is dropping toward zero. When everyone can generate "good enough" content instantly, only the genuinely differentiated 20% breaks through.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Content Collapse</h2>
+        
+        <p>In 2023, a competent PMM produced maybe 15,000 words of original content per month — blog posts, social, quarterly thought pieces. That represented a significant chunk of working time.</p>
+        
+        <p>In 2026, that same PMM with Claude or ChatGPT can produce that volume <strong>in a day</strong>. Not at the same quality, maybe. But at a quality level that's indistinguishable from human-written content to most readers.</p>
+        
+        <div class="highlight-box">
+            The supply of competent marketing content is exploding while the demand — the finite attention of your buyers — stays the same.
+        </div>
+        
+        <h3>Performative vs Genuine</h3>
+        
+        <div class="comparison-box">
+            <div class="comparison-card dying">
+                <h4>💀 Performative Thought Leadership (Dying)</h4>
+                <ul>
+                    <li>Performs appearance of insight without delivering</li>
+                    <li>Listicles and framework-of-the-week</li>
+                    <li>AI produces it at scale</li>
+                    <li>Readers developing antibodies to it</li>
+                </ul>
+            </div>
+            <div class="comparison-card thriving">
+                <h4>🌟 Genuine Thought Leadership (Scarce)</h4>
+                <ul>
+                    <li>Done something, seen something, learned something</li>
+                    <li>Specific point of view, grounded in experience</li>
+                    <li>Voice that's recognizably human</li>
+                    <li>The only kind that matters now</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Narrative Advantage</h2>
+        
+        <p>AI can generate a competent analogy. It can produce a hypothetical scenario. But it can't tell you about the Porsche on the tarmac at the Atlanta airport, because it wasn't there.</p>
+        
+        <div class="case-study">
+            <h4>💡 Stories That Stick</h4>
+            <p>In <em>Customer Data Platforms</em>, the story that made identity resolution concrete was the Porsche sitting on the tarmac at the Atlanta airport — a Delta SkyMiles play where they knew exactly which high-value customers to target.</p>
+            <p style="margin-top: 0.75rem;">The technical explanation of deterministic vs probabilistic matching would put you to sleep. <strong>The Porsche on the runway woke you up.</strong></p>
+        </div>
+        
+        <div class="key-concept">
+            <h4>What AI Can't Replicate</h4>
+            <p>The specificity of lived experience — the named person, the exact question, the energy in the room — is the thing that makes a story stick. The PMM who has real stories from real customer conversations, real deal cycles, real product failures and recoveries, has something <strong>no AI agent can replicate</strong>. Not because the technology isn't good enough. Because the stories require having been somewhere and paid attention.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>GEO: The Agent as Reader</h2>
+        
+        <p>When a buyer asks ChatGPT or Claude or Perplexity to recommend vendors for a specific use case, the AI synthesizes from the content it can access — web pages, documentation, analyst reports, blog posts.</p>
+        
+        <div class="before-after">
+            <div class="before-after-card before">
+                <h4>❌ Invisible to GEO</h4>
+                <p>"Unlocking the Power of Data-Driven Insights"</p>
+                <p style="margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; color: #888;">Too vague to be cited for any concrete buyer question</p>
+            </div>
+            <div class="before-after-card after">
+                <h4>✅ Agent-Surfaceable</h4>
+                <p>"How We Reduced Supply Chain Forecasting Errors by 34% Using Real-Time ERP Data"</p>
+                <p style="margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; color: #888;">Exactly what AI surfaces for supply chain analytics queries</p>
+            </div>
+        </div>
+        
+        <p>The same principles that make positioning agent-readable — specificity, structured claims, verifiable evidence — also make content more likely to be surfaced by AI systems.</p>
+        
+        <div class="highlight-box">
+            If your content is generic or vague or behind a registration wall, you don't get cited. In a world where vendor discovery happens through AI search, invisible to the agent means invisible to the buyer.
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Three-Layer Content Operating Model</h2>
+        
+        <p>The time allocation between these layers is roughly the <strong>inverse</strong> of what most PMM teams practice today:</p>
+        
+        <div class="layer-grid">
+            <div class="layer-card">
+                <div class="layer-badge">
+                    <div class="percent">20%</div>
+                    <div class="type">of time</div>
+                </div>
+                <div class="layer-content">
+                    <h4>Layer 1: Commodity Content</h4>
+                    <p>Blog posts, social updates, email sequences, slide decks, one-pagers. Should be <strong>almost entirely agent-produced</strong>. An agent can produce a LinkedIn post 90% as good in 2% of the time. The human reviews, ensures accuracy, adds personality if needed.</p>
+                    <div class="who">👤 Human role: Review & approve</div>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-badge">
+                    <div class="percent">40%</div>
+                    <div class="type">of time</div>
+                </div>
+                <div class="layer-content">
+                    <h4>Layer 2: Strategic Content</h4>
+                    <p>Pieces that advance positioning and establish POV. GEO investment lives here: deeply specific articles about capabilities, use cases, architecture, customer outcomes. Also competitive content.</p>
+                    <div class="who">👤 Human role: Direct strategy, provide stories, ensure positioning. Agent handles research & drafts.</div>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-badge">
+                    <div class="percent">40%</div>
+                    <div class="type">of time</div>
+                </div>
+                <div class="layer-content">
+                    <h4>Layer 3: Signature Content</h4>
+                    <p>Conference keynotes, long-form essays, genuinely original frameworks, customer stories with enough texture to feel the room. What makes readers follow <em>you</em> rather than your brand.</p>
+                    <div class="who">👤 Human role: Entirely human. No agent assistance in writing — the point is that it's irreducibly personal.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>The Inversion</h4>
+            <p>Most teams today: 60% commodity, 30% strategic, 10% signature.<br>
+            The 10x move: <strong>20% commodity, 40% strategic, 40% signature.</strong><br>
+            That transforms content from a production function into a strategic one.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Practitioner's Playbook</h2>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>1. Run the GEO Audit</h4>
+                <p>Ask Claude, ChatGPT, Perplexity to recommend products in your category for 3-5 specific use cases. Do you show up? Are you cited? Is the info accurate? If invisible or misrepresented, that's a content gap with pipeline implications.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>2. Protect Signature Time</h4>
+                <p>Find content from last year with the most engagement — not just views, but comments, shares, inbound from prospects. That's your signature content. Now ask: how much time does that author have to create more? If "not enough," you've found the problem.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>3. Build the Commodity Pipeline</h4>
+                <p>Choose your LLM, define templates, create a prompting workflow that produces channel-specific content at quality level you need. Goal: reduce commodity to a review-and-approve workflow. Hours reclaimed go to strategic and signature.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li><strong>80% of content is becoming invisible</strong> — competent-but-generic content that AI produces at scale</li>
+            <li><strong>The Narrative Advantage</strong> comes from stories only you can tell — lived experience AI can't replicate</li>
+            <li><strong>GEO matters:</strong> AI surfaces specific, structured, authoritative content; vague content is invisible</li>
+            <li><strong>Three-layer model:</strong> Commodity (20%, agent-produced), Strategic (40%, human-directed), Signature (40%, entirely human)</li>
+            <li><strong>Shift measurement</strong> from volume metrics (posts/month) to influence metrics (analyst citations, deal impact)</li>
+        </ul>
+    </section>
+    
+    <div class="chapter-actions">
+        <h2>✓ Complete This Unit</h2>
+        <div class="action-grid">
+            <a href="quiz.html" class="action-card primary">
+                <span class="icon">📝</span>
+                <span class="label">Take the Assessment</span>
+                <span class="sublabel">Interactive • 15 min</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav class="chapter-nav">
+        <a href="/curriculum/unit-05/" class="nav-btn prev">← Unit 5</a>
+        <a href="/curriculum/unit-07/" class="nav-btn next">Unit 7 →</a>
+    </nav>
+    
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>
