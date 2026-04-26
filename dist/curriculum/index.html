@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <script src="/assets/js/auth-guard.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -375,7 +374,23 @@ let userProgress = {
     completedUnits: new Set()
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
+// Wait for Supabase to be available
+function waitForSupabase(callback, maxAttempts = 50) {
+    let attempts = 0;
+    const check = () => {
+        if (typeof supabase !== 'undefined') {
+            callback();
+        } else if (++attempts < maxAttempts) {
+            setTimeout(check, 100);
+        } else {
+            console.error('Supabase failed to load');
+            renderDashboard(); // Show dashboard anyway
+        }
+    };
+    check();
+}
+
+async function initDashboard() {
     try {
         client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
@@ -400,6 +415,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Show dashboard anyway with defaults
         renderDashboard();
     }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    waitForSupabase(initDashboard);
 });
 
 async function loadProgress(userId) {
