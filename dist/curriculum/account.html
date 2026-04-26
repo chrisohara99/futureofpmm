@@ -187,7 +187,7 @@
     <div class="header-inner">
         <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
         <nav class="nav">
-            <a href="/curriculum/intro.html">Curriculum</a>
+            <a href="/curriculum/">Curriculum</a>
             <a href="/digests/">Digests</a>
             <a href="/newsletters.html">Newsletter</a>
         </nav>
@@ -248,7 +248,7 @@
     </div>
     
     <div class="actions">
-        <a href="/curriculum/intro.html" class="btn btn-primary">← Back to Curriculum</a>
+        <a href="/curriculum/" class="btn btn-primary">← Back to Curriculum</a>
         <button class="btn btn-danger" id="logoutBtn">🚪 Sign Out</button>
     </div>
 </main>
@@ -265,13 +265,13 @@ try {
 }
 
 const chapters = [
-    { id: 'unit-01', num: 1, title: 'The Evolution of PMM', available: true },
-    { id: 'unit-02', num: 2, title: 'Creating Awareness through AI Discoverability', available: false },
-    { id: 'unit-03', num: 3, title: 'Building Positioning that Survives Summarization', available: false },
-    { id: 'unit-04', num: 4, title: 'Enabling AI-Mediated Evaluation', available: false },
-    { id: 'unit-05', num: 5, title: 'Messaging for Consumption-Based Models', available: false },
-    { id: 'unit-06', num: 6, title: 'Supporting the AI-Assisted Decision', available: false },
-    { id: 'unit-07', num: 7, title: 'Retention in the Age of Agents', available: false }
+    { id: 'unit-01', num: 1, title: 'AI Impact on PMM', available: true },
+    { id: 'unit-02', num: 2, title: 'Visibility in the Age of Agents', available: true },
+    { id: 'unit-03', num: 3, title: 'Market Intelligence & Competitive Strategy', available: true },
+    { id: 'unit-04', num: 4, title: 'Positioning for Two Audiences', available: true },
+    { id: 'unit-05', num: 5, title: 'Sales Enablement', available: true },
+    { id: 'unit-06', num: 6, title: 'Content & Thought Leadership', available: true },
+    { id: 'unit-07', num: 7, title: 'The Demo Stack', available: true }
 ];
 
 async function loadProfile() {
@@ -450,25 +450,27 @@ async function loadQuizScores(userId) {
         const passed = score && score.percentage >= 80;
         let statusClass = 'not-started';
         let statusIcon = ch.num;
-        let meta = ch.available ? 'Not started' : 'Coming soon';
+        let meta = 'Start unit →';
         let scoreHtml = '';
+        let actionText = '';
         
         if (score) {
             statusClass = passed ? 'completed' : 'in-progress';
             statusIcon = passed ? '✓' : ch.num;
             meta = `Completed ${new Date(score.completed_at).toLocaleDateString()}`;
             scoreHtml = `<span class="chapter-score ${passed ? 'pass' : 'fail'}">${score.percentage}%</span>`;
+            actionText = passed ? 'Review →' : 'Retake quiz →';
         }
         
         return `
-            <div class="chapter-row">
+            <a href="/curriculum/${ch.id}/" class="chapter-row" style="text-decoration: none; color: inherit; cursor: pointer;">
                 <div class="chapter-status ${statusClass}">${statusIcon}</div>
                 <div class="chapter-info">
                     <div class="chapter-title">Unit ${ch.num}: ${ch.title}</div>
-                    <div class="chapter-meta">${meta}</div>
+                    <div class="chapter-meta">${meta}${actionText ? ` <span style="color: var(--sap-blue);">${actionText}</span>` : ''}</div>
                 </div>
                 ${scoreHtml}
-            </div>
+            </a>
         `;
     }).join('');
     
