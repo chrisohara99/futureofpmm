@@ -839,21 +839,37 @@ function initMatchExercise() {
     const oldItems = document.querySelectorAll('.match-column.old .match-item');
     const newItems = document.querySelectorAll('.match-column.new .match-item');
     
+    console.log('initMatchExercise: oldItems=', oldItems.length, 'newItems=', newItems.length);
+    
     oldItems.forEach(item => {
         item.addEventListener('click', () => {
-            if (matchedPairs.has(item.dataset.pair)) return;
+            console.log('Old item clicked, pair:', item.dataset.pair);
+            if (matchedPairs.has(item.dataset.pair)) {
+                console.log('Already matched, ignoring');
+                return;
+            }
             oldItems.forEach(i => i.classList.remove('selected'));
             item.classList.add('selected');
             selectedOld = item;
+            console.log('Selected old item:', selectedOld);
         });
     });
     
     newItems.forEach(item => {
         item.addEventListener('click', () => {
-            if (!selectedOld || matchedPairs.has(item.dataset.pair)) return;
+            console.log('New item clicked, pair:', item.dataset.pair, 'selectedOld:', selectedOld);
+            if (!selectedOld) {
+                console.log('No old item selected');
+                return;
+            }
+            if (matchedPairs.has(item.dataset.pair)) {
+                console.log('New item already matched');
+                return;
+            }
             
             const oldPair = selectedOld.dataset.pair;
             const newPair = item.dataset.pair;
+            console.log('Matching oldPair:', oldPair, 'to newPair:', newPair);
             
             matchedPairs.add(oldPair);
             selectedOld.classList.remove('selected');
@@ -865,6 +881,7 @@ function initMatchExercise() {
             item.querySelector('.match-indicator').textContent = indicator;
             
             selectedOld = null;
+            console.log('Match complete');
         });
     });
 }
