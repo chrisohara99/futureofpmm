@@ -767,15 +767,13 @@ function initAllocationExercise() {
 
 // Exercise 3: Matching
 let selectedVague = null;
-let matchedPairs3 = new Set();
-
 function initMatchExercise() {
     const vagueItems = document.querySelectorAll('.match-column.vague .match-item');
     const specificItems = document.querySelectorAll('.match-column.specific .match-item');
     
     vagueItems.forEach(item => {
         item.addEventListener('click', () => {
-            if (matchedPairs3.has(item.dataset.pair)) return;
+            if (item.classList.contains('matched')) return;
             vagueItems.forEach(i => i.classList.remove('selected'));
             item.classList.add('selected');
             selectedVague = item;
@@ -784,9 +782,9 @@ function initMatchExercise() {
     
     specificItems.forEach(item => {
         item.addEventListener('click', () => {
-            if (!selectedVague || matchedPairs3.has(item.dataset.pair)) return;
+            if (!selectedVague) return;
+            if (item.classList.contains('matched')) return;
             
-            matchedPairs3.add(selectedVague.dataset.pair);
             selectedVague.classList.remove('selected');
             selectedVague.classList.add('matched');
             item.classList.add('matched');

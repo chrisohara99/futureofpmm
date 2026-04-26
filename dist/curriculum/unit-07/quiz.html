@@ -640,15 +640,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Exercise 1: Matching
 let selectedTool = null;
-let matchedPairs1 = new Set();
-
 function initMatchExercise() {
     const toolItems = document.querySelectorAll('.match-column.tools .match-item');
     const catItems = document.querySelectorAll('.match-column.categories .match-item');
     
     toolItems.forEach(item => {
         item.addEventListener('click', () => {
-            if (matchedPairs1.has(item.dataset.pair)) return;
+            if (item.classList.contains('matched')) return;
             toolItems.forEach(i => i.classList.remove('selected'));
             item.classList.add('selected');
             selectedTool = item;
@@ -657,9 +655,9 @@ function initMatchExercise() {
     
     catItems.forEach(item => {
         item.addEventListener('click', () => {
-            if (!selectedTool || matchedPairs1.has(item.dataset.pair)) return;
+            if (!selectedTool) return;
+            if (item.classList.contains('matched')) return;
             
-            matchedPairs1.add(selectedTool.dataset.pair);
             selectedTool.classList.remove('selected');
             selectedTool.classList.add('matched');
             item.classList.add('matched');
