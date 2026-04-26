@@ -9,9 +9,16 @@ CREATE TABLE IF NOT EXISTS profiles (
     email TEXT UNIQUE,
     company TEXT,
     role TEXT,
+    newsletter_opt_in BOOLEAN DEFAULT TRUE,
+    digest_opt_in BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migration: Add email preferences to existing profiles table
+-- Run this if the table already exists:
+-- ALTER TABLE profiles ADD COLUMN IF NOT EXISTS newsletter_opt_in BOOLEAN DEFAULT TRUE;
+-- ALTER TABLE profiles ADD COLUMN IF NOT EXISTS digest_opt_in BOOLEAN DEFAULT TRUE;
 
 -- Quiz scores table
 CREATE TABLE IF NOT EXISTS quiz_scores (

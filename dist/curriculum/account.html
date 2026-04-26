@@ -171,6 +171,52 @@
         .btn-secondary { background: var(--light-gray); color: var(--dark-slate); }
         .btn-danger { background: #FFEBEE; color: var(--red); }
         
+        /* Email Preferences */
+        .preference-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+        .preference-info { flex: 1; }
+        .preference-title { font-weight: 600; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .preference-desc { font-size: 0.85rem; color: #666; }
+        
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        .toggle input:checked + .toggle-slider { background-color: var(--green); }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(22px); }
+        
         @media (max-width: 768px) {
             .logo img { height: 70px; }
             .header { padding: 0.5rem 1rem; }
@@ -245,6 +291,35 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    <div class="progress-section">
+        <h3>📧 Email Preferences</h3>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">Control which emails you receive from Future of PMM.</p>
+        
+        <div class="preference-row">
+            <div class="preference-info">
+                <div class="preference-title">Weekly Newsletter</div>
+                <div class="preference-desc">Curated insights on AI + PMM delivered weekly</div>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="newsletterOptIn" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="preference-row">
+            <div class="preference-info">
+                <div class="preference-title">Daily Digest</div>
+                <div class="preference-desc">Morning roundup of the top AI + PMM stories</div>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="digestOptIn" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div id="prefsStatus" style="margin-top: 1rem; font-size: 0.85rem; color: #666;"></div>
     </div>
     
     <div class="actions">
@@ -486,9 +561,65 @@ async function logout() {
     window.location.href = '/curriculum/login.html';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function loadEmailPreferences(userId) {
+    const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('newsletter_opt_in, digest_opt_in')
+        .eq('id', userId)
+        .single();
+    
+    if (!error && profile) {
+        document.getElementById('newsletterOptIn').checked = profile.newsletter_opt_in !== false;
+        document.getElementById('digestOptIn').checked = profile.digest_opt_in !== false;
+    }
+}
+
+async function saveEmailPreference(field, value) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+    
+    const status = document.getElementById('prefsStatus');
+    status.textContent = 'Saving...';
+    status.style.color = '#666';
+    
+    const update = {};
+    update[field] = value;
+    
+    const { error } = await supabaseClient
+        .from('profiles')
+        .update(update)
+        .eq('id', session.user.id);
+    
+    if (error) {
+        status.textContent = '❌ Failed to save';
+        status.style.color = 'var(--red)';
+        console.error('Error saving preference:', error);
+    } else {
+        status.textContent = '✓ Preferences saved';
+        status.style.color = 'var(--green)';
+        setTimeout(() => { status.textContent = ''; }, 2000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
     loadProfile();
     document.getElementById('logoutBtn').addEventListener('click', logout);
+    
+    // Load email preferences
+    if (supabaseClient) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            loadEmailPreferences(session.user.id);
+        }
+    }
+    
+    // Save on toggle change
+    document.getElementById('newsletterOptIn').addEventListener('change', (e) => {
+        saveEmailPreference('newsletter_opt_in', e.target.checked);
+    });
+    document.getElementById('digestOptIn').addEventListener('change', (e) => {
+        saveEmailPreference('digest_opt_in', e.target.checked);
+    });
 });
 </script>
 </body>
