@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5: Sales Enablement and the Death of the Static Battlecard | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--sap-orange); height: 100%; width: 71%; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--sap-blue); font-size: 1.1rem; }
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        .key-concept h4 { color: var(--sap-orange); font-size: 1rem; margin-bottom: 0.5rem; }
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        .case-study h4 { color: #F57C00; font-size: 1rem; margin-bottom: 0.75rem; }
+        
+        .scenario-box {
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #9C27B0;
+        }
+        .scenario-box h4 { color: #7B1FA2; font-size: 1rem; margin-bottom: 0.75rem; }
+        .scenario-box p { font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .scenario-box p:last-child { margin-bottom: 0; }
+        
+        .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        @media (max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .comparison-card.old { border-top: 4px solid var(--red); }
+        .comparison-card.new { border-top: 4px solid var(--green); }
+        .comparison-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .comparison-card.old h4 { color: var(--red); }
+        .comparison-card.new h4 { color: var(--green); }
+        .comparison-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.95rem; }
+        
+        .layer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .layer-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+        
+        .layer-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+        .layer-card:nth-child(1) .layer-num { background: var(--sap-orange); }
+        .layer-card:nth-child(2) .layer-num { background: var(--sap-blue); }
+        .layer-card:nth-child(3) .layer-num { background: var(--green); }
+        
+        .layer-content h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--dark-slate); }
+        .layer-content p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        .workflow-step {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .workflow-step .step-num {
+            width: 32px;
+            height: 32px;
+            background: var(--sap-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .workflow-step p { margin: 0; font-size: 0.95rem; }
+        
+        .highlight-box {
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .tactic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .tactic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tactic-card h4 { color: var(--sap-blue); font-size: 1rem; margin-bottom: 0.5rem; }
+        .tactic-card p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .metrics-table th, .metrics-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .metrics-table th {
+            background: var(--dark-slate);
+            color: white;
+            font-weight: 600;
+        }
+        .metrics-table tr:nth-child(even) { background: #F8F9FA; }
+        .metrics-table .old { color: var(--red); }
+        .metrics-table .new { color: var(--green); }
+        
+        .chapter-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        .chapter-actions h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .action-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .action-card .label { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .action-card .sublabel { font-size: 0.8rem; color: #888; }
+        .action-card.primary { background: var(--sap-orange); color: white; }
+        .action-card.primary .sublabel { color: rgba(255,255,255,0.8); }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-btn.prev { background: var(--light-gray); color: var(--text); }
+        .nav-btn.next { background: var(--sap-blue); color: white; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <p class="unit-label">Unit 5 <span class="funnel-badge">Purchase Stage</span></p>
+        <h1>Sales Enablement and the Death of the Static Battlecard</h1>
+        <p class="time">⏱️ 45 minutes</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand why static battlecards can't keep pace with modern competitive dynamics</li>
+            <li>Learn the "Enablement Paradox" and what it means for PMM value</li>
+            <li>Transition from artifact factory to intelligence layer</li>
+            <li>Build RAG-powered knowledge bases as competitive moats</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The 4:47 PM Problem</h2>
+        
+        <div class="scenario-box">
+            <h4>📱 Sound Familiar?</h4>
+            <p>It's 4:47 PM on a Tuesday. A Slack message from Marcus lands in the PMM channel:</p>
+            <p style="font-style: italic; padding-left: 1rem; border-left: 3px solid #9C27B0;">"Hey, I'm going up against [Competitor X] in a deal tomorrow morning. Our battlecard is from Q3. Anything new I should know?"</p>
+            <p style="margin-top: 1rem;"><strong>Marcus needs three things by 8 AM:</strong></p>
+            <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.95rem;">
+                <li>What has changed since the battlecard was published</li>
+                <li>What objections he'll face based on this specific prospect</li>
+                <li>Trap-setting questions to reframe the conversation</li>
+            </ul>
+        </div>
+        
+        <p>The PMM who receives this message is already in back-to-back meetings until 6 PM, has a launch brief due Wednesday, and hasn't looked at Competitor X's latest announcement because they've been heads-down on a different priority.</p>
+        
+        <p>So what actually happens? Usually one of three things:</p>
+        
+        <ul>
+            <li><strong>Heroic but unsustainable:</strong> PMM stays late, manually pulls together a quick brief</li>
+            <li><strong>Mostly still accurate:</strong> PMM points Marcus to the existing battlecard (which might be true but doesn't give him what he needs)</li>
+            <li><strong>Underprepared:</strong> Marcus goes in relying on general product knowledge — works fine if the competitor hasn't changed their pitch, fails badly if they have</li>
+        </ul>
+        
+        <div class="key-concept">
+            <h4>The Death of Static</h4>
+            <p>This scene — the real-time, deal-specific, competitive-intelligence-on-demand request that the PMM can't possibly fulfill at scale — is the single best argument for why the static battlecard is already dead. Not because battlecards aren't useful. Because <strong>the format assumes competitive intelligence is stable enough to be captured in a document and refreshed quarterly.</strong> That world is gone.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Battlecard Is an Artifact. The Intelligence Is a System.</h2>
+        
+        <div class="comparison-box">
+            <div class="comparison-card old">
+                <h4>❌ Traditional Workflow</h4>
+                <ul>
+                    <li>Gather intelligence (analysts, announcements, win/loss)</li>
+                    <li>Synthesize into structured PDF</li>
+                    <li>Publish to enablement platform</li>
+                    <li>Update somewhere between quarterly and never</li>
+                </ul>
+            </div>
+            <div class="comparison-card new">
+                <h4>✅ Agent-Powered Workflow</h4>
+                <ul>
+                    <li>Intelligence-gathering runs continuously</li>
+                    <li>Synthesis isn't a document — it's a query</li>
+                    <li>Sales asks questions in natural language</li>
+                    <li>System generates responses tailored to deal context</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p>In the agent-powered workflow, Marcus doesn't open a battlecard. He asks a question:</p>
+        
+        <div class="highlight-box">
+            "What do I need to know about Competitor X for a deal with a mid-market manufacturing company evaluating data platforms for supply chain analytics?"
+        </div>
+        
+        <p>The system generates a response that incorporates the <em>latest</em> competitive intelligence, tailored to the <em>specific deal context</em>, grounded in the same knowledge base that the static battlecard drew from — but updated continuously and customized to the ask.</p>
+        
+        <div class="case-study">
+            <h4>💡 Real Example: BattleCoach at SAP</h4>
+            <p>Soo Shim's BattleCoach does exactly this — not in a demo environment, but in production, supporting live sales cycles. The system ingests the same intelligence sources that would feed a traditional battlecard and makes them available as a conversational interface. Sales reps ask questions in natural language. The system provides answers grounded in current competitive data.</p>
+            <p style="margin-top: 0.5rem;"><strong>Because it's a system rather than a document, it doesn't decay — it gets better as more intelligence flows in.</strong></p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Enablement Paradox</h2>
+        
+        <p>There's an uncomfortable truth lurking beneath the sales enablement transformation:</p>
+        
+        <div class="key-concept">
+            <h4>Sales Reps Have Their Own AI Tools Now</h4>
+            <p>A sales rep with a Claude or ChatGPT subscription can generate a reasonably good competitive summary in thirty seconds. They can customize a pitch deck by pasting in the prospect's website. They can produce an industry-specific one-pager that's about <strong>70-80% as good</strong> as what the PMM would have created.</p>
+        </div>
+        
+        <p>This creates the <strong>enablement paradox</strong>:</p>
+        
+        <div class="comparison-box">
+            <div class="comparison-card old">
+                <h4>What Sales Can Now Do Themselves</h4>
+                <ul>
+                    <li>Generate competitive summaries</li>
+                    <li>Customize pitch decks</li>
+                    <li>Create industry-specific one-pagers</li>
+                    <li>Draft email sequences</li>
+                    <li>Prep call talking points</li>
+                </ul>
+            </div>
+            <div class="comparison-card new">
+                <h4>What Sales Still Needs PMM For</h4>
+                <ul>
+                    <li>Strategic intelligence and judgment</li>
+                    <li>Knowing <em>why</em> competitor made a move</li>
+                    <li>Understanding market dynamics</li>
+                    <li>Identifying what AI gets wrong</li>
+                    <li>Making content accurate, not just competent</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p>A sales rep's AI can generate a competitive comparison. It <strong>can't</strong> tell you that the competitor's new partnership announcement is actually a defensive move because they're losing deals in the mid-market segment, and that the right response isn't to counter their messaging but to lean into the very use cases they're implicitly conceding.</p>
+        
+        <p><strong>That's PMM intelligence</strong> — the kind that comes from deeply understanding the competitive landscape, buyer psychology, and market dynamics. In the agentic era, that intelligence is more valuable than ever because it's the input that makes all the other AI-generated content correct.</p>
+    </section>
+    
+    <section>
+        <h2>From Artifact Factory to Intelligence Layer</h2>
+        
+        <div class="comparison-box">
+            <div class="comparison-card old">
+                <h4>❌ Old Model: Artifact Production</h4>
+                <ul>
+                    <li>Create battlecards</li>
+                    <li>Build pitch decks</li>
+                    <li>Write one-pagers</li>
+                    <li>Develop talk tracks</li>
+                    <li>Measured by artifact output</li>
+                </ul>
+            </div>
+            <div class="comparison-card new">
+                <h4>✅ New Model: Intelligence Architecture</h4>
+                <ul>
+                    <li>Design intelligence systems</li>
+                    <li>Curate knowledge bases</li>
+                    <li>Build feedback loops</li>
+                    <li>Ensure AI accuracy</li>
+                    <li>Measured by sales outcomes</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p>The artifacts still exist. They're just <strong>generated, not crafted</strong>. And the PMM's job shifts from producing the artifacts to ensuring the intelligence substrate that feeds them is accurate, current, strategically grounded, and differentiated.</p>
+        
+        <div class="highlight-box">
+            That's a harder job than producing battlecards. It's also a more valuable one.
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Knowledge Base as Competitive Moat</h2>
+        
+        <p>Here's something not enough PMMs have internalized yet:</p>
+        
+        <div class="key-concept">
+            <h4>The Quality of Your Internal Knowledge Base Is About to Become One of Your Most Important Competitive Advantages</h4>
+            <p>In a world where both your sales reps and your competitors' reps have access to the same general-purpose AI tools, the differentiator isn't the tool — <strong>it's the data the tool draws from.</strong></p>
+        </div>
+        
+        <p>If your competitive knowledge base is deep, current, well-organized, and rich with contextual intelligence (win/loss insights, customer verbatims, deal-specific lessons), your AI-powered enablement system produces output that is <strong>categorically better</strong> than what your competitor's rep gets from the same general-purpose AI.</p>
+        
+        <h3>RAG: Retrieval-Augmented Generation</h3>
+        
+        <p>RAG is the pattern where an AI retrieves relevant information from a curated knowledge base before generating a response, grounding its output in specific, verified data rather than general training knowledge.</p>
+        
+        <div class="workflow-grid">
+            <div class="workflow-step">
+                <div class="step-num">1</div>
+                <p><strong>Build:</strong> Create a well-organized knowledge base (documents in a vector database, or purpose-built system with metadata, recency weighting, quality scoring)</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">2</div>
+                <p><strong>Populate:</strong> Competitive intel, positioning docs, win/loss analyses, case studies, product docs, analyst coverage</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">3</div>
+                <p><strong>Connect:</strong> Hook up a generation layer that can synthesize this knowledge into deal-specific outputs on demand</p>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">4</div>
+                <p><strong>Maintain:</strong> Keep it current — an out-of-date knowledge base produces confidently wrong answers, which is worse than no answer at all</p>
+            </div>
+        </div>
+        
+        <p><strong>The PMM who owns and curates this knowledge base</strong> — who makes it their job to ensure the intelligence substrate is excellent — is the PMM who becomes indispensable.</p>
+    </section>
+    
+    <section>
+        <h2>The Practitioner's Playbook</h2>
+        
+        <div class="layer-grid">
+            <div class="layer-card">
+                <div class="layer-num">1</div>
+                <div class="layer-content">
+                    <h4>Audit Your Knowledge Base (Be Honest)</h4>
+                    <p>Pull up your competitive battlecards, positioning docs, one-pagers. When was each last updated? How many are still accurate? If you fed them to an AI now, would it produce good output or confidently stale output? Most teams discover <strong>40-60% of enablement content is materially out of date.</strong></p>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">2</div>
+                <div class="layer-content">
+                    <h4>Pick One Competitor, Build the Full Pipeline</h4>
+                    <p>Don't boil the ocean. Choose your most important competitor — the one in the most deals. Set up continuous monitoring. Build a RAG-connected knowledge base. Create a natural-language interface. Get 3-4 reps to test for two weeks. Iterate. Then expand.</p>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">3</div>
+                <div class="layer-content">
+                    <h4>Redesign Your Enablement Metrics</h4>
+                    <p>Stop measuring artifact output (battlecards produced, content downloads). Start measuring: <strong>intelligence currency</strong> (average age of content), <strong>system usage</strong> (queries per week), and <strong>outcome impact</strong> (win rate in deals where agent-powered enablement was used).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>New Metrics for the Agent Era</h2>
+        
+        <table class="metrics-table">
+            <tr>
+                <th>Old Metrics</th>
+                <th>New Metrics</th>
+            </tr>
+            <tr>
+                <td class="old">Number of battlecards produced</td>
+                <td class="new">Intelligence currency (avg age of content)</td>
+            </tr>
+            <tr>
+                <td class="old">Content downloads</td>
+                <td class="new">Queries per week from sales team</td>
+            </tr>
+            <tr>
+                <td class="old">Deck views</td>
+                <td class="new">Win rate: agent-enabled vs not</td>
+            </tr>
+            <tr>
+                <td class="old">Assets created per quarter</td>
+                <td class="new">Signal-to-response time</td>
+            </tr>
+        </table>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li><strong>Sales reps are already using their own AI tools</strong> — the PMM's job shifts from producing content to ensuring the intelligence layer is accurate</li>
+            <li><strong>The knowledge base, not the battlecard,</strong> becomes the primary enablement artifact</li>
+            <li><strong>The Enablement Paradox resolves in PMM's favor</strong> when value is measured by impact rather than artifact volume</li>
+            <li><strong>RAG architecture</strong> is now a PMM responsibility, not just a technical one</li>
+            <li><strong>New PMM metrics:</strong> intelligence system adoption, competitive win rate improvement, signal-to-response time</li>
+        </ul>
+    </section>
+    
+    <div class="chapter-actions">
+        <h2>✓ Complete This Unit</h2>
+        <div class="action-grid">
+            <a href="quiz.html" class="action-card primary">
+                <span class="icon">📝</span>
+                <span class="label">Take the Assessment</span>
+                <span class="sublabel">Interactive • 15 min</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav class="chapter-nav">
+        <a href="/curriculum/unit-04/" class="nav-btn prev">← Unit 4</a>
+        <a href="/curriculum/unit-06/" class="nav-btn next">Unit 6 →</a>
+    </nav>
+    
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>
