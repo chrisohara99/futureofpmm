@@ -134,8 +134,11 @@
             border-radius: 0 0 8px 8px;
             padding: 1rem;
             background: #FAFAFA;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .sort-zone.drag-over { background: #E3F2FD; border-color: var(--sap-blue); }
+        .sort-zone:hover { background: #F0F4F8; border-color: #aaa; }
+        .sort-zone.active { background: #E3F2FD; border-color: var(--sap-blue); }
         
         .sort-items {
             display: flex;
@@ -149,13 +152,13 @@
             border: 2px solid var(--light-gray);
             padding: 0.6rem 1rem;
             border-radius: 25px;
-            cursor: grab;
+            cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.2s;
             user-select: none;
         }
         .sort-item:hover { border-color: var(--sap-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .sort-item.dragging { opacity: 0.5; cursor: grabbing; }
+        .sort-item.selected { border-color: var(--sap-blue); background: #E3F2FD; box-shadow: 0 4px 12px rgba(68,114,196,0.3); }
         .sort-item.placed { background: white; margin-bottom: 0.5rem; }
         .sort-item.correct { border-color: var(--green); background: #E8F5E9; }
         .sort-item.incorrect { border-color: var(--red); background: #FFEBEE; }
@@ -168,14 +171,14 @@
             border: 2px solid var(--light-gray);
             padding: 1rem 1.25rem;
             border-radius: 8px;
-            cursor: grab;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 1rem;
             transition: all 0.2s;
         }
         .sequence-item:hover { border-color: var(--sap-blue); }
-        .sequence-item.dragging { opacity: 0.5; background: #E3F2FD; }
+        .sequence-item.selected { border-color: var(--sap-blue); background: #E3F2FD; box-shadow: 0 4px 12px rgba(68,114,196,0.3); }
         .sequence-item.correct { border-color: var(--green); background: #E8F5E9; }
         .sequence-item.incorrect { border-color: var(--red); background: #FFEBEE; }
         
@@ -347,18 +350,18 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag each characteristic to the correct category: Traditional CI or Agent-Powered CI.
+            Click to select, then click a category to place. Sort each characteristic to the correct category: Traditional CI or Agent-Powered CI.
         </div>
         
         <div class="sort-items" id="sortItems1">
-            <div class="sort-item" draggable="true" data-answer="traditional">Quarterly refresh cadence</div>
-            <div class="sort-item" draggable="true" data-answer="agent">Real-time signal detection</div>
-            <div class="sort-item" draggable="true" data-answer="traditional">Manual competitor monitoring</div>
-            <div class="sort-item" draggable="true" data-answer="agent">Automated news/filing alerts</div>
-            <div class="sort-item" draggable="true" data-answer="traditional">Static battlecard PDFs</div>
-            <div class="sort-item" draggable="true" data-answer="agent">Living intelligence system</div>
-            <div class="sort-item" draggable="true" data-answer="traditional">PMM as bottleneck</div>
-            <div class="sort-item" draggable="true" data-answer="agent">PMM as intelligence architect</div>
+            <div class="sort-item" data-answer="traditional">Quarterly refresh cadence</div>
+            <div class="sort-item" data-answer="agent">Real-time signal detection</div>
+            <div class="sort-item" data-answer="traditional">Manual competitor monitoring</div>
+            <div class="sort-item" data-answer="agent">Automated news/filing alerts</div>
+            <div class="sort-item" data-answer="traditional">Static battlecard PDFs</div>
+            <div class="sort-item" data-answer="agent">Living intelligence system</div>
+            <div class="sort-item" data-answer="traditional">PMM as bottleneck</div>
+            <div class="sort-item" data-answer="agent">PMM as intelligence architect</div>
         </div>
         
         <div class="sort-container">
@@ -380,29 +383,29 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag to arrange the 4 layers of the Living CI Architecture in the correct order (1 = first).
+            Click items to swap positions. Arrange the 4 layers of the Living CI Architecture in the correct order (1 = first).
         </div>
         
         <div class="sequence-container" id="sequenceContainer">
-            <div class="sequence-item" draggable="true" data-correct="3">
+            <div class="sequence-item" data-correct="3">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Synthesis Layer — compare to baseline, identify what changed</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="1">
+            <div class="sequence-item" data-correct="1">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Data Ingestion — RSS feeds, call transcripts, social mentions</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="4">
+            <div class="sequence-item" data-correct="4">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Output Layer — Slack alerts, deal briefs, battlecard updates</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="2">
+            <div class="sequence-item" data-correct="2">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Processing Layer — LLM categorizes and extracts key info</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
         </div>
     </div>
@@ -414,18 +417,18 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag each insight type to the correct category: AI Pattern Analysis or Human Interviews.
+            Click to select, then click a category to place. Sort each insight type to the correct category: AI Pattern Analysis or Human Interviews.
         </div>
         
         <div class="sort-items" id="sortItems3">
-            <div class="sort-item" draggable="true" data-answer="ai">Win/loss patterns across 200 deals</div>
-            <div class="sort-item" draggable="true" data-answer="human">Champion's private career concerns</div>
-            <div class="sort-item" draggable="true" data-answer="ai">Competitor pricing mentions in calls</div>
-            <div class="sort-item" draggable="true" data-answer="human">Why a key contact left the company</div>
-            <div class="sort-item" draggable="true" data-answer="ai">Feature request frequency trends</div>
-            <div class="sort-item" draggable="true" data-answer="human">Unspoken budget constraints</div>
-            <div class="sort-item" draggable="true" data-answer="ai">Objection patterns by industry</div>
-            <div class="sort-item" draggable="true" data-answer="human">Emotional cues from deal calls</div>
+            <div class="sort-item" data-answer="ai">Win/loss patterns across 200 deals</div>
+            <div class="sort-item" data-answer="human">Champion's private career concerns</div>
+            <div class="sort-item" data-answer="ai">Competitor pricing mentions in calls</div>
+            <div class="sort-item" data-answer="human">Why a key contact left the company</div>
+            <div class="sort-item" data-answer="ai">Feature request frequency trends</div>
+            <div class="sort-item" data-answer="human">Unspoken budget constraints</div>
+            <div class="sort-item" data-answer="ai">Objection patterns by industry</div>
+            <div class="sort-item" data-answer="human">Emotional cues from deal calls</div>
         </div>
         
         <div class="sort-container">
@@ -553,73 +556,97 @@ document.addEventListener('DOMContentLoaded', () => {
     initScenarioExercise();
 });
 
-// Drag and drop sorting
+// Click-and-place sorting
+let selectedSortItem = null;
+let currentSortContainer = null;
+
 function initSortExercise(itemsId, zoneIds) {
-    const items = document.querySelectorAll(`#${itemsId} .sort-item`);
+    const sourceContainer = document.getElementById(itemsId);
     const zones = zoneIds.map(id => document.getElementById(id));
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    sourceContainer.addEventListener('click', e => {
+        const item = e.target.closest('.sort-item');
+        if (!item) {
+            if (selectedSortItem && selectedSortItem.classList.contains('placed') && currentSortContainer === itemsId) {
+                sourceContainer.appendChild(selectedSortItem);
+                selectedSortItem.classList.remove('placed', 'selected');
+                selectedSortItem = null;
+                currentSortContainer = null;
+                document.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+            }
+            return;
+        }
+        
+        if (selectedSortItem === item) {
+            item.classList.remove('selected');
+            selectedSortItem = null;
+            currentSortContainer = null;
+            document.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+        } else {
+            document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedSortItem = item;
+            currentSortContainer = itemsId;
+            zones.forEach(z => z.classList.add('active'));
+        }
     });
     
     zones.forEach(zone => {
-        zone.addEventListener('dragover', e => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        });
-        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-        zone.addEventListener('drop', e => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const dragging = document.querySelector(`#${itemsId} .dragging`);
-            if (dragging) {
-                zone.appendChild(dragging);
-                dragging.classList.add('placed');
+        zone.addEventListener('click', e => {
+            const clickedItem = e.target.closest('.sort-item');
+            if (clickedItem) {
+                document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+                clickedItem.classList.add('selected');
+                selectedSortItem = clickedItem;
+                zones.forEach(z => z.classList.add('active'));
+                return;
             }
+            
+            if (!selectedSortItem || currentSortContainer !== itemsId) return;
+            
+            zone.appendChild(selectedSortItem);
+            selectedSortItem.classList.add('placed');
+            selectedSortItem.classList.remove('selected');
+            selectedSortItem = null;
+            currentSortContainer = null;
+            zones.forEach(z => z.classList.remove('active'));
         });
-    });
-    
-    // Allow drag back to source
-    const source = document.getElementById(itemsId);
-    source.addEventListener('dragover', e => e.preventDefault());
-    source.addEventListener('drop', e => {
-        e.preventDefault();
-        const dragging = document.querySelector('.dragging');
-        if (dragging && source.id === itemsId) {
-            source.appendChild(dragging);
-            dragging.classList.remove('placed');
-        }
     });
 }
 
-// Sequence exercise
+// Click-and-swap sequence
+let selectedSeqItem = null;
+
 function initSequenceExercise() {
     const container = document.getElementById('sequenceContainer');
-    const items = container.querySelectorAll('.sequence-item');
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => item.classList.remove('dragging'));
-        item.addEventListener('dragover', e => {
-            e.preventDefault();
-            const dragging = document.querySelector('.sequence-item.dragging');
-            if (dragging && dragging !== item) {
-                const rect = item.getBoundingClientRect();
-                const midY = rect.top + rect.height / 2;
-                if (e.clientY < midY) {
-                    container.insertBefore(dragging, item);
-                } else {
-                    container.insertBefore(dragging, item.nextSibling);
-                }
+    container.addEventListener('click', e => {
+        const item = e.target.closest('.sequence-item');
+        if (!item) return;
+        
+        if (!selectedSeqItem) {
+            item.classList.add('selected');
+            selectedSeqItem = item;
+        } else if (selectedSeqItem === item) {
+            item.classList.remove('selected');
+            selectedSeqItem = null;
+        } else {
+            const items = Array.from(container.querySelectorAll('.sequence-item'));
+            const idx1 = items.indexOf(selectedSeqItem);
+            const idx2 = items.indexOf(item);
+            
+            if (idx1 < idx2) {
+                container.insertBefore(item, selectedSeqItem);
+                container.insertBefore(selectedSeqItem, items[idx2 + 1] || null);
+            } else {
+                container.insertBefore(selectedSeqItem, item);
+                container.insertBefore(item, items[idx1 + 1] || null);
             }
-        });
+            
+            selectedSeqItem.classList.remove('selected');
+            selectedSeqItem = null;
+            updateSequenceNumbers();
+        }
     });
     
     updateSequenceNumbers();

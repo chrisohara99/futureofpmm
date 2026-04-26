@@ -137,11 +137,11 @@
             border-radius: 0 0 8px 8px;
             padding: 0.75rem;
             background: #FAFAFA;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .sort-zone.drag-over {
-            background: #E3F2FD;
-            border-color: var(--sap-blue);
-        }
+        .sort-zone:hover { background: #F0F4F8; border-color: #aaa; }
+        .sort-zone.active { background: #E3F2FD; border-color: var(--sap-blue); }
         
         .sort-items {
             display: flex;
@@ -155,13 +155,13 @@
             border: 2px solid var(--light-gray);
             padding: 0.5rem 0.85rem;
             border-radius: 20px;
-            cursor: grab;
+            cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.2s;
             user-select: none;
         }
         .sort-item:hover { border-color: var(--sap-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .sort-item.dragging { opacity: 0.5; cursor: grabbing; }
+        .sort-item.selected { border-color: var(--sap-blue); background: #E3F2FD; box-shadow: 0 4px 12px rgba(68,114,196,0.3); }
         .sort-item.placed { margin-bottom: 0.5rem; display: block; }
         .sort-item.correct { border-color: var(--green); background: #E8F5E9; }
         .sort-item.incorrect { border-color: var(--red); background: #FFEBEE; }
@@ -226,7 +226,7 @@
             color: white;
             padding: 0.4rem 0.9rem;
             border-radius: 20px;
-            cursor: grab;
+            cursor: pointer;
             font-size: 0.9rem;
             font-weight: 600;
         }
@@ -439,18 +439,18 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag each content type to its correct layer in the three-layer content model.
+            Click to select, then click a category. Sort each content type to its correct layer in the three-layer content model.
         </div>
         
         <div class="sort-items" id="sortItems1">
-            <div class="sort-item" draggable="true" data-answer="commodity">Product launch LinkedIn post</div>
-            <div class="sort-item" draggable="true" data-answer="strategic">GEO-optimized use case article</div>
-            <div class="sort-item" draggable="true" data-answer="signature">Conference keynote with personal stories</div>
-            <div class="sort-item" draggable="true" data-answer="commodity">Weekly email newsletter</div>
-            <div class="sort-item" draggable="true" data-answer="strategic">Competitive differentiation whitepaper</div>
-            <div class="sort-item" draggable="true" data-answer="signature">Long-form essay with contrarian take</div>
-            <div class="sort-item" draggable="true" data-answer="commodity">Standard slide deck updates</div>
-            <div class="sort-item" draggable="true" data-answer="strategic">Customer outcome case study</div>
+            <div class="sort-item" data-answer="commodity">Product launch LinkedIn post</div>
+            <div class="sort-item" data-answer="strategic">GEO-optimized use case article</div>
+            <div class="sort-item" data-answer="signature">Conference keynote with personal stories</div>
+            <div class="sort-item" data-answer="commodity">Weekly email newsletter</div>
+            <div class="sort-item" data-answer="strategic">Competitive differentiation whitepaper</div>
+            <div class="sort-item" data-answer="signature">Long-form essay with contrarian take</div>
+            <div class="sort-item" data-answer="commodity">Standard slide deck updates</div>
+            <div class="sort-item" data-answer="strategic">Customer outcome case study</div>
         </div>
         
         <div class="sort-container">
@@ -480,12 +480,12 @@
         </div>
         
         <div class="percent-chips" id="percentChips">
-            <div class="percent-chip" draggable="true" data-value="10">10%</div>
-            <div class="percent-chip" draggable="true" data-value="20">20%</div>
-            <div class="percent-chip" draggable="true" data-value="30">30%</div>
-            <div class="percent-chip" draggable="true" data-value="40a">40%</div>
-            <div class="percent-chip" draggable="true" data-value="40b">40%</div>
-            <div class="percent-chip" draggable="true" data-value="60">60%</div>
+            <div class="percent-chip" data-value="10">10%</div>
+            <div class="percent-chip" data-value="20">20%</div>
+            <div class="percent-chip" data-value="30">30%</div>
+            <div class="percent-chip" data-value="40a">40%</div>
+            <div class="percent-chip" data-value="40b">40%</div>
+            <div class="percent-chip" data-value="60">60%</div>
         </div>
         
         <div class="allocation-container">
@@ -664,76 +664,86 @@ document.addEventListener('DOMContentLoaded', () => {
     initScenarioExercise();
 });
 
-// Exercise 1: Content Sorting
+// Exercise 1: Content Sorting (Click-and-Place)
+let selectedSortItem = null;
+
 function initSortExercise() {
-    const items = document.querySelectorAll('#sortItems1 .sort-item');
+    const sourceContainer = document.getElementById('sortItems1');
     const zones = document.querySelectorAll('.sort-zone');
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    sourceContainer.addEventListener('click', e => {
+        const item = e.target.closest('.sort-item');
+        if (!item) {
+            if (selectedSortItem && selectedSortItem.classList.contains('placed')) {
+                sourceContainer.appendChild(selectedSortItem);
+                selectedSortItem.classList.remove('placed', 'selected');
+                selectedSortItem = null;
+                zones.forEach(z => z.classList.remove('active'));
+            }
+            return;
+        }
+        
+        if (selectedSortItem === item) {
+            item.classList.remove('selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
+        } else {
+            document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedSortItem = item;
+            zones.forEach(z => z.classList.add('active'));
+        }
     });
     
     zones.forEach(zone => {
-        zone.addEventListener('dragover', e => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        });
-        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-        zone.addEventListener('drop', e => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const dragging = document.querySelector('#sortItems1 .dragging');
-            if (dragging) {
-                zone.appendChild(dragging);
-                dragging.classList.add('placed');
+        zone.addEventListener('click', e => {
+            const clickedItem = e.target.closest('.sort-item');
+            if (clickedItem) {
+                document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+                clickedItem.classList.add('selected');
+                selectedSortItem = clickedItem;
+                zones.forEach(z => z.classList.add('active'));
+                return;
             }
+            
+            if (!selectedSortItem) return;
+            
+            zone.appendChild(selectedSortItem);
+            selectedSortItem.classList.add('placed');
+            selectedSortItem.classList.remove('selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
         });
-    });
-    
-    const source = document.getElementById('sortItems1');
-    source.addEventListener('dragover', e => e.preventDefault());
-    source.addEventListener('drop', e => {
-        e.preventDefault();
-        const dragging = document.querySelector('.dragging');
-        if (dragging) {
-            source.appendChild(dragging);
-            dragging.classList.remove('placed');
-        }
     });
 }
 
-// Exercise 2: Allocation
+// Exercise 2: Allocation (Click-and-Place)
+let selectedChip = null;
+
 function initAllocationExercise() {
     const chips = document.querySelectorAll('.percent-chip');
     const slots = document.querySelectorAll('.allocation-slot');
     
     chips.forEach(chip => {
-        chip.addEventListener('dragstart', e => {
-            if (chip.classList.contains('used')) {
-                e.preventDefault();
-                return;
+        chip.addEventListener('click', () => {
+            if (chip.classList.contains('used')) return;
+            
+            if (selectedChip === chip) {
+                chip.classList.remove('selected');
+                selectedChip = null;
+                slots.forEach(s => s.classList.remove('active'));
+            } else {
+                chips.forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                selectedChip = chip;
+                slots.forEach(s => s.classList.add('active'));
             }
-            e.dataTransfer.setData('text/plain', chip.dataset.value);
-            chip.classList.add('dragging');
         });
-        chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
     });
     
     slots.forEach(slot => {
-        slot.addEventListener('dragover', e => {
-            e.preventDefault();
-            slot.classList.add('drag-over');
-        });
-        slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
-        slot.addEventListener('drop', e => {
-            e.preventDefault();
-            slot.classList.remove('drag-over');
-            const value = e.dataTransfer.getData('text/plain');
-            const chip = document.querySelector(`.percent-chip[data-value="${value}"]`);
+        slot.addEventListener('click', () => {
+            if (!selectedChip) return;
             
             // If slot already has a value, return old chip
             if (slot.dataset.currentValue) {
@@ -742,11 +752,15 @@ function initAllocationExercise() {
             }
             
             // Fill slot
+            const value = selectedChip.dataset.value;
             const displayValue = value.replace(/[ab]$/, '');
             slot.textContent = displayValue + '%';
             slot.dataset.currentValue = value;
             slot.classList.add('filled');
-            if (chip) chip.classList.add('used');
+            selectedChip.classList.add('used');
+            selectedChip.classList.remove('selected');
+            selectedChip = null;
+            slots.forEach(s => s.classList.remove('active'));
         });
     });
 }

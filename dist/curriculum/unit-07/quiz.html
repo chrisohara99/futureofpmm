@@ -194,8 +194,11 @@
             border-radius: 0 0 8px 8px;
             padding: 0.75rem;
             background: #FAFAFA;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .sort-zone.drag-over { background: #E3F2FD; border-color: var(--sap-blue); }
+        .sort-zone:hover { background: #F0F4F8; border-color: #aaa; }
+        .sort-zone.active { background: #E3F2FD; border-color: var(--sap-blue); }
         
         .sort-items {
             display: flex;
@@ -209,13 +212,13 @@
             border: 2px solid var(--light-gray);
             padding: 0.5rem 0.85rem;
             border-radius: 20px;
-            cursor: grab;
+            cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.2s;
             user-select: none;
         }
         .sort-item:hover { border-color: var(--sap-blue); }
-        .sort-item.dragging { opacity: 0.5; cursor: grabbing; }
+        .sort-item.selected { border-color: var(--sap-blue); background: #E3F2FD; box-shadow: 0 4px 12px rgba(68,114,196,0.3); }
         .sort-item.placed { display: block; margin-bottom: 0.5rem; }
         .sort-item.correct { border-color: var(--green); background: #E8F5E9; }
         .sort-item.incorrect { border-color: var(--red); background: #FFEBEE; }
@@ -232,14 +235,14 @@
             border: 2px solid var(--light-gray);
             padding: 1rem 1.25rem;
             border-radius: 8px;
-            cursor: grab;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 1rem;
             transition: all 0.2s;
         }
         .sequence-item:hover { border-color: var(--sap-blue); }
-        .sequence-item.dragging { opacity: 0.5; background: #E3F2FD; }
+        .sequence-item.selected { border-color: var(--sap-blue); background: #E3F2FD; box-shadow: 0 4px 12px rgba(68,114,196,0.3); }
         .sequence-item.correct { border-color: var(--green); background: #E8F5E9; }
         .sequence-item.incorrect { border-color: var(--red); background: #FFEBEE; }
         
@@ -456,18 +459,18 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag each demo element to the correct category: Proof of Capability (agent's job) or Proof of Experience (demo's job).
+            Click to select, then click a category. Sort each demo element to the correct category: Proof of Capability (agent's job) or Proof of Experience (demo's job).
         </div>
         
         <div class="sort-items" id="sortItems2">
-            <div class="sort-item" draggable="true" data-answer="capability">API endpoint verification</div>
-            <div class="sort-item" draggable="true" data-answer="experience">Transformation narrative</div>
-            <div class="sort-item" draggable="true" data-answer="capability">Integration compatibility check</div>
-            <div class="sort-item" draggable="true" data-answer="experience">Emotional connection to outcome</div>
-            <div class="sort-item" draggable="true" data-answer="capability">Feature specification review</div>
-            <div class="sort-item" draggable="true" data-answer="experience">Day-in-the-life storytelling</div>
-            <div class="sort-item" draggable="true" data-answer="capability">Technical documentation</div>
-            <div class="sort-item" draggable="true" data-answer="experience">"Feel what your life would be like"</div>
+            <div class="sort-item" data-answer="capability">API endpoint verification</div>
+            <div class="sort-item" data-answer="experience">Transformation narrative</div>
+            <div class="sort-item" data-answer="capability">Integration compatibility check</div>
+            <div class="sort-item" data-answer="experience">Emotional connection to outcome</div>
+            <div class="sort-item" data-answer="capability">Feature specification review</div>
+            <div class="sort-item" data-answer="experience">Day-in-the-life storytelling</div>
+            <div class="sort-item" data-answer="capability">Technical documentation</div>
+            <div class="sort-item" data-answer="experience">"Feel what your life would be like"</div>
         </div>
         
         <div class="sort-container">
@@ -489,29 +492,29 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag to arrange the demo narrative elements in the correct transformation story order.
+            Click items to swap positions. Arrange the demo narrative elements in the correct transformation story order.
         </div>
         
         <div class="sequence-container" id="sequenceContainer">
-            <div class="sequence-item" draggable="true" data-correct="3">
+            <div class="sequence-item" data-correct="3">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">"Your supply chain team spends Wednesday on strategy instead of spreadsheets."</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="1">
+            <div class="sequence-item" data-correct="1">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">"Right now, your team downloads a spreadsheet Monday and has a stale view by Wednesday."</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="4">
+            <div class="sequence-item" data-correct="4">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Prospect sees themselves in the transformed future state</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="2">
+            <div class="sequence-item" data-correct="2">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">"Here's what Monday morning looks like with our platform..."</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
         </div>
     </div>
@@ -669,72 +672,92 @@ function initMatchExercise() {
     });
 }
 
-// Exercise 2: Sorting
+// Exercise 2: Sorting (Click-and-Place)
+let selectedSortItem = null;
+
 function initSortExercise() {
-    const items = document.querySelectorAll('#sortItems2 .sort-item');
+    const sourceContainer = document.getElementById('sortItems2');
     const zones = document.querySelectorAll('#exercise2 .sort-zone');
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    sourceContainer.addEventListener('click', e => {
+        const item = e.target.closest('.sort-item');
+        if (!item) {
+            if (selectedSortItem && selectedSortItem.classList.contains('placed')) {
+                sourceContainer.appendChild(selectedSortItem);
+                selectedSortItem.classList.remove('placed', 'selected');
+                selectedSortItem = null;
+                zones.forEach(z => z.classList.remove('active'));
+            }
+            return;
+        }
+        
+        if (selectedSortItem === item) {
+            item.classList.remove('selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
+        } else {
+            document.querySelectorAll('#sortItems2 .sort-item, #exercise2 .sort-zone .sort-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedSortItem = item;
+            zones.forEach(z => z.classList.add('active'));
+        }
     });
     
     zones.forEach(zone => {
-        zone.addEventListener('dragover', e => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        });
-        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-        zone.addEventListener('drop', e => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const dragging = document.querySelector('#sortItems2 .dragging');
-            if (dragging) {
-                zone.appendChild(dragging);
-                dragging.classList.add('placed');
+        zone.addEventListener('click', e => {
+            const clickedItem = e.target.closest('.sort-item');
+            if (clickedItem) {
+                document.querySelectorAll('#sortItems2 .sort-item, #exercise2 .sort-zone .sort-item').forEach(i => i.classList.remove('selected'));
+                clickedItem.classList.add('selected');
+                selectedSortItem = clickedItem;
+                zones.forEach(z => z.classList.add('active'));
+                return;
             }
+            
+            if (!selectedSortItem) return;
+            
+            zone.appendChild(selectedSortItem);
+            selectedSortItem.classList.add('placed');
+            selectedSortItem.classList.remove('selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
         });
-    });
-    
-    const source = document.getElementById('sortItems2');
-    source.addEventListener('dragover', e => e.preventDefault());
-    source.addEventListener('drop', e => {
-        e.preventDefault();
-        const dragging = document.querySelector('#sortItems2 .dragging');
-        if (dragging) {
-            source.appendChild(dragging);
-            dragging.classList.remove('placed');
-        }
     });
 }
 
-// Exercise 3: Sequence
+// Exercise 3: Sequence (Click-and-Swap)
+let selectedSeqItem = null;
+
 function initSequenceExercise() {
     const container = document.getElementById('sequenceContainer');
-    const items = container.querySelectorAll('.sequence-item');
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => item.classList.remove('dragging'));
-        item.addEventListener('dragover', e => {
-            e.preventDefault();
-            const dragging = document.querySelector('.sequence-item.dragging');
-            if (dragging && dragging !== item) {
-                const rect = item.getBoundingClientRect();
-                const midY = rect.top + rect.height / 2;
-                if (e.clientY < midY) {
-                    container.insertBefore(dragging, item);
-                } else {
-                    container.insertBefore(dragging, item.nextSibling);
-                }
+    container.addEventListener('click', e => {
+        const item = e.target.closest('.sequence-item');
+        if (!item) return;
+        
+        if (!selectedSeqItem) {
+            item.classList.add('selected');
+            selectedSeqItem = item;
+        } else if (selectedSeqItem === item) {
+            item.classList.remove('selected');
+            selectedSeqItem = null;
+        } else {
+            const items = Array.from(container.querySelectorAll('.sequence-item'));
+            const idx1 = items.indexOf(selectedSeqItem);
+            const idx2 = items.indexOf(item);
+            
+            if (idx1 < idx2) {
+                container.insertBefore(item, selectedSeqItem);
+                container.insertBefore(selectedSeqItem, items[idx2 + 1] || null);
+            } else {
+                container.insertBefore(selectedSeqItem, item);
+                container.insertBefore(item, items[idx1 + 1] || null);
             }
-        });
+            
+            selectedSeqItem.classList.remove('selected');
+            selectedSeqItem = null;
+            updateSequenceNumbers();
+        }
     });
     
     updateSequenceNumbers();
