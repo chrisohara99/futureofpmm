@@ -148,8 +148,14 @@
             border-radius: 0 0 8px 8px;
             padding: 1rem;
             background: #FAFAFA;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .sort-zone.drag-over {
+        .sort-zone:hover {
+            background: #F0F4F8;
+            border-color: #aaa;
+        }
+        .sort-zone.active {
             background: #E3F2FD;
             border-color: var(--sap-blue);
         }
@@ -166,7 +172,7 @@
             border: 2px solid var(--light-gray);
             padding: 0.6rem 1rem;
             border-radius: 25px;
-            cursor: grab;
+            cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.2s;
             user-select: none;
@@ -175,9 +181,10 @@
             border-color: var(--sap-blue);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .sort-item.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
+        .sort-item.selected {
+            border-color: var(--sap-blue);
+            background: #E3F2FD;
+            box-shadow: 0 4px 12px rgba(68,114,196,0.3);
         }
         .sort-item.placed {
             background: white;
@@ -198,7 +205,7 @@
             border: 2px solid var(--light-gray);
             padding: 1rem 1.25rem;
             border-radius: 8px;
-            cursor: grab;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -207,9 +214,10 @@
         .sequence-item:hover {
             border-color: var(--sap-blue);
         }
-        .sequence-item.dragging {
-            opacity: 0.5;
+        .sequence-item.selected {
+            border-color: var(--sap-blue);
             background: #E3F2FD;
+            box-shadow: 0 4px 12px rgba(68,114,196,0.3);
         }
         .sequence-item.correct { border-color: var(--green); background: #E8F5E9; }
         .sequence-item.incorrect { border-color: var(--red); background: #FFEBEE; }
@@ -515,18 +523,18 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag each characteristic to the correct category: Static Battlecard approach or Agent-Powered System.
+            Click a characteristic to select it, then click a category to place it. Sort all items into Static Battlecard or Agent-Powered System.
         </div>
         
         <div class="sort-items" id="sortItems1">
-            <div class="sort-item" draggable="true" data-answer="static">Quarterly refresh cadence</div>
-            <div class="sort-item" draggable="true" data-answer="dynamic">Continuous intelligence gathering</div>
-            <div class="sort-item" draggable="true" data-answer="static">PDF document format</div>
-            <div class="sort-item" draggable="true" data-answer="dynamic">Natural language queries</div>
-            <div class="sort-item" draggable="true" data-answer="static">One-size-fits-all content</div>
-            <div class="sort-item" draggable="true" data-answer="dynamic">Deal-specific customization</div>
-            <div class="sort-item" draggable="true" data-answer="static">Decays over time</div>
-            <div class="sort-item" draggable="true" data-answer="dynamic">Improves as intelligence flows in</div>
+            <div class="sort-item" data-answer="static">Quarterly refresh cadence</div>
+            <div class="sort-item" data-answer="dynamic">Continuous intelligence gathering</div>
+            <div class="sort-item" data-answer="static">PDF document format</div>
+            <div class="sort-item" data-answer="dynamic">Natural language queries</div>
+            <div class="sort-item" data-answer="static">One-size-fits-all content</div>
+            <div class="sort-item" data-answer="dynamic">Deal-specific customization</div>
+            <div class="sort-item" data-answer="static">Decays over time</div>
+            <div class="sort-item" data-answer="dynamic">Improves as intelligence flows in</div>
         </div>
         
         <div class="sort-container">
@@ -548,29 +556,29 @@
             <span class="exercise-points">24 points</span>
         </div>
         <div class="exercise-instructions">
-            Drag to arrange the steps for building a RAG-powered enablement system in the correct order.
+            Click a step to select it, then click another position to swap them. Arrange the steps for building a RAG-powered enablement system in the correct order.
         </div>
         
         <div class="sequence-container" id="sequenceContainer">
-            <div class="sequence-item" draggable="true" data-correct="3">
+            <div class="sequence-item" data-correct="3">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Connect a generation layer that synthesizes knowledge into deal-specific outputs</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="1">
+            <div class="sequence-item" data-correct="1">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Build a well-organized knowledge base with vector database or metadata system</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="4">
+            <div class="sequence-item" data-correct="4">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Maintain currency — an outdated knowledge base produces confidently wrong answers</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
-            <div class="sequence-item" draggable="true" data-correct="2">
+            <div class="sequence-item" data-correct="2">
                 <span class="sequence-num">?</span>
                 <span class="sequence-text">Populate with competitive intel, win/loss analyses, case studies, and product docs</span>
-                <span class="sequence-handle">⋮⋮</span>
+                <span class="sequence-handle">↕</span>
             </div>
         </div>
     </div>
@@ -719,79 +727,114 @@ document.addEventListener('DOMContentLoaded', () => {
     initScenarioExercise();
 });
 
-// Exercise 1: Sorting
+// Exercise 1: Sorting (Click-and-Place)
+let selectedSortItem = null;
+
 function initSortExercise() {
-    const items = document.querySelectorAll('#sortItems1 .sort-item');
+    const sourceContainer = document.getElementById('sortItems1');
     const zones = document.querySelectorAll('.sort-zone');
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => {
-            item.classList.remove('dragging');
+    // Click on item to select
+    sourceContainer.addEventListener('click', e => {
+        const item = e.target.closest('.sort-item');
+        if (!item) return;
+        
+        if (selectedSortItem === item) {
+            // Deselect if clicking same item
+            item.classList.remove('selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
+        } else {
+            // Select new item
+            document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedSortItem = item;
+            zones.forEach(z => z.classList.add('active'));
+        }
+    });
+    
+    // Click on zone to place selected item
+    zones.forEach(zone => {
+        zone.addEventListener('click', e => {
+            if (!selectedSortItem) return;
+            
+            // If clicking on an item already in zone, select it instead
+            const clickedItem = e.target.closest('.sort-item');
+            if (clickedItem) {
+                document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+                clickedItem.classList.add('selected');
+                selectedSortItem = clickedItem;
+                return;
+            }
+            
+            zone.appendChild(selectedSortItem);
+            selectedSortItem.classList.add('placed');
+            selectedSortItem.classList.remove('selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
         });
     });
     
+    // Allow clicking placed items in zones to select and move them
     zones.forEach(zone => {
-        zone.addEventListener('dragover', e => {
-            e.preventDefault();
-            zone.classList.add('drag-over');
-        });
-        zone.addEventListener('dragleave', () => {
-            zone.classList.remove('drag-over');
-        });
-        zone.addEventListener('drop', e => {
-            e.preventDefault();
-            zone.classList.remove('drag-over');
-            const dragging = document.querySelector('.dragging');
-            if (dragging) {
-                zone.appendChild(dragging);
-                dragging.classList.add('placed');
+        zone.addEventListener('click', e => {
+            const item = e.target.closest('.sort-item');
+            if (item && !selectedSortItem) {
+                document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedSortItem = item;
+                zones.forEach(z => z.classList.add('active'));
             }
         });
     });
     
-    // Also allow dropping back to source
-    const sourceContainer = document.getElementById('sortItems1');
-    sourceContainer.addEventListener('dragover', e => e.preventDefault());
-    sourceContainer.addEventListener('drop', e => {
-        e.preventDefault();
-        const dragging = document.querySelector('.dragging');
-        if (dragging) {
-            sourceContainer.appendChild(dragging);
-            dragging.classList.remove('placed');
+    // Click source area to return item
+    sourceContainer.addEventListener('click', e => {
+        if (selectedSortItem && selectedSortItem.classList.contains('placed') && !e.target.closest('.sort-item')) {
+            sourceContainer.appendChild(selectedSortItem);
+            selectedSortItem.classList.remove('placed', 'selected');
+            selectedSortItem = null;
+            zones.forEach(z => z.classList.remove('active'));
         }
     });
 }
 
-// Exercise 2: Sequence
+// Exercise 2: Sequence (Click-and-Swap)
+let selectedSeqItem = null;
+
 function initSequenceExercise() {
     const container = document.getElementById('sequenceContainer');
-    const items = container.querySelectorAll('.sequence-item');
     
-    items.forEach(item => {
-        item.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', '');
-            item.classList.add('dragging');
-        });
-        item.addEventListener('dragend', () => {
-            item.classList.remove('dragging');
-        });
-        item.addEventListener('dragover', e => {
-            e.preventDefault();
-            const dragging = document.querySelector('.dragging');
-            if (dragging && dragging !== item) {
-                const rect = item.getBoundingClientRect();
-                const midY = rect.top + rect.height / 2;
-                if (e.clientY < midY) {
-                    container.insertBefore(dragging, item);
-                } else {
-                    container.insertBefore(dragging, item.nextSibling);
-                }
+    container.addEventListener('click', e => {
+        const item = e.target.closest('.sequence-item');
+        if (!item) return;
+        
+        if (!selectedSeqItem) {
+            // First click - select item
+            item.classList.add('selected');
+            selectedSeqItem = item;
+        } else if (selectedSeqItem === item) {
+            // Click same item - deselect
+            item.classList.remove('selected');
+            selectedSeqItem = null;
+        } else {
+            // Second click - swap positions
+            const items = Array.from(container.querySelectorAll('.sequence-item'));
+            const idx1 = items.indexOf(selectedSeqItem);
+            const idx2 = items.indexOf(item);
+            
+            if (idx1 < idx2) {
+                container.insertBefore(item, selectedSeqItem);
+                container.insertBefore(selectedSeqItem, items[idx2 + 1] || null);
+            } else {
+                container.insertBefore(selectedSeqItem, item);
+                container.insertBefore(item, items[idx1 + 1] || null);
             }
-        });
+            
+            selectedSeqItem.classList.remove('selected');
+            selectedSeqItem = null;
+            updateSequenceNumbers();
+        }
     });
     
     updateSequenceNumbers();
