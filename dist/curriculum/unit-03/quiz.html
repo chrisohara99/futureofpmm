@@ -33,17 +33,8 @@
             line-height: 1.7;
         }
         
-        .header {
-            background: var(--dark-slate);
-            padding: 0.75rem 2rem;
-        }
-        .header-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; text-decoration: none; }
         .logo img { height: 100px; }
         .nav { display: flex; gap: 1.5rem; align-items: center; }
@@ -98,721 +89,700 @@
             gap: 0.5rem;
         }
         
-        .exercise-number { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--sap-blue); font-weight: 600; }
-        .exercise-title { font-size: 1.2rem; font-weight: 600; color: var(--dark-slate); margin-top: 0.25rem; }
-        .exercise-points { background: var(--light-gray); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
-        .exercise-instructions { color: #666; margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .exercise-header h2 { font-size: 1.2rem; color: var(--dark-slate); }
+        
+        .exercise-points {
+            background: var(--light-blue);
+            color: white;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .exercise-instructions {
+            background: #F8F9FA;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: #555;
+        }
+        
+        /* Sorting Exercise Styles */
+        .sort-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 700px) { .sort-container { grid-template-columns: 1fr; } }
+        
+        .sort-column h3 {
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 0;
+            text-align: center;
+        }
+        .sort-column.traditional h3 { background: var(--red); color: white; }
+        .sort-column.agent h3 { background: var(--green); color: white; }
+        
+        .sort-zone {
+            min-height: 200px;
+            border: 2px dashed #ccc;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 1rem;
+            background: #FAFAFA;
+        }
+        .sort-zone.drag-over { background: #E3F2FD; border-color: var(--sap-blue); }
         
         .sort-items {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: #fff;
-            border: 2px solid var(--light-gray);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            min-height: 60px;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
         
         .sort-item {
-            background: var(--dark-slate);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 0.6rem 1rem;
+            border-radius: 25px;
+            cursor: grab;
+            font-size: 0.9rem;
+            transition: all 0.2s;
             user-select: none;
-            transition: all 0.2s;
-            border: 3px solid transparent;
         }
+        .sort-item:hover { border-color: var(--sap-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .sort-item.dragging { opacity: 0.5; cursor: grabbing; }
+        .sort-item.placed { background: white; margin-bottom: 0.5rem; }
+        .sort-item.correct { border-color: var(--green); background: #E8F5E9; }
+        .sort-item.incorrect { border-color: var(--red); background: #FFEBEE; }
         
-        .sort-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        .sort-item.selected { border-color: var(--sap-orange); box-shadow: 0 0 0 3px rgba(237,125,49,0.3); }
-        .sort-item.placed { opacity: 0.6; cursor: default; }
-        .sort-item.correct { background: var(--green); }
-        .sort-item.incorrect { background: var(--red); }
+        /* Sequence Exercise Styles */
+        .sequence-container { display: flex; flex-direction: column; gap: 0.75rem; }
         
-        .sort-zones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        @media (max-width: 600px) { .sort-zones { grid-template-columns: 1fr; } }
-        
-        .sort-zone {
-            background: #f8f9fa;
-            border: 2px dashed #ccc;
+        .sequence-item {
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 1rem 1.25rem;
             border-radius: 8px;
-            min-height: 120px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .sort-zone:hover { border-color: var(--sap-blue); background: #f0f4f8; }
-        .sort-zone.active { border-color: var(--sap-orange); background: #fff8f0; }
-        .sort-zone-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; font-weight: 600; }
-        .sort-zone-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        
-        .sort-zone.traditional .sort-zone-title { color: #888; }
-        .sort-zone.agent .sort-zone-title { color: var(--green); }
-        .sort-zone.human .sort-zone-title { color: var(--sap-orange); }
-        .sort-zone.ai .sort-zone-title { color: var(--sap-blue); }
-        
-        .help-text { text-align: center; color: #999; font-size: 0.85rem; margin-top: 1rem; font-style: italic; }
-        
-        /* Sequence exercise */
-        .sequence-items {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .sequence-slot {
+            cursor: grab;
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.75rem 1rem;
-            background: #f8f9fa;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            min-height: 50px;
-            cursor: pointer;
             transition: all 0.2s;
         }
-        
-        .sequence-slot:hover { border-color: var(--sap-blue); }
-        .sequence-slot.active { border-color: var(--sap-orange); background: #fff8f0; }
-        .sequence-slot.filled { border-style: solid; border-color: var(--dark-slate); background: white; }
+        .sequence-item:hover { border-color: var(--sap-blue); }
+        .sequence-item.dragging { opacity: 0.5; background: #E3F2FD; }
+        .sequence-item.correct { border-color: var(--green); background: #E8F5E9; }
+        .sequence-item.incorrect { border-color: var(--red); background: #FFEBEE; }
         
         .sequence-num {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
             background: var(--light-gray);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
             flex-shrink: 0;
         }
+        .sequence-item.correct .sequence-num { background: var(--green); color: white; }
+        .sequence-item.incorrect .sequence-num { background: var(--red); color: white; }
         
-        .sequence-slot.filled .sequence-num { background: var(--sap-blue); color: white; }
-        .sequence-slot.correct .sequence-num { background: var(--green); }
-        .sequence-slot.incorrect .sequence-num { background: var(--red); }
+        .sequence-text { flex: 1; font-size: 0.95rem; }
+        .sequence-handle { color: #999; font-size: 1.2rem; }
         
-        .sequence-content { flex: 1; font-size: 0.95rem; color: #999; }
-        .sequence-slot.filled .sequence-content { color: var(--text); font-weight: 500; }
-        
-        .sequence-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: white;
-            border: 2px solid var(--light-gray);
-            border-radius: 8px;
-        }
-        
-        /* Options */
-        .scenario-box {
-            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
-            border-left: 4px solid var(--sap-blue);
-            padding: 1.25rem;
-            border-radius: 0 8px 8px 0;
+        /* Scenario Exercise Styles */
+        .scenario-card {
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
             margin-bottom: 1.5rem;
         }
-        .scenario-box h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--sap-blue); margin-bottom: 0.5rem; }
+        .scenario-card:last-child { margin-bottom: 0; }
         
-        .options { display: flex; flex-direction: column; gap: 0.75rem; }
-        .option {
+        .scenario-header {
             display: flex;
+            justify-content: space-between;
             align-items: flex-start;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border: 2px solid transparent;
+            margin-bottom: 1rem;
+        }
+        .scenario-label {
+            background: var(--dark-slate);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .scenario-points { font-size: 0.85rem; color: #666; }
+        
+        .scenario-text { font-size: 1rem; margin-bottom: 1.25rem; line-height: 1.6; }
+        
+        .scenario-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        
+        .scenario-option {
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 0.85rem 1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 0.95rem;
         }
-        .option:hover { background: var(--light-gray); }
-        .option.selected { border-color: var(--sap-blue); background: #e3f2fd; }
-        .option.correct { border-color: var(--green); background: #e8f5e9; }
-        .option.incorrect { border-color: var(--red); background: #ffebee; }
-        .option input { display: none; }
-        .option-marker {
-            width: 28px; height: 28px;
-            border: 2px solid #ccc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #888;
-            flex-shrink: 0;
-        }
-        .option.selected .option-marker { border-color: var(--sap-blue); background: var(--sap-blue); color: white; }
-        .option.correct .option-marker { border-color: var(--green); background: var(--green); color: white; }
-        .option.incorrect .option-marker { border-color: var(--red); background: var(--red); color: white; }
-        .option-text { flex: 1; font-size: 0.95rem; }
+        .scenario-option:hover { border-color: var(--sap-blue); }
+        .scenario-option.selected { border-color: var(--sap-blue); background: #E3F2FD; }
+        .scenario-option.correct { border-color: var(--green); background: #E8F5E9; }
+        .scenario-option.incorrect { border-color: var(--red); background: #FFEBEE; }
+        .scenario-option.disabled { cursor: default; opacity: 0.8; }
         
+        /* Submit & Results */
         .submit-section { text-align: center; margin-top: 2rem; }
+        
         .submit-btn {
             background: var(--sap-orange);
             color: white;
             border: none;
             padding: 1rem 3rem;
-            border-radius: 8px;
             font-size: 1.1rem;
             font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .submit-btn:hover { background: #D66A1F; transform: translateY(-2px); }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
         
-        .results-container { display: none; margin-top: 2rem; }
-        .results-container.show { display: block; }
-        .results-header { text-align: center; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
-        .results-header.pass { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
-        .results-header.fail { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
-        .results-score { font-size: 3.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .results-header.pass .results-score { color: var(--green); }
-        .results-header.fail .results-score { color: var(--red); }
-        .results-message { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; }
-        .results-detail { color: #666; }
-        
-        .results-breakdown {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
-        }
-        .results-breakdown h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray); }
-        .breakdown-row:last-child { border-bottom: none; }
-        .breakdown-label { color: #666; }
-        .breakdown-score { font-weight: 600; }
-        .breakdown-score.full { color: var(--green); }
-        .breakdown-score.partial { color: var(--gold); }
-        .breakdown-score.zero { color: var(--red); }
-        
-        .next-steps {
+        .results-panel {
             background: white;
             border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
         }
-        .next-steps h3 { margin-bottom: 1rem; }
-        .next-btn { display: inline-block; padding: 0.875rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 500; margin: 0.5rem; }
-        .next-btn.primary { background: var(--green); color: white; }
-        .next-btn.secondary { background: transparent; color: var(--sap-blue); border: 2px solid var(--sap-blue); }
+        .results-panel.show { display: block; }
         
-        .feedback-box { margin-top: 1rem; padding: 1rem; border-radius: 8px; font-size: 0.9rem; display: none; }
-        .feedback-box.show { display: block; }
-        .feedback-box.correct { background: #e8f5e9; border-left: 4px solid var(--green); }
-        .feedback-box.incorrect { background: #ffebee; border-left: 4px solid var(--red); }
+        .results-score { font-size: 3.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .results-score.pass { color: var(--green); }
+        .results-score.fail { color: var(--red); }
+        
+        .results-label { font-size: 1.2rem; color: #666; margin-bottom: 1.5rem; }
+        
+        .results-breakdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: #F8F9FA;
+            border-radius: 8px;
+        }
+        @media (max-width: 600px) { .results-breakdown { grid-template-columns: repeat(2, 1fr); } }
+        
+        .breakdown-item { text-align: center; }
+        .breakdown-item .points { font-size: 1.5rem; font-weight: 700; color: var(--dark-slate); }
+        .breakdown-item .label { font-size: 0.8rem; color: #888; }
+        
+        .results-message {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .results-message.pass { background: #E8F5E9; color: var(--green); }
+        .results-message.fail { background: #FFEBEE; color: var(--red); }
+        
+        .results-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .results-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .results-btn.primary { background: var(--sap-blue); color: white; }
+        .results-btn.secondary { background: var(--light-gray); color: var(--text); }
+        .results-btn:hover { transform: translateY(-2px); }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-inner">
-            <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
-            <nav class="nav">
-                <a href="/curriculum/">Curriculum</a>
-                <a href="/about.html">About</a>
-                <div id="user-menu"></div>
-            </nav>
-        </div>
-    </header>
-    
-    <section class="hero">
-        <h1>Unit 3 Assessment</h1>
-        <p>Market Intelligence & Competitive Strategy • 4 exercises • ~15 minutes</p>
-    </section>
-    
-    <main>
-        <div class="assessment-intro">
-            <p>Apply what you've learned about transforming competitive intelligence with AI agents.</p>
-            <div class="scoring-info">
-                <div><span>🎯</span> 100 points total</div>
-                <div><span>✅</span> 80+ to pass</div>
-                <div><span>🔓</span> Unlocks Unit 4</div>
-            </div>
-        </div>
-        
-        <!-- Exercise 1: Traditional vs Agent CI -->
-        <div class="exercise" id="exercise1">
-            <div class="exercise-header">
-                <div>
-                    <div class="exercise-number">Exercise 1 of 4</div>
-                    <div class="exercise-title">Traditional vs Agent-Powered CI</div>
-                </div>
-                <div class="exercise-points">24 points</div>
-            </div>
-            <p class="exercise-instructions"><strong>Click</strong> an item to select it, then <strong>click</strong> a category zone to place it.</p>
-            
-            <div class="sort-items" id="items1">
-                <div class="sort-item" data-answer="traditional" data-id="1">Quarterly review cycle</div>
-                <div class="sort-item" data-answer="traditional" data-id="2">Static battlecard PDFs</div>
-                <div class="sort-item" data-answer="traditional" data-id="3">Accuracy decays over time</div>
-                <div class="sort-item" data-answer="traditional" data-id="4">Reactive to market shifts</div>
-                <div class="sort-item" data-answer="agent" data-id="5">Continuous monitoring</div>
-                <div class="sort-item" data-answer="agent" data-id="6">Living, queryable systems</div>
-                <div class="sort-item" data-answer="agent" data-id="7">Deal-specific intelligence</div>
-                <div class="sort-item" data-answer="agent" data-id="8">Proactive signal detection</div>
-            </div>
-            
-            <div class="sort-zones" id="zones1">
-                <div class="sort-zone traditional" data-zone="traditional">
-                    <div class="sort-zone-title">📋 Traditional CI</div>
-                    <div class="sort-zone-items"></div>
-                </div>
-                <div class="sort-zone agent" data-zone="agent">
-                    <div class="sort-zone-title">🤖 Agent-Powered CI</div>
-                    <div class="sort-zone-items"></div>
-                </div>
-            </div>
-            <p class="help-text">Tap item → Tap zone to place</p>
-            <div class="feedback-box" id="feedback1"></div>
-        </div>
-        
-        <!-- Exercise 2: Living CI Architecture Sequence -->
-        <div class="exercise" id="exercise2">
-            <div class="exercise-header">
-                <div>
-                    <div class="exercise-number">Exercise 2 of 4</div>
-                    <div class="exercise-title">Living CI Architecture</div>
-                </div>
-                <div class="exercise-points">24 points</div>
-            </div>
-            <p class="exercise-instructions">Put the 4 layers in order. <strong>Click</strong> an item, then <strong>click</strong> a numbered slot to place it.</p>
-            
-            <div class="sequence-items" id="sequence2">
-                <div class="sequence-slot" data-position="1">
-                    <div class="sequence-num">1</div>
-                    <div class="sequence-content">Tap an option below</div>
-                </div>
-                <div class="sequence-slot" data-position="2">
-                    <div class="sequence-num">2</div>
-                    <div class="sequence-content">Tap an option below</div>
-                </div>
-                <div class="sequence-slot" data-position="3">
-                    <div class="sequence-num">3</div>
-                    <div class="sequence-content">Tap an option below</div>
-                </div>
-                <div class="sequence-slot" data-position="4">
-                    <div class="sequence-num">4</div>
-                    <div class="sequence-content">Tap an option below</div>
-                </div>
-            </div>
-            
-            <div class="sequence-options" id="options2">
-                <div class="sort-item" data-answer="1" data-id="s1">Data Ingestion (RSS, transcripts, social)</div>
-                <div class="sort-item" data-answer="2" data-id="s2">Processing Layer (LLM categorization)</div>
-                <div class="sort-item" data-answer="3" data-id="s3">Synthesis Layer (compare to baseline)</div>
-                <div class="sort-item" data-answer="4" data-id="s4">Output Layer (Slack, briefs, deal intel)</div>
-            </div>
-            <p class="help-text">Tap option → Tap slot to place</p>
-            <div class="feedback-box" id="feedback2"></div>
-        </div>
-        
-        <!-- Exercise 3: Win/Loss - Human vs AI -->
-        <div class="exercise" id="exercise3">
-            <div class="exercise-header">
-                <div>
-                    <div class="exercise-number">Exercise 3 of 4</div>
-                    <div class="exercise-title">Win/Loss: What AI Detects vs Human Interviews</div>
-                </div>
-                <div class="exercise-points">24 points</div>
-            </div>
-            <p class="exercise-instructions"><strong>Click</strong> an insight, then <strong>click</strong> AI or Human zone to place it.</p>
-            
-            <div class="sort-items" id="items3">
-                <div class="sort-item" data-answer="ai" data-id="w1">Deals with Competitor X have 40% longer cycles</div>
-                <div class="sort-item" data-answer="ai" data-id="w2">Win rate drops 15pts after specific prior product</div>
-                <div class="sort-item" data-answer="ai" data-id="w3">Pricing objections correlate with deal size non-linearly</div>
-                <div class="sort-item" data-answer="human" data-id="w4">Hesitation when discussing competitor's support</div>
-                <div class="sort-item" data-answer="human" data-id="w5">CFO's private reaction to pricing proposal</div>
-                <div class="sort-item" data-answer="human" data-id="w6">Deal decided by champion who left before signing</div>
-                <div class="sort-item" data-answer="ai" data-id="w7">Stage progression patterns across 200 deals</div>
-                <div class="sort-item" data-answer="human" data-id="w8">Why the technical evaluator personally preferred us</div>
-            </div>
-            
-            <div class="sort-zones" id="zones3">
-                <div class="sort-zone ai" data-zone="ai">
-                    <div class="sort-zone-title">🤖 AI Pattern Analysis</div>
-                    <div class="sort-zone-items"></div>
-                </div>
-                <div class="sort-zone human" data-zone="human">
-                    <div class="sort-zone-title">👤 Human Interview Required</div>
-                    <div class="sort-zone-items"></div>
-                </div>
-            </div>
-            <p class="help-text">Tap insight → Tap category</p>
-            <div class="feedback-box" id="feedback3"></div>
-        </div>
-        
-        <!-- Exercise 4: Scenarios -->
-        <div class="exercise" id="exercise4">
-            <div class="exercise-header">
-                <div>
-                    <div class="exercise-number">Exercise 4 of 4</div>
-                    <div class="exercise-title">Practitioner's Playbook</div>
-                </div>
-                <div class="exercise-points">28 points</div>
-            </div>
-            
-            <div class="scenario-box">
-                <h4>📋 Scenario 1</h4>
-                <p>You want to build an agent-powered CI system. Your manager says you can spend 2 hours proving the concept. According to Unit 3's practitioner playbook, what should you build first?</p>
-            </div>
-            
-            <div class="options" id="scenario1">
-                <label class="option">
-                    <input type="radio" name="scenario1" value="a">
-                    <span class="option-marker">A</span>
-                    <span class="option-text">The full monitoring system with RSS feeds, processing, and synthesis layers.</span>
-                </label>
-                <label class="option">
-                    <input type="radio" name="scenario1" value="b">
-                    <span class="option-marker">B</span>
-                    <span class="option-text">A daily brief: prompt your LLM each morning to synthesize news for top 3 competitors.</span>
-                </label>
-                <label class="option">
-                    <input type="radio" name="scenario1" value="c">
-                    <span class="option-marker">C</span>
-                    <span class="option-text">A PowerPoint deck explaining the vision to get executive buy-in first.</span>
-                </label>
-                <label class="option">
-                    <input type="radio" name="scenario1" value="d">
-                    <span class="option-marker">D</span>
-                    <span class="option-text">A Slack integration to distribute competitive updates.</span>
-                </label>
-            </div>
-            <div class="feedback-box" id="feedback4a"></div>
-            
-            <div class="scenario-box" style="margin-top: 2rem;">
-                <h4>📋 Scenario 2</h4>
-                <p>You've built great competitive intelligence. But nobody's using it. It lives in a Notion doc with 12 views last month. What does Unit 3 say is the actual bottleneck?</p>
-            </div>
-            
-            <div class="options" id="scenario2">
-                <label class="option">
-                    <input type="radio" name="scenario2" value="a">
-                    <span class="option-marker">A</span>
-                    <span class="option-text">The intelligence isn't good enough — you need more data sources.</span>
-                </label>
-                <label class="option">
-                    <input type="radio" name="scenario2" value="b">
-                    <span class="option-marker">B</span>
-                    <span class="option-text">You need executive sponsorship to mandate usage.</span>
-                </label>
-                <label class="option">
-                    <input type="radio" name="scenario2" value="c">
-                    <span class="option-marker">C</span>
-                    <span class="option-text">Distribution is the bottleneck — you need to build the delivery mechanism (Slack, CRM, deal-specific).</span>
-                </label>
-                <label class="option">
-                    <input type="radio" name="scenario2" value="d">
-                    <span class="option-marker">D</span>
-                    <span class="option-text">Sales teams don't value CI — it's a cultural problem.</span>
-                </label>
-            </div>
-            <div class="feedback-box" id="feedback4b"></div>
-        </div>
-        
-        <div class="submit-section">
-            <button class="submit-btn" id="submitBtn">Submit Assessment</button>
-        </div>
-        
-        <div class="results-container" id="resultsContainer">
-            <div class="results-header" id="resultsHeader">
-                <div class="results-score" id="resultsScore">0%</div>
-                <div class="results-message" id="resultsMessage"></div>
-                <div class="results-detail" id="resultsDetail"></div>
-            </div>
-            
-            <div class="results-breakdown">
-                <h3>Score Breakdown</h3>
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Exercise 1: Traditional vs Agent CI</span>
-                    <span class="breakdown-score" id="score1">0/24</span>
-                </div>
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Exercise 2: Living CI Architecture</span>
-                    <span class="breakdown-score" id="score2">0/24</span>
-                </div>
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Exercise 3: Win/Loss Analysis</span>
-                    <span class="breakdown-score" id="score3">0/24</span>
-                </div>
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Exercise 4: Practitioner's Playbook</span>
-                    <span class="breakdown-score" id="score4">0/28</span>
-                </div>
-            </div>
-            
-            <div class="next-steps" id="nextSteps">
-                <h3 id="nextStepsTitle"></h3>
-                <p id="nextStepsText" style="color:#666; margin-bottom:1rem;"></p>
-                <div id="nextStepsButtons"></div>
-            </div>
-        </div>
-    </main>
 
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>Unit 3 Assessment</h1>
+    <p>Market Intelligence & Competitive Strategy</p>
+</section>
+
+<main>
+    <div class="assessment-intro">
+        <p>Complete these four exercises to demonstrate your understanding of agent-powered competitive intelligence.</p>
+        <div class="scoring-info">
+            <div>📊 <strong>100 points</strong> total</div>
+            <div>✅ <strong>80%</strong> to pass</div>
+            <div>🎯 <strong>4 exercises</strong></div>
+        </div>
+    </div>
+    
+    <!-- Exercise 1: Traditional vs Agent-Powered CI -->
+    <div class="exercise" id="exercise1">
+        <div class="exercise-header">
+            <h2>Exercise 1: Traditional vs Agent-Powered CI</h2>
+            <span class="exercise-points">24 points</span>
+        </div>
+        <div class="exercise-instructions">
+            Drag each characteristic to the correct category: Traditional CI or Agent-Powered CI.
+        </div>
+        
+        <div class="sort-items" id="sortItems1">
+            <div class="sort-item" draggable="true" data-answer="traditional">Quarterly refresh cadence</div>
+            <div class="sort-item" draggable="true" data-answer="agent">Real-time signal detection</div>
+            <div class="sort-item" draggable="true" data-answer="traditional">Manual competitor monitoring</div>
+            <div class="sort-item" draggable="true" data-answer="agent">Automated news/filing alerts</div>
+            <div class="sort-item" draggable="true" data-answer="traditional">Static battlecard PDFs</div>
+            <div class="sort-item" draggable="true" data-answer="agent">Living intelligence system</div>
+            <div class="sort-item" draggable="true" data-answer="traditional">PMM as bottleneck</div>
+            <div class="sort-item" draggable="true" data-answer="agent">PMM as intelligence architect</div>
+        </div>
+        
+        <div class="sort-container">
+            <div class="sort-column traditional">
+                <h3>❌ Traditional CI</h3>
+                <div class="sort-zone" id="traditionalZone" data-category="traditional"></div>
+            </div>
+            <div class="sort-column agent">
+                <h3>✅ Agent-Powered CI</h3>
+                <div class="sort-zone" id="agentZone" data-category="agent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exercise 2: Living CI Architecture Sequence -->
+    <div class="exercise" id="exercise2">
+        <div class="exercise-header">
+            <h2>Exercise 2: Living CI Architecture</h2>
+            <span class="exercise-points">24 points</span>
+        </div>
+        <div class="exercise-instructions">
+            Drag to arrange the 4 layers of the Living CI Architecture in the correct order (1 = first).
+        </div>
+        
+        <div class="sequence-container" id="sequenceContainer">
+            <div class="sequence-item" draggable="true" data-correct="3">
+                <span class="sequence-num">?</span>
+                <span class="sequence-text">Synthesis Layer — compare to baseline, identify what changed</span>
+                <span class="sequence-handle">⋮⋮</span>
+            </div>
+            <div class="sequence-item" draggable="true" data-correct="1">
+                <span class="sequence-num">?</span>
+                <span class="sequence-text">Data Ingestion — RSS feeds, call transcripts, social mentions</span>
+                <span class="sequence-handle">⋮⋮</span>
+            </div>
+            <div class="sequence-item" draggable="true" data-correct="4">
+                <span class="sequence-num">?</span>
+                <span class="sequence-text">Output Layer — Slack alerts, deal briefs, battlecard updates</span>
+                <span class="sequence-handle">⋮⋮</span>
+            </div>
+            <div class="sequence-item" draggable="true" data-correct="2">
+                <span class="sequence-num">?</span>
+                <span class="sequence-text">Processing Layer — LLM categorizes and extracts key info</span>
+                <span class="sequence-handle">⋮⋮</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exercise 3: AI vs Human Insights -->
+    <div class="exercise" id="exercise3">
+        <div class="exercise-header">
+            <h2>Exercise 3: AI vs Human Insights</h2>
+            <span class="exercise-points">24 points</span>
+        </div>
+        <div class="exercise-instructions">
+            Drag each insight type to the correct category: AI Pattern Analysis or Human Interviews.
+        </div>
+        
+        <div class="sort-items" id="sortItems3">
+            <div class="sort-item" draggable="true" data-answer="ai">Win/loss patterns across 200 deals</div>
+            <div class="sort-item" draggable="true" data-answer="human">Champion's private career concerns</div>
+            <div class="sort-item" draggable="true" data-answer="ai">Competitor pricing mentions in calls</div>
+            <div class="sort-item" draggable="true" data-answer="human">Why a key contact left the company</div>
+            <div class="sort-item" draggable="true" data-answer="ai">Feature request frequency trends</div>
+            <div class="sort-item" draggable="true" data-answer="human">Unspoken budget constraints</div>
+            <div class="sort-item" draggable="true" data-answer="ai">Objection patterns by industry</div>
+            <div class="sort-item" draggable="true" data-answer="human">Emotional cues from deal calls</div>
+        </div>
+        
+        <div class="sort-container">
+            <div class="sort-column traditional">
+                <h3>🤖 AI Pattern Analysis</h3>
+                <div class="sort-zone" id="aiZone" data-category="ai"></div>
+            </div>
+            <div class="sort-column agent">
+                <h3>👤 Human Interviews</h3>
+                <div class="sort-zone" id="humanZone" data-category="human"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exercise 4: Practitioner Scenarios -->
+    <div class="exercise" id="exercise4">
+        <div class="exercise-header">
+            <h2>Exercise 4: CI Strategy Decisions</h2>
+            <span class="exercise-points">28 points</span>
+        </div>
+        <div class="exercise-instructions">
+            Choose the best approach for each competitive intelligence challenge.
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <span class="scenario-label">Scenario 1</span>
+                <span class="scenario-points">7 points</span>
+            </div>
+            <p class="scenario-text">You want to build a living CI system but don't know where to start. Your team tracks 6 competitors manually. What's the recommended first step?</p>
+            <div class="scenario-options" data-scenario="1">
+                <div class="scenario-option" data-correct="false">Build monitoring for all 6 competitors simultaneously</div>
+                <div class="scenario-option" data-correct="true">Pick your #1 competitor and build the full pipeline end-to-end first</div>
+                <div class="scenario-option" data-correct="false">Wait until you have engineering resources to build a custom solution</div>
+                <div class="scenario-option" data-correct="false">Focus on improving your existing quarterly battlecard process</div>
+            </div>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <span class="scenario-label">Scenario 2</span>
+                <span class="scenario-points">7 points</span>
+            </div>
+            <p class="scenario-text">Your agent-powered CI system detects 50+ competitor signals per week. Sales is overwhelmed and ignoring the alerts. What's the fix?</p>
+            <div class="scenario-options" data-scenario="2">
+                <div class="scenario-option" data-correct="false">Send fewer alerts by filtering to only major announcements</div>
+                <div class="scenario-option" data-correct="false">Create a weekly digest email with all 50 signals</div>
+                <div class="scenario-option" data-correct="true">Route specific insights to specific people — deal-relevant intel to AEs, product news to SEs</div>
+                <div class="scenario-option" data-correct="false">Train sales to check the CI dashboard more regularly</div>
+            </div>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <span class="scenario-label">Scenario 3</span>
+                <span class="scenario-points">7 points</span>
+            </div>
+            <p class="scenario-text">An AE asks: "What should I know about Competitor X for my call tomorrow?" How should a living CI system respond vs traditional approach?</p>
+            <div class="scenario-options" data-scenario="3">
+                <div class="scenario-option" data-correct="false">Point them to the Q3 battlecard in the sales enablement portal</div>
+                <div class="scenario-option" data-correct="true">Generate a deal-specific brief based on this prospect's industry and recent competitor moves</div>
+                <div class="scenario-option" data-correct="false">Schedule a call with the competitive PMM to discuss</div>
+                <div class="scenario-option" data-correct="false">Send them links to competitor's recent press releases</div>
+            </div>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <span class="scenario-label">Scenario 4</span>
+                <span class="scenario-points">7 points</span>
+            </div>
+            <p class="scenario-text">Your AI finds that Competitor X mentions "data security" 3x more often in calls than last quarter. What's the PMM's role?</p>
+            <div class="scenario-options" data-scenario="4">
+                <div class="scenario-option" data-correct="false">Add "data security" as a keyword filter for future monitoring</div>
+                <div class="scenario-option" data-correct="true">Interpret WHY — is it a new product, a competitive response, or market trend? Then brief sales accordingly</div>
+                <div class="scenario-option" data-correct="false">Create new battlecard content about your data security features</div>
+                <div class="scenario-option" data-correct="false">Share the statistic directly with the sales team via Slack</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="submit-section">
+        <button class="submit-btn" id="submitBtn" onclick="submitAssessment()">Submit Assessment</button>
+    </div>
+    
+    <div class="results-panel" id="resultsPanel">
+        <div class="results-score" id="resultsScore">0%</div>
+        <div class="results-label">Your Score</div>
+        
+        <div class="results-breakdown">
+            <div class="breakdown-item">
+                <div class="points" id="ex1Score">0/24</div>
+                <div class="label">Sorting</div>
+            </div>
+            <div class="breakdown-item">
+                <div class="points" id="ex2Score">0/24</div>
+                <div class="label">Sequence</div>
+            </div>
+            <div class="breakdown-item">
+                <div class="points" id="ex3Score">0/24</div>
+                <div class="label">AI vs Human</div>
+            </div>
+            <div class="breakdown-item">
+                <div class="points" id="ex4Score">0/28</div>
+                <div class="label">Scenarios</div>
+            </div>
+        </div>
+        
+        <div class="results-message" id="resultsMessage"></div>
+        <div class="results-actions" id="resultsActions"></div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
 <script>
-let selectedItem = null;
-let selectedSlot = null;
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+let client;
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Sort items (Ex 1, 3)
-    document.querySelectorAll('.sort-items .sort-item').forEach(item => {
-        item.addEventListener('click', function() {
-            if (this.classList.contains('placed')) return;
-            const parent = this.closest('.exercise');
-            parent.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
-            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
-            this.classList.add('selected');
-            selectedItem = this;
-            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.add('active'));
-        });
-    });
-    
-    document.querySelectorAll('.sort-zone').forEach(zone => {
-        zone.addEventListener('click', function() {
-            if (!selectedItem) return;
-            const parent = this.closest('.exercise');
-            if (!parent.contains(selectedItem)) return;
-            
-            const itemsContainer = this.querySelector('.sort-zone-items');
-            const clone = selectedItem.cloneNode(true);
-            clone.classList.remove('selected');
-            clone.classList.add('placed');
-            clone.dataset.placedZone = this.dataset.zone;
-            
-            clone.addEventListener('click', function() {
-                const original = parent.querySelector(`.sort-items .sort-item[data-id="${this.dataset.id}"]`);
-                if (original) { original.classList.remove('placed'); original.style.display = ''; }
-                this.remove();
-            });
-            
-            itemsContainer.appendChild(clone);
-            selectedItem.classList.add('placed');
-            selectedItem.style.display = 'none';
-            selectedItem.classList.remove('selected');
-            selectedItem = null;
-            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
-        });
-    });
-    
-    // Sequence (Ex 2)
-    document.querySelectorAll('#options2 .sort-item').forEach(item => {
-        item.addEventListener('click', function() {
-            if (this.classList.contains('placed')) return;
-            document.querySelectorAll('#options2 .sort-item').forEach(i => i.classList.remove('selected'));
-            document.querySelectorAll('#sequence2 .sequence-slot').forEach(s => s.classList.remove('active'));
-            this.classList.add('selected');
-            selectedItem = this;
-            document.querySelectorAll('#sequence2 .sequence-slot:not(.filled)').forEach(s => s.classList.add('active'));
-        });
-    });
-    
-    document.querySelectorAll('#sequence2 .sequence-slot').forEach(slot => {
-        slot.addEventListener('click', function() {
-            if (!selectedItem || this.classList.contains('filled')) return;
-            
-            this.classList.add('filled');
-            this.querySelector('.sequence-content').textContent = selectedItem.textContent;
-            this.dataset.answer = selectedItem.dataset.answer;
-            this.dataset.itemId = selectedItem.dataset.id;
-            
-            selectedItem.classList.add('placed');
-            selectedItem.style.display = 'none';
-            selectedItem = null;
-            
-            document.querySelectorAll('#sequence2 .sequence-slot').forEach(s => s.classList.remove('active'));
-            
-            // Allow removing
-            this.addEventListener('click', function removeHandler() {
-                if (!this.classList.contains('filled')) return;
-                const itemId = this.dataset.itemId;
-                const original = document.querySelector(`#options2 .sort-item[data-id="${itemId}"]`);
-                if (original) { original.classList.remove('placed'); original.style.display = ''; }
-                this.classList.remove('filled');
-                this.querySelector('.sequence-content').textContent = 'Tap an option below';
-                delete this.dataset.answer;
-                delete this.dataset.itemId;
-            });
-        });
-    });
-    
-    // Options
-    document.querySelectorAll('.option').forEach(opt => {
-        opt.addEventListener('click', function() {
-            this.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-            this.classList.add('selected');
-            this.querySelector('input').checked = true;
-        });
-    });
-    
-    document.getElementById('submitBtn').addEventListener('click', submitAssessment);
+document.addEventListener('DOMContentLoaded', () => {
+    client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    initSortExercise('sortItems1', ['traditionalZone', 'agentZone']);
+    initSequenceExercise();
+    initSortExercise('sortItems3', ['aiZone', 'humanZone']);
+    initScenarioExercise();
 });
 
-function submitAssessment() {
-    let totalScore = 0;
+// Drag and drop sorting
+function initSortExercise(itemsId, zoneIds) {
+    const items = document.querySelectorAll(`#${itemsId} .sort-item`);
+    const zones = zoneIds.map(id => document.getElementById(id));
     
-    // Ex 1: Traditional vs Agent (24 pts)
-    let ex1Score = 0;
-    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
-        const zone = item.closest('.sort-zone').dataset.zone;
-        if (item.dataset.answer === zone) { item.classList.add('correct'); ex1Score += 3; }
-        else { item.classList.add('incorrect'); }
+    items.forEach(item => {
+        item.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', '');
+            item.classList.add('dragging');
+        });
+        item.addEventListener('dragend', () => item.classList.remove('dragging'));
     });
-    totalScore += ex1Score;
-    updateScoreDisplay('score1', ex1Score, 24);
-    showFeedback('feedback1', ex1Score >= 21,
-        'You understand the shift from traditional to agent-powered CI!',
-        `You got ${ex1Score}/24. Traditional = quarterly, static, reactive. Agent = continuous, living, proactive.`
-    );
     
-    // Ex 2: Sequence (24 pts)
-    let ex2Score = 0;
-    document.querySelectorAll('#sequence2 .sequence-slot.filled').forEach(slot => {
-        const pos = slot.dataset.position;
-        const answer = slot.dataset.answer;
-        if (pos === answer) { slot.classList.add('correct'); ex2Score += 6; }
-        else { slot.classList.add('incorrect'); }
+    zones.forEach(zone => {
+        zone.addEventListener('dragover', e => {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            const dragging = document.querySelector(`#${itemsId} .dragging`);
+            if (dragging) {
+                zone.appendChild(dragging);
+                dragging.classList.add('placed');
+            }
+        });
     });
-    totalScore += ex2Score;
-    updateScoreDisplay('score2', ex2Score, 24);
-    showFeedback('feedback2', ex2Score === 24,
-        'Perfect! You know the Living CI Architecture flow.',
-        `You got ${ex2Score}/24. Order: Data Ingestion → Processing → Synthesis → Output.`
-    );
     
-    // Ex 3: Win/Loss (24 pts)
-    let ex3Score = 0;
-    document.querySelectorAll('#zones3 .sort-zone-items .sort-item').forEach(item => {
-        const zone = item.closest('.sort-zone').dataset.zone;
-        if (item.dataset.answer === zone) { item.classList.add('correct'); ex3Score += 3; }
-        else { item.classList.add('incorrect'); }
+    // Allow drag back to source
+    const source = document.getElementById(itemsId);
+    source.addEventListener('dragover', e => e.preventDefault());
+    source.addEventListener('drop', e => {
+        e.preventDefault();
+        const dragging = document.querySelector('.dragging');
+        if (dragging && source.id === itemsId) {
+            source.appendChild(dragging);
+            dragging.classList.remove('placed');
+        }
     });
-    totalScore += ex3Score;
-    updateScoreDisplay('score3', ex3Score, 24);
-    showFeedback('feedback3', ex3Score >= 21,
-        'You understand what AI detects vs what needs human depth!',
-        `You got ${ex3Score}/24. AI = patterns across deals. Human = emotional cues, private context, departed champions.`
-    );
+}
+
+// Sequence exercise
+function initSequenceExercise() {
+    const container = document.getElementById('sequenceContainer');
+    const items = container.querySelectorAll('.sequence-item');
     
-    // Ex 4: Scenarios (28 pts)
-    let ex4Score = 0;
-    
-    const s1 = document.querySelector('input[name="scenario1"]:checked');
-    document.querySelectorAll('#scenario1 .option').forEach(opt => {
-        const input = opt.querySelector('input');
-        if (input.value === 'b') opt.classList.add('correct');
-        else if (s1 && input.value === s1.value && input.value !== 'b') opt.classList.add('incorrect');
+    items.forEach(item => {
+        item.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', '');
+            item.classList.add('dragging');
+        });
+        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+        item.addEventListener('dragover', e => {
+            e.preventDefault();
+            const dragging = document.querySelector('.sequence-item.dragging');
+            if (dragging && dragging !== item) {
+                const rect = item.getBoundingClientRect();
+                const midY = rect.top + rect.height / 2;
+                if (e.clientY < midY) {
+                    container.insertBefore(dragging, item);
+                } else {
+                    container.insertBefore(dragging, item.nextSibling);
+                }
+            }
+        });
     });
-    if (s1 && s1.value === 'b') ex4Score += 14;
-    showFeedback('feedback4a', s1 && s1.value === 'b',
-        'Correct! Start with the daily brief — get 80% of value in a day.',
-        'Answer: B. The playbook says start with a simple daily brief before building the full system.'
-    );
     
-    const s2 = document.querySelector('input[name="scenario2"]:checked');
-    document.querySelectorAll('#scenario2 .option').forEach(opt => {
-        const input = opt.querySelector('input');
-        if (input.value === 'c') opt.classList.add('correct');
-        else if (s2 && input.value === s2.value && input.value !== 'c') opt.classList.add('incorrect');
+    updateSequenceNumbers();
+}
+
+function updateSequenceNumbers() {
+    const items = document.querySelectorAll('#sequenceContainer .sequence-item');
+    items.forEach((item, index) => {
+        item.querySelector('.sequence-num').textContent = index + 1;
     });
-    if (s2 && s2.value === 'c') ex4Score += 14;
-    showFeedback('feedback4b', s2 && s2.value === 'c',
-        'Correct! Distribution turns intelligence into action.',
-        'Answer: C. Build the delivery mechanism BEFORE the intelligence. Slack, CRM, deal-specific.'
-    );
+}
+
+// Scenarios
+function initScenarioExercise() {
+    document.querySelectorAll('.scenario-options').forEach(container => {
+        container.querySelectorAll('.scenario-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                if (opt.classList.contains('disabled')) return;
+                container.querySelectorAll('.scenario-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+            });
+        });
+    });
+}
+
+// Submit
+async function submitAssessment() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Scoring...';
     
-    totalScore += ex4Score;
-    updateScoreDisplay('score4', ex4Score, 28);
+    let scores = { ex1: 0, ex2: 0, ex3: 0, ex4: 0 };
     
-    // Results
-    const percentage = totalScore;
+    // Exercise 1: Sorting (24 pts, 3 per correct)
+    document.getElementById('traditionalZone').querySelectorAll('.sort-item').forEach(item => {
+        if (item.dataset.answer === 'traditional') {
+            scores.ex1 += 3;
+            item.classList.add('correct');
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    document.getElementById('agentZone').querySelectorAll('.sort-item').forEach(item => {
+        if (item.dataset.answer === 'agent') {
+            scores.ex1 += 3;
+            item.classList.add('correct');
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    
+    // Exercise 2: Sequence (24 pts, 6 per correct)
+    const seqItems = document.querySelectorAll('#sequenceContainer .sequence-item');
+    seqItems.forEach((item, index) => {
+        const correctPos = parseInt(item.dataset.correct);
+        if (correctPos === index + 1) {
+            scores.ex2 += 6;
+            item.classList.add('correct');
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    updateSequenceNumbers();
+    
+    // Exercise 3: AI vs Human (24 pts, 3 per correct)
+    document.getElementById('aiZone').querySelectorAll('.sort-item').forEach(item => {
+        if (item.dataset.answer === 'ai') {
+            scores.ex3 += 3;
+            item.classList.add('correct');
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    document.getElementById('humanZone').querySelectorAll('.sort-item').forEach(item => {
+        if (item.dataset.answer === 'human') {
+            scores.ex3 += 3;
+            item.classList.add('correct');
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    
+    // Exercise 4: Scenarios (28 pts, 7 per correct)
+    document.querySelectorAll('.scenario-options').forEach(container => {
+        container.querySelectorAll('.scenario-option').forEach(opt => {
+            opt.classList.add('disabled');
+            if (opt.classList.contains('selected')) {
+                if (opt.dataset.correct === 'true') {
+                    scores.ex4 += 7;
+                    opt.classList.add('correct');
+                } else {
+                    opt.classList.add('incorrect');
+                }
+            } else if (opt.dataset.correct === 'true') {
+                opt.classList.add('correct');
+            }
+        });
+    });
+    
+    const total = scores.ex1 + scores.ex2 + scores.ex3 + scores.ex4;
+    const percentage = Math.round(total);
     const passed = percentage >= 80;
     
-    document.querySelector('.submit-section').style.display = 'none';
-    const resultsContainer = document.getElementById('resultsContainer');
-    resultsContainer.classList.add('show');
-    document.getElementById('resultsHeader').classList.add(passed ? 'pass' : 'fail');
-    document.getElementById('resultsScore').textContent = `${percentage}%`;
-    document.getElementById('resultsMessage').textContent = passed ? '🎉 Excellent Work!' : '📚 Keep Learning!';
-    document.getElementById('resultsDetail').textContent = passed
-        ? `You scored ${totalScore}/100 and mastered agent-powered CI.`
-        : `You scored ${totalScore}/100. You need 80% to proceed.`;
+    document.getElementById('ex1Score').textContent = `${scores.ex1}/24`;
+    document.getElementById('ex2Score').textContent = `${scores.ex2}/24`;
+    document.getElementById('ex3Score').textContent = `${scores.ex3}/24`;
+    document.getElementById('ex4Score').textContent = `${scores.ex4}/28`;
     
-    const nextTitle = document.getElementById('nextStepsTitle');
-    const nextText = document.getElementById('nextStepsText');
-    const nextBtns = document.getElementById('nextStepsButtons');
+    const scoreEl = document.getElementById('resultsScore');
+    scoreEl.textContent = `${percentage}%`;
+    scoreEl.className = 'results-score ' + (passed ? 'pass' : 'fail');
     
+    const msgEl = document.getElementById('resultsMessage');
     if (passed) {
-        nextTitle.textContent = '🔓 Unit 4 Unlocked!';
-        nextText.textContent = 'Continue to learn about enabling champions for technical validation.';
-        nextBtns.innerHTML = `
-            <a href="/curriculum/unit-04/" class="next-btn primary">Continue to Unit 4 →</a>
-            <a href="/curriculum/unit-03/" class="next-btn secondary">Review Unit 3</a>
+        msgEl.className = 'results-message pass';
+        msgEl.innerHTML = '🎉 <strong>Congratulations!</strong> You\'ve mastered agent-powered competitive intelligence. Unit 4 is now unlocked!';
+    } else {
+        msgEl.className = 'results-message fail';
+        msgEl.innerHTML = '📚 You need 80% to pass. Review the unit content and try again.';
+    }
+    
+    const actionsEl = document.getElementById('resultsActions');
+    if (passed) {
+        actionsEl.innerHTML = `
+            <a href="/curriculum/unit-04/" class="results-btn primary">Continue to Unit 4 →</a>
+            <a href="/curriculum/" class="results-btn secondary">Back to Curriculum</a>
         `;
     } else {
-        nextTitle.textContent = 'Almost There!';
-        nextText.textContent = 'Review the unit, then try again.';
-        nextBtns.innerHTML = `
-            <a href="/curriculum/unit-03/" class="next-btn secondary">Review Unit 3</a>
-            <a href="javascript:location.reload()" class="next-btn primary">Try Again</a>
+        actionsEl.innerHTML = `
+            <a href="/curriculum/unit-03/" class="results-btn primary">Review Unit 3</a>
+            <a href="javascript:location.reload()" class="results-btn secondary">Try Again</a>
         `;
     }
     
-    resultsContainer.scrollIntoView({ behavior: 'smooth' });
-    saveQuizScore(totalScore, 100, percentage);
-}
-
-function updateScoreDisplay(id, score, max) {
-    const el = document.getElementById(id);
-    el.textContent = `${score}/${max}`;
-    el.classList.add(score === max ? 'full' : score > 0 ? 'partial' : 'zero');
-}
-
-function showFeedback(id, correct, goodMsg, badMsg) {
-    const el = document.getElementById(id);
-    el.classList.add('show', correct ? 'correct' : 'incorrect');
-    el.innerHTML = `<strong>${correct ? '✓' : '✗'}</strong> ${correct ? goodMsg : badMsg}`;
-}
-
-async function saveQuizScore(score, total, percentage) {
+    document.getElementById('resultsPanel').classList.add('show');
+    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+    
+    // Save to Supabase
     try {
-        const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const { data: { session } } = await client.auth.getSession();
-        if (!session) return;
-        
-        await client.from('quiz_scores').insert({
-            user_id: session.user.id,
-            chapter: 'unit-03',
-            score, total, percentage
-        });
-        
-        if (percentage >= 80) {
-            await client.from('chapter_progress').upsert({
+        if (session) {
+            await client.from('quiz_scores').insert({
                 user_id: session.user.id,
                 chapter: 'unit-03',
-                completed: true,
+                score: total,
+                total: 100,
+                percentage: percentage,
                 completed_at: new Date().toISOString()
-            }, { onConflict: 'user_id,chapter' });
+            });
+            
+            if (passed) {
+                await client.from('chapter_progress').upsert({
+                    user_id: session.user.id,
+                    chapter: 'unit-03',
+                    completed: true,
+                    completed_at: new Date().toISOString()
+                }, { onConflict: 'user_id,chapter' });
+            }
         }
-    } catch (err) { console.error('Save error:', err); }
+    } catch (err) {
+        console.error('Error saving score:', err);
+    }
 }
 </script>
-
-<script src="/assets/js/user-menu.js"></script>
 </body>
 </html>
