@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: PMM Activity Audit | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: var(--gold); 
+            color: var(--dark-slate); 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        .lab-intro ul { margin: 0.5rem 0 0 1.5rem; color: #555; }
+        .lab-intro li { margin-bottom: 0.35rem; }
+        
+        .matrix-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 600px) {
+            .matrix-preview { grid-template-columns: 1fr; }
+        }
+        .matrix-cell {
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        .matrix-cell.high { background: #FFEBEE; color: var(--red); }
+        .matrix-cell.moderate { background: #FFF8E1; color: #F57F17; }
+        .matrix-cell.human { background: #E8F5E9; color: var(--green); }
+        .matrix-cell strong { display: block; font-size: 1.1rem; }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--dark-slate);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--sap-blue);
+        }
+        textarea { min-height: 180px; resize: vertical; }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .run-btn {
+            background: var(--sap-blue);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .run-btn:hover { background: #3761AB; transform: translateY(-2px); }
+        .run-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        .results-header h2 { font-size: 1.3rem; color: var(--dark-slate); }
+        
+        .copy-btn {
+            background: var(--light-gray);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--sap-blue); color: white; }
+        
+        .results-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .results-content h1 { font-size: 1.4rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h2 { font-size: 1.2rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h3 { font-size: 1.05rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.35rem; }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code { background: #F0F0F0; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+        .results-content blockquote {
+            border-left: 4px solid var(--sap-blue);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .error-message {
+            background: #FFEBEE;
+            color: var(--red);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge">🧠 Unit 1 Lab</div>
+        <h1>PMM Activity Audit</h1>
+        <p>Map your weekly activities against the AI Impact Matrix. Discover which tasks to automate, augment, or protect.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>The AI Impact Matrix</h2>
+        <p>Every PMM activity falls somewhere on the spectrum from "fully automatable" to "irreducibly human." This lab classifies your actual work and creates a transformation plan:</p>
+        
+        <div class="matrix-preview">
+            <div class="matrix-cell high">
+                <strong>80%+ AI</strong>
+                Production Tasks
+            </div>
+            <div class="matrix-cell moderate">
+                <strong>50-79% AI</strong>
+                Augmented Tasks
+            </div>
+            <div class="matrix-cell human">
+                <strong>&lt;30% AI</strong>
+                Human-Essential
+            </div>
+        </div>
+        
+        <p style="margin-top: 1.5rem;">You'll get:</p>
+        <ul>
+            <li><strong>Activity Classification</strong> — Each task sorted into the right tier</li>
+            <li><strong>Time Recovery</strong> — Hours/week you could reclaim through automation</li>
+            <li><strong>Quick Wins</strong> — 3 things to automate THIS WEEK</li>
+            <li><strong>Tool Recommendations</strong> — Specific tools for your top opportunities</li>
+            <li><strong>30-Day Pilot Plan</strong> — Your first AI workflow to implement</li>
+        </ul>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Your Weekly Activities</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="activities">List Your PMM Activities (with hours/week)</label>
+                <p class="hint">Be specific — include everything you do regularly</p>
+                <textarea id="activities" name="activities" placeholder="e.g.,
+• Writing blog posts (4 hrs)
+• Competitive research/monitoring (3 hrs)
+• Sales enablement content updates (3 hrs)
+• Product launch planning (4 hrs)
+• Win/loss analysis (2 hrs)
+• Analyst briefing prep (2 hrs)
+• Internal stakeholder meetings (6 hrs)
+• Customer interviews (2 hrs)
+• Positioning/messaging work (3 hrs)
+• Email campaigns/newsletters (2 hrs)
+• Social media content (2 hrs)
+• Metrics/reporting (3 hrs)
+• RFP responses (2 hrs)" required></textarea>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>Your Current Setup</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="tools">AI/Automation Tools You Currently Use</label>
+                <p class="hint">List any AI tools, automation, or productivity tools</p>
+                <textarea id="tools" name="tools" style="min-height: 100px;" placeholder="e.g.,
+• ChatGPT for drafting
+• Grammarly for editing
+• Notion AI for summaries
+• Zapier for workflows
+• None yet — just getting started" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="teamStructure">Team Structure</label>
+                <p class="hint">Who else is involved in PMM work?</p>
+                <input type="text" id="teamStructure" name="teamStructure" placeholder="e.g., Solo PMM, or 2 PMMs + 1 Content Writer, or PMM team of 4" required>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🧠 Run Activity Audit</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>🧠 Your AI Transformation Plan</h2>
+            <button class="copy-btn" onclick="copyResults()">📋 Copy Plan</button>
+        </div>
+        <div class="results-content" id="resultsContent"></div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+const resultsContent = document.getElementById('resultsContent');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const inputs = {
+        activities: document.getElementById('activities').value,
+        tools: document.getElementById('tools').value,
+        teamStructure: document.getElementById('teamStructure').value
+    };
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Analyzing activities...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'ai-impact',
+                inputs: inputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Audit failed. Please try again.');
+        
+        const data = await response.json();
+        resultsContent.innerHTML = marked.parse(data.result);
+        resultsSection.classList.add('show');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '🧠 Run Activity Audit';
+        spinner.style.display = 'none';
+    }
+});
+
+function copyResults() {
+    navigator.clipboard.writeText(resultsContent.innerText).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy Plan', 2000);
+    });
+}
+</script>
+</body>
+</html>

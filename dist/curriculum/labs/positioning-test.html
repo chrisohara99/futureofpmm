@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Agent Positioning Test | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sap-orange) 0%, #F5A623 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+            backdrop-filter: blur(4px);
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        .lab-intro ul { margin: 0.5rem 0 0 1.5rem; color: #555; }
+        .lab-intro li { margin-bottom: 0.35rem; }
+        
+        .concept-box {
+            background: linear-gradient(135deg, #fff8f0 0%, #fff3e0 100%);
+            border-left: 4px solid var(--sap-orange);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+        .concept-box h4 { font-size: 0.9rem; color: var(--sap-orange); margin-bottom: 0.5rem; }
+        .concept-box p { font-size: 0.9rem; margin: 0; }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--sap-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--sap-orange);
+        }
+        textarea { min-height: 120px; resize: vertical; }
+        textarea.large { min-height: 200px; }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .run-btn {
+            background: var(--sap-orange);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .run-btn:hover { background: #D66A1F; transform: translateY(-2px); }
+        .run-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        .results-header h2 { font-size: 1.3rem; color: var(--dark-slate); }
+        
+        .copy-btn {
+            background: var(--light-gray);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--sap-orange); color: white; }
+        
+        .results-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .results-content h1 { font-size: 1.4rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h2 { font-size: 1.2rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h3 { font-size: 1.05rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.35rem; }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code { background: #F0F0F0; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+        .results-content blockquote {
+            border-left: 4px solid var(--sap-orange);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .error-message {
+            background: #FFEBEE;
+            color: var(--red);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-orange);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge">🤖 Unit 4 Lab</div>
+        <h1>Agent Positioning Test</h1>
+        <p>See your product page through the eyes of an AI procurement agent. Discover what makes AI hedge, what it can't verify, and how to make your positioning agent-readable.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>The Agent Test</h2>
+        <p>In the agentic era, AI procurement agents scan vendor websites and evaluate fit on behalf of buyers. This lab shows you exactly how an AI agent would assess your product page:</p>
+        <ul>
+            <li><strong>Fit Assessment</strong> — How would an agent rate you for these requirements?</li>
+            <li><strong>Confidence Analysis</strong> — Where did the agent hedge? Why?</li>
+            <li><strong>Gap Identification</strong> — What couldn't be evaluated from your content?</li>
+            <li><strong>Specificity Rewrites</strong> — Before/after examples of agent-readable claims</li>
+            <li><strong>Documentation Gaps</strong> — What should your docs say to back marketing claims?</li>
+        </ul>
+        
+        <div class="concept-box">
+            <h4>💡 Why This Matters</h4>
+            <p>When AI agents evaluate vendors, vague claims become "unable to verify." Your positioning must work for two audiences: human buyers who respond to emotion, and AI agents who need verifiable specifics.</p>
+        </div>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Your Product</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="product">Product Name</label>
+                <input type="text" id="product" name="product" placeholder="e.g., Acme Sales Intelligence Platform" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Product Category</label>
+                <p class="hint">What category would a procurement agent search?</p>
+                <input type="text" id="category" name="category" placeholder="e.g., Revenue Intelligence, Sales Enablement, Marketing Automation" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="buyer">Target Buyer Role</label>
+                <p class="hint">Who sends the AI agent to research vendors?</p>
+                <input type="text" id="buyer" name="buyer" placeholder="e.g., VP of Sales at mid-market B2B tech companies" required>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>Your Current Content</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="pageContent">Product Page Content</label>
+                <p class="hint">Paste the main content from your product or solutions page — headlines, value props, feature descriptions, proof points</p>
+                <textarea id="pageContent" name="pageContent" class="large" placeholder="Paste your product page content here...
+
+Include:
+• Headlines and subheadlines  
+• Value propositions
+• Feature descriptions
+• Any claims about capabilities, outcomes, or differentiators
+• Customer quotes or stats (if any)" required></textarea>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Buyer Requirements</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="requirements">What This Buyer Typically Needs</label>
+                <p class="hint">List the key requirements an AI agent would evaluate you against</p>
+                <textarea id="requirements" name="requirements" placeholder="e.g.,
+• Must integrate with Salesforce and HubSpot
+• Needs real-time deal risk scoring
+• Should provide AI-generated coaching recommendations
+• Must handle 500+ active opportunities
+• Requires SOC 2 Type II compliance
+• Budget under $50K/year for 50 users" required></textarea>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🤖 Run Agent Test</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>🤖 Agent Evaluation Results</h2>
+            <button class="copy-btn" onclick="copyResults()">📋 Copy Results</button>
+        </div>
+        <div class="results-content" id="resultsContent"></div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+const resultsContent = document.getElementById('resultsContent');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const inputs = {
+        product: document.getElementById('product').value,
+        category: document.getElementById('category').value,
+        buyer: document.getElementById('buyer').value,
+        pageContent: document.getElementById('pageContent').value,
+        requirements: document.getElementById('requirements').value
+    };
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Agent is evaluating...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'positioning-test',
+                inputs: inputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Analysis failed. Please try again.');
+        
+        const data = await response.json();
+        resultsContent.innerHTML = marked.parse(data.result);
+        resultsSection.classList.add('show');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '🤖 Run Agent Test';
+        spinner.style.display = 'none';
+    }
+});
+
+function copyResults() {
+    navigator.clipboard.writeText(resultsContent.innerText).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy Results', 2000);
+    });
+}
+</script>
+</body>
+</html>
