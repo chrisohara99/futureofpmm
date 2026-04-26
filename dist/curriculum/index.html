@@ -376,18 +376,30 @@ let userProgress = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    const { data: { session } } = await client.auth.getSession();
-    
-    if (!session) {
-        // Not logged in - redirect to intro
-        window.location.href = '/curriculum/intro.html';
-        return;
+    try {
+        client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        const { data: { session } } = await client.auth.getSession();
+        
+        if (!session) {
+            // Not logged in - redirect to intro
+            window.location.href = '/curriculum/intro.html';
+            return;
+        }
+        
+        try {
+            await loadProgress(session.user.id);
+        } catch (err) {
+            console.error('Error loading progress:', err);
+            // Continue anyway - show dashboard with empty progress
+        }
+        
+        renderDashboard();
+    } catch (err) {
+        console.error('Dashboard init error:', err);
+        // Show dashboard anyway with defaults
+        renderDashboard();
     }
-    
-    await loadProgress(session.user.id);
-    renderDashboard();
 });
 
 async function loadProgress(userId) {
