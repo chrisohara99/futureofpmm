@@ -799,12 +799,15 @@ function initSequenceExercise() {
             item.classList.remove('selected');
             selectedSeqItem = null;
         } else {
-            // Second click - swap positions using placeholder
-            const placeholder = document.createElement('div');
-            container.insertBefore(placeholder, selectedSeqItem);
-            container.insertBefore(selectedSeqItem, item);
-            container.insertBefore(item, placeholder);
-            container.removeChild(placeholder);
+            // Second click - swap innerHTML and data attributes
+            const tempHTML = selectedSeqItem.innerHTML;
+            const tempCorrect = selectedSeqItem.dataset.correct;
+            
+            selectedSeqItem.innerHTML = item.innerHTML;
+            selectedSeqItem.dataset.correct = item.dataset.correct;
+            
+            item.innerHTML = tempHTML;
+            item.dataset.correct = tempCorrect;
             
             selectedSeqItem.classList.remove('selected');
             selectedSeqItem = null;
