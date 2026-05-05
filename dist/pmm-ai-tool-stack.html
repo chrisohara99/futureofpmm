@@ -1,629 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What's In The Drawer: An Update on the PMM AI Tool Stack — Future of PMM</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #f7f1e6;
-    --paper-tint: #efe6d3;
-    --paper-deep: #e8dcc4;
-    --ink: #1c1a17;
-    --ink-soft: #4a443c;
-    --ink-fade: #847b6e;
-    --rule: #c9bfa8;
-    --accent: #b04a1c;
-    --accent-deep: #8a3a16;
-    --accent-soft: #e9d9c8;
-    --tier1: #4a6b3e;
-    --tier2: #b08818;
-    --tier3: #8a3a16;
-    --max: 720px;
-    --max-wide: 920px;
-  }
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
 
-  * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Newsreader', Georgia, serif;
-    font-size: 19px;
-    line-height: 1.65;
-    font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  body {
-    background-image:
-      radial-gradient(circle at 20% 10%, rgba(176,74,28,0.04) 0%, transparent 40%),
-      radial-gradient(circle at 80% 60%, rgba(28,26,23,0.025) 0%, transparent 50%);
-    min-height: 100vh;
-  }
-
-  .masthead {
-    border-bottom: 1px solid var(--rule);
-    padding: 20px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .masthead-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.01em;
-    font-variation-settings: "opsz" 144, "SOFT" 50;
-  }
-
-  .masthead-title em { font-style: italic; font-weight: 500; }
-
-  .masthead-meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  article {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 80px 24px 120px;
-  }
-
-  .kicker {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .kicker::before {
-    content: "";
-    display: inline-block;
-    width: 32px;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: clamp(38px, 5.6vw, 60px);
-    line-height: 1.04;
-    letter-spacing: -0.025em;
-    margin: 0 0 28px;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
-
-  h1 em { font-style: italic; font-weight: 500; color: var(--accent); }
-
-  .dek {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 22px;
-    line-height: 1.4;
-    color: var(--ink-soft);
-    margin: 0 0 48px;
-    max-width: 600px;
-  }
-
-  .byline {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    padding-bottom: 28px;
-    border-bottom: 1px solid var(--rule);
-    margin-bottom: 48px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .byline strong { color: var(--ink); font-weight: 500; }
-
-  p {
-    margin: 0 0 1.4em;
-    hyphens: auto;
-  }
-
-  article > p:first-of-type::first-letter {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 5.2em;
-    line-height: 0.85;
-    float: left;
-    padding: 0.08em 0.12em 0 0;
-    color: var(--accent);
-    font-variation-settings: "opsz" 144;
-  }
-
-  em { font-style: italic; }
-  strong { font-weight: 600; color: var(--ink); }
-
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.86em;
-    background: var(--accent-soft);
-    padding: 2px 7px;
-    border-radius: 3px;
-    color: var(--ink);
-  }
-
-  /* Survey stats grid */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    margin: 48px -40px;
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .stat {
-    padding: 28px 16px;
-    border-right: 1px solid var(--rule);
-    text-align: center;
-  }
-
-  .stat:last-child { border-right: none; }
-
-  .stat-num {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 42px;
-    line-height: 1;
-    color: var(--accent);
-    letter-spacing: -0.02em;
-    font-variation-settings: "opsz" 144;
-    margin-bottom: 8px;
-  }
-
-  .stat-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    line-height: 1.4;
-  }
-
-  @media (max-width: 720px) {
-    .stats {
-      grid-template-columns: repeat(2, 1fr);
-      margin-left: 0;
-      margin-right: 0;
-    }
-    .stat:nth-child(2) { border-right: none; }
-    .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--rule); }
-    .stat-num { font-size: 36px; }
-  }
-
-  /* Tier blocks */
-  .tiers {
-    margin: 56px 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .tier {
-    border: 1px solid var(--rule);
-    border-left: 4px solid var(--tier1);
-    background: rgba(255,255,255,0.4);
-    padding: 24px 28px;
-    border-radius: 2px;
-  }
-
-  .tier.t2 { border-left-color: var(--tier2); }
-  .tier.t3 { border-left-color: var(--tier3); }
-
-  .tier-head {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-
-  .tier-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--tier1);
-    font-weight: 500;
-  }
-
-  .tier.t2 .tier-num { color: var(--tier2); }
-  .tier.t3 .tier-num { color: var(--tier3); }
-
-  .tier-name {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 22px;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-    font-variation-settings: "opsz" 96;
-  }
-
-  .tier-desc {
-    font-size: 17px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    margin-bottom: 12px;
-  }
-
-  .tier-desc strong { color: var(--ink); }
-
-  .tier-tools {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: var(--ink);
-    line-height: 1.7;
-  }
-
-  /* Pull quote */
-  .pullquote {
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-style: italic;
-    font-size: clamp(26px, 3.4vw, 32px);
-    line-height: 1.25;
-    letter-spacing: -0.015em;
-    color: var(--ink);
-    margin: 56px -40px 56px;
-    padding: 0 0 0 40px;
-    border-left: 2px solid var(--accent);
-    font-variation-settings: "opsz" 96, "SOFT" 50;
-  }
-
-  @media (max-width: 720px) {
-    .pullquote { margin-left: 0; margin-right: 0; }
-  }
-
-  .ornament {
-    text-align: center;
-    margin: 56px 0;
-    color: var(--rule);
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    letter-spacing: 1.5em;
-    padding-left: 1.5em;
-  }
-
-  /* Tool subhead inline */
-  .tool-tag {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-style: italic;
-    font-variation-settings: "opsz" 96;
-  }
-
-  /* Curriculum table */
-  .curriculum {
-    margin: 48px -40px;
-    border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
-    padding: 24px 40px;
-    background: var(--paper-tint);
-  }
-
-  @media (max-width: 720px) {
-    .curriculum { margin-left: 0; margin-right: 0; padding: 24px 20px; }
-  }
-
-  .curriculum-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-
-  .curriculum-sub {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 500;
-    font-size: 22px;
-    color: var(--ink);
-    margin-bottom: 24px;
-    font-variation-settings: "opsz" 96;
-  }
-
-  .ctable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
-  }
-
-  .ctable th {
-    text-align: left;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    font-weight: 500;
-    padding: 8px 12px 8px 0;
-    border-bottom: 1px solid var(--rule);
-    vertical-align: bottom;
-  }
-
-  .ctable th:last-child, .ctable td:last-child { padding-right: 0; }
-
-  .ctable td {
-    padding: 14px 12px 14px 0;
-    border-bottom: 1px solid var(--rule);
-    vertical-align: top;
-    line-height: 1.4;
-  }
-
-  .ctable tr:last-child td { border-bottom: none; }
-
-  .ctable .week {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-
-  .ctable .unit {
-    font-weight: 500;
-    color: var(--ink);
-  }
-
-  .ctable .audience {
-    font-style: italic;
-    color: var(--ink-soft);
-    font-size: 14px;
-  }
-
-  /* Closer */
-  .closer {
-    margin-top: 64px;
-    padding: 32px 36px;
-    background: var(--paper-tint);
-    border-left: 3px solid var(--accent);
-    font-family: 'Fraunces', serif;
-    font-size: 21px;
-    line-height: 1.45;
-    font-weight: 500;
-    font-variation-settings: "opsz" 96;
-  }
-
-  .closer .label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  footer {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 0 24px 80px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    border-top: 1px solid var(--rule);
-    padding-top: 32px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  footer a {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
-  }
-
-  footer a:hover { border-bottom-color: var(--accent); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's In The Drawer: The PMM AI Tool Stack | The Future of PMM</title>
+    <meta name="description" content="A complete inventory of AI tools available to enterprise PMMs, organized by access tier. Includes survey results, tool descriptions, and a twelve-week curriculum.">
+    <link rel="canonical" href="https://futureofpmm.com/pmm-ai-tool-stack.html">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #F5F6F7; --accent: #c84b31; --sap-blue: #0070f2; --tier1: #16a34a; --tier2: #ca8a04; --tier3: #dc2626; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover { color: var(--pmm-blue); background: #f3f4f6; }
+        
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; transition: all 0.3s ease; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            nav { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { right: 0; }
+            nav > a { margin: 0 0 1.25rem 0; font-size: 1.1rem; color: rgba(255,255,255,0.8) !important; }
+        }
+        
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: white; padding: 3rem 0; }
+        .hero .container { max-width: 800px; }
+        .hero-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; font-weight: 600; }
+        .hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: white; }
+        .hero-meta { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+        .hero-meta a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 600px) { .hero h1 { font-size: 1.6rem; } }
+        
+        /* Article Content */
+        .article-container { max-width: 800px; margin: 0 auto; padding: 3rem 1.5rem; }
+        .article-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--pmm-dark); }
+        .article-content h3 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--pmm-dark); }
+        .article-content p { margin-bottom: 1.25rem; }
+        .article-content ul, .article-content ol { margin: 0 0 1.25rem 1.5rem; }
+        .article-content li { margin-bottom: 0.5rem; }
+        .article-content a { color: var(--pmm-blue); text-decoration: none; }
+        .article-content a:hover { text-decoration: underline; }
+        .article-content strong { font-weight: 600; }
+        .article-content blockquote {
+            background: #f3f4f6;
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #64748b;
+        }
+        .article-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .article-content hr {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 2.5rem 0;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        @media (max-width: 700px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .stat-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        /* Tier Cards */
+        .tier-card {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid var(--tier1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .tier-card.t2 { border-left-color: var(--tier2); }
+        .tier-card.t3 { border-left-color: var(--tier3); }
+        .tier-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .tier-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--tier1);
+        }
+        .tier-card.t2 .tier-badge { color: var(--tier2); }
+        .tier-card.t3 .tier-badge { color: var(--tier3); }
+        .tier-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--pmm-dark);
+        }
+        .tier-desc {
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+        .tier-tools {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--pmm-dark);
+            background: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        /* Tool Description */
+        .tool-item {
+            margin: 1.5rem 0;
+            padding-left: 1rem;
+            border-left: 2px solid #e5e7eb;
+        }
+        .tool-item h4 {
+            font-size: 1rem;
+            color: var(--pmm-dark);
+            margin: 0 0 0.5rem 0;
+        }
+        .tool-item p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        /* Curriculum Table */
+        .curriculum-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .curriculum-section h3 {
+            margin: 0 0 1.5rem 0;
+        }
+        .curriculum-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .curriculum-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .curriculum-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        .curriculum-table tr:last-child td { border-bottom: none; }
+        .week-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        /* CTA */
+        .cta-box {
+            background: var(--pmm-dark);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+        .cta-box h3 { color: white; margin: 0 0 0.5rem 0; }
+        .cta-box p { opacity: 0.9; margin-bottom: 0; }
+        
+        /* Footer */
+        footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; margin-top: 3rem; }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
 </head>
 <body>
 
-<header class="masthead">
-  <div class="masthead-title">Future of <em>PMM</em></div>
-  <div class="masthead-meta">Issue · State of the Stack</div>
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/digests/">Digests</a>
+                <a href="/blog.html">Articles</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </div>
 </header>
 
-<article>
-
-  <div class="kicker">Tools &amp; Resources Update</div>
-
-  <h1>What's In The Drawer: An Update on the <em>PMM AI Tool Stack</em></h1>
-
-  <p class="dek">The survey numbers, the three tiers of access, the headliner tools, and the twelve-week plan to get there. A field guide for the D&amp;A team — and anyone running a similar play.</p>
-
-  <div class="byline">
-    <span>By <strong>Chris O'Hara</strong></span>
-    <span>SAP D&amp;A Offsite · Dallas · April 2026</span>
-  </div>
-
-  <p>Eight of the twenty-eight PMMs on our team who answered the offsite survey are paying out of pocket — fifty to a hundred dollars a month, in some cases more — for AI tools that, in several cases, SAP already provides for free or close to it. That number is not in the deck to make anyone feel bad; it's there because it tells you almost everything you need to know about the current state of AI adoption inside large enterprises, which is that the tools have moved faster than the internal communication about the tools, which in turn has moved faster than the training, which has moved faster than anyone's actual workflow, and the result is a team that is spending real money to solve problems someone else on a different floor solved last quarter.</p>
-
-  <p>The two top blockers on the survey came in almost identical in shape — "I don't know what's available" was first, and "I can't get access" was second, and the difference between them is mostly a question of which floor you happen to sit on. So this article is the drawer, opened and labeled.</p>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num">66%</div>
-      <div class="stat-label">Response Rate<br>28 of 42 PMMs</div>
+<section class="hero">
+    <div class="container">
+        <div class="hero-label">🛠️ Tools & Resources</div>
+        <h1>What's In The Drawer: The PMM AI Tool Stack</h1>
+        <p class="hero-meta">By <a href="#">Chris O'Hara</a> · May 4, 2026</p>
     </div>
-    <div class="stat">
-      <div class="stat-num">54%</div>
-      <div class="stat-label">Daily AI Users<br>Multiple times/day</div>
+</section>
+
+<main class="article-container">
+    <div class="article-content">
+        
+        <p><strong>A significant portion of enterprise PMMs are paying out of pocket for AI tools that their company already provides for free.</strong> This pattern tells you almost everything about the current state of AI adoption inside large organizations: the tools have moved faster than internal communication about the tools, which has moved faster than training, which has moved faster than workflow integration. The result is professionals spending real money to solve problems that someone on another floor solved last quarter.</p>
+        
+        <p>The two primary blockers in most enterprise AI adoption surveys are nearly identical: "I don't know what's available" and "I can't get access." This article opens the drawer and labels everything inside.</p>
+        
+        <h2>Survey Results</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-num">54%</div>
+                <div class="stat-label">Use AI multiple times daily</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">3.4/5</div>
+                <div class="stat-label">Tool satisfaction score</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">68%</div>
+                <div class="stat-label">Want structured training</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">~30%</div>
+                <div class="stat-label">Paying out of pocket</div>
+            </div>
+        </div>
+        
+        <h2>Why Tool Selection Matters More Now</h2>
+        
+        <p>The context has shifted. Search has become an answer — Google returns ten blue links, LLMs return one synthesized response, and that response increasingly belongs to a competitor. Buyers arrive having already consumed three AI summaries of your category before any call. Generic content shipped last year is being paraphrased into irrelevance by the very models prospects use to research.</p>
+        
+        <p>The deliverables themselves have changed shape. Briefs, decks, and battlecards are now co-drafted with agents. The durable PMM work has moved up the stack from typing and formatting to thinking and shaping. The right tools, in the right hands, with the right amount of practice, matter more this year than they did last.</p>
+        
+        <h2>The Three Tiers</h2>
+        
+        <p>The current inventory sorts into three tiers based on <strong>access friction</strong>, not quality:</p>
+        
+        <div class="tier-card">
+            <div class="tier-header">
+                <span class="tier-badge">Tier 1</span>
+                <span class="tier-name">Enterprise-Approved</span>
+            </div>
+            <div class="tier-desc"><strong>Low risk · Scalable · Preferred.</strong> Provisioned centrally. If you have a company login, you have access.</div>
+            <div class="tier-tools">Copilot Chat · GenAI Experience Lab · CompeteGPT · ReferenceGPT · Claude Code · Joule · EKX</div>
+        </div>
+        
+        <div class="tier-card t2">
+            <div class="tier-header">
+                <span class="tier-badge">Tier 2</span>
+                <span class="tier-name">Budget-Approved</span>
+            </div>
+            <div class="tier-desc"><strong>Moderate control · Department-managed.</strong> Requires a budget request and approval. Process is real but not painful.</div>
+            <div class="tier-tools">Perplexity Pro · Comet Browser · Adobe AI · Canva · Synthesia · Copilot in-app (Word/PowerPoint/Teams)</div>
+        </div>
+        
+        <div class="tier-card t3">
+            <div class="tier-header">
+                <span class="tier-badge">Tier 3</span>
+                <span class="tier-name">Pilot & Non-Onboarded</span>
+            </div>
+            <div class="tier-desc"><strong>Higher risk · Limited visibility · Six-to-nine month onboarding.</strong> Watch but don't self-onboard.</div>
+            <div class="tier-tools">Crayon · Writer · Clozd · Copy.ai · Beautiful.ai</div>
+        </div>
+        
+        <p><strong>Standing rule across all tiers:</strong> No personal or customer data into unapproved tools. No proprietary code in uncleared systems. Always review AI output before sharing. Treat this as floor, not suggestion.</p>
+        
+        <blockquote>The drawer is fuller than most teams realize. The gap isn't budget — it's awareness.</blockquote>
+        
+        <h2>Tier 1 Tools: A Closer Look</h2>
+        
+        <div class="tool-item">
+            <h4>Joule</h4>
+            <p>Front door for SAP-specific transactions and answers. Use when you need a product feature explained, a customer-facing process guided, or a transactional task completed inside an SAP product. This is the path the company has invested in and the path customers will see.</p>
+        </div>
+        
+        <div class="tool-item">
+            <h4>Copilot Chat</h4>
+            <p>The workhorse. Free, integrated across M365 (Edge browser, M365.com, right-click "Summarize with Copilot" in Explorer). Right default for general-purpose tasks not requiring deep domain knowledge — drafting emails, summarizing meetings, brainstorming structures.</p>
+        </div>
+        
+        <div class="tool-item">
+            <h4>Generative AI Experience Lab</h4>
+            <p>The playground. Compare answers across foundation models, prototype prompts, try the PowerPoint generator. Data protection built in, multiple LLMs available, iOS app for mobile use.</p>
+        </div>
+        
+        <div class="tool-item">
+            <h4>EKX</h4>
+            <p>The knowledge graph in chat form. Use when the question is "what is the actual current truth about X." Built for enumeration and fact-checking where generic LLMs would fabricate. See the <a href="/meet-ekx.html">companion article on EKX</a>.</p>
+        </div>
+        
+        <div class="tool-item">
+            <h4>Perplexity Pro (Tier 2)</h4>
+            <p>The research tool. Real-time web answers with citations, rapid scanning of competitor content, triangulating market claims with sources attached. Comet Browser, the AI-first browser bundled with it, is worth installing for daily research work.</p>
+        </div>
+        
+        <div class="tool-item">
+            <h4>Claude Code</h4>
+            <p>The wildcard. An agentic coding assistant that reads codebases, edits files, runs commands, opens pull requests. Also writes interactive web artifacts, builds React prototypes, generates HTML for battlecards or microsites, and manipulates spreadsheets at the command line. Worth attention even if you've never opened a terminal.</p>
+        </div>
+        
+        <hr>
+        
+        <h2>The Twelve-Week Curriculum</h2>
+        
+        <p>AI tools don't get internalized in workshops — they get internalized through repeated use against real work. The curriculum moves from team-wide foundation, to function-specific tracks, to a portfolio demonstrating work produced in the new way.</p>
+        
+        <div class="curriculum-section">
+            <h3>Curriculum Map</h3>
+            <table class="curriculum-table">
+                <thead>
+                    <tr>
+                        <th>When</th>
+                        <th>Unit</th>
+                        <th>Tools</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="week-badge">Week 1-2</span></td>
+                        <td>Prompting + tool stack + governance</td>
+                        <td>Joule · Copilot Chat · GenAI Lab · CompeteGPT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="week-badge">Week 3</span></td>
+                        <td>Drafting with pushback</td>
+                        <td>Copilot Chat · GenAI Lab</td>
+                    </tr>
+                    <tr>
+                        <td><span class="week-badge">Week 4</span></td>
+                        <td>Research + competitive synthesis</td>
+                        <td>Perplexity Pro · CompeteGPT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="week-badge">Week 5</span></td>
+                        <td>Function-specific co-working</td>
+                        <td>Tool mix varies by track</td>
+                    </tr>
+                    <tr>
+                        <td><span class="week-badge">Week 6-8</span></td>
+                        <td>Interactive artifacts</td>
+                        <td>Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><span class="week-badge">Week 9-10</span></td>
+                        <td>Agent workflows</td>
+                        <td>Claude Code · Copilot Chat</td>
+                    </tr>
+                    <tr>
+                        <td><span class="week-badge">Week 11-12</span></td>
+                        <td>Portfolio + graduation</td>
+                        <td>Full stack</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p>The curriculum is a path, not a gate. The Tier 1 tools are open now. The Tier 2 process is tractable. If you're spending personal money on something that's already available, stop. If you can't tell whether it is, ask.</p>
+        
+        <div class="cta-box">
+            <h3>The Action Item</h3>
+            <p>If you're paying out of pocket for a Tier 1 tool, stop. If you can't tell which tier a tool belongs to, ask. The gap between "knows what's available" and "uses what's available" is the only one that matters now.</p>
+        </div>
+        
     </div>
-    <div class="stat">
-      <div class="stat-num">3.4<span style="font-size:0.6em;color:var(--ink-fade)">/5</span></div>
-      <div class="stat-label">Tool Satisfaction<br>Functional, not optimized</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">68%</div>
-      <div class="stat-label">Want Training<br>Eager to start</div>
-    </div>
-  </div>
-
-  <p>Before we get into the inventory, the reason the inventory matters has shifted under our feet, and it's worth a paragraph. Search became an answer — Google gave ten blue links, LLMs give one, and that one increasingly belongs to a competitor. Buyers arrive having read three AI summaries of our category before we ever get on the call, which means the generic content we shipped last year is being paraphrased into irrelevance by the very models our prospects are using to read about us. And the deliverables themselves have changed shape — briefs, decks, battlecards are now mostly co-drafted with agents, which means the durable PMM work has moved up the stack, from typing and formatting to thinking and shaping. None of which is news to anyone who's been awake; all of which is the reason the right tools, in the right hands, with the right amount of practice, matter more this year than they did last.</p>
-
-  <p>The current inventory sorts into three tiers, and the first thing to know is that the tiers have nothing to do with quality. They're about access friction.</p>
-
-  <div class="tiers">
-    <div class="tier t1">
-      <div class="tier-head">
-        <span class="tier-num">Tier 1</span>
-        <span class="tier-name">Enterprise-Approved</span>
-      </div>
-      <div class="tier-desc"><strong>Low risk · Scalable · Preferred.</strong> Provisioned centrally by SAP. If you have an SAP login, you have access. The default and the path of least resistance.</div>
-      <div class="tier-tools">Copilot Chat · GenAI Experience Lab · CompeteGPT · ReferenceGPT · Claude Code · Joule · EKX</div>
-    </div>
-    <div class="tier t2">
-      <div class="tier-head">
-        <span class="tier-num">Tier 2</span>
-        <span class="tier-name">Budget-Approved</span>
-      </div>
-      <div class="tier-desc"><strong>Moderate control · Department-managed.</strong> Requires a budget request and SAM approval. The process is real but not painful, and the people who use them well usually decided thirty days ago that they were going to.</div>
-      <div class="tier-tools">Perplexity Pro · Comet Browser · Adobe AI · Canva · Synthesia · Copilot in-app (Word / PowerPoint / Teams)</div>
-    </div>
-    <div class="tier t3">
-      <div class="tier-head">
-        <span class="tier-num">Tier 3</span>
-        <span class="tier-name">Pilot &amp; Non-Onboarded</span>
-      </div>
-      <div class="tier-desc"><strong>Higher risk · Limited visibility · Six-to-nine month onboarding.</strong> Watch but don't onboard yourself. Strong opinions go to the AI Champs network, not into a personal account.</div>
-      <div class="tier-tools">Crayon · Writer · Clozd · Copy.ai · Beautiful.ai</div>
-    </div>
-  </div>
-
-  <p>The standing rule across all three tiers is the one that keeps lawyers calm: no personal or customer data into anything that hasn't been cleared, no proprietary code in unapproved tools, and always review AI output before sharing. Treat that as the floor, not a suggestion.</p>
-
-  <div class="pullquote">The drawer is fuller than the team thinks it is. Most of the gap isn't budget. It's awareness.</div>
-
-  <p>A few of the Tier 1 tools are worth a closer look, because the difference between "knowing the tool exists" and "knowing what it's actually for" is exactly the gap this article is trying to close.</p>
-
-  <p><span class="tool-tag">Joule</span> is your front door for SAP-specific transactions and answers — when you need a product feature explained, a customer-facing process guided, or a transactional task completed inside an SAP product, Joule is the path the company has invested in and the path our customers will see. Joule for Consultants is the field-and-customer-facing variant. If you've never logged in, the right move this week is to log in and ask it five questions about your own product area; the muscle memory is the whole game.</p>
-
-  <p><span class="tool-tag">Copilot Chat</span> is the workhorse — free, integrated across the M365 suite (Edge browser, M365.com, the M365 Copilot app, the right-click "Summarize with Copilot" in Explorer), and the right default for any general-purpose task that doesn't require deep SAP-specific knowledge. Drafting an email, summarizing a Teams meeting, riffing on a tagline, brainstorming a brief structure, asking "explain this concept like I'm a first-year MBA" — all of it. The full Copilot license unlocks the in-app capabilities (Copilot in Word, in PowerPoint, in Teams), which is where Tier 2 enters the picture, but the free Chat version is more capable than people give it credit for.</p>
-
-  <p>The <span class="tool-tag">Generative AI Experience Lab</span> is the playground — when you want to compare answers across foundation models, prototype a prompt, or try the PowerPoint generator on a deck topic, the Lab is where you go. Data protection is built in, multiple LLMs are available, and there's an iOS app, which has the practical effect of making the commute between meetings useful again.</p>
-
-  <p><span class="tool-tag">Perplexity Pro</span> (Tier 2) is the research tool — when you need real-time web answers with citations, when you need to scan ten competitor blog posts in five minutes, when you're triangulating a market claim and want sources attached, Perplexity is faster than the alternatives. Comet Browser, the AI-first browser that comes with it, is worth installing if you do this kind of work daily.</p>
-
-  <p><span class="tool-tag">Claude Code</span> is the wildcard, and the one most worth your attention even if you've never opened a terminal. Yes, it's an agentic coding assistant from Anthropic — it reads codebases, edits files, runs commands, opens pull requests. But it also writes interactive web artifacts, builds quick React prototypes, generates HTML for a battlecard or a microsite, manipulates spreadsheets at the command line, and does the kind of "I need a working thing by Friday" work that previously required borrowing a spare engineer for a half-day. Two function leads — Kara on technical PMM, Brian on commercialization — are the test cases for getting this into broader PMM hands. Watch their unit closely.</p>
-
-  <p><span class="tool-tag">EKX</span>, which I wrote about in a separate piece, sits adjacent to all of this — it's the SAP knowledge graph in chat form, behind <code>ekx.cloud.sap/chat</code>, and it's the right tool when the question is "what is the actual current SAP truth about X." Use it for the questions where ChatGPT will fluently make things up.</p>
-
-  <div class="ornament">· · ·</div>
-
-  <p>Knowing the drawer exists is half the work. Using it well is the other half, and that's what the curriculum is for.</p>
-
-  <p>The twelve-week plan is twelve weeks long, and not two days, because AI tools don't get internalized in workshops; they get internalized through repeat use against real work, ideally with someone watching over your shoulder for the first few attempts. The shape is: a team-wide foundation, then function-specific tracks, then a portfolio at the end where every PMM has produced enough new work in the new way that the new way is just the way.</p>
-
-  <div class="curriculum">
-    <div class="curriculum-title">Curriculum Map</div>
-    <div class="curriculum-sub">From units to tools to teams</div>
-    <table class="ctable">
-      <thead>
-        <tr>
-          <th style="width:90px">When</th>
-          <th>Unit</th>
-          <th>Tools</th>
-          <th>Lands hardest for</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="week">Wk 1–2</td>
-          <td class="unit">Prompting + tool stack + governance</td>
-          <td>Joule · Copilot Chat · GenAI Lab · CompeteGPT</td>
-          <td class="audience">Everyone — baseline fluency</td>
-        </tr>
-        <tr>
-          <td class="week">Wk 3</td>
-          <td class="unit">Drafting with pushback</td>
-          <td>Copilot Chat · GenAI Lab</td>
-          <td class="audience">Kaiser — Outbound</td>
-        </tr>
-        <tr>
-          <td class="week">Wk 4</td>
-          <td class="unit">Research + competitive synthesis</td>
-          <td>Perplexity Pro + CompeteGPT</td>
-          <td class="audience">Olivier — Research · Tony — BDC</td>
-        </tr>
-        <tr>
-          <td class="week">Wk 5</td>
-          <td class="unit">Function-specific co-working</td>
-          <td>Tool mix varies by track</td>
-          <td class="audience">Brian · Kara · Kaiser · Tony</td>
-        </tr>
-        <tr>
-          <td class="week">Wk 6–8</td>
-          <td class="unit">Interactive artifacts (React)</td>
-          <td>Claude Code</td>
-          <td class="audience">Kara — Technical · Brian — Commercialization</td>
-        </tr>
-        <tr>
-          <td class="week">Wk 9–10</td>
-          <td class="unit">Agent workflows</td>
-          <td>Claude Code + Copilot Chat</td>
-          <td class="audience">Tony — BDC · Katryn &amp; Stuart — Field/Partner</td>
-        </tr>
-        <tr>
-          <td class="week">Wk 11–12</td>
-          <td class="unit">Portfolio + graduation</td>
-          <td>Full stack</td>
-          <td class="audience">Every PMM</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p>The note for function leads: every unit has a team it lands hardest for, and that's the one to show up to, coach through, and demo from. Don't try to be present at all twelve weeks for everyone. Be present at the one week where your team needs you most, and let the rest of the curriculum carry the rest.</p>
-
-  <p>The note for everyone else: the curriculum is a path, not a gate. Nothing in this article requires you to wait twelve weeks. The Tier 1 tools are open right now. The Tier 2 process is real but tractable. The survey told us 68% of the team wants training, which means 32% are ready to go without it — if you're in that 32%, go.</p>
-
-  <div class="closer">
-    <span class="label">→ The action item, if there's only one</span>
-    If you're spending personal money on a tool that's already in Tier 1, stop. If you can't tell whether it is, ask. The drawer is fuller than the team thinks it is, the curriculum is on its way, and the gap between "knows what's available" and "uses what's available" is the only one that matters now.
-  </div>
-
-</article>
+</main>
 
 <footer>
-  <span>Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a></span>
-  <span>Companion piece: Meet EKX</span>
+    <div class="container">
+        <p>Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a></p>
+    </div>
 </footer>
 
 </body>
