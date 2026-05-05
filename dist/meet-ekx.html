@@ -1,321 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meet EKX: The Internal LLM That Actually Knows SAP — Future of PMM</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #f7f1e6;
-    --paper-tint: #efe6d3;
-    --ink: #1c1a17;
-    --ink-soft: #4a443c;
-    --rule: #c9bfa8;
-    --accent: #b04a1c;
-    --accent-soft: #e9d9c8;
-    --max: 680px;
-  }
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
 
-  * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Newsreader', Georgia, serif;
-    font-size: 19px;
-    line-height: 1.65;
-    font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  body {
-    background-image:
-      radial-gradient(circle at 20% 10%, rgba(176,74,28,0.04) 0%, transparent 40%),
-      radial-gradient(circle at 80% 60%, rgba(28,26,23,0.025) 0%, transparent 50%);
-    min-height: 100vh;
-  }
-
-  .masthead {
-    border-bottom: 1px solid var(--rule);
-    padding: 20px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .masthead-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.01em;
-    font-variation-settings: "opsz" 144, "SOFT" 50;
-  }
-
-  .masthead-title em {
-    font-style: italic;
-    font-weight: 500;
-  }
-
-  .masthead-meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-
-  article {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 80px 24px 120px;
-  }
-
-  .kicker {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .kicker::before {
-    content: "";
-    display: inline-block;
-    width: 32px;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: clamp(38px, 5.8vw, 62px);
-    line-height: 1.04;
-    letter-spacing: -0.025em;
-    margin: 0 0 28px;
-    font-variation-settings: "opsz" 144, "SOFT" 30;
-  }
-
-  h1 em {
-    font-style: italic;
-    font-weight: 500;
-    color: var(--accent);
-  }
-
-  .dek {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 22px;
-    line-height: 1.4;
-    color: var(--ink-soft);
-    margin: 0 0 48px;
-    max-width: 580px;
-  }
-
-  .byline {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    padding-bottom: 28px;
-    border-bottom: 1px solid var(--rule);
-    margin-bottom: 48px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .byline strong {
-    color: var(--ink);
-    font-weight: 500;
-  }
-
-  p {
-    margin: 0 0 1.4em;
-    hyphens: auto;
-  }
-
-  article > p:first-of-type::first-letter {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 5.2em;
-    line-height: 0.85;
-    float: left;
-    padding: 0.08em 0.12em 0 0;
-    color: var(--accent);
-    font-variation-settings: "opsz" 144;
-  }
-
-  em {
-    font-style: italic;
-  }
-
-  strong {
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.86em;
-    background: var(--accent-soft);
-    padding: 2px 7px;
-    border-radius: 3px;
-    color: var(--ink);
-  }
-
-  .pullquote {
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-style: italic;
-    font-size: clamp(26px, 3.4vw, 34px);
-    line-height: 1.25;
-    letter-spacing: -0.015em;
-    color: var(--ink);
-    margin: 56px -40px 56px;
-    padding: 0 0 0 40px;
-    border-left: 2px solid var(--accent);
-    font-variation-settings: "opsz" 96, "SOFT" 50;
-  }
-
-  @media (max-width: 720px) {
-    .pullquote {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  .ornament {
-    text-align: center;
-    margin: 56px 0;
-    color: var(--rule);
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    letter-spacing: 1.5em;
-    padding-left: 1.5em;
-  }
-
-  .closer {
-    margin-top: 64px;
-    padding: 32px 36px;
-    background: var(--paper-tint);
-    border-left: 3px solid var(--accent);
-    font-family: 'Fraunces', serif;
-    font-size: 21px;
-    line-height: 1.45;
-    font-weight: 500;
-    font-variation-settings: "opsz" 96;
-  }
-
-  .closer .url {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--accent);
-    display: block;
-    margin-bottom: 8px;
-    letter-spacing: -0.01em;
-  }
-
-  .closer .nudge {
-    font-style: italic;
-    color: var(--ink-soft);
-    font-size: 18px;
-  }
-
-  footer {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 0 24px 80px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    border-top: 1px solid var(--rule);
-    padding-top: 32px;
-  }
-
-  footer a {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
-  }
-
-  footer a:hover { border-bottom-color: var(--accent); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet EKX: The Internal LLM That Actually Knows SAP | The Future of PMM</title>
+    <meta name="description" content="Generic frontier models are great thinking partners but unreliable fact sources. EKX is SAP's knowledge-graph-powered internal LLM — here's how to use it.">
+    <link rel="canonical" href="https://futureofpmm.com/meet-ekx.html">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #F5F6F7; --accent: #c84b31; --sap-blue: #0070f2; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover { color: var(--pmm-blue); background: #f3f4f6; }
+        
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; transition: all 0.3s ease; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            nav { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { right: 0; }
+            nav > a { margin: 0 0 1.25rem 0; font-size: 1.1rem; color: rgba(255,255,255,0.8) !important; }
+        }
+        
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: white; padding: 3rem 0; }
+        .hero .container { max-width: 800px; }
+        .hero-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; font-weight: 600; }
+        .hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: white; }
+        .hero-meta { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+        .hero-meta a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 600px) { .hero h1 { font-size: 1.6rem; } }
+        
+        /* Article Content */
+        .article-container { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+        .article-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--pmm-dark); }
+        .article-content h3 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--pmm-dark); }
+        .article-content p { margin-bottom: 1.25rem; }
+        .article-content ul, .article-content ol { margin: 0 0 1.25rem 1.5rem; }
+        .article-content li { margin-bottom: 0.5rem; }
+        .article-content a { color: var(--pmm-blue); text-decoration: none; }
+        .article-content a:hover { text-decoration: underline; }
+        .article-content strong { font-weight: 600; }
+        .article-content blockquote {
+            background: #f3f4f6;
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #64748b;
+        }
+        .article-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .article-content hr {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 2.5rem 0;
+        }
+        
+        /* Tool Card */
+        .tool-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--sap-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .tool-card h3 {
+            color: var(--sap-blue);
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        .tool-card .url {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--pmm-dark);
+            background: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 0.75rem;
+        }
+        
+        /* Use Case List */
+        .use-case {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+        .use-case h4 {
+            font-size: 1rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--pmm-dark);
+        }
+        .use-case p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+        
+        /* CTA */
+        .cta-box {
+            background: var(--pmm-dark);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+        .cta-box h3 {
+            color: white;
+            margin: 0 0 0.5rem 0;
+        }
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        .cta-box code {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Footer */
+        footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; margin-top: 3rem; }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
 </head>
 <body>
 
-<header class="masthead">
-  <div class="masthead-title">Future of <em>PMM</em></div>
-  <div class="masthead-meta">Issue · Tools</div>
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/digests/">Digests</a>
+                <a href="/blog.html">Articles</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </div>
 </header>
 
-<article>
+<section class="hero">
+    <div class="container">
+        <div class="hero-label">🔧 Tools of the Trade</div>
+        <h1>Meet EKX: The Internal LLM That Actually Knows SAP</h1>
+        <p class="hero-meta">By <a href="#">Chris O'Hara</a> · May 4, 2026</p>
+    </div>
+</section>
 
-  <div class="kicker">Tools of the Trade</div>
-
-  <h1>Meet EKX: The Internal LLM That <em>Actually</em> Knows SAP</h1>
-
-  <p class="dek">Generic frontier models are great thinking partners and unreliable fact sources. There is, it turns out, a better option for SAP PMMs — and it's been hiding behind single sign-on the whole time.</p>
-
-  <div class="byline">
-    <span>By <strong>Chris O'Hara</strong></span>
-    <span>AI Lead, Data &amp; Analytics · SAP</span>
-  </div>
-
-  <p>A few weeks ago I watched a PMM on my team — call her Maya — spend forty-five minutes trying to get ChatGPT to give her a clean list of every Joule Skill currently shipped, because she was building a one-pager for an analyst briefing and needed the numerator for a "we ship more agentic skills than [competitor]" claim. ChatGPT gave her a beautiful list of fourteen skills, six of which existed, four of which had been renamed eighteen months ago, two of which were competitor products masquerading as ours, and two of which were just made up. It was, as these things go, an entirely typical Tuesday afternoon.</p>
-
-  <p>The problem isn't ChatGPT. The problem is that ChatGPT has read the entire internet and doesn't particularly care which of the things it read about SAP are still true, were ever true, or are products versus marketing slides versus a Reddit thread from 2019, and for a PMM working inside an enterprise as wide and as fast-moving as SAP, the generic frontier model is a phenomenal thinking partner and a deeply unreliable fact source — which is a hard combination to manage when your job is mostly to be right about your own product.</p>
-
-  <p>Which is why I want to introduce you to EKX.</p>
-
-  <p>EKX lives at <code>ekx.cloud.sap/chat</code>, it sits behind SAP single sign-on (the little "Internal" badge in the header is the giveaway), and from the user's seat it looks like every other chat interface you've ever opened — a text box, a paperclip for files, a microphone, a couple of starter prompts that suggest things like "Generate a PowerPoint about S/4HANA Cloud" or "Create an interactive dashboard with all Joule Skills," and a sidebar of past conversations down the left rail. If you've used Claude or ChatGPT or Joule, you don't need a tutorial — the front door is genuinely that simple.</p>
-
-  <p>What's behind the front door is the interesting part.</p>
-
-  <p>Most chat assistants do retrieval the same boring way: they take your question, search a pile of documents, stuff the top matches into the context window, and let the LLM write something. That works fine for "what's the capital of France" and starts to fall over the moment your question requires understanding that S/4HANA Cloud Public Edition and S/4HANA Cloud Private Edition are different products, that Datasphere replaced Data Warehouse Cloud as a name change rather than a separate thing, that BDC contains both, and that Joule Skills is a class of object with members rather than a single product. EKX does retrieval differently — it's wired into SAP's internal knowledge graph, which is a structured map of every SAP product, every relationship between them, every release, every SAP Note, every integration, and when you ask it a question, EKX doesn't just grep for words; it walks the graph, figures out which entities you're actually asking about, pulls the documents associated with those entities, and only then lets the model write.</p>
-
-  <div class="pullquote">EKX answers SAP questions like someone who works at SAP, instead of like someone who once read about it.</div>
-
-  <p>The use cases that have changed my workflow the most are the ones where the question is shaped like "give me the actual current list of." Every Joule Skill, every BDC component, every product that integrates with a given line of business — these are exactly the questions generic LLMs are catastrophically bad at, because their failure mode is fluency, and fluency on a list question means making up plausible-sounding members. EKX can actually enumerate, because it's reading from the graph rather than free-associating from training data. The other use case I've come to rely on is battlecard fact-checking — when I need the real capability surface of an SAP product, not the marketing surface, EKX is the fastest path I've found to a defensible answer. Ask it which printing formats SAP Digital Manufacturing supports and it will hand you Adobe Forms PDF, Loftware PAS, ZPL, XSL Transformation, with SAP Note numbers attached so you can verify. Ask ChatGPT the same question and you'll get a vibes-based paragraph about how SAP supports many industry-standard formats.</p>
-
-  <p>It's also a surprisingly decent first-draft generator for SAP-specific decks and dashboards. Tell EKX to "generate a PowerPoint about S/4HANA Cloud" and you don't get generic positioning slop — you get grounded content pulled from the corpus that you can argue with, and the argue-with-the-draft motion is roughly forty percent of what a 10x PMM actually does all day anyway.</p>
-
-  <div class="ornament">· · ·</div>
-
-  <p>A few practical notes on using it well. The <code>@</code> mention in the input box lets you reference files inside the chat — drop in a competitor brief or your own draft and ask EKX to compare claims against SAP's actual capability set, which is a workflow I now run on every battlecard before it goes out. The "Balanced" toggle in the bottom right tunes how much the model leans on retrieval versus its own reasoning, and for fact-heavy questions you'll want to leave it where it is; for "help me think about positioning" questions, you'll find Claude or your assistant of choice is honestly a better thinking partner anyway, because EKX is built to retrieve, not to argue. And the Internal badge isn't decoration — outputs from EKX are grounded in internal materials, which means they're useful, accurate, and absolutely not for direct paste into customer-facing assets without going through your normal review path.</p>
-
-  <p>One honest caveat. EKX is still being actively tuned — the team behind it is running ongoing experiments on the best way to fuse knowledge-graph results with conventional retrieval, and you'll occasionally get an answer that's longer than it needs to be, or that buries the actual claim under three paragraphs of preamble, or that misses an entity it should have caught. It's a very good tool, not a finished one. Treat it like a sharp colleague with a great research library and an occasional tendency to over-explain — useful framing for any LLM, really, but particularly this one.</p>
-
-  <p>Where all of this lands for the PMM craft is in the larger pattern that the 10x PMM is the one who knows which tool to reach for. Claude for thinking, EKX for SAP truth, your own eyes for judgment, your network for taste. The PMM who's still pasting "list all SAP Joule Skills" into ChatGPT in 2026 is technically doing the same job as the PMM who got the real list out of EKX in ninety seconds — except one of them is wrong, and the other one is at lunch.</p>
-
-  <div class="closer">
-    <span class="url">→ ekx.cloud.sap/chat</span>
-    <span class="nudge">Go play with it.</span>
-  </div>
-
-</article>
+<main class="article-container">
+    <div class="article-content">
+        
+        <p><strong>Generic frontier models are excellent thinking partners but unreliable fact sources.</strong> When asked for a list of Joule Skills currently shipped, ChatGPT will confidently produce a list — some of which exist, some of which were renamed eighteen months ago, and some of which are simply fabricated. This is the fundamental challenge for PMMs working inside a company as large and fast-moving as SAP: the generic LLM is a phenomenal reasoning engine and a deeply unreliable source of company-specific truth.</p>
+        
+        <p>There is a better option, and it has been available behind single sign-on the whole time.</p>
+        
+        <div class="tool-card">
+            <h3>EKX — SAP's Knowledge-Graph-Powered LLM</h3>
+            <p>An internal chat assistant wired directly into SAP's product knowledge graph. Available to all SAP employees.</p>
+            <div class="url">ekx.cloud.sap/chat</div>
+        </div>
+        
+        <h2>How EKX Differs from Generic LLMs</h2>
+        
+        <p>Most chat assistants perform retrieval in a straightforward way: they take a question, search a document corpus, stuff the top matches into the context window, and let the LLM generate a response. This works for simple queries but fails when the question requires understanding SAP's product taxonomy — that S/4HANA Cloud Public Edition and S/4HANA Cloud Private Edition are distinct products, that Datasphere replaced Data Warehouse Cloud as a name change rather than a new offering, that BDC contains both, and that "Joule Skills" is a class of objects with enumerable members rather than a single feature.</p>
+        
+        <p>EKX does retrieval differently. It is wired into SAP's internal knowledge graph — a structured map of every SAP product, every relationship between them, every release, every SAP Note, and every integration. When you ask a question, EKX walks the graph, identifies which entities you're actually asking about, pulls the documents associated with those entities, and only then passes context to the model.</p>
+        
+        <blockquote>EKX answers SAP questions like someone who works at SAP, not like someone who once read about SAP on the internet.</blockquote>
+        
+        <h2>Key Use Cases</h2>
+        
+        <div class="use-case">
+            <h4>1. Enumeration Queries</h4>
+            <p>"List all Joule Skills," "What are the components of BDC," "Which products integrate with a given line of business" — these are exactly the questions generic LLMs fail at catastrophically, because their failure mode is fluent fabrication. EKX can actually enumerate because it reads from the graph rather than free-associating from training data.</p>
+        </div>
+        
+        <div class="use-case">
+            <h4>2. Battlecard Fact-Checking</h4>
+            <p>When you need the real capability surface of an SAP product — not the marketing surface — EKX provides a defensible answer. Ask which printing formats SAP Digital Manufacturing supports, and it will return Adobe Forms PDF, Loftware PAS, ZPL, and XSL Transformation with SAP Note numbers attached for verification. Ask ChatGPT the same question and you get a vague paragraph about "industry-standard formats."</p>
+        </div>
+        
+        <div class="use-case">
+            <h4>3. First-Draft Generation</h4>
+            <p>Tell EKX to "generate a PowerPoint about S/4HANA Cloud" and you get grounded content pulled from the internal corpus — not generic positioning language. The output is something you can argue with and refine, which is the core workflow of effective PMM anyway.</p>
+        </div>
+        
+        <h2>Practical Tips</h2>
+        
+        <ul>
+            <li><strong>Use @ mentions</strong> to reference files in the chat — drop in a competitor brief or draft and ask EKX to compare claims against SAP's actual capabilities.</li>
+            <li><strong>Use the "Balanced" toggle</strong> for fact-heavy questions; leave it as-is to lean on retrieval. For open-ended positioning work, a general-purpose assistant like Claude may be more useful.</li>
+            <li><strong>Remember the "Internal" badge</strong> — outputs are grounded in internal materials and require normal review before appearing in customer-facing assets.</li>
+        </ul>
+        
+        <h2>Caveats</h2>
+        
+        <p>EKX is actively being tuned. The team behind it is running ongoing experiments on knowledge-graph-retrieval fusion. Occasionally it produces longer answers than necessary, buries the key claim under preamble, or misses an entity it should have caught. It is a very good tool, not a finished one. Treat it as a capable research partner with an occasional tendency to over-explain.</p>
+        
+        <hr>
+        
+        <h2>The Larger Pattern</h2>
+        
+        <p>The 10x PMM knows which tool to reach for:</p>
+        <ul>
+            <li><strong>Claude or ChatGPT</strong> — for thinking, brainstorming, positioning exploration</li>
+            <li><strong>EKX</strong> — for SAP-specific truth, enumeration, fact-checking</li>
+            <li><strong>Your own judgment</strong> — for synthesis, taste, and final decisions</li>
+        </ul>
+        
+        <p>Using ChatGPT for SAP product questions in 2026 is like using a thesaurus to write a technical specification. You can do it, but someone using the right tool will be done — and correct — while you're still editing hallucinations out of your first draft.</p>
+        
+        <div class="cta-box">
+            <h3>Try EKX</h3>
+            <p>Available now to all SAP employees via single sign-on.</p>
+            <code>ekx.cloud.sap/chat</code>
+        </div>
+        
+    </div>
+</main>
 
 <footer>
-  <span>Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a></span>
+    <div class="container">
+        <p>Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a></p>
+    </div>
 </footer>
 
 </body>
