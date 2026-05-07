@@ -15,7 +15,32 @@ document.documentElement.style.display = 'none';
             const { data: { session } } = await client.auth.getSession();
             
             if (session) {
-                // User is logged in - show page
+                // User is logged in - ensure profile exists (self-healing)
+                try {
+                    const { data: profile, error: profileError } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('id', session.user.id)
+                        .single();
+                    
+                    if (profileError && profileError.code === 'PGRST116') {
+                        // Profile doesn't exist - create one
+                        console.log('Creating missing profile for user:', session.user.email);
+                        await client.from('profiles').insert({
+                            id: session.user.id,
+                            email: session.user.email,
+                            first_name: session.user.user_metadata?.first_name || null,
+                            last_name: session.user.user_metadata?.last_name || null,
+                            company: session.user.user_metadata?.company || 'SAP',
+                            role: session.user.user_metadata?.role || null
+                        });
+                    }
+                } catch (profileErr) {
+                    console.warn('Profile check/create failed:', profileErr);
+                    // Continue anyway - don't block page load
+                }
+                
+                // Show page
                 document.documentElement.style.display = '';
             } else {
                 // Not logged in - redirect to login
