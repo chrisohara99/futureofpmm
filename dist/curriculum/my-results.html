@@ -471,8 +471,31 @@
         return interpretations[role.name] || 'Your cognitive profile suggests a unique integration pattern. The curriculum will help you optimize your approach.';
     }
     
-    // Initialize
-    loadResults();
+    // Wait for Supabase to load
+    function waitForSupabase(callback, maxAttempts = 50) {
+        let attempts = 0;
+        const check = () => {
+            if (typeof supabase !== 'undefined') {
+                callback();
+            } else if (++attempts < maxAttempts) {
+                setTimeout(check, 100);
+            } else {
+                document.getElementById('content').innerHTML = `
+                    <div class="empty-state">
+                        <h2>Loading Error</h2>
+                        <p>Could not load the results page. Please refresh and try again.</p>
+                        <a href="/curriculum/" class="btn">Back to Curriculum</a>
+                    </div>
+                `;
+            }
+        };
+        check();
+    }
+    
+    // Initialize when ready
+    document.addEventListener('DOMContentLoaded', () => {
+        waitForSupabase(loadResults);
+    });
     </script>
 </body>
 </html>
