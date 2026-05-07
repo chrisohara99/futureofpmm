@@ -180,8 +180,8 @@
             }
         }
         
-        // Fallback to localStorage
-        const user = JSON.parse(localStorage.getItem('pmmCurrentUser') || 'null');
+        // Fallback to localStorage (check both possible keys)
+        const user = JSON.parse(localStorage.getItem('pmm_direct_user') || localStorage.getItem('pmmCurrentUser') || 'null');
         if (user) {
             userName.textContent = user.firstName || user.email?.split('@')[0] || 'Account';
             userEmail.textContent = user.email || 'Unknown';
@@ -199,8 +199,9 @@
             }
         }
         
-        // Clear localStorage
+        // Clear localStorage (both possible keys)
         localStorage.removeItem('pmmCurrentUser');
+        localStorage.removeItem('pmm_direct_user');
         
         // Redirect to login
         window.location.href = '/curriculum/login.html';
