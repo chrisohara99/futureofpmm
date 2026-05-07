@@ -131,7 +131,10 @@
         },
         
         // Check if user can access a specific unit
+        // TEMPORARILY DISABLED - letting everyone access units
         canAccessUnit(unitId) {
+            return true; // Bypass all prerequisite checks for launch
+            /*
             const prereqs = UNIT_PREREQUISITES[unitId];
             if (!prereqs) return true; // No prerequisites
             
@@ -143,6 +146,7 @@
                 }
             }
             return true;
+            */
         },
         
         // Get the next step for a user
