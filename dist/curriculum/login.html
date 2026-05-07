@@ -13,8 +13,6 @@
             --sap-orange: #ED7D31;
             --sap-blue: #4472C4;
             --light-gray: #E7E6E6;
-            --gold: #FFC000;
-            --green: #70AD47;
             --text: #2B3A4A;
             --bg: #FAFAFA;
         }
@@ -80,9 +78,7 @@
             margin-bottom: 1.5rem;
         }
         
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
+        .form-group { margin-bottom: 1.25rem; }
         .form-group label {
             display: block;
             font-weight: 500;
@@ -115,7 +111,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            margin-top: 0.5rem;
         }
         .submit-btn:hover { background: var(--dark-slate); }
         .submit-btn:disabled { background: var(--light-gray); cursor: not-allowed; }
@@ -156,23 +151,8 @@
         }
         .message.show { display: block; }
         .message.error { background: #FFEBEE; color: #C62828; }
-        .message.success { background: #E8F5E9; color: #2E7D32; }
         
-        .security-note {
-            background: #F5F5F5;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-            color: #666;
-        }
-        .security-note strong { color: var(--dark-slate); }
-        
-        .magic-icon {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
+        .magic-icon { text-align: center; font-size: 3rem; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
@@ -199,9 +179,9 @@
 
 <main>
     <div class="login-card">
-        <div class="magic-icon">✉️</div>
-        <h2>Sign In via Email</h2>
-        <p class="subtitle">We'll send you a secure login link — no password needed.</p>
+        <div class="magic-icon">🔐</div>
+        <h2>Sign In</h2>
+        <p class="subtitle">Enter your SAP email to continue.</p>
         
         <div class="message" id="message"></div>
         
@@ -211,16 +191,8 @@
                 <input type="email" id="email" name="email" placeholder="you@sap.com" required>
             </div>
             
-            <button type="submit" class="submit-btn" id="submitBtn">Send Login Link</button>
-            
-            <div class="divider" style="margin: 1rem 0;"><span>or</span></div>
-            
-            <button type="button" class="submit-btn" id="directAccessBtn" style="background: var(--sap-orange);">Continue Directly →</button>
+            <button type="submit" class="submit-btn">Continue →</button>
         </form>
-        
-        <div class="security-note">
-            <strong>💡 Two options:</strong> Get a login link emailed to you, or continue directly with your SAP email.
-        </div>
         
         <div class="divider"><span>or</span></div>
         
@@ -230,22 +202,6 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-// Detect Edge + tracking prevention blocking localStorage
-(function() {
-    if (navigator.userAgent.includes('Edg/')) {
-        try {
-            localStorage.setItem('__edge_test', '1');
-            localStorage.removeItem('__edge_test');
-        } catch (e) {
-            // localStorage blocked - show warning
-            const warning = document.createElement('div');
-            warning.innerHTML = '<div style="background:#FFF3CD;border:1px solid #FFE69C;color:#856404;padding:1rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;"><strong>⚠️ Browser Issue Detected</strong><br>Microsoft Edge\'s tracking prevention is blocking sign-in. Please <strong>use Chrome</strong> or disable tracking prevention in Edge settings.</div>';
-            const card = document.querySelector('.login-card');
-            if (card) card.insertBefore(warning.firstChild, card.firstChild);
-        }
-    }
-})();
-
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
@@ -259,9 +215,7 @@ if (typeof supabase !== 'undefined' && supabase.createClient) {
 
 function isAllowedEmail(email) {
     const emailLower = email.toLowerCase();
-    // Allow admin emails
     if (ADMIN_EMAILS.includes(emailLower)) return true;
-    // Check domain whitelist
     const domain = emailLower.split('@')[1];
     return ALLOWED_DOMAINS.includes(domain);
 }
@@ -269,32 +223,18 @@ function isAllowedEmail(email) {
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
     const message = document.getElementById('message');
-    const submitBtn = document.getElementById('submitBtn');
-    const directAccessBtn = document.getElementById('directAccessBtn');
     
-    // Check if already logged in (Supabase session OR direct access)
+    // Check if already logged in
     const directUser = localStorage.getItem('pmm_direct_user');
     if (directUser) {
         window.location.href = '/curriculum/';
         return;
     }
-    if (supabaseClient) {
-        supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = '/curriculum/';
-            }
-        });
-    }
-    
-    // Direct access - skip magic link
-    directAccessBtn.addEventListener('click', async function() {
-        const email = document.getElementById('email').value.trim().toLowerCase();
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        if (!email) {
-            message.textContent = 'Please enter your email address.';
-            message.className = 'message error show';
-            return;
-        }
+        const email = document.getElementById('email').value.trim().toLowerCase();
         
         if (!isAllowedEmail(email)) {
             message.textContent = 'Please use your @sap.com email address.';
@@ -302,60 +242,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        directAccessBtn.disabled = true;
-        directAccessBtn.textContent = 'Continuing...';
-        
-        // Store direct access user
-        const directUserData = {
+        // Store and continue
+        const userData = {
             email: email,
             createdAt: new Date().toISOString()
         };
-        localStorage.setItem('pmm_direct_user', JSON.stringify(directUserData));
+        localStorage.setItem('pmm_direct_user', JSON.stringify(userData));
         
         // Redirect
         window.location.href = '/curriculum/';
-    });
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim().toLowerCase();
-        
-        // Validate domain
-        if (!isAllowedEmail(email)) {
-            message.textContent = 'Please use your @sap.com email address to sign in.';
-            message.className = 'message error show';
-            return;
-        }
-        
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
-        message.className = 'message';
-        
-        try {
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient.auth.signInWithOtp({
-                    email: email,
-                    options: {
-                        emailRedirectTo: window.location.origin + '/curriculum/'
-                    }
-                });
-                
-                if (error) throw error;
-                
-                message.innerHTML = '<strong>Check your inbox!</strong><br>We sent a login link to <strong>' + email + '</strong>. Click it to sign in.';
-                message.className = 'message success show';
-                submitBtn.textContent = 'Link Sent ✓';
-                
-            } else {
-                throw new Error('Authentication service unavailable');
-            }
-        } catch (error) {
-            message.textContent = error.message || 'Failed to send login link. Please try again.';
-            message.className = 'message error show';
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Send Login Link';
-        }
     });
 });
 </script>
