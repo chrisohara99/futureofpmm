@@ -212,8 +212,12 @@
     }
     
     async function loadResults() {
+        console.log('loadResults called');
+        try {
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+        console.log('Supabase client created');
         const { data: { session } } = await client.auth.getSession();
+        console.log('Session:', session ? 'found' : 'not found');
         
         if (!session) {
             document.getElementById('content').innerHTML = `
@@ -455,6 +459,16 @@
         }
         
         document.getElementById('content').innerHTML = html;
+        } catch (err) {
+            console.error('loadResults error:', err);
+            document.getElementById('content').innerHTML = `
+                <div class="empty-state">
+                    <h2>Error Loading Results</h2>
+                    <p>${err.message}</p>
+                    <a href="/curriculum/" class="btn">Back to Curriculum</a>
+                </div>
+            `;
+        }
     }
     
     function getCognitiveInterpretation(role) {
