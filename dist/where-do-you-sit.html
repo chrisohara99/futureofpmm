@@ -1024,14 +1024,36 @@ async function saveAssessmentResult(roleKey, role, dims) {
             'https://yyqzkczutlidhgyiyawc.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
         );
+        
+        let userId = null;
+        
+        // Check Supabase session first
         const { data: { session } } = await client.auth.getSession();
-        if (!session) return;
+        if (session) {
+            userId = session.user.id;
+        } else {
+            // Check for direct access user
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const email = JSON.parse(directUser).email;
+                    const { data: profile } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', email.toLowerCase())
+                        .single();
+                    if (profile) userId = profile.id;
+                }
+            } catch (e) {}
+        }
+        
+        if (!userId) return;
         
         // Get previous result to track history
         const { data: prevResults } = await client
             .from('assessment_results')
             .select('result_data, result_key')
-            .eq('user_id', session.user.id)
+            .eq('user_id', userId)
             .eq('assessment_type', 'where-do-you-sit')
             .order('completed_at', { ascending: false })
             .limit(1);
@@ -1057,7 +1079,7 @@ async function saveAssessmentResult(roleKey, role, dims) {
         }
         
         await client.from('assessment_results').upsert({
-            user_id: session.user.id,
+            user_id: userId,
             assessment_type: 'where-do-you-sit',
             result_key: roleKey,
             result_name: role.name,
