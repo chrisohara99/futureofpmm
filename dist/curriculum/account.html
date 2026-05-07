@@ -350,26 +350,64 @@ const chapters = [
 ];
 
 async function loadProfile() {
-    if (!supabaseClient) {
-        document.getElementById('profileName').textContent = 'Error loading';
-        document.getElementById('profileEmail').textContent = 'Supabase unavailable';
-        return;
-    }
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    let userEmail = null;
+    let userId = null;
+    let firstName = '';
+    let lastName = '';
     
-    if (session && session.user) {
-        const metadata = session.user.user_metadata || {};
-        const firstName = metadata.first_name || '';
-        const lastName = metadata.last_name || '';
-        const email = session.user.email;
+    // Check for direct access user first
+    try {
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (directUser) {
+            const parsed = JSON.parse(directUser);
+            userEmail = parsed.email;
+            firstName = parsed.firstName || '';
+            lastName = parsed.lastName || '';
+        }
+    } catch (e) {}
+    
+    // Check Supabase session
+    if (supabaseClient) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
         
-        document.getElementById('profileName').textContent = `${firstName} ${lastName}`.trim() || email.split('@')[0];
-        document.getElementById('profileEmail').textContent = email;
-        document.getElementById('profileAvatar').textContent = (firstName[0] || email[0]).toUpperCase();
+        if (session && session.user) {
+            const metadata = session.user.user_metadata || {};
+            userId = session.user.id;
+            userEmail = session.user.email;
+            firstName = metadata.first_name || firstName;
+            lastName = metadata.last_name || lastName;
+        }
+    }
+    
+    // If we have email but no userId, look up by email
+    if (userEmail && !userId && supabaseClient) {
+        try {
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('id, first_name, last_name')
+                .eq('email', userEmail.toLowerCase())
+                .single();
+            if (profile) {
+                userId = profile.id;
+                firstName = firstName || profile.first_name || '';
+                lastName = lastName || profile.last_name || '';
+            }
+        } catch (e) {}
+    }
+    
+    if (userEmail) {
+        document.getElementById('profileName').textContent = `${firstName} ${lastName}`.trim() || userEmail.split('@')[0];
+        document.getElementById('profileEmail').textContent = userEmail;
+        document.getElementById('profileAvatar').textContent = (firstName[0] || userEmail[0]).toUpperCase();
         
-        // Load quiz scores and assessments
-        loadQuizScores(session.user.id);
-        loadAssessments(session.user.id);
+        // Load quiz scores and assessments if we have userId
+        if (userId) {
+            loadQuizScores(userId);
+            loadAssessments(userId);
+        }
+    } else {
+        document.getElementById('profileName').textContent = 'Not signed in';
+        document.getElementById('profileEmail').textContent = 'Please sign in to view your profile';
     }
 }
 
@@ -557,6 +595,7 @@ async function logout() {
         await supabaseClient.auth.signOut();
     }
     localStorage.removeItem('pmmCurrentUser');
+    localStorage.removeItem('pmm_direct_user');
     sessionStorage.removeItem('curriculum_access');
     window.location.href = '/curriculum/login.html';
 }
