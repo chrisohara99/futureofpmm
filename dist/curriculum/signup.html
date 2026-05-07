@@ -269,10 +269,14 @@
                 </div>
                 
                 <button type="submit" class="submit-btn" id="submitBtn">Send Login Link</button>
+                
+                <div class="divider" style="margin: 1rem 0;"><span>or</span></div>
+                
+                <button type="button" class="submit-btn" id="directAccessBtn" style="background: var(--sap-orange);">Continue Directly →</button>
             </form>
             
             <div class="security-note">
-                <strong>🔒 Secure enrollment:</strong> We'll send a login link to your SAP email. No passwords needed — this verifies you control the inbox.
+                <strong>💡 Two options:</strong> Get a login link emailed to you, or continue directly with your SAP email. Both work!
             </div>
             
             <div class="divider"><span>or</span></div>
@@ -335,6 +339,64 @@ document.addEventListener('DOMContentLoaded', function() {
     const signupForm = document.getElementById('signupForm');
     const successView = document.getElementById('successView');
     const submitBtn = document.getElementById('submitBtn');
+    const directAccessBtn = document.getElementById('directAccessBtn');
+
+    // Direct access - skip magic link
+    directAccessBtn.addEventListener('click', async function() {
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const role = document.getElementById('role').value;
+        
+        // Validate required fields
+        if (!email || !firstName || !lastName || !role) {
+            message.textContent = 'Please fill in all required fields.';
+            message.className = 'message error show';
+            return;
+        }
+        
+        // Validate domain
+        if (!isAllowedEmail(email)) {
+            message.textContent = 'Access is restricted to SAP employees. Please use your @sap.com email address.';
+            message.className = 'message error show';
+            return;
+        }
+        
+        directAccessBtn.disabled = true;
+        directAccessBtn.textContent = 'Setting up...';
+        message.className = 'message';
+        
+        try {
+            // Store direct access user in localStorage
+            const directUser = {
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                role: role,
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('pmm_direct_user', JSON.stringify(directUser));
+            
+            // Also try to create/update profile in Supabase
+            if (supabaseClient) {
+                await supabaseClient.from('profiles').upsert({
+                    email: email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    role: role,
+                    company: 'SAP'
+                }, { onConflict: 'email' });
+            }
+            
+            // Redirect to curriculum
+            window.location.href = '/curriculum/';
+            
+        } catch (error) {
+            console.warn('Profile upsert failed:', error);
+            // Still redirect - localStorage auth will work
+            window.location.href = '/curriculum/';
+        }
+    });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
