@@ -322,18 +322,41 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         localStorage.setItem('pmm_direct_user', JSON.stringify(userData));
         
-        // Try to create/update profile in Supabase (best effort)
+        // Create profile in Supabase
         if (supabaseClient) {
             try {
-                await supabaseClient.from('profiles').upsert({
-                    email: email,
-                    first_name: firstName,
-                    last_name: lastName,
-                    role: role,
-                    company: 'SAP'
-                }, { onConflict: 'email' });
+                // Check if profile exists
+                const { data: existing } = await supabaseClient
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', email)
+                    .single();
+                
+                if (existing) {
+                    // Update existing
+                    await supabaseClient.from('profiles')
+                        .update({ first_name: firstName, last_name: lastName, role: role })
+                        .eq('email', email);
+                    console.log('Profile updated');
+                } else {
+                    // Insert new with generated UUID
+                    const newId = crypto.randomUUID();
+                    const { error } = await supabaseClient.from('profiles').insert({
+                        id: newId,
+                        email: email,
+                        first_name: firstName,
+                        last_name: lastName,
+                        role: role,
+                        company: 'SAP'
+                    });
+                    if (error) {
+                        console.error('Profile insert error:', error);
+                    } else {
+                        console.log('Profile created with id:', newId);
+                    }
+                }
             } catch (err) {
-                console.warn('Profile upsert failed:', err);
+                console.error('Profile creation failed:', err);
             }
         }
         
