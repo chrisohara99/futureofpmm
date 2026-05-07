@@ -195,6 +195,16 @@
         .unit-card.completed .unit-status { background: var(--green); color: white; }
         .unit-card.current .unit-status { background: var(--sap-orange); color: white; }
         .unit-card.locked .unit-status { background: var(--light-gray); color: #888; }
+        .lock-badge { 
+            display: inline-block; 
+            background: var(--sap-orange); 
+            color: white; 
+            font-size: 0.7rem; 
+            padding: 0.15rem 0.5rem; 
+            border-radius: 4px; 
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
         .unit-card.available .unit-status { background: var(--sap-blue); color: white; }
         
         .unit-info { flex: 1; }
@@ -415,6 +425,29 @@
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
+// Unlock schedule - one unit per week
+const UNLOCK_DATES = {
+    'unit-01': new Date('2026-05-07'),  // Week 1 - Now
+    'unit-02': new Date('2026-05-14'),  // Week 2
+    'unit-03': new Date('2026-05-21'),  // Week 3
+    'unit-04': new Date('2026-05-28'),  // Week 4
+    'unit-05': new Date('2026-06-04'),  // Week 5
+    'unit-06': new Date('2026-06-11'),  // Week 6
+    'unit-07': new Date('2026-06-18'),  // Week 7
+};
+
+function isUnitUnlockedByDate(unitId) {
+    const unlockDate = UNLOCK_DATES[unitId];
+    if (!unlockDate) return true;
+    return new Date() >= unlockDate;
+}
+
+function getUnlockDateStr(unitId) {
+    const unlockDate = UNLOCK_DATES[unitId];
+    if (!unlockDate) return '';
+    return unlockDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 const UNITS = [
     { id: 'unit-01', num: 1, title: 'AI Impact on PMM', desc: 'The transformation landscape' },
     { id: 'unit-02', num: 2, title: 'Visibility in the Age of Agents', desc: 'SEO → GEO' },
@@ -606,19 +639,27 @@ function renderDashboard() {
         const isCompleted = userProgress.completedUnits.has(unit.id);
         const quiz = userProgress.quizzes[unit.id];
         
-        // Check if unlocked (previous unit completed or first unit with assessments done)
-        let isUnlocked = false;
+        // Check time-based unlock first
+        const isTimeUnlocked = isUnitUnlockedByDate(unit.id);
+        const unlockDateStr = getUnlockDateStr(unit.id);
+        
+        // Check if unlocked by progress (previous unit completed or first unit with assessments done)
+        let isProgressUnlocked = false;
         if (index === 0) {
-            isUnlocked = assessmentsDone;
+            isProgressUnlocked = assessmentsDone;
         } else {
             const prevUnit = UNITS[index - 1];
-            isUnlocked = userProgress.completedUnits.has(prevUnit.id);
+            isProgressUnlocked = userProgress.completedUnits.has(prevUnit.id);
         }
+        
+        // Unit is only unlocked if BOTH time and progress conditions are met
+        const isUnlocked = isTimeUnlocked && isProgressUnlocked;
         
         const isCurrent = isUnlocked && !isCompleted && (index === 0 || userProgress.completedUnits.has(UNITS[index - 1].id));
         
         let statusClass = 'locked';
         let statusIcon = '🔒';
+        let lockReason = '';
         
         if (isCompleted) {
             statusClass = 'completed';
@@ -629,6 +670,8 @@ function renderDashboard() {
         } else if (isUnlocked) {
             statusClass = 'available';
             statusIcon = unit.num;
+        } else if (!isTimeUnlocked) {
+            lockReason = `Unlocks ${unlockDateStr}`;
         }
         
         const card = document.createElement('a');
@@ -636,11 +679,13 @@ function renderDashboard() {
         card.href = isUnlocked ? `/curriculum/${unit.id}/` : '#';
         if (!isUnlocked) card.onclick = (e) => e.preventDefault();
         
+        const lockBadge = lockReason ? `<span class="lock-badge">${lockReason}</span>` : '';
+        
         card.innerHTML = `
             <div class="unit-status">${statusIcon}</div>
             <div class="unit-info">
                 <h3>Unit ${unit.num}: ${unit.title}</h3>
-                <p>${unit.desc}</p>
+                <p>${unit.desc}${lockBadge}</p>
                 ${quiz ? `<div class="unit-score">Score: ${quiz.bestScore}%</div>` : ''}
             </div>
         `;
