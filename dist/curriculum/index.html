@@ -485,19 +485,53 @@ async function initDashboard() {
     try {
         client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
+        // Check for direct access user first
+        let userEmail = null;
+        let userId = null;
+        
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                const parsed = JSON.parse(directUser);
+                userEmail = parsed.email;
+            }
+        } catch (e) {}
+        
+        // Check Supabase session
         const { data: { session } } = await client.auth.getSession();
         
-        if (!session) {
-            // Not logged in - redirect to intro
+        if (session) {
+            userId = session.user.id;
+            userEmail = session.user.email;
+        } else if (!userEmail) {
+            // No session and no direct user - redirect to intro
             window.location.href = '/curriculum/intro.html';
             return;
         }
         
-        try {
-            await loadProgress(session.user.id);
-        } catch (err) {
-            console.error('Error loading progress:', err);
-            // Continue anyway - show dashboard with empty progress
+        // If we have email but no userId, look up by email
+        if (userEmail && !userId) {
+            try {
+                const { data: profile } = await client
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', userEmail.toLowerCase())
+                    .single();
+                if (profile) {
+                    userId = profile.id;
+                }
+            } catch (e) {
+                console.warn('Profile lookup failed:', e);
+            }
+        }
+        
+        // Load progress if we have a userId
+        if (userId) {
+            try {
+                await loadProgress(userId);
+            } catch (err) {
+                console.error('Error loading progress:', err);
+            }
         }
         
         renderDashboard();
