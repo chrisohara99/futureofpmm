@@ -498,15 +498,66 @@
             <p style="font-size: 0.95rem; color: #4b5563; line-height: 1.7; margin-bottom: 0;"><strong>Keep this question in mind as you move through the assessments.</strong> Your answer will shape which parts of this curriculum matter most for you.</p>
         </section>
         
-        <div class="cta-section">
-            <h2>Step 1 Complete — Now Establish Your Baseline</h2>
-            <p>Next, you'll take two quick assessments: one measuring your <strong>hard skills</strong> (the 10x PMM Scorecard), and one measuring how you <strong>think with AI</strong> (Where Do You Sit?). Together, they'll tell you which pattern you're closer to — and generate your prescriptive learning path.</p>
+        <div class="cta-section" id="ctaSection">
+            <h2 id="ctaTitle">Step 1 Complete — Now Establish Your Baseline</h2>
+            <p id="ctaDesc">Next, you'll take two quick assessments: one measuring your <strong>hard skills</strong> (the 10x PMM Scorecard), and one measuring how you <strong>think with AI</strong> (Where Do You Sit?). Together, they'll tell you which pattern you're closer to — and generate your prescriptive learning path.</p>
             <div style="background: #dbeafe; border-radius: 8px; padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.9rem; color: #1e40af;">
                 💡 <strong>Browser tip:</strong> This curriculum works best in <strong>Chrome</strong> or <strong>Firefox</strong>. Corporate Edge browsers may block some features.
             </div>
-            <a href="/10x-scorecard.html?flow=curriculum" class="cta-btn">Continue to Assessment 1 →</a>
-            <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280;">~15 minutes total · Results saved · Prescriptive learning path</p>
+            <a href="/10x-scorecard.html?flow=curriculum" class="cta-btn" id="ctaBtn">Continue to Assessment 1 →</a>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280;" id="ctaSubtext">~15 minutes total · Results saved · Prescriptive learning path</p>
         </div>
+        
+        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+        <script>
+        // Check assessment status and update CTA accordingly
+        (async function() {
+            const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+            
+            try {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { data: { session } } = await client.auth.getSession();
+                
+                if (!session) return; // Not logged in, keep default
+                
+                // Check completed assessments
+                const { data: assessments } = await client
+                    .from('assessment_results')
+                    .select('assessment_type')
+                    .eq('user_id', session.user.id);
+                
+                const completed = new Set((assessments || []).map(a => a.assessment_type));
+                const hasScorecard = completed.has('10x-scorecard-content');
+                const hasWhere = completed.has('where-do-you-sit');
+                
+                const title = document.getElementById('ctaTitle');
+                const desc = document.getElementById('ctaDesc');
+                const btn = document.getElementById('ctaBtn');
+                const subtext = document.getElementById('ctaSubtext');
+                
+                if (hasScorecard && hasWhere) {
+                    // Both done - go to Unit 1
+                    title.textContent = 'Assessments Complete — Start Unit 1';
+                    desc.innerHTML = 'You\'ve established your baseline. Time to dive into the curriculum starting with <strong>Unit 1: AI Impact on PMM</strong>.';
+                    btn.href = '/curriculum/unit-01/';
+                    btn.textContent = 'Start Unit 1 →';
+                    subtext.textContent = '~60 minutes · Foundation unit';
+                } else if (hasScorecard) {
+                    // Only scorecard done - go to Where Do You Sit
+                    title.textContent = 'One More Assessment';
+                    desc.innerHTML = 'You\'ve completed the 10x Scorecard. Now take the <strong>Where Do You Sit?</strong> assessment to complete your baseline.';
+                    btn.href = '/where-do-you-sit.html?flow=curriculum';
+                    btn.textContent = 'Continue to Assessment 2 →';
+                    subtext.textContent = '~5 minutes · Cognitive assessment';
+                }
+                // else: neither done, keep default (Assessment 1)
+                
+            } catch (err) {
+                console.warn('CTA check failed:', err);
+            }
+        })();
+        </script>
         
         <!-- Progress Indicator -->
         <div class="progress-indicator" style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;">
