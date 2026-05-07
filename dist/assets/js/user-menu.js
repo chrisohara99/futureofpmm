@@ -189,22 +189,23 @@
     }
 
     async function logout() {
-        // Clear Supabase session
-        if (typeof supabase !== 'undefined') {
-            try {
-                const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                await client.auth.signOut();
-            } catch (e) {
-                console.error('Error signing out:', e);
-            }
-        }
-        
-        // Clear localStorage (both possible keys)
+        // Clear localStorage FIRST (both possible keys)
         localStorage.removeItem('pmmCurrentUser');
         localStorage.removeItem('pmm_direct_user');
+        sessionStorage.clear();
         
-        // Redirect to login
-        window.location.href = '/curriculum/login.html';
+        // Try Supabase signout (don't block redirect on errors)
+        try {
+            if (typeof supabase !== 'undefined') {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                await client.auth.signOut();
+            }
+        } catch (e) {
+            console.warn('Supabase signout error:', e);
+        }
+        
+        // Force redirect
+        window.location.replace('/curriculum/login.html');
     }
 
     // Initialize when DOM ready

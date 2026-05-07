@@ -591,13 +591,22 @@ async function loadQuizScores(userId) {
 }
 
 async function logout() {
-    if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-    }
+    // Clear all local storage first
     localStorage.removeItem('pmmCurrentUser');
     localStorage.removeItem('pmm_direct_user');
     sessionStorage.removeItem('curriculum_access');
-    window.location.href = '/curriculum/login.html';
+    
+    // Try to sign out of Supabase (don't let errors block redirect)
+    try {
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
+    } catch (e) {
+        console.warn('Supabase signout error:', e);
+    }
+    
+    // Force redirect
+    window.location.replace('/curriculum/login.html');
 }
 
 async function loadEmailPreferences(userId) {
