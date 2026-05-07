@@ -485,31 +485,33 @@
         return interpretations[role.name] || 'Your cognitive profile suggests a unique integration pattern. The curriculum will help you optimize your approach.';
     }
     
-    // Wait for Supabase to load
-    function waitForSupabase(callback, maxAttempts = 50) {
+    // Wait for Supabase to load then run
+    (function init() {
         let attempts = 0;
-        const check = () => {
+        const maxAttempts = 50;
+        
+        function check() {
+            console.log('Checking for Supabase, attempt', attempts + 1);
             if (typeof supabase !== 'undefined') {
-                callback();
+                console.log('Supabase found, calling loadResults');
+                loadResults();
             } else if (++attempts < maxAttempts) {
                 setTimeout(check, 100);
             } else {
+                console.error('Supabase failed to load after', maxAttempts, 'attempts');
                 document.getElementById('content').innerHTML = `
                     <div class="empty-state">
                         <h2>Loading Error</h2>
-                        <p>Could not load the results page. Please refresh and try again.</p>
+                        <p>Could not load the Supabase library. Please refresh and try again.</p>
                         <a href="/curriculum/" class="btn">Back to Curriculum</a>
                     </div>
                 `;
             }
-        };
+        }
+        
+        // Start checking immediately
         check();
-    }
-    
-    // Initialize when ready
-    document.addEventListener('DOMContentLoaded', () => {
-        waitForSupabase(loadResults);
-    });
+    })();
     </script>
 </body>
 </html>
