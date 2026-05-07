@@ -3,6 +3,19 @@
 document.documentElement.style.display = 'none';
 
 (function() {
+    // Detect Edge + tracking prevention blocking localStorage
+    if (navigator.userAgent.includes('Edg/')) {
+        try {
+            localStorage.setItem('__edge_test', '1');
+            localStorage.removeItem('__edge_test');
+        } catch (e) {
+            // localStorage blocked - show error page instead of redirect loop
+            document.documentElement.style.display = '';
+            document.body.innerHTML = '<div style="max-width:500px;margin:100px auto;padding:2rem;font-family:Inter,sans-serif;text-align:center;"><h1 style="color:#856404;font-size:1.5rem;">⚠️ Browser Issue Detected</h1><p style="color:#666;margin:1rem 0;">Microsoft Edge\'s tracking prevention is blocking the sign-in session.</p><p style="margin:1.5rem 0;"><strong>Solutions:</strong></p><ul style="text-align:left;color:#666;"><li>Use <strong>Google Chrome</strong> instead (recommended)</li><li>Or disable tracking prevention in Edge settings</li></ul><a href="/curriculum/login.html" style="display:inline-block;margin-top:1.5rem;padding:0.75rem 1.5rem;background:#4472C4;color:white;text-decoration:none;border-radius:6px;">Try Again</a></div>';
+            return;
+        }
+    }
+    
     const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 

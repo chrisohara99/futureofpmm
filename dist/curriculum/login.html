@@ -226,6 +226,22 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+// Detect Edge + tracking prevention blocking localStorage
+(function() {
+    if (navigator.userAgent.includes('Edg/')) {
+        try {
+            localStorage.setItem('__edge_test', '1');
+            localStorage.removeItem('__edge_test');
+        } catch (e) {
+            // localStorage blocked - show warning
+            const warning = document.createElement('div');
+            warning.innerHTML = '<div style="background:#FFF3CD;border:1px solid #FFE69C;color:#856404;padding:1rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;"><strong>⚠️ Browser Issue Detected</strong><br>Microsoft Edge\'s tracking prevention is blocking sign-in. Please <strong>use Chrome</strong> or disable tracking prevention in Edge settings.</div>';
+            const card = document.querySelector('.login-card');
+            if (card) card.insertBefore(warning.firstChild, card.firstChild);
+        }
+    }
+})();
+
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
