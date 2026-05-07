@@ -1027,16 +1027,53 @@ async function saveAssessmentResult(roleKey, role, dims) {
         const { data: { session } } = await client.auth.getSession();
         if (!session) return;
         
+        // Get previous result to track history
+        const { data: prevResults } = await client
+            .from('assessment_results')
+            .select('result_data, result_key')
+            .eq('user_id', session.user.id)
+            .eq('assessment_type', 'where-do-you-sit')
+            .order('completed_at', { ascending: false })
+            .limit(1);
+        
+        // Build history array
+        let history = [];
+        if (prevResults && prevResults[0] && prevResults[0].result_data) {
+            const prevData = prevResults[0].result_data;
+            const prevKey = prevResults[0].result_key;
+            // Preserve existing history
+            if (prevData.history) {
+                history = prevData.history;
+            }
+            // Add previous result to history (if different from current)
+            if (prevKey !== roleKey) {
+                history.push({
+                    roleKey: prevKey,
+                    roleName: ROLES[prevKey]?.name || prevKey,
+                    sovereignty: prevData.sovereignty,
+                    date: prevData.completedAt || new Date().toISOString()
+                });
+            }
+        }
+        
         await client.from('assessment_results').upsert({
             user_id: session.user.id,
             assessment_type: 'where-do-you-sit',
             result_key: roleKey,
             result_name: role.name,
-            result_data: { dimensions: dims, sovereignty: role.sovereignty },
+            result_data: { 
+                roleKey: roleKey,
+                dimensions: dims, 
+                sovereignty: role.sovereignty,
+                cognitiveLevel: role.cognitiveLevel,
+                completedAt: new Date().toISOString(),
+                history: history,
+                attemptNumber: history.length + 1
+            },
             completed_at: new Date().toISOString()
         }, { onConflict: 'user_id,assessment_type' });
         
-        console.log('Assessment saved');
+        console.log('Assessment saved, attempt:', history.length + 1);
     } catch (e) {
         console.error('Error saving assessment:', e);
     }

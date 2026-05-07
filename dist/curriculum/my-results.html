@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assessment Results | 10× PMM Curriculum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --pmm-blue: #3b82f6;
+            --pmm-dark: #1e3a5f;
+            --green: #16a34a;
+            --orange: #f59e0b;
+            --red: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; min-height: 100vh; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; width: auto; }
+        nav { display: flex; align-items: center; gap: 1.5rem; }
+        nav a { font-size: 0.9rem; color: #64748b; text-decoration: none; font-weight: 500; }
+        nav a:hover { color: var(--pmm-blue); }
+        .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+        .hamburger span { width: 24px; height: 2px; background: var(--pmm-dark); }
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .logo img { height: 60px; }
+            nav { display: none; position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; background: #fff; flex-direction: column; padding: 80px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.1); transition: right 0.3s; z-index: 1000; }
+            nav.open { display: flex; right: 0; }
+            nav a { padding: 0.75rem 0; border-bottom: 1px solid #e2e8f0; width: 100%; }
+        }
+        
+        /* Main */
+        .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+        
+        /* Page Header */
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-size: 1.75rem; font-weight: 700; color: var(--pmm-dark); margin-bottom: 0.5rem; }
+        .page-header p { color: #64748b; }
+        
+        /* Loading */
+        .loading { text-align: center; padding: 4rem 2rem; color: #64748b; }
+        .loading .spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: var(--pmm-blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Empty State */
+        .empty-state { background: #fff; border: 2px dashed #e2e8f0; border-radius: 12px; padding: 3rem 2rem; text-align: center; }
+        .empty-state h2 { font-size: 1.25rem; color: var(--pmm-dark); margin-bottom: 0.5rem; }
+        .empty-state p { color: #64748b; margin-bottom: 1.5rem; }
+        .empty-state .btn { display: inline-block; background: var(--pmm-blue); color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .empty-state .btn:hover { background: #2563eb; }
+        
+        /* Results Grid */
+        .results-grid { display: grid; gap: 1.5rem; margin-bottom: 2rem; }
+        
+        /* Result Card */
+        .result-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+        .result-card.scorecard { border-left: 4px solid var(--pmm-blue); }
+        .result-card.cognitive { border-left: 4px solid #8b5cf6; }
+        
+        .card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: var(--pmm-dark); }
+        .card-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 600; }
+        .card-badge.green { background: #dcfce7; color: #166534; }
+        .card-badge.blue { background: #dbeafe; color: #1e40af; }
+        .card-badge.yellow { background: #fef3c7; color: #92400e; }
+        .card-badge.red { background: #fee2e2; color: #991b1b; }
+        
+        .card-body { padding: 1.5rem; }
+        
+        /* Score Display */
+        .score-display { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 1rem; }
+        .score-big { font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 700; line-height: 1; }
+        .score-max { font-size: 1.25rem; color: #94a3b8; }
+        .score-grade { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 600; margin-left: 1rem; }
+        
+        /* Cognitive Role */
+        .role-display { margin-bottom: 1rem; }
+        .role-name { font-size: 1.5rem; font-weight: 700; color: var(--pmm-dark); }
+        .role-tagline { color: #64748b; font-style: italic; }
+        
+        /* Interpretation */
+        .interpretation { background: #f8fafc; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+        .interpretation h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.5rem; }
+        .interpretation p { color: #334155; font-size: 0.95rem; margin: 0; }
+        
+        /* Focus Units */
+        .focus-units { margin-bottom: 1.25rem; }
+        .focus-units h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.5rem; }
+        .unit-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .unit-tag { background: var(--pmm-dark); color: #fff; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+        
+        /* History */
+        .history-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f1f5f9; }
+        .history-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.75rem; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; }
+        .history-item:not(:last-child) { border-bottom: 1px solid #f1f5f9; }
+        .history-date { color: #64748b; }
+        .history-score { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .improvement { color: var(--green); font-size: 0.85rem; }
+        .improvement.negative { color: var(--red); }
+        
+        /* Actions */
+        .card-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+        .btn-retake { background: #fff; color: var(--pmm-dark); border: 2px solid #e2e8f0; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-retake:hover { border-color: var(--pmm-blue); color: var(--pmm-blue); }
+        .btn-primary { background: var(--pmm-blue); color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .btn-primary:hover { background: #2563eb; }
+        
+        /* Combined Section */
+        .combined-section { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); border-radius: 12px; padding: 2rem; color: #fff; margin-top: 1.5rem; }
+        .combined-section h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .combined-pills { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .combined-pill { background: rgba(255,255,255,0.15); padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; }
+        .pattern-name { font-weight: 700; color: #fbbf24; margin-bottom: 0.5rem; }
+        .combined-section p { opacity: 0.95; line-height: 1.7; }
+        
+        /* Back Link */
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #64748b; text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .back-link:hover { color: var(--pmm-blue); }
+        
+        /* Footer */
+        footer { background: var(--pmm-dark); color: #fff; padding: 2rem; text-align: center; margin-top: 3rem; }
+        footer p { opacity: 0.8; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/index.html" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/curriculum/labs/">AI Labs</a>
+                <a href="/blog.html">Articles</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main">
+        <a href="/curriculum/" class="back-link">← Back to Curriculum</a>
+        
+        <div class="page-header">
+            <h1>📊 My Assessment Results</h1>
+            <p>Your baseline scores and cognitive profile. Retake assessments as you progress to track improvement.</p>
+        </div>
+        
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading your results...</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>10× PMM Curriculum · Future of PMM</p>
+    </footer>
+    
+    <script>
+    const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+    
+    // Cognitive roles data
+    const ROLES = {
+        '0-0-0': { name: 'The Traditionalist', tagline: 'Minimal integration, high independence', color: '#64748b', cognitiveLevel: 'low', focusUnits: [1, 2, 3] },
+        '1-0-0': { name: 'The Dabbler', tagline: 'Curious but cautious', color: '#10b981', cognitiveLevel: 'low', focusUnits: [1, 2, 3, 4] },
+        '0-1-0': { name: 'The Researcher', tagline: 'Using AI to extend reach', color: '#3b82f6', cognitiveLevel: 'medium', focusUnits: [2, 4, 5] },
+        '0-0-1': { name: 'The Delegator', tagline: 'Outsourcing execution', color: '#f59e0b', cognitiveLevel: 'medium', focusUnits: [3, 4, 6] },
+        '1-1-0': { name: 'Maya', tagline: 'Cognitive partnership emerging', color: '#8b5cf6', cognitiveLevel: 'medium', focusUnits: [4, 5, 6] },
+        '1-0-1': { name: 'Trevor', tagline: 'Thinking with AI', color: '#ec4899', cognitiveLevel: 'high', focusUnits: [5, 6, 7] },
+        '0-1-1': { name: 'The Orchestrator', tagline: 'Managing AI systems', color: '#14b8a6', cognitiveLevel: 'high', focusUnits: [5, 6, 7] },
+        '1-1-1': { name: 'The Architect', tagline: 'Full cognitive partnership', color: '#6366f1', cognitiveLevel: 'high', focusUnits: [6, 7] }
+    };
+    
+    // Score interpretation
+    function getGrade(score) {
+        if (score >= 4.5) return { grade: 'A+', color: '#16a34a', badge: 'green', msg: 'Frontier-level performance. You're operating at the leading edge of AI-augmented PMM.' };
+        if (score >= 4.0) return { grade: 'A', color: '#16a34a', badge: 'green', msg: 'Excellent. You've built strong AI workflows and are seeing real output gains.' };
+        if (score >= 3.5) return { grade: 'B+', color: '#3b82f6', badge: 'blue', msg: 'Good foundation. Focus on deepening integration in your weaker areas.' };
+        if (score >= 3.0) return { grade: 'B', color: '#3b82f6', badge: 'blue', msg: 'Making progress. The curriculum will help you level up systematically.' };
+        if (score >= 2.5) return { grade: 'C+', color: '#f59e0b', badge: 'yellow', msg: 'Early stages. Prioritize Units 1-3 to build your foundation.' };
+        if (score >= 2.0) return { grade: 'C', color: '#f59e0b', badge: 'yellow', msg: 'Room to grow. Start with the basics and build from there.' };
+        return { grade: 'D', color: '#dc2626', badge: 'red', msg: 'Just starting. The curriculum is designed exactly for where you are.' };
+    }
+    
+    // Combined recommendation
+    function getCombinedRecommendation(tenxScore, cognitiveLevel) {
+        const isHighTenx = tenxScore >= 3.0;
+        const isHighCognitive = cognitiveLevel === 'high';
+        
+        if (isHighTenx && isHighCognitive) {
+            return { pattern: 'Ready for Prime Time', recommendation: "You've got both the hard skills and the cognitive partnership. Focus on Soft Skills (Units 5-7) — policy embedding, AI communications, and culture building. You're ready to help scale this across the team." };
+        } else if (isHighTenx && !isHighCognitive) {
+            return { pattern: 'The Maya Pattern', recommendation: "Strong on execution, but cognitive integration is your gap. You're producing with AI but not thinking with it. Focus on the 'Thinking With' sections in Units 2, 5, and 6 to unlock the strategic layer." };
+        } else if (!isHighTenx && isHighCognitive) {
+            return { pattern: 'The Trevor Pattern', recommendation: "You're thinking with AI but need the technical foundations to match. Focus on the Hands-On builds in Units 2-4 to expand what you can actually create. The hard skills are learnable — you've already done the harder part." };
+        } else {
+            return { pattern: 'Starting Out', recommendation: "You're at the beginning — and that's fine. Start with Unit 1, then work through Units 2-4 sequentially. Focus on both 'Thinking With' sections and Hands-On builds in parallel." };
+        }
+    }
+    
+    async function loadResults() {
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+        const { data: { session } } = await client.auth.getSession();
+        
+        if (!session) {
+            document.getElementById('content').innerHTML = `
+                <div class="empty-state">
+                    <h2>Sign in to view your results</h2>
+                    <p>You need to be logged in to see your assessment results.</p>
+                    <a href="/curriculum/login.html" class="btn">Sign In</a>
+                </div>
+            `;
+            return;
+        }
+        
+        // Fetch all assessment results
+        const { data: results, error } = await client
+            .from('assessment_results')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .order('completed_at', { ascending: false });
+        
+        if (error) {
+            console.error('Error loading results:', error);
+            document.getElementById('content').innerHTML = `<div class="empty-state"><h2>Error loading results</h2><p>${error.message}</p></div>`;
+            return;
+        }
+        
+        // Parse results
+        const scorecard = results.find(r => r.assessment_type === '10x-scorecard-content');
+        const cognitive = results.find(r => r.assessment_type === 'where-do-you-sit');
+        
+        // Get history (all scorecard attempts)
+        const scorecardHistory = results.filter(r => r.assessment_type.startsWith('10x-scorecard-'));
+        const cognitiveHistory = results.filter(r => r.assessment_type === 'where-do-you-sit');
+        
+        if (!scorecard && !cognitive) {
+            document.getElementById('content').innerHTML = `
+                <div class="empty-state">
+                    <h2>No assessments completed yet</h2>
+                    <p>Complete the pre-requisite assessments to establish your baseline and get personalized curriculum recommendations.</p>
+                    <a href="/10x-scorecard.html?flow=curriculum" class="btn">Start Assessment</a>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<div class="results-grid">';
+        
+        // 10x Scorecard Card
+        if (scorecard && scorecard.result_data) {
+            const data = scorecard.result_data;
+            const grade = getGrade(data.average);
+            const completedDate = new Date(scorecard.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            // Build history HTML
+            let historyHtml = '';
+            const history = data.history || [];
+            
+            // Current result first
+            historyHtml += `
+                <div class="history-item">
+                    <span class="history-date">${completedDate} (current)</span>
+                    <span class="history-score" style="color: ${grade.color}">${data.average.toFixed(1)} (${grade.grade})</span>
+                </div>
+            `;
+            
+            // Previous attempts
+            if (history.length > 0) {
+                // Calculate improvement
+                const firstAttempt = history[0];
+                const improvement = data.average - firstAttempt.average;
+                
+                history.slice().reverse().forEach((h, i) => {
+                    const hDate = new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const hGrade = getGrade(h.average);
+                    historyHtml += `
+                        <div class="history-item">
+                            <span class="history-date">${hDate}</span>
+                            <span class="history-score" style="color: ${hGrade.color}">${h.average.toFixed(1)} (${hGrade.grade})</span>
+                        </div>
+                    `;
+                });
+                
+                if (improvement > 0) {
+                    historyHtml += `<div class="improvement">📈 Improved +${improvement.toFixed(1)} since first attempt!</div>`;
+                } else if (improvement < 0) {
+                    historyHtml += `<div class="improvement negative">📉 ${improvement.toFixed(1)} since first attempt</div>`;
+                }
+            }
+            
+            html += `
+                <div class="result-card scorecard">
+                    <div class="card-header">
+                        <span class="card-title">📈 10x PMM Scorecard (Content)</span>
+                        <span class="card-badge ${grade.badge}">${grade.grade}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="score-display">
+                            <span class="score-big" style="color: ${grade.color}">${data.average.toFixed(1)}</span>
+                            <span class="score-max">/ 5.0</span>
+                        </div>
+                        
+                        <div class="interpretation">
+                            <h4>What This Means</h4>
+                            <p>${grade.msg}</p>
+                        </div>
+                        
+                        <div class="focus-units">
+                            <h4>Recommended Focus</h4>
+                            <div class="unit-tags">
+                                ${data.average < 3 ? '<span class="unit-tag">Unit 1</span><span class="unit-tag">Unit 2</span><span class="unit-tag">Unit 3</span>' : '<span class="unit-tag">Unit 4</span><span class="unit-tag">Unit 5</span><span class="unit-tag">Unit 6</span>'}
+                            </div>
+                        </div>
+                        
+                        <div class="history-section">
+                            <h4>Assessment History ${history.length > 0 ? `(${history.length + 1} attempts)` : ''}</h4>
+                            ${historyHtml}
+                        </div>
+                        
+                        <div class="card-actions">
+                            <a href="/10x-scorecard.html" class="btn-retake">🔄 Retake Assessment</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Cognitive Profile Card
+        if (cognitive && cognitive.result_data) {
+            const data = cognitive.result_data;
+            const roleKey = data.roleKey || cognitive.result_key;
+            const role = ROLES[roleKey] || ROLES['0-0-0'];
+            const completedDate = new Date(cognitive.completed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            // Build history HTML
+            let historyHtml = '';
+            const history = data.history || [];
+            
+            // Current result first
+            historyHtml += `
+                <div class="history-item">
+                    <span class="history-date">${completedDate} (current)</span>
+                    <span class="history-score" style="color: ${role.color}">${role.name}</span>
+                </div>
+            `;
+            
+            // Previous attempts
+            if (history.length > 0) {
+                history.slice().reverse().forEach((h, i) => {
+                    const hDate = new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const hRole = ROLES[h.roleKey] || { name: h.roleName, color: '#64748b' };
+                    historyHtml += `
+                        <div class="history-item">
+                            <span class="history-date">${hDate}</span>
+                            <span class="history-score" style="color: ${hRole.color}">${hRole.name}</span>
+                        </div>
+                    `;
+                });
+                
+                // Check for cognitive level progression
+                const firstRole = ROLES[history[0].roleKey];
+                if (firstRole && firstRole.cognitiveLevel !== role.cognitiveLevel) {
+                    const levels = { low: 0, medium: 1, high: 2 };
+                    const improved = levels[role.cognitiveLevel] > levels[firstRole.cognitiveLevel];
+                    if (improved) {
+                        historyHtml += `<div class="improvement">📈 Cognitive level increased from ${firstRole.cognitiveLevel} to ${role.cognitiveLevel}!</div>`;
+                    }
+                }
+            }
+            
+            html += `
+                <div class="result-card cognitive">
+                    <div class="card-header">
+                        <span class="card-title">🧠 Cognitive Integration Profile</span>
+                        <span class="card-badge blue">${(role.cognitiveLevel || 'medium').toUpperCase()}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="role-display">
+                            <span class="role-name" style="color: ${role.color}">${role.name}</span>
+                            <p class="role-tagline">${role.tagline}</p>
+                        </div>
+                        
+                        <div class="interpretation">
+                            <h4>What This Means</h4>
+                            <p>${getCognitiveInterpretation(role)}</p>
+                        </div>
+                        
+                        <div class="focus-units">
+                            <h4>Recommended Units</h4>
+                            <div class="unit-tags">
+                                ${role.focusUnits.map(u => `<span class="unit-tag">Unit ${u}</span>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="history-section">
+                            <h4>Assessment History ${history.length > 0 ? `(${history.length + 1} attempts)` : ''}</h4>
+                            ${historyHtml}
+                        </div>
+                        
+                        <div class="card-actions">
+                            <a href="/where-do-you-sit.html" class="btn-retake">🔄 Retake Assessment</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+        
+        // Combined Recommendation
+        if (scorecard && cognitive && scorecard.result_data && cognitive.result_data) {
+            const tenxScore = scorecard.result_data.average;
+            const role = ROLES[cognitive.result_data.roleKey] || ROLES['0-0-0'];
+            const combined = getCombinedRecommendation(tenxScore, role.cognitiveLevel);
+            const grade = getGrade(tenxScore);
+            
+            html += `
+                <div class="combined-section">
+                    <h3>🎯 Your Personalized Learning Path</h3>
+                    <div class="combined-pills">
+                        <span class="combined-pill">10x Score: ${tenxScore.toFixed(1)} (${grade.grade})</span>
+                        <span class="combined-pill">Cognitive: ${role.name}</span>
+                    </div>
+                    <p class="pattern-name">${combined.pattern}</p>
+                    <p>${combined.recommendation}</p>
+                </div>
+            `;
+        }
+        
+        // Show prompt to complete missing assessment
+        if (!scorecard || !cognitive) {
+            const missing = !scorecard ? '10x PMM Scorecard' : 'Where Do You Sit?';
+            const link = !scorecard ? '/10x-scorecard.html' : '/where-do-you-sit.html';
+            html += `
+                <div class="empty-state" style="margin-top: 1.5rem;">
+                    <h2>Complete Your Profile</h2>
+                    <p>Take the ${missing} assessment to get your personalized learning path recommendation.</p>
+                    <a href="${link}" class="btn">Take ${missing}</a>
+                </div>
+            `;
+        }
+        
+        document.getElementById('content').innerHTML = html;
+    }
+    
+    function getCognitiveInterpretation(role) {
+        const interpretations = {
+            'The Traditionalist': 'You prefer working independently without AI assistance. The curriculum will help you understand where AI can add value without compromising your autonomy.',
+            'The Dabbler': 'You\'re curious about AI but haven\'t fully integrated it yet. You\'re in a great position to build good habits from the start.',
+            'The Researcher': 'You use AI to extend your research capabilities. Focus on moving from information gathering to cognitive partnership.',
+            'The Delegator': 'You outsource execution to AI effectively. The next step is building deeper thinking partnerships, not just task delegation.',
+            'Maya': 'You\'re developing a true cognitive partnership with AI. Focus on the strategic layer — the "Thinking With" sections will help you level up.',
+            'Trevor': 'You think with AI as a partner. Now focus on building out the execution skills to match your cognitive integration.',
+            'The Orchestrator': 'You manage AI systems effectively. Consider how to deepen individual tool mastery while maintaining your orchestration skills.',
+            'The Architect': 'You\'ve achieved full cognitive partnership. Focus on scaling your approach and helping others on the team level up.'
+        };
+        return interpretations[role.name] || 'Your cognitive profile suggests a unique integration pattern. The curriculum will help you optimize your approach.';
+    }
+    
+    // Initialize
+    loadResults();
+    </script>
+</body>
+</html>

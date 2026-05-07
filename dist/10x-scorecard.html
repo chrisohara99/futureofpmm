@@ -1323,17 +1323,53 @@
         
         const avg = scores.reduce((a,b) => a+b, 0) / 6;
         const grade = getGrade(avg);
+        const assessmentType = '10x-scorecard-' + category;
+        
+        // Get previous result to track history
+        const { data: prevResults } = await client
+          .from('assessment_results')
+          .select('result_data')
+          .eq('user_id', session.user.id)
+          .eq('assessment_type', assessmentType)
+          .order('completed_at', { ascending: false })
+          .limit(1);
+        
+        // Build history array
+        let history = [];
+        if (prevResults && prevResults[0] && prevResults[0].result_data) {
+          const prevData = prevResults[0].result_data;
+          // Preserve existing history
+          if (prevData.history) {
+            history = prevData.history;
+          }
+          // Add previous result to history (if different from current)
+          if (prevData.average !== avg) {
+            history.push({
+              average: prevData.average,
+              grade: prevData.grade,
+              date: prevData.completedAt || new Date().toISOString()
+            });
+          }
+        }
         
         await client.from('assessment_results').upsert({
           user_id: session.user.id,
-          assessment_type: '10x-scorecard-' + category,
+          assessment_type: assessmentType,
           result_key: grade.grade,
           result_name: SCORECARDS[category].title + ': ' + avg.toFixed(1) + '/5',
-          result_data: { category, scores, average: avg, grade: grade.grade },
+          result_data: { 
+            category, 
+            scores, 
+            average: avg, 
+            grade: grade.grade,
+            completedAt: new Date().toISOString(),
+            history: history,
+            attemptNumber: history.length + 1
+          },
           completed_at: new Date().toISOString()
         }, { onConflict: 'user_id,assessment_type' });
         
-        console.log('Scorecard saved:', category);
+        console.log('Scorecard saved:', category, 'attempt:', history.length + 1);
       } catch (e) {
         console.error('Error saving scorecard:', e);
       }

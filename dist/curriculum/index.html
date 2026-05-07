@@ -234,6 +234,27 @@
             color: var(--sap-blue);
         }
         
+        /* Assessment Links */
+        .assessment-row a {
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+        .assessment-row a:hover { text-decoration: underline; }
+        .view-results-link {
+            display: inline-block;
+            background: var(--sap-blue);
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-top: 1rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .view-results-link:hover { background: #3b5998; text-decoration: none !important; }
+        
         /* Assessments Section */
         .assessments-section {
             background: white;
@@ -356,6 +377,9 @@
                     <span>⏳</span> Not started
                 </span>
             </div>
+            <div id="viewResultsContainer" style="display: none;">
+                <a href="/curriculum/my-results.html" class="view-results-link">📊 View My Results & Learning Path</a>
+            </div>
         </div>
         
         <!-- Units Grid -->
@@ -379,8 +403,8 @@
         
         <!-- Quick Actions -->
         <div class="quick-actions">
+            <a href="/curriculum/my-results.html" class="quick-action">📊 My Results</a>
             <a href="/curriculum/labs/" class="quick-action">🔬 AI Labs</a>
-            <a href="/10x-scorecard.html" class="quick-action">📊 Retake Scorecard</a>
             <a href="/curriculum/account.html" class="quick-action">👤 My Account</a>
         </div>
     </div>
@@ -526,12 +550,17 @@ function renderDashboard() {
     const hasWhere = !!userProgress.assessments['where-do-you-sit'];
     
     document.getElementById('scorecardStatus').innerHTML = hasScorecard 
-        ? '<span class="done">✅ Complete</span>'
-        : '<span class="pending">⏳ Not started</span>';
+        ? '<span class="done">✅ Complete</span> <a href="/10x-scorecard.html">Retake</a>'
+        : '<span class="pending">⏳ Not started</span> <a href="/10x-scorecard.html?flow=curriculum">Start →</a>';
     
     document.getElementById('whereStatus').innerHTML = hasWhere 
-        ? '<span class="done">✅ Complete</span>'
-        : '<span class="pending">⏳ Not started</span>';
+        ? '<span class="done">✅ Complete</span> <a href="/where-do-you-sit.html">Retake</a>'
+        : '<span class="pending">⏳ Not started</span> <a href="/where-do-you-sit.html?flow=curriculum">Start →</a>';
+    
+    // Show "View Results" link if at least one assessment is done
+    if (hasScorecard || hasWhere) {
+        document.getElementById('viewResultsContainer').style.display = 'block';
+    }
     
     // Find next unit
     let nextUnit = null;
