@@ -517,15 +517,41 @@
             
             try {
                 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                const { data: { session } } = await client.auth.getSession();
                 
-                if (!session) return; // Not logged in, keep default
+                let userId = null;
+                let userEmail = null;
+                
+                // Check for direct access user
+                try {
+                    const directUser = localStorage.getItem('pmm_direct_user');
+                    if (directUser) {
+                        userEmail = JSON.parse(directUser).email;
+                    }
+                } catch (e) {}
+                
+                // Check Supabase session
+                const { data: { session } } = await client.auth.getSession();
+                if (session) {
+                    userId = session.user.id;
+                }
+                
+                // If no session but have email, look up profile
+                if (!userId && userEmail) {
+                    const { data: profile } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', userEmail.toLowerCase())
+                        .single();
+                    if (profile) userId = profile.id;
+                }
+                
+                if (!userId) return; // Can't check assessments without userId
                 
                 // Check completed assessments
                 const { data: assessments } = await client
                     .from('assessment_results')
                     .select('assessment_type')
-                    .eq('user_id', session.user.id);
+                    .eq('user_id', userId);
                 
                 const completed = new Set((assessments || []).map(a => a.assessment_type));
                 const hasScorecard = completed.has('10x-scorecard-content');
