@@ -288,10 +288,32 @@
         try {
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
         console.log('Supabase client created');
-        const { data: { session } } = await client.auth.getSession();
-        console.log('Session:', session ? 'found' : 'not found');
         
-        if (!session) {
+        let userId = null;
+        
+        // Check Supabase session
+        const { data: { session } } = await client.auth.getSession();
+        if (session) {
+            userId = session.user.id;
+        } else {
+            // Check for direct access user
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const email = JSON.parse(directUser).email;
+                    const { data: profile } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', email.toLowerCase())
+                        .single();
+                    if (profile) userId = profile.id;
+                }
+            } catch (e) { console.warn('Direct user lookup failed:', e); }
+        }
+        
+        console.log('UserId:', userId ? 'found' : 'not found');
+        
+        if (!userId) {
             document.getElementById('content').innerHTML = `
                 <div class="empty-state">
                     <h2>Sign in to view your results</h2>
@@ -306,7 +328,7 @@
         const { data: results, error } = await client
             .from('assessment_results')
             .select('*')
-            .eq('user_id', session.user.id)
+            .eq('user_id', userId)
             .order('completed_at', { ascending: false });
         
         if (error) {
