@@ -548,12 +548,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadProgress(userId) {
+    console.log('loadProgress called with userId:', userId);
     try {
         // Load assessment results
-        const { data: assessments } = await client
+        const { data: assessments, error: assessError } = await client
             .from('assessment_results')
             .select('assessment_type, result_key, completed_at')
             .eq('user_id', userId);
+        
+        console.log('Assessments loaded:', assessments, 'Error:', assessError);
         
         if (assessments) {
             assessments.forEach(a => {
@@ -635,14 +638,10 @@ function renderDashboard() {
     const assessmentsDone = hasScorecard && hasWhere;
     
     if (!assessmentsDone) {
-        // Need to complete assessments first
-        document.getElementById('continueLabel').textContent = 'Complete Assessments First';
-        document.getElementById('continueTitle').textContent = !hasScorecard 
-            ? '10x PMM Scorecard' 
-            : 'Where Do You Sit?';
-        document.getElementById('continueBtn').href = !hasScorecard 
-            ? '/10x-scorecard.html?flow=curriculum' 
-            : '/where-do-you-sit.html?flow=curriculum';
+        // Assessments not done - but still show Unit 1 as the next step (gates disabled)
+        document.getElementById('continueLabel').textContent = 'Continue Learning';
+        document.getElementById('continueTitle').textContent = 'Unit 1: AI Impact on PMM';
+        document.getElementById('continueBtn').href = '/curriculum/unit-01/';
     } else {
         // Find first incomplete unit
         for (const unit of UNITS) {
