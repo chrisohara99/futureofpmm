@@ -494,10 +494,6 @@ async function initDashboard() {
             if (directUser) {
                 const parsed = JSON.parse(directUser);
                 userEmail = parsed.email;
-                // Use stored ID if available
-                if (parsed.id) {
-                    userId = parsed.id;
-                }
             }
         } catch (e) {}
         
@@ -515,19 +511,20 @@ async function initDashboard() {
         
         // If we have email but no userId, look up by email
         if (userEmail && !userId) {
-            try {
-                const { data: profile } = await client
-                    .from('profiles')
-                    .select('id')
-                    .eq('email', userEmail.toLowerCase())
-                    .single();
-                if (profile) {
-                    userId = profile.id;
-                }
-            } catch (e) {
-                console.warn('Profile lookup failed:', e);
+            const { data: profile, error } = await client
+                .from('profiles')
+                .select('id')
+                .eq('email', userEmail.toLowerCase())
+                .single();
+            
+            console.log('Profile lookup for', userEmail, ':', profile, error);
+            
+            if (profile) {
+                userId = profile.id;
             }
         }
+        
+        console.log('Final userId:', userId);
         
         // Load progress if we have a userId
         if (userId) {
