@@ -3,368 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enroll in the Course | SAP Data & Analytics Product Marketing</title>
-    <meta name="description" content="Sign up for the free PMM curriculum and track your progress.">
+    <title>Enroll | SAP Future of PMM</title>
     <link rel="icon" type="image/png" href="/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --dark-slate: #44546A;
-            --sap-orange: #ED7D31;
-            --sap-blue: #4472C4;
-            --light-gray: #E7E6E6;
-            --green: #70AD47;
-            --text: #2B3A4A;
-            --bg: #FAFAFA;
-        }
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-            min-height: 100vh;
-        }
-        
-        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
-        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; text-decoration: none; }
-        .logo img { height: 135px; width: auto; }
-        nav { display: flex; align-items: center; gap: 0.5rem; }
-        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
-        nav > a:hover { color: #3b82f6; background: #f3f4f6; }
-        
-        @media (max-width: 900px) {
-            .logo img { height: 70px !important; }
-            nav { display: none; }
-        }
-        
-        .hero {
-            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
-            padding: 3rem 2rem;
-            color: white;
-            text-align: center;
-        }
-        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .hero p { font-size: 1.1rem; opacity: 0.9; }
-        
-        main {
-            max-width: 500px;
-            margin: -2rem auto 3rem;
-            padding: 0 1rem;
-        }
-        
-        .signup-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .signup-card h2 {
-            font-size: 1.3rem;
-            color: var(--dark-slate);
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-        .signup-card .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label {
-            display: block;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 0.4rem;
-            color: var(--dark-slate);
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--light-gray);
-            border-radius: 6px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--sap-blue);
-        }
-        
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        @media (max-width: 500px) {
-            .form-row { grid-template-columns: 1fr; }
-        }
-        
-        .submit-btn {
-            width: 100%;
-            padding: 0.9rem;
-            background: var(--sap-blue);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 0.5rem;
-        }
-        .submit-btn:hover { background: var(--dark-slate); }
-        .submit-btn:disabled { background: var(--light-gray); cursor: not-allowed; }
-        
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
-            color: #999;
-            font-size: 0.85rem;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--light-gray);
-        }
-        .divider span { padding: 0 1rem; }
-        
-        .login-link {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #666;
-        }
-        .login-link a {
-            color: var(--sap-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .login-link a:hover { text-decoration: underline; }
-        
-        .benefits {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: #F8F9FA;
-            border-radius: 8px;
-        }
-        .benefits h3 {
-            font-size: 1rem;
-            color: var(--dark-slate);
-            margin-bottom: 1rem;
-        }
-        .benefit-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.9rem;
-        }
-        .benefit-item:last-child { margin-bottom: 0; }
-        .benefit-icon { color: var(--green); font-weight: bold; }
-        
-        .message {
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            display: none;
-        }
-        .message.show { display: block; }
-        .message.error { background: #FFEBEE; color: #C62828; }
-        
-        .magic-icon { text-align: center; font-size: 3rem; margin-bottom: 1rem; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 2rem; max-width: 400px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #1a1a2e; margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .subtitle { color: #666; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-weight: 500; margin-bottom: 0.3rem; color: #333; }
+        input, select { width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #4472C4; }
+        .btn { width: 100%; padding: 0.9rem; background: #4472C4; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .btn:hover { background: #3461b3; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .error { background: #ffe6e6; color: #c00; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+        .error.show { display: block; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     </style>
 </head>
 <body>
-
-<header>
-    <div class="header-inner">
-        <a href="/" class="logo">
-            <img src="/assets/images/logo.svg" alt="Future of PMM">
-        </a>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/curriculum/">Curriculum</a>
-            <a href="/digests/">Digests</a>
-            <a href="/newsletters.html">Newsletter</a>
-        </nav>
-    </div>
-</header>
-
-<section class="hero">
-    <h1>Enroll in the Course</h1>
-    <p>Free access to all units with progress tracking</p>
-</section>
-
-<main>
-    <div class="signup-card">
-        <div class="magic-icon">🎓</div>
-        <h2>Create Your Account</h2>
-        <p class="subtitle">Enter your details to get started.</p>
+    <div class="card">
+        <h1>🎓 Enroll in the Curriculum</h1>
+        <p class="subtitle">Enter your SAP email to get started</p>
         
-        <div class="message" id="message"></div>
+        <div class="error" id="error"></div>
         
-        <form id="enrollForm">
-            <div class="form-row">
+        <form id="form">
+            <div class="row">
                 <div class="form-group">
-                    <label for="firstName">First Name *</label>
-                    <input type="text" id="firstName" name="firstName" required>
+                    <label>First Name</label>
+                    <input type="text" id="firstName" required>
                 </div>
                 <div class="form-group">
-                    <label for="lastName">Last Name *</label>
-                    <input type="text" id="lastName" name="lastName" required>
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" required>
                 </div>
             </div>
-            
             <div class="form-group">
-                <label for="email">SAP Email Address *</label>
-                <input type="email" id="email" name="email" required placeholder="you@sap.com">
-                <small style="color: #666; font-size: 0.8rem; margin-top: 0.25rem; display: block;">Access restricted to @sap.com addresses</small>
+                <label>SAP Email</label>
+                <input type="email" id="email" placeholder="you@sap.com" required>
             </div>
-            
             <div class="form-group">
-                <label for="role">Current Role *</label>
-                <select id="role" name="role" required>
-                    <option value="">Select your role...</option>
+                <label>Role</label>
+                <select id="role" required>
+                    <option value="">Select...</option>
                     <option value="pmm">Product Marketing Manager</option>
                     <option value="senior_pmm">Senior PMM / Director</option>
                     <option value="vp_pmm">VP Product Marketing</option>
-                    <option value="cmo">CMO / Marketing Executive</option>
                     <option value="pm">Product Manager</option>
-                    <option value="marketing_other">Other Marketing Role</option>
                     <option value="other">Other</option>
                 </select>
             </div>
-            
-            <button type="submit" class="submit-btn">Start Learning →</button>
+            <button type="submit" class="btn" id="btn">Start Learning →</button>
         </form>
-        
-        <div class="divider"><span>or</span></div>
-        
-        <p class="login-link">Already enrolled? <a href="login.html">Sign in</a></p>
-        
-        <div class="benefits">
-            <h3>What you'll get:</h3>
-            <div class="benefit-item">
-                <span class="benefit-icon">✓</span>
-                <span>Full access to all 7 units</span>
-            </div>
-            <div class="benefit-item">
-                <span class="benefit-icon">✓</span>
-                <span>Interactive assessments with score tracking</span>
-            </div>
-            <div class="benefit-item">
-                <span class="benefit-icon">✓</span>
-                <span>AI-powered labs for real work</span>
-            </div>
-            <div class="benefit-item">
-                <span class="benefit-icon">✓</span>
-                <span>Progress dashboard to track completion</span>
-            </div>
-        </div>
     </div>
-</main>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
 
-const ALLOWED_DOMAINS = ['sap.com'];
-const ADMIN_EMAILS = ['christopher.ohara@sap.com', 'chrisohara1968@gmail.com'];
-
-let supabaseClient = null;
-if (typeof supabase !== 'undefined' && supabase.createClient) {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}
-
-function isAllowedEmail(email) {
-    const emailLower = email.toLowerCase();
-    if (ADMIN_EMAILS.includes(emailLower)) return true;
-    const domain = emailLower.split('@')[1];
-    return ALLOWED_DOMAINS.includes(domain);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('enrollForm');
-    const message = document.getElementById('message');
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim().toLowerCase();
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
-        const role = document.getElementById('role').value;
-        
-        if (!isAllowedEmail(email)) {
-            message.textContent = 'Access is restricted to SAP employees. Please use your @sap.com email address.';
-            message.className = 'message error show';
+document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('btn');
+    const error = document.getElementById('error');
+    
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const role = document.getElementById('role').value;
+    
+    // Validate SAP email
+    if (!email.endsWith('@sap.com') && email !== 'christopher.ohara@sap.com' && email !== 'chrisohara1968@gmail.com') {
+        if (!email.endsWith('@sap.com')) {
+            error.textContent = 'Please use your @sap.com email address.';
+            error.classList.add('show');
             return;
         }
+    }
+    
+    btn.disabled = true;
+    btn.textContent = 'Creating account...';
+    error.classList.remove('show');
+    
+    try {
+        // Create Supabase client
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Store user and continue
-        const userData = {
+        // Generate UUID
+        const id = crypto.randomUUID ? crypto.randomUUID() : 
+            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        
+        // Insert profile directly
+        const { data, error: insertError } = await client
+            .from('profiles')
+            .insert({
+                id: id,
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                role: role,
+                company: 'SAP'
+            })
+            .select()
+            .single();
+        
+        if (insertError) {
+            // If duplicate email, try to get existing profile
+            if (insertError.code === '23505') {
+                console.log('Profile exists, continuing...');
+            } else {
+                throw insertError;
+            }
+        } else {
+            console.log('Profile created:', data);
+        }
+        
+        // Store in localStorage
+        localStorage.setItem('pmm_direct_user', JSON.stringify({
             email: email,
             firstName: firstName,
             lastName: lastName,
             role: role,
-            createdAt: new Date().toISOString()
-        };
-        localStorage.setItem('pmm_direct_user', JSON.stringify(userData));
+            id: id
+        }));
         
-        // Create profile in Supabase
-        if (supabaseClient) {
-            try {
-                // Check if profile exists
-                const { data: existing } = await supabaseClient
-                    .from('profiles')
-                    .select('id')
-                    .eq('email', email)
-                    .single();
-                
-                if (existing) {
-                    // Update existing
-                    await supabaseClient.from('profiles')
-                        .update({ first_name: firstName, last_name: lastName, role: role })
-                        .eq('email', email);
-                    console.log('Profile updated');
-                } else {
-                    // Insert new with generated UUID
-                    const newId = crypto.randomUUID();
-                    const { error } = await supabaseClient.from('profiles').insert({
-                        id: newId,
-                        email: email,
-                        first_name: firstName,
-                        last_name: lastName,
-                        role: role,
-                        company: 'SAP'
-                    });
-                    if (error) {
-                        console.error('Profile insert error:', error);
-                    } else {
-                        console.log('Profile created with id:', newId);
-                    }
-                }
-            } catch (err) {
-                console.error('Profile creation failed:', err);
-            }
-        }
-        
-        // Redirect to Intro (starting point)
+        // Redirect to intro
         window.location.href = '/curriculum/intro.html';
-    });
+        
+    } catch (err) {
+        console.error('Signup error:', err);
+        error.textContent = 'Error: ' + (err.message || 'Failed to create account');
+        error.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Start Learning →';
+    }
 });
 </script>
-
 </body>
 </html>
