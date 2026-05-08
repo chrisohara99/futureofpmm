@@ -235,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         const email = document.getElementById('email').value.trim().toLowerCase();
+        const btn = form.querySelector('button');
         
         if (!isAllowedEmail(email)) {
             message.textContent = 'Please use your @sap.com email address.';
@@ -242,15 +243,47 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Store and continue
-        const userData = {
-            email: email,
-            createdAt: new Date().toISOString()
-        };
-        localStorage.setItem('pmm_direct_user', JSON.stringify(userData));
+        btn.disabled = true;
+        btn.textContent = 'Checking...';
         
-        // Redirect to Intro (starting point)
-        window.location.href = '/curriculum/intro.html';
+        try {
+            // Check if profile exists in database
+            const { data: profile, error } = await supabaseClient
+                .from('profiles')
+                .select('id, first_name, last_name')
+                .eq('email', email)
+                .single();
+            
+            if (error || !profile) {
+                // No profile - redirect to signup
+                message.textContent = 'No account found. Redirecting to signup...';
+                message.className = 'message error show';
+                setTimeout(() => {
+                    window.location.href = '/curriculum/signup.html?email=' + encodeURIComponent(email);
+                }, 1500);
+                return;
+            }
+            
+            // Profile exists - store and continue
+            const userData = {
+                email: email,
+                firstName: profile.first_name,
+                lastName: profile.last_name,
+                id: profile.id,
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('pmm_direct_user', JSON.stringify(userData));
+            
+            // Redirect to Intro (starting point)
+            window.location.href = '/curriculum/intro.html';
+            
+        } catch (err) {
+            console.error('Login error:', err);
+            message.textContent = 'Something went wrong. Please try again.';
+            message.className = 'message error show';
+            btn.disabled = false;
+            btn.textContent = 'Continue →';
+        }
     });
 });
 </script>
