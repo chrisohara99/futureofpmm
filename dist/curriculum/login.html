@@ -220,15 +220,38 @@ function isAllowedEmail(email) {
     return ALLOWED_DOMAINS.includes(domain);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const form = document.getElementById('loginForm');
     const message = document.getElementById('message');
     
-    // Check if already logged in
+    // Check if already logged in AND has valid profile
     const directUser = localStorage.getItem('pmm_direct_user');
     if (directUser) {
-        window.location.href = '/curriculum/';
-        return;
+        try {
+            const userData = JSON.parse(directUser);
+            // Verify profile exists in database
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('id')
+                .eq('email', userData.email.toLowerCase())
+                .single();
+            
+            if (profile) {
+                window.location.href = '/curriculum/';
+                return;
+            } else {
+                // Profile doesn't exist - clear bad localStorage and redirect to signup
+                localStorage.removeItem('pmm_direct_user');
+                message.textContent = 'Please complete signup first.';
+                message.className = 'message error show';
+                setTimeout(() => {
+                    window.location.href = '/curriculum/signup.html?email=' + encodeURIComponent(userData.email);
+                }, 1500);
+                return;
+            }
+        } catch (e) {
+            localStorage.removeItem('pmm_direct_user');
+        }
     }
 
     form.addEventListener('submit', async (e) => {
