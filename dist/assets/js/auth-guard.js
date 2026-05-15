@@ -6,7 +6,7 @@ document.documentElement.style.display = 'none';
     const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
     const ALLOWED_DOMAINS = ['sap.com'];
-    const ADMIN_EMAILS = ['christopher.ohara@sap.com', 'chrisohara1968@gmail.com'];
+    const ADMIN_EMAILS = ['christopher.ohara@sap.com', 'chrisohara1968@gmail.com', 'anthony.test@tiled.com'];
     
     function isAllowedEmail(email) {
         const emailLower = email.toLowerCase();
