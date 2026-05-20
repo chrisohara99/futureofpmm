@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: PMM Activity Audit | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--sap-orange) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        .lab-intro ul { margin: 0.5rem 0 0 1.5rem; color: #555; }
+        .lab-intro li { margin-bottom: 0.35rem; }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--sap-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--sap-orange);
+        }
+        textarea { min-height: 120px; resize: vertical; }
+        textarea.large { min-height: 180px; }
+        
+        .activity-checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .activity-item:hover { background: #e9ecef; }
+        .activity-item input { display: none; }
+        .activity-item.checked { background: #fff3cd; border: 2px solid var(--gold); }
+        .activity-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .activity-item.checked .activity-checkbox {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+        .activity-item.checked .activity-checkbox::after {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .run-btn {
+            background: var(--sap-orange);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .run-btn:hover { background: #d66a28; transform: translateY(-2px); }
+        .run-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .error-message {
+            background: #fee;
+            color: var(--red);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--green);
+            display: none;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .results-header h2 { color: var(--dark-slate); font-size: 1.3rem; }
+        
+        .copy-btn {
+            background: var(--light-gray);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .copy-btn:hover { background: #d0d0d0; }
+        
+        .results-content {
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .results-content h1, .results-content h2, .results-content h3 {
+            color: var(--dark-slate);
+            margin: 1.5rem 0 0.75rem;
+        }
+        .results-content h1 { font-size: 1.4rem; }
+        .results-content h2 { font-size: 1.2rem; }
+        .results-content h3 { font-size: 1.1rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.5rem; }
+        .results-content p { margin-bottom: 1rem; }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .results-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .results-content th, .results-content td {
+            border: 1px solid var(--light-gray);
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .results-content th { background: #f8f9fa; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        @media (max-width: 600px) {
+            .activity-checklist { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <span class="lab-badge">🧠 Unit 1 Lab</span>
+        <h1>PMM Activity Audit</h1>
+        <p>Analyze your weekly activities for AI transformation potential. Get a prioritized automation roadmap with specific tool recommendations.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>What You'll Get</h2>
+        <p>This lab analyzes your typical PMM activities and produces:</p>
+        <ul>
+            <li><strong>AI Readiness Score</strong> — How much of your work can AI assist today</li>
+            <li><strong>Priority Matrix</strong> — Activities ranked by automation potential and impact</li>
+            <li><strong>Tool Recommendations</strong> — Specific AI tools for each high-potential activity</li>
+            <li><strong>Quick Wins</strong> — Three activities to automate this week</li>
+        </ul>
+        <p><em>Takes about 10 minutes. The analysis runs in real-time.</em></p>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Your Role & Context</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Your PMM Role</label>
+                <select id="role" name="role" required>
+                    <option value="">Select your role...</option>
+                    <option value="Product Marketing Manager">Product Marketing Manager</option>
+                    <option value="Senior PMM">Senior Product Marketing Manager</option>
+                    <option value="PMM Lead/Director">PMM Lead / Director</option>
+                    <option value="Content Marketer">Content Marketer</option>
+                    <option value="Competitive Intel">Competitive Intelligence</option>
+                    <option value="Field Marketing">Field Marketing</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="products">Products/Solutions You Support</label>
+                <p class="hint">What products, solutions, or portfolio areas do you cover?</p>
+                <input type="text" id="products" name="products" placeholder="e.g., SAP Analytics Cloud, SAP Datasphere, Data & Analytics portfolio" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="teamSize">Team Context</label>
+                <select id="teamSize" name="teamSize" required>
+                    <option value="">Select...</option>
+                    <option value="solo">Solo PMM for my area</option>
+                    <option value="small">Small team (2-4 PMMs)</option>
+                    <option value="medium">Medium team (5-10 PMMs)</option>
+                    <option value="large">Large team (10+ PMMs)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>Your Weekly Activities</h3>
+            </div>
+            
+            <div class="form-group">
+                <label>Which activities take up most of your time? (Select all that apply)</label>
+                <p class="hint">We'll analyze each selected activity for AI potential</p>
+                <div class="activity-checklist" id="activityChecklist">
+                    <label class="activity-item" data-activity="competitive-research">
+                        <input type="checkbox" name="activities" value="competitive-research">
+                        <span class="activity-checkbox"></span>
+                        <span>Competitive research</span>
+                    </label>
+                    <label class="activity-item" data-activity="content-creation">
+                        <input type="checkbox" name="activities" value="content-creation">
+                        <span class="activity-checkbox"></span>
+                        <span>Content creation</span>
+                    </label>
+                    <label class="activity-item" data-activity="sales-enablement">
+                        <input type="checkbox" name="activities" value="sales-enablement">
+                        <span class="activity-checkbox"></span>
+                        <span>Sales enablement</span>
+                    </label>
+                    <label class="activity-item" data-activity="messaging-positioning">
+                        <input type="checkbox" name="activities" value="messaging-positioning">
+                        <span class="activity-checkbox"></span>
+                        <span>Messaging & positioning</span>
+                    </label>
+                    <label class="activity-item" data-activity="launch-planning">
+                        <input type="checkbox" name="activities" value="launch-planning">
+                        <span class="activity-checkbox"></span>
+                        <span>Launch planning</span>
+                    </label>
+                    <label class="activity-item" data-activity="analyst-relations">
+                        <input type="checkbox" name="activities" value="analyst-relations">
+                        <span class="activity-checkbox"></span>
+                        <span>Analyst relations</span>
+                    </label>
+                    <label class="activity-item" data-activity="customer-interviews">
+                        <input type="checkbox" name="activities" value="customer-interviews">
+                        <span class="activity-checkbox"></span>
+                        <span>Customer interviews</span>
+                    </label>
+                    <label class="activity-item" data-activity="presentations">
+                        <input type="checkbox" name="activities" value="presentations">
+                        <span class="activity-checkbox"></span>
+                        <span>Presentations & decks</span>
+                    </label>
+                    <label class="activity-item" data-activity="market-research">
+                        <input type="checkbox" name="activities" value="market-research">
+                        <span class="activity-checkbox"></span>
+                        <span>Market research</span>
+                    </label>
+                    <label class="activity-item" data-activity="persona-development">
+                        <input type="checkbox" name="activities" value="persona-development">
+                        <span class="activity-checkbox"></span>
+                        <span>Persona development</span>
+                    </label>
+                    <label class="activity-item" data-activity="win-loss-analysis">
+                        <input type="checkbox" name="activities" value="win-loss-analysis">
+                        <span class="activity-checkbox"></span>
+                        <span>Win/loss analysis</span>
+                    </label>
+                    <label class="activity-item" data-activity="email-campaigns">
+                        <input type="checkbox" name="activities" value="email-campaigns">
+                        <span class="activity-checkbox"></span>
+                        <span>Email campaigns</span>
+                    </label>
+                    <label class="activity-item" data-activity="social-content">
+                        <input type="checkbox" name="activities" value="social-content">
+                        <span class="activity-checkbox"></span>
+                        <span>Social content</span>
+                    </label>
+                    <label class="activity-item" data-activity="event-support">
+                        <input type="checkbox" name="activities" value="event-support">
+                        <span class="activity-checkbox"></span>
+                        <span>Event support</span>
+                    </label>
+                    <label class="activity-item" data-activity="internal-comms">
+                        <input type="checkbox" name="activities" value="internal-comms">
+                        <span class="activity-checkbox"></span>
+                        <span>Internal comms</span>
+                    </label>
+                    <label class="activity-item" data-activity="reporting">
+                        <input type="checkbox" name="activities" value="reporting">
+                        <span class="activity-checkbox"></span>
+                        <span>Reporting & metrics</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Current AI Usage</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="currentTools">What AI tools do you currently use?</label>
+                <p class="hint">List any AI tools you use regularly for work</p>
+                <textarea id="currentTools" name="currentTools" placeholder="e.g., ChatGPT for drafting, Claude for research, Copilot in Office, EKX for SAP questions...
+
+Or write 'None yet' if you haven't started"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="painPoints">What takes too long or feels repetitive?</label>
+                <p class="hint">Describe 2-3 activities that drain your time</p>
+                <textarea id="painPoints" name="painPoints" class="large" placeholder="e.g., 
+• Searching for the latest competitive info across multiple sources
+• Reformatting the same content for different channels
+• Creating first drafts of product descriptions
+• Summarizing long analyst reports" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="goals">What would you do with 5 extra hours per week?</label>
+                <p class="hint">If AI freed up time, what higher-value work would you focus on?</p>
+                <textarea id="goals" name="goals" placeholder="e.g., More customer conversations, deeper competitive analysis, strategic planning, mentoring..."></textarea>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🧠 Run Activity Audit</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>📊 Your AI Transformation Roadmap</h2>
+            <button class="copy-btn" onclick="copyResults()">📋 Copy Results</button>
+        </div>
+        <div class="results-content" id="resultsContent"></div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// Activity checkbox toggle
+document.querySelectorAll('.activity-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const checkbox = item.querySelector('input');
+        checkbox.checked = !checkbox.checked;
+        item.classList.toggle('checked', checkbox.checked);
+    });
+});
+
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+const resultsContent = document.getElementById('resultsContent');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Gather selected activities
+    const selectedActivities = Array.from(document.querySelectorAll('input[name="activities"]:checked'))
+        .map(cb => cb.value);
+    
+    if (selectedActivities.length === 0) {
+        alert('Please select at least one activity from Step 2');
+        return;
+    }
+    
+    const inputs = {
+        role: document.getElementById('role').value,
+        products: document.getElementById('products').value,
+        teamSize: document.getElementById('teamSize').value,
+        activities: selectedActivities,
+        currentTools: document.getElementById('currentTools').value,
+        painPoints: document.getElementById('painPoints').value,
+        goals: document.getElementById('goals').value
+    };
+    
+    // Show loading state
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Analyzing...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'activity-audit',
+                inputs: inputs
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Analysis failed. Please try again.');
+        }
+        
+        const data = await response.json();
+        
+        // Render results
+        resultsContent.innerHTML = marked.parse(data.result);
+        resultsSection.classList.add('show');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '🧠 Run Activity Audit';
+        spinner.style.display = 'none';
+    }
+});
+
+function copyResults() {
+    const text = resultsContent.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy Results', 2000);
+    });
+}
+</script>
+</body>
+</html>

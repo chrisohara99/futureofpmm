@@ -139,7 +139,18 @@ You help PMMs audit their activities against the AI Impact Matrix:
 - Production tasks (high AI potential): content generation, data analysis, reporting
 - Strategic tasks (human-essential): positioning, narrative, relationship building
 
-You provide specific recommendations for which activities to automate, augment, or keep human.`
+You provide specific recommendations for which activities to automate, augment, or keep human.`,
+
+        'activity-audit': `You are an expert in AI transformation for Product Marketing teams, specifically helping PMMs identify which activities to automate, augment, or keep fully human.
+
+You understand the PMM AI Impact Matrix:
+- **Automate (High AI Potential)**: Content drafts, competitive monitoring, data synthesis, reporting, social posts, email variants
+- **Augment (AI + Human)**: Positioning refinement, demo narratives, customer interview synthesis, launch planning
+- **Protect (Human Essential)**: Strategic narrative, executive relationships, cross-functional leadership, original thought leadership
+
+You provide specific, actionable recommendations with tool suggestions. You're practical and prioritize quick wins that build momentum.
+
+Format responses with clear sections, tables where helpful, and be direct about what to do FIRST.`
     };
 
     return prompts[labType] || prompts['geo-audit'];
@@ -270,6 +281,59 @@ Provide:
 5. **Sacred Cows**: What must stay human and why
 6. **Tool Recommendations**: Specific tools for top automation opportunities
 7. **30-Day Pilot Plan**: First AI workflow to implement`;
+
+        case 'activity-audit':
+            const activitiesList = Array.isArray(inputs.activities) ? inputs.activities.join(', ') : inputs.activities;
+            return `Analyze this PMM's activities for AI transformation potential:
+
+**Role:** ${inputs.role}
+**Products/Solutions Supported:** ${inputs.products}
+**Team Context:** ${inputs.teamSize}
+
+**Current Weekly Activities:**
+${activitiesList}
+
+**Current AI Tools in Use:**
+${inputs.currentTools || 'None specified'}
+
+**Pain Points / Time Drains:**
+${inputs.painPoints}
+
+**If AI freed up time, they'd focus on:**
+${inputs.goals || 'Not specified'}
+
+Please provide a comprehensive AI Transformation Roadmap:
+
+## 1. AI Readiness Score
+Give an overall score (1-10) with brief explanation of where this PMM is on the AI adoption curve.
+
+## 2. Activity Analysis Table
+Create a table with columns: Activity | AI Potential (High/Medium/Low) | Recommended Action | Tool Suggestion
+Analyze each of their selected activities.
+
+## 3. Priority Matrix
+Rank their activities by: (Automation Potential × Time Savings × Ease of Implementation)
+Identify the top 5 opportunities.
+
+## 4. Quick Wins (This Week)
+3 specific activities they can start automating immediately with exact steps:
+- What to automate
+- Which tool to use
+- How to get started (be specific)
+
+## 5. 30-Day Pilot Plan
+A concrete plan for their first AI workflow transformation:
+- Week 1: [specific actions]
+- Week 2: [specific actions]
+- Week 3-4: [specific actions]
+
+## 6. Tool Stack Recommendation
+Based on their activities, recommend a starter AI tool stack:
+- For [activity]: Use [tool] because...
+- Keep it to 3-4 tools maximum
+
+## 7. What to Protect
+Which of their activities should stay human and why. Be specific about the value of human judgment here.`;
 
         default:
             return inputs.prompt || 'Please provide analysis.';
