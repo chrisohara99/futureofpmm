@@ -361,10 +361,12 @@ async function loadProfile() {
         if (directUser) {
             const parsed = JSON.parse(directUser);
             userEmail = parsed.email;
+            userId = parsed.id;  // Use stored ID directly
             firstName = parsed.firstName || '';
             lastName = parsed.lastName || '';
+            console.log('Direct user from localStorage:', { email: userEmail, id: userId });
         }
-    } catch (e) {}
+    } catch (e) { console.error('Error parsing direct user:', e); }
     
     // Check Supabase session
     if (supabaseClient) {

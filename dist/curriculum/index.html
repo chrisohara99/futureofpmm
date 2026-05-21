@@ -495,8 +495,10 @@ async function initDashboard() {
             if (directUser) {
                 const parsed = JSON.parse(directUser);
                 userEmail = parsed.email;
+                userId = parsed.id;  // Use stored ID directly
+                console.log('Direct user from localStorage:', { email: userEmail, id: userId });
             }
-        } catch (e) {}
+        } catch (e) { console.error('Error parsing direct user:', e); }
         
         // Check Supabase session
         const { data: { session } } = await client.auth.getSession();
