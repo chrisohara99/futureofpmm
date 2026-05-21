@@ -859,17 +859,42 @@ async function saveQuizScore(score, total, percentage) {
         const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let userId = null;
+        let userEmail = null;
         const { data: { session } } = await client.auth.getSession();
-        if (!session) {
-            console.error('No session found - cannot save progress');
+        if (session) {
+            userId = session.user.id;
+            userEmail = session.user.email;
+        } else {
+            // Check for direct access user (SAP email bypass)
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const email = JSON.parse(directUser).email;
+                    userEmail = email;
+                    const { data: profile } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', email.toLowerCase())
+                        .single();
+                    if (profile) userId = profile.id;
+                }
+            } catch (e) {
+                console.error('Direct user lookup failed:', e);
+            }
+        }
+        
+        if (!userId) {
+            console.error('No user ID found - cannot save progress');
             showSaveError('Not logged in. Please refresh and try again.');
             return;
         }
         
-        console.log('Saving quiz score for user:', session.user.email, 'Score:', percentage);
+        console.log('Saving quiz score for user:', userEmail, 'Score:', percentage);
         
         const { error: quizError } = await client.from('quiz_scores').insert({
-            user_id: session.user.id,
+            user_id: userId,
             chapter: 'unit-02',
             score, total, percentage
         });
@@ -883,7 +908,7 @@ async function saveQuizScore(score, total, percentage) {
         if (percentage >= 80) {
             console.log('Passed! Updating chapter progress...');
             const { error: progressError } = await client.from('chapter_progress').upsert({
-                user_id: session.user.id,
+                user_id: userId,
                 chapter: 'unit-02',
                 completed: true,
                 completed_at: new Date().toISOString()

@@ -480,12 +480,32 @@ async function saveQuizScore(score, total, percentage) {
         const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let userId = null;
         const { data: { session } } = await client.auth.getSession();
-        if (!session) return;
+        if (session) {
+            userId = session.user.id;
+        } else {
+            // Check for direct access user (SAP email bypass)
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const email = JSON.parse(directUser).email;
+                    const { data: profile } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', email.toLowerCase())
+                        .single();
+                    if (profile) userId = profile.id;
+                }
+            } catch (e) { console.error('Direct user lookup failed:', e); }
+        }
+        if (!userId) return;
+        
         console.log('Saving quiz score for unit-04...');
-        const { error: quizError } = await client.from('quiz_scores').insert({ user_id: session.user.id, chapter: 'unit-04', score, total, percentage });
+        const { error: quizError } = await client.from('quiz_scores').insert({ user_id: userId, chapter: 'unit-04', score, total, percentage });
         if (percentage >= 80) {
-            const { error: progressError } = await client.from('chapter_progress').upsert({ user_id: session.user.id, chapter: 'unit-04', completed: true, completed_at: new Date().toISOString() }, { onConflict: 'user_id,chapter' });
+            const { error: progressError } = await client.from('chapter_progress').upsert({ user_id: userId, chapter: 'unit-04', completed: true, completed_at: new Date().toISOString() }, { onConflict: 'user_id,chapter' });
         }
     } catch (err) { console.error('Save error:', err); }
 }

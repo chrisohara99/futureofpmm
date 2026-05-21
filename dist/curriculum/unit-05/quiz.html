@@ -1004,11 +1004,32 @@ async function submitAssessment() {
     
     // Save to Supabase
     try {
+        let userId = null;
         const { data: { session } } = await client.auth.getSession();
         if (session) {
+            userId = session.user.id;
+        } else {
+            // Check for direct access user (SAP email bypass)
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const email = JSON.parse(directUser).email;
+                    const { data: profile } = await client
+                        .from('profiles')
+                        .select('id')
+                        .eq('email', email.toLowerCase())
+                        .single();
+                    if (profile) userId = profile.id;
+                }
+            } catch (e) {
+                console.error('Direct user lookup failed:', e);
+            }
+        }
+        
+        if (userId) {
             console.log('Saving quiz score for unit-05...');
-        const { error: quizError } = await client.from('quiz_scores').insert({
-                user_id: session.user.id,
+            const { error: quizError } = await client.from('quiz_scores').insert({
+                user_id: userId,
                 chapter: 'unit-05',
                 score: total,
                 total: 100,
@@ -1018,7 +1039,7 @@ async function submitAssessment() {
             
             if (passed) {
                 const { error: progressError } = await client.from('chapter_progress').upsert({
-                    user_id: session.user.id,
+                    user_id: userId,
                     chapter: 'unit-05',
                     completed: true,
                     completed_at: new Date().toISOString()
