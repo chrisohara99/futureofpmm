@@ -188,7 +188,12 @@
                 'chrisohara1968@gmail.com',
                 'christopher.ohara@sap.com',
                 'tara.rogers@sap.com',
-                'stephanie.craig@sap.com'
+                'stephanie.craig@sap.com',
+                'sean.thomson@sap.com',
+                'fiona.ashley@sap.com',
+                'peter.baskin@sap.com',
+                'oyku.ilgar@sap.com',
+                'jelisaveta.nikolic@sap.com'
             ];
             const { data: { session } } = await this.supabase.auth.getSession();
             if (session && SUPERUSERS.includes(session.user.email?.toLowerCase())) {
