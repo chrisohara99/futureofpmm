@@ -214,7 +214,10 @@
                 'fiona.ashley@sap.com',
                 'peter.baskin@sap.com',
                 'oyku.ilgar@sap.com',
-                'jelisaveta.nikolic@sap.com'
+                'jelisaveta.nikolic@sap.com',
+                'a.naji@sap.com',
+                'justin.ham@sap.com',
+                'olivier.duvelleroy@sap.com'
             ];
             const { data: { session } } = await this.supabase.auth.getSession();
             if (session && SUPERUSERS.includes(session.user.email?.toLowerCase())) {
