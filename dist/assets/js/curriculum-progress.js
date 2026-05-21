@@ -187,7 +187,8 @@
             const SUPERUSERS = [
                 'chrisohara1968@gmail.com',
                 'christopher.ohara@sap.com',
-                'tara.rogers@sap.com'
+                'tara.rogers@sap.com',
+                'stephanie.craig@sap.com'
             ];
             const { data: { session } } = await this.supabase.auth.getSession();
             if (session && SUPERUSERS.includes(session.user.email?.toLowerCase())) {
