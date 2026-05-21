@@ -930,7 +930,7 @@ async function submitAssessment() {
     try {
         const { data: { session } } = await client.auth.getSession();
         if (session) {
-            await client.from('quiz_scores').insert({
+            const { error: quizError } = await client.from('quiz_scores').insert({
                 user_id: session.user.id,
                 chapter: 'unit-06',
                 score: total,
@@ -940,7 +940,7 @@ async function submitAssessment() {
             });
             
             if (passed) {
-                await client.from('chapter_progress').upsert({
+                const { error: progressError } = await client.from('chapter_progress').upsert({
                     user_id: session.user.id,
                     chapter: 'unit-06',
                     completed: true,

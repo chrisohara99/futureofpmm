@@ -1056,14 +1056,14 @@ async function saveQuizScore(score, total, percentage) {
         }
         if (!userId) return;
         
-        await client.from('quiz_scores').insert({
+        const { error: quizError } = await client.from('quiz_scores').insert({
             user_id: userId,
             chapter: 'unit-01',
             score, total, percentage
         });
         
         if (percentage >= 80) {
-            await client.from('chapter_progress').upsert({
+            const { error: progressError } = await client.from('chapter_progress').upsert({
                 user_id: userId,
                 chapter: 'unit-01',
                 completed: true,
