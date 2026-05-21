@@ -31,13 +31,34 @@
             
             this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
+            let userId = null;
             const { data: { session } } = await this.supabase.auth.getSession();
-            if (!session) {
-                console.log('No session - progress not available');
+            if (session) {
+                userId = session.user.id;
+            } else {
+                // Check for direct access user (SAP email bypass)
+                try {
+                    const directUser = localStorage.getItem('pmm_direct_user');
+                    if (directUser) {
+                        const email = JSON.parse(directUser).email;
+                        const { data: profile } = await this.supabase
+                            .from('profiles')
+                            .select('id')
+                            .eq('email', email.toLowerCase())
+                            .single();
+                        if (profile) userId = profile.id;
+                    }
+                } catch (e) {
+                    console.error('Direct user lookup failed:', e);
+                }
+            }
+            
+            if (!userId) {
+                console.log('No user ID - progress not available');
                 return false;
             }
             
-            await this.loadProgress(session.user.id);
+            await this.loadProgress(userId);
             return true;
         },
         
