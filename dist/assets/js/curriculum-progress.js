@@ -183,10 +183,15 @@
                 return true;
             }
             
-            // Check for admin user (Chris)
+            // Check for admin/superuser
+            const SUPERUSERS = [
+                'chrisohara1968@gmail.com',
+                'christopher.ohara@sap.com',
+                'tara.rogers@sap.com'
+            ];
             const { data: { session } } = await this.supabase.auth.getSession();
-            if (session && session.user.email === 'chrisohara1968@gmail.com') {
-                console.log('Admin user - gating bypassed');
+            if (session && SUPERUSERS.includes(session.user.email?.toLowerCase())) {
+                console.log('Superuser - gating bypassed');
                 return true;
             }
             
