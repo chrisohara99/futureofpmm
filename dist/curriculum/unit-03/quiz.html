@@ -726,13 +726,24 @@ async function submitAssessment() {
     });
     
     // Exercise 4: Scenarios (28 pts, 7 per correct)
-    document.querySelectorAll('.scenario-options').forEach(container => {
+    let scenarioResults = [];
+    document.querySelectorAll('.scenario-card').forEach((card, index) => {
+        const container = card.querySelector('.scenario-options');
+        let gotCorrect = false;
+        let selectedAnswer = null;
+        let correctAnswer = null;
+        
         container.querySelectorAll('.scenario-option').forEach(opt => {
             opt.classList.add('disabled');
+            if (opt.dataset.correct === 'true') {
+                correctAnswer = opt.textContent;
+            }
             if (opt.classList.contains('selected')) {
+                selectedAnswer = opt.textContent;
                 if (opt.dataset.correct === 'true') {
                     scores.ex4 += 7;
                     opt.classList.add('correct');
+                    gotCorrect = true;
                 } else {
                     opt.classList.add('incorrect');
                 }
@@ -740,7 +751,31 @@ async function submitAssessment() {
                 opt.classList.add('correct');
             }
         });
+        
+        // Add per-scenario feedback
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'scenario-feedback ' + (gotCorrect ? 'correct' : 'incorrect');
+        feedbackDiv.style.cssText = 'margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9rem;';
+        if (gotCorrect) {
+            feedbackDiv.style.background = '#E8F5E9';
+            feedbackDiv.style.borderLeft = '4px solid #70AD47';
+            feedbackDiv.innerHTML = '<strong>✓ Correct!</strong> +7 points';
+        } else if (selectedAnswer) {
+            feedbackDiv.style.background = '#FFEBEE';
+            feedbackDiv.style.borderLeft = '4px solid #C00000';
+            feedbackDiv.innerHTML = '<strong>✗ Incorrect</strong> — The right answer is highlighted in green above.';
+        } else {
+            feedbackDiv.style.background = '#FFF3E0';
+            feedbackDiv.style.borderLeft = '4px solid #F57C00';
+            feedbackDiv.innerHTML = '<strong>⚠ No answer selected</strong> — 0 points';
+        }
+        card.appendChild(feedbackDiv);
+        scenarioResults.push(gotCorrect);
     });
+    
+    // Update Exercise 4 score display with breakdown
+    const ex4Correct = scenarioResults.filter(r => r).length;
+    document.getElementById('ex4Score').textContent = `${scores.ex4}/28 (${ex4Correct}/4 correct)`;
     
     const total = scores.ex1 + scores.ex2 + scores.ex3 + scores.ex4;
     const percentage = Math.round(total);
@@ -749,7 +784,7 @@ async function submitAssessment() {
     document.getElementById('ex1Score').textContent = `${scores.ex1}/24`;
     document.getElementById('ex2Score').textContent = `${scores.ex2}/24`;
     document.getElementById('ex3Score').textContent = `${scores.ex3}/24`;
-    document.getElementById('ex4Score').textContent = `${scores.ex4}/28`;
+    // ex4Score already set above with breakdown
     
     const scoreEl = document.getElementById('resultsScore');
     scoreEl.textContent = `${percentage}%`;
