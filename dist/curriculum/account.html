@@ -361,12 +361,11 @@ async function loadProfile() {
         if (directUser) {
             const parsed = JSON.parse(directUser);
             userEmail = parsed.email;
-            userId = parsed.id;  // Use stored ID directly
+            userId = parsed.id;
             firstName = parsed.firstName || '';
             lastName = parsed.lastName || '';
-            console.log('Direct user from localStorage:', { email: userEmail, id: userId });
         }
-    } catch (e) { console.error('Error parsing direct user:', e); }
+    } catch (e) {}
     
     // Check Supabase session
     if (supabaseClient) {
@@ -381,7 +380,7 @@ async function loadProfile() {
         }
     }
     
-    // If we have email but no userId, look up by email
+    // If we have email but no userId, look up by email and self-heal localStorage
     if (userEmail && !userId && supabaseClient) {
         try {
             const { data: profile } = await supabaseClient
@@ -393,6 +392,12 @@ async function loadProfile() {
                 userId = profile.id;
                 firstName = firstName || profile.first_name || '';
                 lastName = lastName || profile.last_name || '';
+                // Self-heal: update localStorage with the ID
+                try {
+                    const stored = JSON.parse(localStorage.getItem('pmm_direct_user') || '{}');
+                    stored.id = userId;
+                    localStorage.setItem('pmm_direct_user', JSON.stringify(stored));
+                } catch (e) {}
             }
         } catch (e) {}
     }

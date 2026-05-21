@@ -495,10 +495,9 @@ async function initDashboard() {
             if (directUser) {
                 const parsed = JSON.parse(directUser);
                 userEmail = parsed.email;
-                userId = parsed.id;  // Use stored ID directly
-                console.log('Direct user from localStorage:', { email: userEmail, id: userId });
+                userId = parsed.id;
             }
-        } catch (e) { console.error('Error parsing direct user:', e); }
+        } catch (e) {}
         
         // Check Supabase session
         const { data: { session } } = await client.auth.getSession();
@@ -507,23 +506,26 @@ async function initDashboard() {
             userId = session.user.id;
             userEmail = session.user.email;
         } else if (!userEmail) {
-            // No session and no direct user - redirect to intro
             window.location.href = '/curriculum/intro.html';
             return;
         }
         
-        // If we have email but no userId, look up by email
+        // If we have email but no userId, look up by email and self-heal localStorage
         if (userEmail && !userId) {
-            const { data: profile, error } = await client
+            const { data: profile } = await client
                 .from('profiles')
                 .select('id')
                 .eq('email', userEmail.toLowerCase())
                 .single();
             
-            console.log('Profile lookup for', userEmail, ':', profile, error);
-            
             if (profile) {
                 userId = profile.id;
+                // Self-heal: update localStorage with the ID for future visits
+                try {
+                    const stored = JSON.parse(localStorage.getItem('pmm_direct_user') || '{}');
+                    stored.id = userId;
+                    localStorage.setItem('pmm_direct_user', JSON.stringify(stored));
+                } catch (e) {}
             }
         }
         
