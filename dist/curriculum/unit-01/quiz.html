@@ -1056,11 +1056,18 @@ async function saveQuizScore(score, total, percentage) {
         }
         if (!userId) return;
         
+        console.log('Saving quiz score for unit-01...');
         const { error: quizError } = await client.from('quiz_scores').insert({
             user_id: userId,
             chapter: 'unit-01',
             score, total, percentage
         });
+        
+        if (quizError) {
+            console.error('Quiz score save error:', quizError);
+        } else {
+            console.log('Quiz score saved successfully');
+        }
         
         if (percentage >= 80) {
             const { error: progressError } = await client.from('chapter_progress').upsert({
@@ -1069,10 +1076,28 @@ async function saveQuizScore(score, total, percentage) {
                 completed: true,
                 completed_at: new Date().toISOString()
             }, { onConflict: 'user_id,chapter' });
+            
+            if (progressError) {
+                console.error('Chapter progress save error:', progressError);
+                showSaveError('Score recorded but progress update failed. Contact Chris.');
+            } else {
+                console.log('Chapter progress updated successfully for unit-01');
+            }
         }
     } catch (err) {
         console.error('Save error:', err);
+        showSaveError('Error saving progress: ' + err.message);
     }
+}
+
+function showSaveError(msg) {
+    const existing = document.getElementById('save-error-msg');
+    if (existing) existing.remove();
+    const div = document.createElement('div');
+    div.id = 'save-error-msg';
+    div.style.cssText = 'background:#fee2e2;border:1px solid #ef4444;color:#991b1b;padding:1rem;border-radius:8px;margin:1rem 0;text-align:center;';
+    div.innerHTML = '<strong>⚠️ ' + msg + '</strong>';
+    document.querySelector('.results-section')?.appendChild(div);
 }
 </script>
 

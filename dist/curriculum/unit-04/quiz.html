@@ -482,6 +482,7 @@ async function saveQuizScore(score, total, percentage) {
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const { data: { session } } = await client.auth.getSession();
         if (!session) return;
+        console.log('Saving quiz score for unit-04...');
         const { error: quizError } = await client.from('quiz_scores').insert({ user_id: session.user.id, chapter: 'unit-04', score, total, percentage });
         if (percentage >= 80) {
             const { error: progressError } = await client.from('chapter_progress').upsert({ user_id: session.user.id, chapter: 'unit-04', completed: true, completed_at: new Date().toISOString() }, { onConflict: 'user_id,chapter' });
