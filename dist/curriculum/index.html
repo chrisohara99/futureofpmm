@@ -484,104 +484,68 @@ function waitForSupabase(callback, maxAttempts = 50) {
 
 async function initDashboard() {
     try {
-        client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // Check for direct access user first
+        // Check for direct access user
         let userEmail = null;
-        let userId = null;
         
         try {
             const directUser = localStorage.getItem('pmm_direct_user');
             if (directUser) {
                 const parsed = JSON.parse(directUser);
                 userEmail = parsed.email;
-                userId = parsed.id;
             }
         } catch (e) {}
         
-        // Check Supabase session
-        const { data: { session } } = await client.auth.getSession();
-        
-        if (session) {
-            userId = session.user.id;
-            userEmail = session.user.email;
-        } else if (!userEmail) {
+        if (!userEmail) {
             window.location.href = '/curriculum/intro.html';
             return;
         }
         
-        // If we have email but no userId, look up by email and self-heal localStorage
-        if (userEmail && !userId) {
-            const { data: profile } = await client
-                .from('profiles')
-                .select('id')
-                .eq('email', userEmail.toLowerCase())
-                .single();
-            
-            if (profile) {
-                userId = profile.id;
-                // Self-heal: update localStorage with the ID for future visits
-                try {
-                    const stored = JSON.parse(localStorage.getItem('pmm_direct_user') || '{}');
-                    stored.id = userId;
-                    localStorage.setItem('pmm_direct_user', JSON.stringify(stored));
-                } catch (e) {}
-            }
-        }
+        console.log('Loading progress for:', userEmail);
         
-        console.log('Final userId:', userId);
-        
-        // Load progress if we have a userId
-        if (userId) {
-            try {
-                await loadProgress(userId);
-            } catch (err) {
-                console.error('Error loading progress:', err);
-            }
-        }
+        // Load progress via serverless function
+        await loadProgress(userEmail);
         
         renderDashboard();
     } catch (err) {
         console.error('Dashboard init error:', err);
-        // Show dashboard anyway with defaults
         renderDashboard();
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    waitForSupabase(initDashboard);
-});
+document.addEventListener('DOMContentLoaded', initDashboard);
 
-async function loadProgress(userId) {
-    console.log('loadProgress called with userId:', userId);
+async function loadProgress(email) {
+    console.log('loadProgress called for email:', email);
     try {
-        // Load assessment results
-        const { data: assessments, error: assessError } = await client
-            .from('assessment_results')
-            .select('assessment_type, result_key, completed_at')
-            .eq('user_id', userId);
+        // Use serverless function to bypass corporate proxy issues
+        const res = await fetch('/.netlify/functions/get-user-scores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
         
-        console.log('Assessments loaded:', assessments, 'Error:', assessError);
+        const data = await res.json();
+        console.log('Progress data:', data);
         
-        if (assessments) {
-            assessments.forEach(a => {
+        if (data.error) {
+            console.error('Server error:', data.error);
+            return;
+        }
+        
+        // Process assessments
+        if (data.assessments) {
+            data.assessments.forEach(a => {
                 userProgress.assessments[a.assessment_type] = {
                     completed: true,
-                    resultKey: a.result_key,
+                    resultKey: a.result_name,
                     completedAt: a.completed_at
                 };
             });
         }
         
-        // Load quiz scores (best per unit)
-        const { data: quizzes } = await client
-            .from('quiz_scores')
-            .select('chapter, percentage, completed_at')
-            .eq('user_id', userId)
-            .order('percentage', { ascending: false });
-        
-        if (quizzes) {
-            quizzes.forEach(q => {
+        // Process quiz scores (best per unit)
+        if (data.scores) {
+            data.scores.forEach(q => {
                 if (!userProgress.quizzes[q.chapter]) {
                     userProgress.quizzes[q.chapter] = {
                         bestScore: q.percentage,
