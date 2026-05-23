@@ -271,13 +271,30 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         try {
             // Check if profile exists in database
-            const { data: profile, error } = await supabaseClient
+            if (!supabaseClient) {
+                throw new Error('Supabase client not initialized');
+            }
+            
+            // Query without .single() to avoid errors on empty result
+            const { data: profiles, error } = await supabaseClient
                 .from('profiles')
                 .select('id, first_name, last_name')
-                .eq('email', email)
-                .single();
+                .eq('email', email);
             
-            if (error || !profile) {
+            console.log('Login lookup for:', email, 'Result:', profiles, 'Error:', error);
+            
+            const profile = profiles && profiles.length > 0 ? profiles[0] : null;
+            
+            if (error) {
+                console.error('Supabase error:', error);
+                message.textContent = 'Database error. Please try again.';
+                message.className = 'message error show';
+                btn.disabled = false;
+                btn.textContent = 'Continue →';
+                return;
+            }
+            
+            if (!profile) {
                 // No profile - redirect to signup
                 message.textContent = 'No account found. Redirecting to signup...';
                 message.className = 'message error show';
