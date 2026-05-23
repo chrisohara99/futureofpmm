@@ -952,47 +952,32 @@ async function submitAssessment() {
     document.getElementById('resultsPanel').classList.add('show');
     document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
     
+    // Save via serverless function (bypasses corporate proxy)
     try {
-        let userId = null;
-        const { data: { session } } = await client.auth.getSession();
-        if (session) {
-            userId = session.user.id;
-        } else {
-            // Check for direct access user (SAP email bypass)
-            try {
-                const directUser = localStorage.getItem('pmm_direct_user');
-                if (directUser) {
-                    const email = JSON.parse(directUser).email;
-                    const { data: profile } = await client
-                        .from('profiles')
-                        .select('id')
-                        .eq('email', email.toLowerCase())
-                        .single();
-                    if (profile) userId = profile.id;
-                }
-            } catch (e) {
-                console.error('Direct user lookup failed:', e);
+        let email = null;
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                email = JSON.parse(directUser).email;
             }
-        }
+        } catch (e) {}
         
-        if (userId) {
+        if (email) {
             console.log('Saving quiz score for unit-06...');
-            const { error: quizError } = await client.from('quiz_scores').insert({
-                user_id: userId,
-                chapter: 'unit-06',
-                score: total,
-                total: 100,
-                percentage: percentage,
-                completed_at: new Date().toISOString()
+            const res = await fetch('/.netlify/functions/save-result', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'quiz_score',
+                    email: email,
+                    data: { chapter: 'unit-06', score: total, total: 100, percentage }
+                })
             });
-            
-            if (passed) {
-                const { error: progressError } = await client.from('chapter_progress').upsert({
-                    user_id: userId,
-                    chapter: 'unit-06',
-                    completed: true,
-                    completed_at: new Date().toISOString()
-                }, { onConflict: 'user_id,chapter' });
+            const result = await res.json();
+            if (result.error) {
+                console.error('Quiz save error:', result.error);
+            } else {
+                console.log('Quiz score saved successfully');
             }
         }
     } catch (err) {
