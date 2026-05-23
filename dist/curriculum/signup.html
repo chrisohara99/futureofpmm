@@ -83,13 +83,12 @@ document.getElementById('form').addEventListener('submit', async (e) => {
     const lastName = document.getElementById('lastName').value.trim();
     const role = document.getElementById('role').value;
     
-    // Validate SAP email
-    if (!email.endsWith('@sap.com') && email !== 'christopher.ohara@sap.com' && email !== 'chrisohara1968@gmail.com') {
-        if (!email.endsWith('@sap.com')) {
-            error.textContent = 'Please use your @sap.com email address.';
-            error.classList.add('show');
-            return;
-        }
+    // Validate SAP email (with test exceptions)
+    const allowedEmails = ['chrisohara1968@gmail.com', 'christopher.ohara@sap.com'];
+    if (!email.endsWith('@sap.com') && !allowedEmails.includes(email)) {
+        error.textContent = 'Please use your @sap.com email address.';
+        error.classList.add('show');
+        return;
     }
     
     btn.disabled = true;
