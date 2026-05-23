@@ -270,31 +270,26 @@ document.addEventListener('DOMContentLoaded', async function() {
         btn.textContent = 'Checking...';
         
         try {
-            // Check if profile exists in database
-            if (!supabaseClient) {
-                throw new Error('Supabase client not initialized');
-            }
+            // Check if profile exists via serverless function (bypasses client-side Supabase issues)
+            const checkRes = await fetch('/.netlify/functions/check-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
             
-            // Query without .single() to avoid errors on empty result
-            const { data: profiles, error } = await supabaseClient
-                .from('profiles')
-                .select('id, first_name, last_name')
-                .eq('email', email);
+            const result = await checkRes.json();
+            console.log('Login lookup for:', email, 'Result:', result);
             
-            console.log('Login lookup for:', email, 'Result:', profiles, 'Error:', error);
-            
-            const profile = profiles && profiles.length > 0 ? profiles[0] : null;
-            
-            if (error) {
-                console.error('Supabase error:', error);
-                message.textContent = 'Database error. Please try again.';
+            if (result.error) {
+                console.error('Server error:', result.error);
+                message.textContent = 'Server error. Please try again.';
                 message.className = 'message error show';
                 btn.disabled = false;
                 btn.textContent = 'Continue →';
                 return;
             }
             
-            if (!profile) {
+            if (!result.exists) {
                 // No profile - redirect to signup
                 message.textContent = 'No account found. Redirecting to signup...';
                 message.className = 'message error show';
@@ -307,9 +302,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Profile exists - store and continue
             const userData = {
                 email: email,
-                firstName: profile.first_name,
-                lastName: profile.last_name,
-                id: profile.id,
+                firstName: result.firstName,
+                lastName: result.lastName,
+                id: result.id,
                 createdAt: new Date().toISOString()
             };
             localStorage.setItem('pmm_direct_user', JSON.stringify(userData));
