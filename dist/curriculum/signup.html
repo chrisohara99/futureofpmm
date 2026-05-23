@@ -97,48 +97,28 @@ document.getElementById('form').addEventListener('submit', async (e) => {
     error.classList.remove('show');
     
     try {
-        // Create Supabase client
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Create profile via serverless function (bypasses corporate proxy)
+        const res = await fetch('/.netlify/functions/create-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, firstName, lastName, role })
+        });
         
-        // Generate UUID
-        const id = crypto.randomUUID ? crypto.randomUUID() : 
-            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                const r = Math.random() * 16 | 0;
-                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-            });
+        const result = await res.json();
         
-        // Insert profile directly
-        const { data, error: insertError } = await client
-            .from('profiles')
-            .insert({
-                id: id,
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                role: role,
-                company: 'SAP'
-            })
-            .select()
-            .single();
-        
-        if (insertError) {
-            // If duplicate email, try to get existing profile
-            if (insertError.code === '23505') {
-                console.log('Profile exists, continuing...');
-            } else {
-                throw insertError;
-            }
-        } else {
-            console.log('Profile created:', data);
+        if (result.error) {
+            throw new Error(result.error);
         }
+        
+        console.log('Profile result:', result);
         
         // Store in localStorage
         localStorage.setItem('pmm_direct_user', JSON.stringify({
             email: email,
-            firstName: firstName,
-            lastName: lastName,
+            firstName: result.firstName || firstName,
+            lastName: result.lastName || lastName,
             role: role,
-            id: id
+            id: result.id
         }));
         
         // Redirect to intro
