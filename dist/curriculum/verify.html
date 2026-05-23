@@ -43,8 +43,6 @@
             margin: 0 auto 1rem;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .error { color: #C62828; background: #FFEBEE; padding: 1rem; border-radius: 8px; display: none; }
-        .success { color: #2E7D32; background: #E8F5E9; padding: 1rem; border-radius: 8px; display: none; }
         .btn {
             display: inline-block;
             padding: 0.75rem 1.5rem;
@@ -72,47 +70,54 @@
         <div id="error" style="display: none;">
             <div class="icon">❌</div>
             <h1>Verification Failed</h1>
-            <p id="errorMsg">Something went wrong. Please try signing up again.</p>
+            <p id="errorMsg">The link may have expired. Please try signing up again.</p>
             <a href="/curriculum/signup.html" class="btn">Back to Signup</a>
         </div>
     </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-
-async function verifyAndCreateProfile() {
+async function verifyToken() {
     try {
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
         
-        // Supabase will automatically handle the token from URL
-        const { data: { session }, error: sessionError } = await client.auth.getSession();
-        
-        if (sessionError || !session) {
-            // Try to exchange the token from URL hash
-            const hashParams = new URLSearchParams(window.location.hash.substring(1));
-            const accessToken = hashParams.get('access_token');
-            const refreshToken = hashParams.get('refresh_token');
-            
-            if (accessToken) {
-                const { data, error } = await client.auth.setSession({
-                    access_token: accessToken,
-                    refresh_token: refreshToken
-                });
-                
-                if (error) throw error;
-                
-                if (data.session) {
-                    await completeSetup(client, data.session);
-                    return;
-                }
-            }
-            
-            throw new Error('No valid session found');
+        if (!token) {
+            throw new Error('No verification token found');
         }
         
-        await completeSetup(client, session);
+        // Verify token via serverless function
+        const res = await fetch('/.netlify/functions/send-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'verify', token })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            throw new Error(result.error);
+        }
+        
+        if (!result.success) {
+            throw new Error('Verification failed');
+        }
+        
+        // Store in localStorage for direct access going forward
+        localStorage.setItem('pmm_direct_user', JSON.stringify({
+            email: result.email,
+            firstName: result.firstName || '',
+            lastName: result.lastName || '',
+            id: result.id
+        }));
+        
+        // Show success and redirect
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+        
+        setTimeout(() => {
+            window.location.href = '/curriculum/intro.html';
+        }, 2000);
         
     } catch (err) {
         console.error('Verification error:', err);
@@ -122,48 +127,8 @@ async function verifyAndCreateProfile() {
     }
 }
 
-async function completeSetup(client, session) {
-    const user = session.user;
-    const metadata = user.user_metadata || {};
-    
-    // Create profile via serverless function
-    const res = await fetch('/.netlify/functions/create-profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            email: user.email,
-            firstName: metadata.first_name || '',
-            lastName: metadata.last_name || '',
-            role: metadata.role || ''
-        })
-    });
-    
-    const result = await res.json();
-    
-    if (result.error) {
-        throw new Error(result.error);
-    }
-    
-    // Store in localStorage for direct access going forward
-    localStorage.setItem('pmm_direct_user', JSON.stringify({
-        email: user.email,
-        firstName: result.firstName || metadata.first_name || '',
-        lastName: result.lastName || metadata.last_name || '',
-        role: metadata.role || '',
-        id: result.id
-    }));
-    
-    // Show success and redirect
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('success').style.display = 'block';
-    
-    setTimeout(() => {
-        window.location.href = '/curriculum/intro.html';
-    }, 2000);
-}
-
 // Run on page load
-verifyAndCreateProfile();
+verifyToken();
 </script>
 </body>
 </html>

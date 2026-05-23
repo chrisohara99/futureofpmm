@@ -118,18 +118,18 @@ document.getElementById('form').addEventListener('submit', async (e) => {
             return;
         }
         
-        // New user - send magic link for verification
+        // New user - send verification email (custom, not Supabase)
         btn.textContent = 'Sending verification email...';
         
-        const res = await fetch('/.netlify/functions/send-magic-link', {
+        const res = await fetch('/.netlify/functions/send-verification', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
+                action: 'send',
                 email, 
                 firstName, 
                 lastName, 
-                role,
-                redirectTo: 'https://futureofpmm.com/curriculum/verify.html'
+                role
             })
         });
         
