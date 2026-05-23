@@ -856,13 +856,51 @@ function showFeedback(id, correct, goodMsg, badMsg) {
 
 async function saveQuizScore(score, total, percentage) {
     try {
-        const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Get user email from localStorage
+        let email = null;
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                email = JSON.parse(directUser).email;
+            }
+        } catch (e) {}
         
-        let userId = null;
-        let userEmail = null;
-        const { data: { session } } = await client.auth.getSession();
+        if (!email) {
+            console.log('No user email - cannot save score');
+            return;
+        }
+        
+        console.log('Saving quiz score for unit-02...');
+        
+        // Use serverless function to bypass corporate proxy
+        const res = await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'quiz_score',
+                email: email,
+                data: {
+                    chapter: 'unit-02',
+                    score,
+                    total,
+                    percentage
+                }
+            })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            console.error('Quiz score save error:', result.error);
+            showSaveError('Error saving progress: ' + result.error);
+        } else {
+            console.log('Quiz score saved successfully');
+        }
+    } catch (err) {
+        console.error('Save error:', err);
+        showSaveError('Error saving progress: ' + err.message);
+    }
+} } = await client.auth.getSession();
         if (session) {
             userId = session.user.id;
             userEmail = session.user.email;
