@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying... | SAP Future of PMM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #4472C4;
+            --bg: #FAFAFA;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        .icon { font-size: 3rem; margin-bottom: 1rem; }
+        h1 { color: var(--dark-slate); font-size: 1.5rem; margin-bottom: 0.5rem; }
+        p { color: #666; margin-bottom: 1.5rem; }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e5e7eb;
+            border-top-color: var(--sap-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error { color: #C62828; background: #FFEBEE; padding: 1rem; border-radius: 8px; display: none; }
+        .success { color: #2E7D32; background: #E8F5E9; padding: 1rem; border-radius: 8px; display: none; }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--sap-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div id="loading">
+            <div class="spinner"></div>
+            <h1>Verifying your email...</h1>
+            <p>Please wait a moment.</p>
+        </div>
+        <div id="success" style="display: none;">
+            <div class="icon">✅</div>
+            <h1>Email Verified!</h1>
+            <p>Your account has been created. Redirecting to the curriculum...</p>
+        </div>
+        <div id="error" style="display: none;">
+            <div class="icon">❌</div>
+            <h1>Verification Failed</h1>
+            <p id="errorMsg">Something went wrong. Please try signing up again.</p>
+            <a href="/curriculum/signup.html" class="btn">Back to Signup</a>
+        </div>
+    </div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+
+async function verifyAndCreateProfile() {
+    try {
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Supabase will automatically handle the token from URL
+        const { data: { session }, error: sessionError } = await client.auth.getSession();
+        
+        if (sessionError || !session) {
+            // Try to exchange the token from URL hash
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = hashParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token');
+            
+            if (accessToken) {
+                const { data, error } = await client.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                });
+                
+                if (error) throw error;
+                
+                if (data.session) {
+                    await completeSetup(client, data.session);
+                    return;
+                }
+            }
+            
+            throw new Error('No valid session found');
+        }
+        
+        await completeSetup(client, session);
+        
+    } catch (err) {
+        console.error('Verification error:', err);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('errorMsg').textContent = err.message || 'Verification failed. Please try again.';
+    }
+}
+
+async function completeSetup(client, session) {
+    const user = session.user;
+    const metadata = user.user_metadata || {};
+    
+    // Create profile via serverless function
+    const res = await fetch('/.netlify/functions/create-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: user.email,
+            firstName: metadata.first_name || '',
+            lastName: metadata.last_name || '',
+            role: metadata.role || ''
+        })
+    });
+    
+    const result = await res.json();
+    
+    if (result.error) {
+        throw new Error(result.error);
+    }
+    
+    // Store in localStorage for direct access going forward
+    localStorage.setItem('pmm_direct_user', JSON.stringify({
+        email: user.email,
+        firstName: result.firstName || metadata.first_name || '',
+        lastName: result.lastName || metadata.last_name || '',
+        role: metadata.role || '',
+        id: result.id
+    }));
+    
+    // Show success and redirect
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+    
+    setTimeout(() => {
+        window.location.href = '/curriculum/intro.html';
+    }, 2000);
+}
+
+// Run on page load
+verifyAndCreateProfile();
+</script>
+</body>
+</html>

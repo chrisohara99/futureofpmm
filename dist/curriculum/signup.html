@@ -93,15 +93,45 @@ document.getElementById('form').addEventListener('submit', async (e) => {
     }
     
     btn.disabled = true;
-    btn.textContent = 'Creating account...';
+    btn.textContent = 'Checking...';
     error.classList.remove('show');
     
     try {
-        // Create profile via serverless function (bypasses corporate proxy)
-        const res = await fetch('/.netlify/functions/create-profile', {
+        // First check if user already exists (grandfathered)
+        const checkRes = await fetch('/.netlify/functions/check-profile', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, firstName, lastName, role })
+            body: JSON.stringify({ email })
+        });
+        
+        const checkResult = await checkRes.json();
+        
+        if (checkResult.exists) {
+            // User already exists - they can use direct access via login
+            localStorage.setItem('pmm_direct_user', JSON.stringify({
+                email: email,
+                firstName: checkResult.firstName || firstName,
+                lastName: checkResult.lastName || lastName,
+                role: role,
+                id: checkResult.id
+            }));
+            window.location.href = '/curriculum/intro.html';
+            return;
+        }
+        
+        // New user - send magic link for verification
+        btn.textContent = 'Sending verification email...';
+        
+        const res = await fetch('/.netlify/functions/send-magic-link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email, 
+                firstName, 
+                lastName, 
+                role,
+                redirectTo: 'https://futureofpmm.com/curriculum/verify.html'
+            })
         });
         
         const result = await res.json();
@@ -110,23 +140,24 @@ document.getElementById('form').addEventListener('submit', async (e) => {
             throw new Error(result.error);
         }
         
-        console.log('Profile result:', result);
-        
-        // Store in localStorage
-        localStorage.setItem('pmm_direct_user', JSON.stringify({
-            email: email,
-            firstName: result.firstName || firstName,
-            lastName: result.lastName || lastName,
-            role: role,
-            id: result.id
-        }));
-        
-        // Redirect to intro
-        window.location.href = '/curriculum/intro.html';
+        // Show success message
+        document.querySelector('.card').innerHTML = `
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📧</div>
+                <h1 style="color: #1a1a2e; margin-bottom: 0.5rem;">Check Your Email</h1>
+                <p style="color: #666; margin-bottom: 1.5rem;">
+                    We've sent a verification link to <strong>${email}</strong>
+                </p>
+                <p style="color: #888; font-size: 0.9rem;">
+                    Click the link in the email to complete your enrollment.<br>
+                    Check your spam folder if you don't see it.
+                </p>
+            </div>
+        `;
         
     } catch (err) {
         console.error('Signup error:', err);
-        error.textContent = 'Error: ' + (err.message || 'Failed to create account');
+        error.textContent = 'Error: ' + (err.message || 'Failed to send verification email');
         error.classList.add('show');
         btn.disabled = false;
         btn.textContent = 'Start Learning →';
