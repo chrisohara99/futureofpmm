@@ -1,15 +1,13 @@
 // Curriculum Progress Tracking
 // Manages user progress through assessments and units
+// Uses Netlify functions to bypass corporate proxy issues with direct Supabase calls
 
 (function() {
-    const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-    
     // Unit prerequisites map
     const UNIT_PREREQUISITES = {
-        'unit-01': ['assessments'],           // Must complete assessments first
-        'unit-02': ['unit-01'],               // Must pass Unit 1 quiz
-        'unit-03': ['unit-02'],               // Must pass Unit 2 quiz
+        'unit-01': ['assessments'],
+        'unit-02': ['unit-01'],
+        'unit-03': ['unit-02'],
         'unit-04': ['unit-03'],
         'unit-05': ['unit-04'],
         'unit-06': ['unit-05'],
@@ -20,68 +18,46 @@
     const PASS_THRESHOLD = 80;
     
     window.CurriculumProgress = {
-        supabase: null,
         userProgress: null,
+        userEmail: null,
         
         async init() {
-            if (typeof supabase === 'undefined') {
-                console.warn('Supabase not loaded yet');
-                return false;
-            }
-            
-            this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            let userId = null;
-            const { data: { session } } = await this.supabase.auth.getSession();
-            if (session) {
-                userId = session.user.id;
-            } else {
-                // Check for direct access user (SAP email bypass)
-                try {
-                    const directUser = localStorage.getItem('pmm_direct_user');
-                    if (directUser) {
-                        const email = JSON.parse(directUser).email;
-                        const { data: profile } = await this.supabase
-                            .from('profiles')
-                            .select('id')
-                            .eq('email', email.toLowerCase())
-                            .single();
-                        if (profile) userId = profile.id;
-                    }
-                } catch (e) {
-                    console.error('Direct user lookup failed:', e);
+            // Get user email from localStorage
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const parsed = JSON.parse(directUser);
+                    this.userEmail = parsed.email;
                 }
+            } catch (e) {
+                console.error('Failed to get user email:', e);
             }
             
-            if (!userId) {
-                console.log('No user ID - progress not available');
+            if (!this.userEmail) {
+                console.log('No user email - progress not available');
                 return false;
             }
             
-            await this.loadProgress(userId);
+            await this.loadProgress();
             return true;
         },
         
-        async loadProgress(userId) {
+        async loadProgress() {
             try {
-                // Load assessment results
-                const { data: assessments } = await this.supabase
-                    .from('assessment_results')
-                    .select('assessment_type, result_key, result_data, completed_at')
-                    .eq('user_id', userId);
+                // Use serverless function to fetch all user data
+                const res = await fetch('/.netlify/functions/get-user-scores', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: this.userEmail })
+                });
                 
-                // Load quiz scores (best score per unit)
-                const { data: quizzes } = await this.supabase
-                    .from('quiz_scores')
-                    .select('chapter, score, total, percentage, completed_at')
-                    .eq('user_id', userId)
-                    .order('percentage', { ascending: false });
+                const data = await res.json();
+                console.log('Progress data from server:', data);
                 
-                // Load chapter progress
-                const { data: chapters } = await this.supabase
-                    .from('chapter_progress')
-                    .select('chapter, completed, completed_at')
-                    .eq('user_id', userId);
+                if (data.error) {
+                    console.error('Server error:', data.error);
+                    return null;
+                }
                 
                 // Build progress object
                 this.userProgress = {
@@ -91,11 +67,11 @@
                 };
                 
                 // Process assessments
-                if (assessments) {
-                    assessments.forEach(a => {
+                if (data.assessments) {
+                    data.assessments.forEach(a => {
                         this.userProgress.assessments[a.assessment_type] = {
                             completed: true,
-                            resultKey: a.result_key,
+                            resultKey: a.result_name,
                             resultData: a.result_data,
                             completedAt: a.completed_at
                         };
@@ -103,8 +79,8 @@
                 }
                 
                 // Process quizzes (keep best score per unit)
-                if (quizzes) {
-                    quizzes.forEach(q => {
+                if (data.scores) {
+                    data.scores.forEach(q => {
                         if (!this.userProgress.quizzes[q.chapter]) {
                             this.userProgress.quizzes[q.chapter] = {
                                 bestScore: q.percentage,
@@ -112,20 +88,24 @@
                                 attempts: 1
                             };
                         } else {
+                            // Keep best score
+                            if (q.percentage > this.userProgress.quizzes[q.chapter].bestScore) {
+                                this.userProgress.quizzes[q.chapter].bestScore = q.percentage;
+                                this.userProgress.quizzes[q.chapter].passed = q.percentage >= PASS_THRESHOLD;
+                            }
                             this.userProgress.quizzes[q.chapter].attempts++;
                         }
                     });
                 }
                 
-                // Process chapters
-                if (chapters) {
-                    chapters.forEach(c => {
-                        this.userProgress.chapters[c.chapter] = {
-                            completed: c.completed,
-                            completedAt: c.completed_at
+                // Derive chapter completion from quiz passes
+                Object.keys(this.userProgress.quizzes).forEach(unitId => {
+                    if (this.userProgress.quizzes[unitId].passed) {
+                        this.userProgress.chapters[unitId] = {
+                            completed: true
                         };
-                    });
-                }
+                    }
+                });
                 
                 console.log('Progress loaded:', this.userProgress);
                 return this.userProgress;
@@ -140,7 +120,6 @@
         hasCompletedAssessments() {
             if (!this.userProgress) return false;
             const a = this.userProgress.assessments;
-            // 10x-scorecard saves as '10x-scorecard-content' (Content section is required)
             return !!(a['10x-scorecard-content'] && a['where-do-you-sit']);
         },
         
@@ -151,13 +130,17 @@
             return quiz && quiz.passed;
         },
         
-        // Check if user can access a specific unit
-        // TEMPORARILY DISABLED - letting everyone access units
+        // Get best score for a unit
+        getUnitScore(unitId) {
+            if (!this.userProgress) return null;
+            const quiz = this.userProgress.quizzes[unitId];
+            return quiz ? quiz.bestScore : null;
+        },
+        
+        // Check if user can access a unit
         canAccessUnit(unitId) {
-            return true; // Bypass all prerequisite checks for launch
-            /*
             const prereqs = UNIT_PREREQUISITES[unitId];
-            if (!prereqs) return true; // No prerequisites
+            if (!prereqs) return true;
             
             for (const prereq of prereqs) {
                 if (prereq === 'assessments') {
@@ -167,126 +150,42 @@
                 }
             }
             return true;
-            */
         },
         
-        // Get the next step for a user
-        getNextStep() {
-            if (!this.hasCompletedAssessments()) {
-                return { step: 'assessments', url: '/curriculum/intro.html' };
-            }
-            
-            // Find the first unpassed unit
-            for (let i = 1; i <= 7; i++) {
-                const unitId = `unit-0${i}`;
-                if (!this.hasPassedUnit(unitId)) {
-                    return { step: unitId, url: `/curriculum/${unitId}/` };
+        // Get count of completed units
+        getCompletedUnitCount() {
+            if (!this.userProgress) return 0;
+            return Object.values(this.userProgress.quizzes)
+                .filter(q => q.passed).length;
+        },
+        
+        // Get total unit count
+        getTotalUnitCount() {
+            return 7;
+        },
+        
+        // Get overall progress percentage
+        getOverallProgress() {
+            const completed = this.getCompletedUnitCount();
+            const total = this.getTotalUnitCount();
+            return Math.round((completed / total) * 100);
+        },
+        
+        // Get next unit to work on
+        getNextUnit() {
+            const units = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'unit-06', 'unit-07'];
+            for (const unit of units) {
+                if (!this.hasPassedUnit(unit)) {
+                    return unit;
                 }
             }
-            
-            return { step: 'complete', url: '/curriculum/' };
+            return null; // All complete
         },
         
-        // Get user's assessment results
-        getAssessmentResults() {
+        // Get assessment result
+        getAssessmentResult(type) {
             if (!this.userProgress) return null;
-            return this.userProgress.assessments;
-        },
-        
-        // Gate a page - redirect if prerequisites not met
-        async gatePage(requiredUnit) {
-            await this.init();
-            
-            // Admin bypass: ?bypass=1 or specific admin users
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('bypass') === '1') {
-                console.log('Admin bypass active');
-                return true;
-            }
-            
-            // Check for admin/superuser
-            const SUPERUSERS = [
-                'chrisohara1968@gmail.com',
-                'christopher.ohara@sap.com',
-                'tara.rogers@sap.com',
-                'stephanie.craig@sap.com',
-                'sean.thomson@sap.com',
-                'fiona.ashley@sap.com',
-                'peter.baskin@sap.com',
-                'oyku.ilgar@sap.com',
-                'jelisaveta.nikolic@sap.com',
-                'a.naji@sap.com',
-                'justin.ham@sap.com',
-                'olivier.duvelleroy@sap.com'
-            ];
-            const { data: { session } } = await this.supabase.auth.getSession();
-            if (session && SUPERUSERS.includes(session.user.email?.toLowerCase())) {
-                console.log('Superuser - gating bypassed');
-                return true;
-            }
-            
-            if (!this.canAccessUnit(requiredUnit)) {
-                const next = this.getNextStep();
-                console.log(`Cannot access ${requiredUnit}, redirecting to ${next.url}`);
-                
-                // Show a brief message before redirect
-                const overlay = document.createElement('div');
-                overlay.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;';
-                overlay.innerHTML = `
-                    <div style="text-align:center;max-width:400px;padding:2rem;">
-                        <h2 style="color:#44546A;margin-bottom:1rem;">🔒 Complete Prerequisites First</h2>
-                        <p style="color:#666;margin-bottom:1rem;">You need to complete the previous steps before accessing this unit.</p>
-                        <p style="color:#888;font-size:0.9rem;">Redirecting you...</p>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-                
-                setTimeout(() => {
-                    window.location.href = next.url;
-                }, 1500);
-                
-                return false;
-            }
-            
-            return true;
-        },
-        
-        // Save assessment result
-        async saveAssessmentResult(assessmentType, resultKey, resultData) {
-            if (!this.supabase) await this.init();
-            
-            const { data: { session } } = await this.supabase.auth.getSession();
-            if (!session) return false;
-            
-            const { error } = await this.supabase
-                .from('assessment_results')
-                .upsert({
-                    user_id: session.user.id,
-                    assessment_type: assessmentType,
-                    result_key: resultKey,
-                    result_data: resultData,
-                    completed_at: new Date().toISOString()
-                }, { onConflict: 'user_id,assessment_type' });
-            
-            if (error) {
-                console.error('Error saving assessment:', error);
-                return false;
-            }
-            
-            // Reload progress
-            await this.loadProgress(session.user.id);
-            return true;
+            return this.userProgress.assessments[type] || null;
         }
     };
-    
-    // Auto-init when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        const path = window.location.pathname;
-        const unitMatch = path.match(/\/curriculum\/(unit-\d+)\//);
-        
-        if (unitMatch) {
-            const unitId = unitMatch[1];
-            CurriculumProgress.gatePage(unitId);
-        }
-    });
 })();
