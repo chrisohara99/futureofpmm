@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Future of PMM - Deployment Guide</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Future of PMM - Deployment Guide</h1>
+</header>
+<h1 id="future-of-pmm-deployment-guide">Future of PMM — Deployment
+Guide</h1>
+<p>A complete guide to deploying the Future of PMM curriculum site on
+your own infrastructure.</p>
+<hr />
+<h2 id="overview">Overview</h2>
+<p><strong>What this site does:</strong> - AI-powered PMM training
+curriculum (7 units with quizzes) - User authentication via email
+verification - Progress tracking and quiz scoring - Daily digests and
+newsletters - Assessment tools (Where Do You Sit?, 10x Scorecard)</p>
+<p><strong>Tech Stack:</strong> - <strong>Hosting:</strong> Netlify
+(static site + serverless functions) - <strong>Database:</strong>
+Supabase (PostgreSQL + Auth) - <strong>Email:</strong> Resend
+(transactional emails) - <strong>Source Control:</strong> GitHub</p>
+<hr />
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You’ll need accounts on: 1. <strong>GitHub</strong> — to fork/clone
+the repo 2. <strong>Netlify</strong> — to host the site (free tier
+works) 3. <strong>Supabase</strong> — for database (free tier works) 4.
+<strong>Resend</strong> — for email verification (free tier: 100
+emails/day)</p>
+<hr />
+<h2 id="step-1-clone-the-repository">Step 1: Clone the Repository</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/chrisohara99/futureofpmm.git</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> futureofpmm</span></code></pre></div>
+<p>Or fork it to your own GitHub account first.</p>
+<hr />
+<h2 id="step-2-set-up-supabase">Step 2: Set Up Supabase</h2>
+<h3 id="create-a-supabase-project">2.1 Create a Supabase Project</h3>
+<ol type="1">
+<li>Go to <a href="https://supabase.com">supabase.com</a> and create a
+new project</li>
+<li>Note your <strong>Project URL</strong> (e.g.,
+<code>https://xxxxx.supabase.co</code>)</li>
+<li>Go to <strong>Settings → API</strong> and copy:
+<ul>
+<li><code>anon</code> (public) key</li>
+<li><code>service_role</code> key (keep this secret!)</li>
+</ul></li>
+</ol>
+<h3 id="create-database-tables">2.2 Create Database Tables</h3>
+<p>Go to <strong>SQL Editor</strong> in Supabase and run this
+schema:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Profiles table</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> profiles (</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  email TEXT <span class="kw">UNIQUE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  first_name TEXT,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  last_name TEXT,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">role</span> TEXT,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  company TEXT <span class="kw">DEFAULT</span> <span class="st">&#39;SAP&#39;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  created_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- Quiz scores</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> quiz_scores (</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  chapter TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  score <span class="dt">INTEGER</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  total <span class="dt">INTEGER</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  percentage <span class="dt">INTEGER</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">-- Chapter progress</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> chapter_progress (</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  chapter TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  completed <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">FALSE</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">UNIQUE</span>(user_id, chapter)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">-- Assessment results</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> assessment_results (</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  assessment_type TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  result_key TEXT,</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  result_name TEXT,</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  result_data JSONB,</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">-- Indexes for performance</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_quiz_scores_user <span class="kw">ON</span> quiz_scores(user_id);</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_quiz_scores_chapter <span class="kw">ON</span> quiz_scores(chapter);</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_chapter_progress_user <span class="kw">ON</span> chapter_progress(user_id);</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_assessment_results_user <span class="kw">ON</span> assessment_results(user_id);</span></code></pre></div>
+<h3 id="enable-row-level-security-optional-but-recommended">2.3 Enable
+Row Level Security (Optional but Recommended)</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Enable RLS on all tables</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> profiles <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> quiz_scores <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> chapter_progress <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> assessment_results <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Allow service role full access (for serverless functions)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> profiles <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> quiz_scores <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> chapter_progress <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> assessment_results <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span></code></pre></div>
+<hr />
+<h2 id="step-3-set-up-resend">Step 3: Set Up Resend</h2>
+<ol type="1">
+<li>Go to <a href="https://resend.com">resend.com</a> and create an
+account</li>
+<li>Add and verify your domain (or use their test domain for dev)</li>
+<li>Create an API key and copy it</li>
+</ol>
+<hr />
+<h2 id="step-4-update-code-configuration">Step 4: Update Code
+Configuration</h2>
+<h3 id="update-supabase-urls-and-keys">4.1 Update Supabase URLs and
+Keys</h3>
+<p>Search and replace these values in the codebase:</p>
+<p><strong>Files to update:</strong> -
+<code>dist/assets/js/curriculum-progress.js</code> -
+<code>dist/curriculum/login.html</code> -
+<code>dist/curriculum/signup.html</code> -
+<code>dist/curriculum/account.html</code> -
+<code>dist/curriculum/index.html</code> -
+<code>dist/curriculum/verify.html</code> -
+<code>netlify/functions/*.js</code></p>
+<p><strong>Replace:</strong></p>
+<pre><code>https://yyqzkczutlidhgyiyawc.supabase.co  →  YOUR_SUPABASE_URL
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...  →  YOUR_SUPABASE_ANON_KEY</code></pre>
+<h3 id="update-email-from-address">4.2 Update Email “From” Address</h3>
+<p>In <code>netlify/functions/send-verification.js</code>, update:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span><span class="op">:</span> <span class="st">&#39;Future of PMM &lt;noreply@futureofpmm.com&gt;&#39;</span></span></code></pre></div>
+<p>to your verified domain.</p>
+<h3 id="update-verification-redirect-url">4.3 Update Verification
+Redirect URL</h3>
+<p>In <code>netlify/functions/send-verification.js</code>, update:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> verifyUrl <span class="op">=</span> <span class="vs">`https://futureofpmm.com/curriculum/verify.html?token=...`</span></span></code></pre></div>
+<p>to your domain.</p>
+<hr />
+<h2 id="step-5-deploy-to-netlify">Step 5: Deploy to Netlify</h2>
+<h3 id="connect-repository">5.1 Connect Repository</h3>
+<ol type="1">
+<li>Go to <a href="https://netlify.com">netlify.com</a></li>
+<li>Click “Add new site” → “Import an existing project”</li>
+<li>Connect your GitHub repo</li>
+<li>Configure build settings:
+<ul>
+<li><strong>Build command:</strong>
+<code>echo 'Static site ready'</code></li>
+<li><strong>Publish directory:</strong> <code>dist</code></li>
+<li><strong>Functions directory:</strong>
+<code>netlify/functions</code></li>
+</ul></li>
+</ol>
+<h3 id="add-environment-variables">5.2 Add Environment Variables</h3>
+<p>In Netlify dashboard: <strong>Site settings → Environment
+variables</strong></p>
+<p>Add these:</p>
+<pre><code>SUPABASE_SERVICE_KEY = your_supabase_service_role_key
+RESEND_API_KEY = your_resend_api_key</code></pre>
+<h3 id="deploy">5.3 Deploy</h3>
+<p>Netlify will auto-deploy on push. Trigger a manual deploy if
+needed.</p>
+<hr />
+<h2 id="step-6-configure-custom-domain-optional">Step 6: Configure
+Custom Domain (Optional)</h2>
+<ol type="1">
+<li>In Netlify: <strong>Domain settings → Add custom
+domain</strong></li>
+<li>Update DNS records as instructed</li>
+<li>Enable HTTPS (automatic with Netlify)</li>
+</ol>
+<hr />
+<h2 id="step-7-test-the-setup">Step 7: Test the Setup</h2>
+<ol type="1">
+<li><strong>Signup flow:</strong> Go to
+<code>/curriculum/signup.html</code>, register with an email</li>
+<li><strong>Verification:</strong> Check email, click link, verify
+account is created</li>
+<li><strong>Login:</strong> Go to <code>/curriculum/login.html</code>,
+login with the email</li>
+<li><strong>Quiz:</strong> Take a unit quiz, verify score is saved</li>
+<li><strong>Progress:</strong> Check
+<code>/curriculum/account.html</code> shows your progress</li>
+</ol>
+<hr />
+<h2 id="file-structure">File Structure</h2>
+<pre><code>futureofpmm/
+├── dist/                      # Static site files (deploy this)
+│   ├── index.html             # Homepage
+│   ├── curriculum/            # Curriculum pages
+│   │   ├── index.html         # Dashboard
+│   │   ├── login.html         # Login page
+│   │   ├── signup.html        # Signup page
+│   │   ├── verify.html        # Email verification
+│   │   ├── account.html       # User profile/stats
+│   │   ├── intro.html         # Curriculum intro
+│   │   └── unit-01/ to unit-07/  # Unit content + quizzes
+│   ├── assets/
+│   │   ├── js/                # JavaScript files
+│   │   └── images/            # Images
+│   ├── digests/               # Daily digests
+│   └── newsletters/           # Newsletter archive
+├── netlify/
+│   └── functions/             # Serverless functions
+│       ├── check-profile.js   # Check if user exists
+│       ├── create-profile.js  # Create new profile
+│       ├── get-user-scores.js # Fetch user progress
+│       ├── save-result.js     # Save quiz/assessment
+│       └── send-verification.js # Email verification
+└── netlify.toml               # Netlify config</code></pre>
+<hr />
+<h2 id="serverless-functions-reference">Serverless Functions
+Reference</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>check-profile</code></td>
+<td>Check if email exists in DB</td>
+</tr>
+<tr class="even">
+<td><code>create-profile</code></td>
+<td>Create new user profile</td>
+</tr>
+<tr class="odd">
+<td><code>get-user-scores</code></td>
+<td>Fetch quiz scores + assessments for a user</td>
+</tr>
+<tr class="even">
+<td><code>save-result</code></td>
+<td>Save quiz score or assessment result</td>
+</tr>
+<tr class="odd">
+<td><code>send-verification</code></td>
+<td>Send verification email + verify tokens</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="customization">Customization</h2>
+<h3 id="change-allowed-email-domains">Change Allowed Email Domains</h3>
+<p>In <code>dist/curriculum/signup.html</code> and
+<code>dist/curriculum/login.html</code>:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ALLOWED_DOMAINS <span class="op">=</span> [<span class="st">&#39;sap.com&#39;</span>]<span class="op">;</span>  <span class="co">// Change to your domain(s)</span></span></code></pre></div>
+<h3 id="modify-quiz-content">Modify Quiz Content</h3>
+<p>Quiz files are in <code>dist/curriculum/unit-XX/quiz.html</code>.
+Each contains: - Questions and answers in JavaScript - Scoring logic -
+Pass threshold (default: 80%)</p>
+<h3 id="update-branding">Update Branding</h3>
+<ul>
+<li>Logo: <code>dist/assets/images/logo.svg</code> and
+<code>logo-white.svg</code></li>
+<li>Colors: Search for CSS variables <code>--dark-slate</code>,
+<code>--sap-blue</code>, etc.</li>
+<li>Site name: Global search/replace “Future of PMM”</li>
+</ul>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="no-account-found-on-login">“No account found” on login</h3>
+<ul>
+<li>Check Supabase connection (correct URL + keys)</li>
+<li>Verify the <code>profiles</code> table exists</li>
+<li>Check Netlify function logs</li>
+</ul>
+<h3 id="verification-email-not-arriving">Verification email not
+arriving</h3>
+<ul>
+<li>Check Resend API key is valid</li>
+<li>Verify sender domain in Resend dashboard</li>
+<li>Check spam folder</li>
+</ul>
+<h3 id="quiz-scores-not-saving">Quiz scores not saving</h3>
+<ul>
+<li>Check browser console for errors</li>
+<li>Verify <code>SUPABASE_SERVICE_KEY</code> is set in Netlify</li>
+<li>Check Netlify function logs</li>
+</ul>
+<h3 id="corporate-proxy-issues">Corporate proxy issues</h3>
+<p>All Supabase calls go through Netlify functions specifically to avoid
+corporate proxy issues. If you still have problems, check that your
+corporate network allows HTTPS to your Netlify domain.</p>
+<hr />
+<h2 id="support">Support</h2>
+<p>For questions about this codebase, contact: - <strong>Chris
+O’Hara</strong> — christopher.ohara@sap.com</p>
+<hr />
+<p><em>Last updated: May 24, 2026</em></p>
+</body>
+</html>
