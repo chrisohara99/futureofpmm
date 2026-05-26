@@ -900,69 +900,6 @@ async function saveQuizScore(score, total, percentage) {
         console.error('Save error:', err);
         showSaveError('Error saving progress: ' + err.message);
     }
-} } = await client.auth.getSession();
-        if (session) {
-            userId = session.user.id;
-            userEmail = session.user.email;
-        } else {
-            // Check for direct access user (SAP email bypass)
-            try {
-                const directUser = localStorage.getItem('pmm_direct_user');
-                if (directUser) {
-                    const email = JSON.parse(directUser).email;
-                    userEmail = email;
-                    const { data: profile } = await client
-                        .from('profiles')
-                        .select('id')
-                        .eq('email', email.toLowerCase())
-                        .single();
-                    if (profile) userId = profile.id;
-                }
-            } catch (e) {
-                console.error('Direct user lookup failed:', e);
-            }
-        }
-        
-        if (!userId) {
-            console.error('No user ID found - cannot save progress');
-            showSaveError('Not logged in. Please refresh and try again.');
-            return;
-        }
-        
-        console.log('Saving quiz score for user:', userEmail, 'Score:', percentage);
-        
-        const { error: quizError } = await client.from('quiz_scores').insert({
-            user_id: userId,
-            chapter: 'unit-02',
-            score, total, percentage
-        });
-        
-        if (quizError) {
-            console.error('Quiz score save error:', quizError);
-        } else {
-            console.log('Quiz score saved successfully');
-        }
-        
-        if (percentage >= 80) {
-            console.log('Passed! Updating chapter progress...');
-            const { error: progressError } = await client.from('chapter_progress').upsert({
-                user_id: userId,
-                chapter: 'unit-02',
-                completed: true,
-                completed_at: new Date().toISOString()
-            }, { onConflict: 'user_id,chapter' });
-            
-            if (progressError) {
-                console.error('Chapter progress save error:', progressError);
-                showSaveError('Score recorded but progress update failed. Contact Chris.');
-            } else {
-                console.log('Chapter progress updated successfully');
-            }
-        }
-    } catch (err) {
-        console.error('Save error:', err);
-        showSaveError('Error saving progress: ' + err.message);
-    }
 }
 
 function showSaveError(msg) {
