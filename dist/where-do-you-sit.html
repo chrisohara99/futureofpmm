@@ -1019,83 +1019,53 @@ function selectOption(score, btn) {
 
 async function saveAssessmentResult(roleKey, role, dims) {
     try {
-        if (typeof supabase === 'undefined') return;
-        const client = supabase.createClient(
-            'https://yyqzkczutlidhgyiyawc.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
-        );
+        // Get user email from localStorage
+        let email = null;
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                email = JSON.parse(directUser).email;
+            }
+        } catch (e) {}
         
-        let userId = null;
+        if (!email) {
+            console.log('No user email - cannot save assessment');
+            return;
+        }
         
-        // Check Supabase session first
-        const { data: { session } } = await client.auth.getSession();
-        if (session) {
-            userId = session.user.id;
-        } else {
-            // Check for direct access user
-            try {
-                const directUser = localStorage.getItem('pmm_direct_user');
-                if (directUser) {
-                    const email = JSON.parse(directUser).email;
-                    const { data: profile } = await client
-                        .from('profiles')
-                        .select('id')
-                        .eq('email', email.toLowerCase())
-                        .single();
-                    if (profile) userId = profile.id;
+        console.log('Saving assessment via serverless: where-do-you-sit');
+        
+        // Use serverless function to bypass RLS
+        const res = await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'assessment',
+                email: email,
+                data: {
+                    assessment_type: 'where-do-you-sit',
+                    result_key: roleKey,
+                    result_name: role.name,
+                    result_data: { 
+                        roleKey: roleKey,
+                        dimensions: dims, 
+                        sovereignty: role.sovereignty,
+                        cognitiveLevel: role.cognitiveLevel,
+                        completedAt: new Date().toISOString(),
+                        history: [],
+                        attemptNumber: 1
+                    }
                 }
-            } catch (e) {}
+            })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            console.error('Assessment save error:', result.error);
+        } else {
+            console.log('Assessment saved successfully: where-do-you-sit');
         }
-        
-        if (!userId) return;
-        
-        // Get previous result to track history
-        const { data: prevResults } = await client
-            .from('assessment_results')
-            .select('result_data, result_key')
-            .eq('user_id', userId)
-            .eq('assessment_type', 'where-do-you-sit')
-            .order('completed_at', { ascending: false })
-            .limit(1);
-        
-        // Build history array
-        let history = [];
-        if (prevResults && prevResults[0] && prevResults[0].result_data) {
-            const prevData = prevResults[0].result_data;
-            const prevKey = prevResults[0].result_key;
-            // Preserve existing history
-            if (prevData.history) {
-                history = prevData.history;
-            }
-            // Add previous result to history (if different from current)
-            if (prevKey !== roleKey) {
-                history.push({
-                    roleKey: prevKey,
-                    roleName: ROLES[prevKey]?.name || prevKey,
-                    sovereignty: prevData.sovereignty,
-                    date: prevData.completedAt || new Date().toISOString()
-                });
-            }
-        }
-        
-        await client.from('assessment_results').upsert({
-            user_id: userId,
-            assessment_type: 'where-do-you-sit',
-            result_key: roleKey,
-            result_name: role.name,
-            result_data: { 
-                roleKey: roleKey,
-                dimensions: dims, 
-                sovereignty: role.sovereignty,
-                cognitiveLevel: role.cognitiveLevel,
-                completedAt: new Date().toISOString(),
-                history: history,
-                attemptNumber: history.length + 1
-            },
-            completed_at: new Date().toISOString()
-        }, { onConflict: 'user_id,assessment_type' });
-        
-        console.log('Assessment saved, attempt:', history.length + 1);
     } catch (e) {
         console.error('Error saving assessment:', e);
     }
