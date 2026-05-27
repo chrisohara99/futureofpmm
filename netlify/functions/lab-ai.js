@@ -167,6 +167,48 @@ DO NOT recommend non-approved tools. If compelling alternatives exist, note them
 
 You provide specific recommendations for which activities to automate, augment, or keep human.`,
 
+        'battlecoach-fud': `You are BattleCoach, an expert competitive intelligence assistant for SAP's Intelligent Spend Management portfolio (SAP Ariba, SAP Business Network, SAP Fieldglass, Taulia).
+
+You create FUD Response Sheets — quick-reference guides that show what competitors will say and how SAP should respond. Your responses are:
+- Specific to the named competitor
+- Grounded in real SAP capabilities
+- Written in a confident, conversational tone
+- Actionable for sales conversations
+
+Key SAP facts to leverage:
+- SAP Business Network: 5.5M+ organizations, $6T+ commerce annually
+- 90%+ of suppliers pay zero transaction fees
+- Unified source-to-pay platform (not cobbled acquisitions)
+- Deep industry expertise with dedicated teams
+- Native S/4HANA integration
+- Taulia for working capital optimization`,
+
+        'battlecoach-area': `You are BattleCoach, an expert at handling competitive objections using the AREA framework:
+- Acknowledge: Validate the concern without agreeing
+- Reframe: Shift perspective to what matters
+- Evidence: Ground with specific proof
+- Ask: Hand them a question that favors SAP
+
+Write scripts that sound natural in conversation, not robotic. The AE should be able to read this and immediately use it.`,
+
+        'battlecoach-idea': `You are BattleCoach, an expert at proactive competitive differentiation using the IDEA framework:
+- Insight: Lead with a surprising truth
+- Differentiator: What only SAP can do
+- Evidence: Prove it's real
+- Ask: Reframe the evaluation criteria
+
+Focus on offensive positioning — don't wait for objections, lead with differentiation. Be specific about SAP's unique advantages.`,
+
+        'battlecoach-discovery': `You are BattleCoach, an expert at crafting discovery questions that shift competitive evaluations toward SAP.
+
+Great discovery questions:
+- Expose competitor weaknesses without naming them
+- Plant criteria where SAP wins
+- Sound curious, not leading
+- Are appropriate for the deal stage
+
+Write questions a ${'{inputs.audience}'} would find thoughtful, not salesy.`,
+
         'battlecoach': `You are BattleCoach, an expert competitive intelligence assistant for SAP's Intelligent Spend Management portfolio (SAP Ariba, SAP Business Network, SAP Fieldglass, Taulia).
 
 You help Account Executives and PMMs prepare for competitive deals using two battle-tested frameworks:
@@ -421,18 +463,18 @@ Which of their activities should stay human and why. Be specific about the value
 ## 8. Tools to Evaluate (Optional)
 If there are compelling non-approved tools that would add significant value, list them here with a note that they would need to go through SAP's vendor onboarding process (typically 6-9 months). Only include if truly valuable - don't pad this section.`;
 
-        case 'battlecoach':
+        case 'battlecoach-fud':
             // Filter FUD catalog for this competitor
-            const catalog = getFudCatalog();
-            const competitorFuds = catalog.filter(f => 
+            const catalogFud = getFudCatalog();
+            const competitorFudsFud = catalogFud.filter(f => 
                 f.competitor && f.competitor.toLowerCase() === inputs.competitor.toLowerCase()
-            ).slice(0, 15); // Top 15 relevant FUDs
+            ).slice(0, 10);
             
-            const fudContext = competitorFuds.map(f => 
+            const fudContextFud = competitorFudsFud.map(f => 
                 `• CLAIM: "${f.competitor_claim}"\n  REFRAME: ${f.reframe_override}`
             ).join('\n\n');
             
-            return `Generate battle plays for this competitive deal:
+            return `Generate a FUD Response Sheet for this SAP competitive deal:
 
 ## DEAL BRIEFING
 **Customer:** ${inputs.customerName}
@@ -445,54 +487,171 @@ If there are compelling non-approved tools that would add significant value, lis
 **Additional Context:** ${inputs.additionalContext || 'None provided'}
 
 ## COMPETITOR FUD INTELLIGENCE (from battlecards)
-${fudContext || 'No specific FUD entries for this competitor. Use general competitive knowledge.'}
+${fudContextFud || 'No specific FUD entries for this competitor. Use general competitive knowledge.'}
 
 ---
 
-Generate FOUR distinct sections. Use clear markdown headers so they can be parsed separately:
+Create a **FUD Response Sheet** with the top 4-5 FUD claims this competitor will likely use in this deal.
 
-## FUD RESPONSE SHEET
-Create a table of the top 3-4 FUD claims this competitor will likely use in this deal, with columns:
-| What They'll Say | The Truth | Your Response |
+Format as a markdown table:
+| What ${inputs.competitor} Will Say | The Truth | Your Response |
+|---|---|---|
 
-Focus on claims relevant to the ${inputs.solutionArea} solution area and ${inputs.industry} industry.
+Focus on claims relevant to:
+- ${inputs.solutionArea} solution area
+- ${inputs.industry} industry
+- ${inputs.audience} buyer concerns
 
-## AREA SCRIPT (Defensive Objection Handling)
-For the #1 most likely objection in this deal, write a complete AREA script:
+For each row:
+- "What They'll Say" = the competitor's likely claim or objection
+- "The Truth" = the factual reality (brief)
+- "Your Response" = what the AE should say (conversational, confident)`;
 
-**The Objection:** [What the competitor or buyer will say]
+        case 'battlecoach-area':
+            const catalogArea = getFudCatalog();
+            const competitorFudsArea = catalogArea.filter(f => 
+                f.competitor && f.competitor.toLowerCase() === inputs.competitor.toLowerCase()
+            ).slice(0, 5);
+            
+            const fudContextArea = competitorFudsArea.map(f => 
+                `• "${f.competitor_claim}"`
+            ).join('\n');
+            
+            return `Generate an AREA Script for handling the #1 objection in this SAP deal:
 
-**A - Acknowledge:** [Validate without agreeing - 1-2 sentences]
+## DEAL CONTEXT
+**Customer:** ${inputs.customerName} (${inputs.industry}, ${inputs.region})
+**Competitor:** ${inputs.competitor}
+**Buyer:** ${inputs.audience}
+**Solution:** ${inputs.solutionArea}
+**Stage:** ${inputs.dealStage}
+**Context:** ${inputs.additionalContext || 'None'}
 
-**R - Reframe:** [Shift perspective to what really matters - 2-3 sentences]
+## LIKELY COMPETITOR CLAIMS
+${fudContextArea}
 
-**E - Evidence:** [Specific proof points with sources - 2-3 bullets]
+---
 
-**A - Ask:** [The question that reframes the evaluation - 1 powerful question]
+Write a complete **AREA Script** for the most likely objection in this deal:
 
-## IDEA TALKING POINTS (Offensive Differentiation)
-Write 3 proactive differentiation points using IDEA:
+## 🛡️ AREA Script: Handling the "${inputs.competitor}" Objection
 
-**Point 1: [Topic]**
-- **Insight:** [Surprising truth they don't know]
-- **Differentiator:** [What only SAP can do]
-- **Evidence:** [Proof]
-- **Ask:** [Reframe question]
+**THE OBJECTION:**
+> [Write the specific objection the buyer will raise, based on competitor FUD]
 
-**Point 2: [Topic]**
-[Same structure]
+**A — ACKNOWLEDGE**
+[Validate their concern without agreeing. Show you understand why they'd think that. 1-2 sentences.]
 
-**Point 3: [Topic]**
-[Same structure]
+**R — REFRAME**
+[Shift the perspective to what really matters for their business. Connect to their goals as a ${inputs.audience}. 2-3 sentences.]
 
-## DISCOVERY QUESTIONS
-Provide 5 questions the AE should ask to shift evaluation criteria in SAP's favor. These should:
-- Expose competitor weaknesses without naming the competitor
-- Highlight SAP strengths (network scale, integration, TCO)
-- Be appropriate for the ${inputs.dealStage} stage
+**E — EVIDENCE**
+[Provide 2-3 specific proof points:]
+- [Proof point 1 with source]
+- [Proof point 2 with source]
+- [Proof point 3 with source]
+
+**A — ASK**
+[One powerful question that reframes the evaluation criteria in SAP's favor. Make them think.]
+
+---
+
+**DELIVERY TIP:**
+[One practical tip for how to deliver this in the conversation]`;
+
+        case 'battlecoach-idea':
+            return `Generate IDEA Talking Points for proactive differentiation in this SAP deal:
+
+## DEAL CONTEXT
+**Customer:** ${inputs.customerName} (${inputs.industry}, ${inputs.region})
+**Competitor:** ${inputs.competitor}
+**Buyer:** ${inputs.audience}
+**Solution:** ${inputs.solutionArea}
+**Stage:** ${inputs.dealStage}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Write **3 IDEA Talking Points** for proactive differentiation. Don't wait for objections — lead with these.
+
+## ⚔️ IDEA Talking Points vs. ${inputs.competitor}
+
+### Point 1: Network Scale
+- **I — INSIGHT:** [A surprising truth about B2B networks the buyer doesn't know]
+- **D — DIFFERENTIATOR:** [What SAP Business Network does that ${inputs.competitor} cannot]
+- **E — EVIDENCE:** [Specific proof: numbers, customer examples, analyst quotes]
+- **A — ASK:** [Question that makes this a buying criterion]
+
+### Point 2: Total Cost of Ownership
+- **I — INSIGHT:** [Surprising truth about TCO in this space]
+- **D — DIFFERENTIATOR:** [How SAP delivers better long-term value]
+- **E — EVIDENCE:** [Specific proof]
+- **A — ASK:** [Question that exposes hidden costs]
+
+### Point 3: [Choose based on ${inputs.solutionArea}]
+- **I — INSIGHT:** [Relevant to their solution area]
+- **D — DIFFERENTIATOR:** [SAP's unique capability here]
+- **E — EVIDENCE:** [Specific proof]
+- **A — ASK:** [Reframe question]
+
+---
+
+**WHEN TO USE:**
+- Point 1: [Best moment in the conversation]
+- Point 2: [Best moment]
+- Point 3: [Best moment]`;
+
+        case 'battlecoach-discovery':
+            return `Generate Discovery Questions for this SAP competitive deal:
+
+## DEAL CONTEXT
+**Customer:** ${inputs.customerName} (${inputs.industry}, ${inputs.region})
+**Competitor:** ${inputs.competitor}
+**Buyer:** ${inputs.audience}
+**Solution:** ${inputs.solutionArea}
+**Stage:** ${inputs.dealStage}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Provide **5 Discovery Questions** the AE should ask to shift evaluation criteria toward SAP's strengths.
+
+## ❓ Discovery Questions vs. ${inputs.competitor}
+
+These questions should:
+- Expose ${inputs.competitor}'s weaknesses WITHOUT naming them directly
+- Highlight SAP strengths (network scale, integration, TCO, supplier adoption)
+- Be appropriate for ${inputs.dealStage} stage
 - Resonate with a ${inputs.audience}
 
-Format: Question + [Why this works - brief tactical note]`;
+### Question 1: Network & Scale
+> "[The question]"
+
+**Why it works:** [Brief tactical note — what weakness it exposes, what strength it highlights]
+
+### Question 2: Integration & Ecosystem
+> "[The question]"
+
+**Why it works:** [Brief tactical note]
+
+### Question 3: Total Cost of Ownership
+> "[The question]"
+
+**Why it works:** [Brief tactical note]
+
+### Question 4: Supplier Adoption
+> "[The question]"
+
+**Why it works:** [Brief tactical note]
+
+### Question 5: Future-Proofing
+> "[The question]"
+
+**Why it works:** [Brief tactical note]
+
+---
+
+**PRO TIP:** Ask these early in discovery before the buyer has locked in evaluation criteria based on ${inputs.competitor}'s framing.`;
 
         default:
             return inputs.prompt || 'Please provide analysis.';

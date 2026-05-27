@@ -368,9 +368,76 @@
         }
         .back-link:hover { text-decoration: underline; }
         
+        .result-block {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .result-block.hidden { display: none; }
+        .result-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .result-block-header h3 {
+            font-size: 1.1rem;
+            color: var(--dark-slate);
+            margin: 0;
+        }
+        
+        .more-outputs {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .more-outputs p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .output-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .output-btn {
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            min-width: 180px;
+        }
+        .output-btn:hover {
+            border-color: var(--navy);
+            background: #f0f4f8;
+        }
+        .output-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .output-btn.done {
+            border-color: var(--green);
+            background: #f0fff4;
+        }
+        .output-btn span {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-slate);
+            font-size: 0.95rem;
+        }
+        .output-btn small {
+            display: block;
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+        
         @media (max-width: 600px) {
-            .tabs { flex-wrap: wrap; }
-            .tab { flex: 1 1 50%; font-size: 0.8rem; padding: 0.75rem; }
+            .output-buttons { flex-direction: column; }
+            .output-btn { width: 100%; }
         }
     </style>
 </head>
@@ -577,7 +644,7 @@
         
         <div class="submit-section">
             <button type="submit" class="run-btn" id="runBtn">
-                <span>⚔️ Generate Battle Plays</span>
+                <span>⚔️ Get FUD Response Sheet</span>
                 <div class="spinner" id="spinner"></div>
             </button>
         </div>
@@ -591,27 +658,53 @@
             <p><span id="resultCustomer"></span> • <span id="resultIndustry"></span> • <span id="resultStage"></span></p>
         </div>
         
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('fud')">FUD Response Sheet</div>
-            <div class="tab" onclick="switchTab('area')">AREA Script</div>
-            <div class="tab" onclick="switchTab('idea')">IDEA Points</div>
-            <div class="tab" onclick="switchTab('discovery')">Discovery Qs</div>
-        </div>
-        
-        <div class="tab-content active" id="tab-fud">
-            <button class="copy-btn" onclick="copyTab('fud')">📋 Copy</button>
+        <div class="result-block" id="block-fud">
+            <div class="result-block-header">
+                <h3>📋 FUD Response Sheet</h3>
+                <button class="copy-btn" onclick="copyBlock('fud')">📋 Copy</button>
+            </div>
             <div class="results-content" id="content-fud"></div>
         </div>
-        <div class="tab-content" id="tab-area">
-            <button class="copy-btn" onclick="copyTab('area')">📋 Copy</button>
+        
+        <div class="more-outputs">
+            <p>Need more? Generate additional artifacts:</p>
+            <div class="output-buttons">
+                <button class="output-btn" id="btn-area" onclick="generateMore('area')">
+                    <span>🛡️ AREA Script</span>
+                    <small>Defensive objection handling</small>
+                </button>
+                <button class="output-btn" id="btn-idea" onclick="generateMore('idea')">
+                    <span>⚔️ IDEA Points</span>
+                    <small>Offensive differentiation</small>
+                </button>
+                <button class="output-btn" id="btn-discovery" onclick="generateMore('discovery')">
+                    <span>❓ Discovery Questions</span>
+                    <small>Reframe the evaluation</small>
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-block hidden" id="block-area">
+            <div class="result-block-header">
+                <h3>🛡️ AREA Script (Defensive)</h3>
+                <button class="copy-btn" onclick="copyBlock('area')">📋 Copy</button>
+            </div>
             <div class="results-content" id="content-area"></div>
         </div>
-        <div class="tab-content" id="tab-idea">
-            <button class="copy-btn" onclick="copyTab('idea')">📋 Copy</button>
+        
+        <div class="result-block hidden" id="block-idea">
+            <div class="result-block-header">
+                <h3>⚔️ IDEA Talking Points (Offensive)</h3>
+                <button class="copy-btn" onclick="copyBlock('idea')">📋 Copy</button>
+            </div>
             <div class="results-content" id="content-idea"></div>
         </div>
-        <div class="tab-content" id="tab-discovery">
-            <button class="copy-btn" onclick="copyTab('discovery')">📋 Copy</button>
+        
+        <div class="result-block hidden" id="block-discovery">
+            <div class="result-block-header">
+                <h3>❓ Discovery Questions</h3>
+                <button class="copy-btn" onclick="copyBlock('discovery')">📋 Copy</button>
+            </div>
             <div class="results-content" id="content-discovery"></div>
         </div>
     </div>
@@ -620,6 +713,9 @@
 <script src="/assets/js/user-menu.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Store current deal inputs for follow-up generations
+let currentDealInputs = null;
+
 // Sample briefs
 const sampleBriefs = {
     apex: {
@@ -694,25 +790,16 @@ document.querySelectorAll('.competitor-option').forEach(option => {
     });
 });
 
-// Tab switching
-function switchTab(tabId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
-    document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-}
-
-function copyTab(tabId) {
-    const content = document.getElementById(`content-${tabId}`).innerText;
+function copyBlock(blockId) {
+    const content = document.getElementById(`content-${blockId}`).innerText;
     navigator.clipboard.writeText(content).then(() => {
-        const btn = document.querySelector(`#tab-${tabId} .copy-btn`);
+        const btn = document.querySelector(`#block-${blockId} .copy-btn`);
         btn.textContent = '✓ Copied!';
         setTimeout(() => btn.textContent = '📋 Copy', 2000);
     });
 }
 
-// Form submission
+// Form submission - generates FUD sheet first
 const form = document.getElementById('labForm');
 const runBtn = document.getElementById('runBtn');
 const spinner = document.getElementById('spinner');
@@ -729,7 +816,7 @@ form.addEventListener('submit', async (e) => {
         return;
     }
     
-    const inputs = {
+    currentDealInputs = {
         customerName: document.getElementById('customerName').value,
         industry: document.getElementById('industry').value,
         region: document.getElementById('region').value,
@@ -741,18 +828,25 @@ form.addEventListener('submit', async (e) => {
     };
     
     runBtn.disabled = true;
-    runBtn.querySelector('span').textContent = 'Generating battle plays...';
+    runBtn.querySelector('span').textContent = 'Generating...';
     spinner.style.display = 'block';
     errorMessage.classList.remove('show');
     resultsSection.classList.remove('show');
+    
+    // Reset additional outputs
+    ['area', 'idea', 'discovery'].forEach(id => {
+        document.getElementById(`block-${id}`).classList.add('hidden');
+        document.getElementById(`btn-${id}`).classList.remove('done');
+        document.getElementById(`btn-${id}`).disabled = false;
+    });
     
     try {
         const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                labType: 'battlecoach',
-                inputs: inputs
+                labType: 'battlecoach-fud',
+                inputs: currentDealInputs
             })
         });
         
@@ -761,28 +855,15 @@ form.addEventListener('submit', async (e) => {
         const data = await response.json();
         
         // Update header
-        document.getElementById('resultCustomer').textContent = inputs.customerName;
-        document.getElementById('resultCompetitor').textContent = inputs.competitor;
-        document.getElementById('resultIndustry').textContent = inputs.industry;
-        document.getElementById('resultStage').textContent = inputs.dealStage;
+        document.getElementById('resultCustomer').textContent = currentDealInputs.customerName;
+        document.getElementById('resultCompetitor').textContent = currentDealInputs.competitor;
+        document.getElementById('resultIndustry').textContent = currentDealInputs.industry;
+        document.getElementById('resultStage').textContent = currentDealInputs.dealStage;
         
-        // Parse and display results
-        document.getElementById('content-fud').innerHTML = marked.parse(data.result.fudSheet || data.result);
-        document.getElementById('content-area').innerHTML = marked.parse(data.result.areaScript || '');
-        document.getElementById('content-idea').innerHTML = marked.parse(data.result.ideaPoints || '');
-        document.getElementById('content-discovery').innerHTML = marked.parse(data.result.discoveryQuestions || '');
-        
-        // If single result, put in all tabs
-        if (typeof data.result === 'string') {
-            const sections = parseMultiSectionResult(data.result);
-            document.getElementById('content-fud').innerHTML = marked.parse(sections.fud);
-            document.getElementById('content-area').innerHTML = marked.parse(sections.area);
-            document.getElementById('content-idea').innerHTML = marked.parse(sections.idea);
-            document.getElementById('content-discovery').innerHTML = marked.parse(sections.discovery);
-        }
+        // Display FUD result
+        document.getElementById('content-fud').innerHTML = marked.parse(data.result);
         
         resultsSection.classList.add('show');
-        switchTab('fud');
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
@@ -790,32 +871,49 @@ form.addEventListener('submit', async (e) => {
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;
-        runBtn.querySelector('span').textContent = '⚔️ Generate Battle Plays';
+        runBtn.querySelector('span').textContent = '⚔️ Get FUD Response Sheet';
         spinner.style.display = 'none';
     }
 });
 
-function parseMultiSectionResult(text) {
-    // Parse a combined result into sections
-    const sections = { fud: '', area: '', idea: '', discovery: '' };
+// Generate additional outputs on demand
+async function generateMore(outputType) {
+    if (!currentDealInputs) return;
     
-    // Try to split by section headers
-    const fudMatch = text.match(/##?\s*(?:FUD|What They'll Say|Signal vs\.? Noise)[\s\S]*?(?=##?\s*(?:AREA|Defensive|Objection)|$)/i);
-    const areaMatch = text.match(/##?\s*(?:AREA|Defensive|Objection Handling)[\s\S]*?(?=##?\s*(?:IDEA|Offensive|Differentiation)|$)/i);
-    const ideaMatch = text.match(/##?\s*(?:IDEA|Offensive|Differentiation|Talking Points)[\s\S]*?(?=##?\s*(?:Discovery|Questions)|$)/i);
-    const discoveryMatch = text.match(/##?\s*(?:Discovery|Questions|Reframe)[\s\S]*$/i);
+    const btn = document.getElementById(`btn-${outputType}`);
+    const block = document.getElementById(`block-${outputType}`);
+    const content = document.getElementById(`content-${outputType}`);
     
-    sections.fud = fudMatch ? fudMatch[0] : text;
-    sections.area = areaMatch ? areaMatch[0] : '';
-    sections.idea = ideaMatch ? ideaMatch[0] : '';
-    sections.discovery = discoveryMatch ? discoveryMatch[0] : '';
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Generating...';
     
-    // Fallback: if no sections found, put everything in FUD
-    if (!sections.area && !sections.idea && !sections.discovery) {
-        sections.fud = text;
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: `battlecoach-${outputType}`,
+                inputs: currentDealInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed');
+        
+        const data = await response.json();
+        content.innerHTML = marked.parse(data.result);
+        
+        block.classList.remove('hidden');
+        btn.classList.add('done');
+        
+        const labels = { area: '🛡️ AREA Script', idea: '⚔️ IDEA Points', discovery: '❓ Discovery Questions' };
+        btn.querySelector('span').textContent = '✓ ' + labels[outputType];
+        
+        block.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        btn.querySelector('span').textContent = 'Failed - Try Again';
+        btn.disabled = false;
     }
-    
-    return sections;
 }
 </script>
 </body>
