@@ -4,6 +4,75 @@ Reference for maintaining consistent styling across all pages.
 
 ---
 
+## Article Template (Standard)
+
+**Reference:** `meet-ekx.html` — this is the gold standard for all articles.
+
+### Article Header HTML
+```html
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/digests/">Digests</a>
+                <a href="/blog.html">Articles</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </div>
+</header>
+```
+
+### Article Hero HTML
+```html
+<section class="hero">
+    <div class="container">
+        <div class="hero-label">🔧 CATEGORY LABEL</div>
+        <h1>Article Title Here</h1>
+        <p class="hero-meta">By <a href="#">Chris O'Hara</a> · May 27, 2026</p>
+    </div>
+</section>
+```
+
+### Article Fonts (Required)
+```html
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+```
+
+### Article Typography
+- **Headlines (h1, h2):** Playfair Display, Georgia, serif
+- **Body:** Inter, -apple-system, sans-serif  
+- **Code/URLs:** JetBrains Mono, monospace
+- **Hero label:** 0.75rem, uppercase, letter-spacing 2px, coral color, plain text with emoji
+
+### Article Key Elements
+- **Logo height:** 135px (desktop), 70px (mobile)
+- **Nav:** Flat structure (NOT dropdowns) — Home, Curriculum, Digests, Articles + user-menu div
+- **Hero:** Gradient background (#1e3a5f → #1e40af)
+- **Hero label:** Plain text "🔍 CATEGORY" (NOT coral pill badge)
+- **Byline:** Always include "By Chris O'Hara · [Date]"
+- **Footer:** Simple dark footer with site link
+
+### Article Color Variables
+```css
+:root {
+    --pmm-blue: #3b82f6;
+    --pmm-dark: #1e3a5f;
+    --pmm-light: #F5F6F7;
+    --accent: #c84b31;  /* coral */
+    --sap-blue: #0070f2;
+}
+```
+
+---
+
 ## Required Scripts (in `<head>`)
 
 ```html
@@ -24,7 +93,7 @@ Plus Google Analytics:
 
 ---
 
-## Header HTML Structure
+## Header HTML Structure (Legacy - for non-article pages)
 
 ```html
 <header>
@@ -314,3 +383,59 @@ Use `christopher.ohara@sap.com` for all contact/submission links.
 3. **Max width**: 1200px for containers
 4. **Always include**: auth-guard.js and user-menu.js scripts
 5. **Meta robots**: Include `<meta name="robots" content="noindex, nofollow">` for internal pages
+
+---
+
+## Newsletter Template (Email)
+
+**Reference:** `newsletters/issue-015-draft.html` — this is the gold standard for newsletters.
+
+### Newsletter Structure
+Table-based HTML (email-safe, all inline styles). No CSS classes.
+
+### Newsletter Colors
+```
+Header/Footer: #1a1a2e (dark slate)
+Accent: #c84b31 (coral)
+Background: #e8e6e1 (outer), #faf9f7 (card)
+Light callout: #f3f1ed
+Dividers: #e5e2dd
+```
+
+### Newsletter Typography
+- **Body & headlines:** Georgia, 'Times New Roman', serif
+- **Section labels:** monospace, 10-11px, uppercase, letter-spacing 2px, coral color
+- **Body text:** 15px, line-height 1.7
+
+### Newsletter Section Pattern
+```
+🎨 SECTION LABEL (monospace, coral, uppercase)
+## Headline (Georgia serif, 24px)
+Body text...
+[CTA Button or Link →]
+--- divider ---
+```
+
+### Newsletter Standard Sections
+1. **Header** — Issue number, title with coral accent word, date/author
+2. **Intro callout** — Light box (#f3f1ed) with coral left border
+3. **This Week's Priority** — Main action item with CTA button
+4. **Tool/Feature highlight** — Gray callout box
+5. **News roundup** — Bold headlines + 1-line summaries + sources (monospace, coral)
+6. **Chart of the Week** — Dark card (#1a1a2e) with big stats
+7. **Final CTA** — Coral background (#c84b31), white button
+8. **Footer** — Dark slate, "Questions? Reply to this email.", unsubscribe link
+
+### Newsletter CTA Button
+```html
+<a href="URL" style="display: inline-block; background-color: #c84b31; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px;">Button Text →</a>
+```
+
+### Newsletter Header
+```html
+<td style="background-color: #1a1a2e; padding: 40px 32px 32px; color: white;">
+    <p style="font-family: monospace; font-size: 11px; letter-spacing: 2px; color: #c84b31; margin: 0 0 12px 0; text-transform: uppercase;">D&A PMM Weekly Update · Issue #XX</p>
+    <h1 style="font-family: Georgia, serif; font-size: 32px; font-weight: bold; margin: 0 0 8px 0; line-height: 1.2;">Title with <span style="color: #c84b31;">Accent Word</span></h1>
+    <p style="font-size: 14px; color: rgba(255,255,255,0.5); margin: 8px 0 0 0;">May 27, 2026 · Chris O'Hara</p>
+</td>
+```
