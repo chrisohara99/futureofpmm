@@ -2,9 +2,24 @@
 // Proxies requests to Claude API for interactive labs
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+const fs = require('fs');
+const path = require('path');
 
-// FUD Catalog for BattleCoach
-const FUD_CATALOG = require('./fud-catalog.json');
+// FUD Catalog for BattleCoach - lazy load to handle bundling
+let FUD_CATALOG = null;
+function getFudCatalog() {
+    if (FUD_CATALOG === null) {
+        try {
+            const catalogPath = path.join(__dirname, 'fud-catalog.json');
+            const data = fs.readFileSync(catalogPath, 'utf8');
+            FUD_CATALOG = JSON.parse(data);
+        } catch (err) {
+            console.error('Failed to load FUD catalog:', err);
+            FUD_CATALOG = [];
+        }
+    }
+    return FUD_CATALOG;
+}
 
 exports.handler = async (event, context) => {
     // CORS headers
@@ -408,8 +423,9 @@ If there are compelling non-approved tools that would add significant value, lis
 
         case 'battlecoach':
             // Filter FUD catalog for this competitor
-            const competitorFuds = FUD_CATALOG.filter(f => 
-                f.competitor.toLowerCase() === inputs.competitor.toLowerCase()
+            const catalog = getFudCatalog();
+            const competitorFuds = catalog.filter(f => 
+                f.competitor && f.competitor.toLowerCase() === inputs.competitor.toLowerCase()
             ).slice(0, 15); // Top 15 relevant FUDs
             
             const fudContext = competitorFuds.map(f => 
