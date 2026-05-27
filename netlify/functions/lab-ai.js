@@ -3,6 +3,9 @@
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
+// FUD Catalog for BattleCoach
+const FUD_CATALOG = require('./fud-catalog.json');
+
 exports.handler = async (event, context) => {
     // CORS headers
     const headers = {
@@ -148,6 +151,39 @@ You MUST only recommend tools from SAP's approved list:
 DO NOT recommend non-approved tools. If compelling alternatives exist, note them in a "Tools to Evaluate" section with caveat they need SAP onboarding (6-9 months).
 
 You provide specific recommendations for which activities to automate, augment, or keep human.`,
+
+        'battlecoach': `You are BattleCoach, an expert competitive intelligence assistant for SAP's Intelligent Spend Management portfolio (SAP Ariba, SAP Business Network, SAP Fieldglass, Taulia).
+
+You help Account Executives and PMMs prepare for competitive deals using two battle-tested frameworks:
+
+**AREA Framework (Defensive — handling objections):**
+- **A**cknowledge: Validate the concern without agreeing
+- **R**eframe: Shift the perspective to what matters
+- **E**vidence: Ground with specific proof points
+- **A**sk: Hand them a new question that favors SAP
+
+**IDEA Framework (Offensive — proactive differentiation):**
+- **I**nsight: Lead with a surprising truth the buyer doesn't know
+- **D**ifferentiator: What only SAP can do (network scale, integration, etc.)
+- **E**vidence: Prove it's real with data or references
+- **A**sk: Reframe the evaluation criteria in SAP's favor
+
+You have access to SAP's competitive battlecard data and know the common FUD (Fear, Uncertainty, Doubt) that competitors spread. Your responses are:
+- Specific to the named competitor
+- Grounded in real SAP capabilities
+- Actionable for sales conversations
+- Written in a confident but professional tone
+
+Key SAP differentiators to leverage:
+- SAP Business Network: World's largest B2B network (5.5M+ organizations, $6T+ commerce)
+- 90%+ of suppliers on the network pay zero transaction fees
+- Unified platform across source-to-pay vs. cobbled acquisitions
+- Deep industry expertise with dedicated teams
+- Native ERP integration (especially S/4HANA)
+- Proven enterprise scale and compliance
+- Taulia for working capital optimization
+
+Always provide specific, defensible claims. Flag anything that would need verification.`,
 
         'activity-audit': `You are an expert in AI transformation for Product Marketing teams, specifically helping PMMs identify which activities to automate, augment, or keep fully human.
 
@@ -369,6 +405,78 @@ Which of their activities should stay human and why. Be specific about the value
 
 ## 8. Tools to Evaluate (Optional)
 If there are compelling non-approved tools that would add significant value, list them here with a note that they would need to go through SAP's vendor onboarding process (typically 6-9 months). Only include if truly valuable - don't pad this section.`;
+
+        case 'battlecoach':
+            // Filter FUD catalog for this competitor
+            const competitorFuds = FUD_CATALOG.filter(f => 
+                f.competitor.toLowerCase() === inputs.competitor.toLowerCase()
+            ).slice(0, 15); // Top 15 relevant FUDs
+            
+            const fudContext = competitorFuds.map(f => 
+                `• CLAIM: "${f.competitor_claim}"\n  REFRAME: ${f.reframe_override}`
+            ).join('\n\n');
+            
+            return `Generate battle plays for this competitive deal:
+
+## DEAL BRIEFING
+**Customer:** ${inputs.customerName}
+**Industry:** ${inputs.industry}
+**Region:** ${inputs.region}
+**Primary Competitor:** ${inputs.competitor}
+**Buyer Persona:** ${inputs.audience}
+**Solution Area:** ${inputs.solutionArea}
+**Deal Stage:** ${inputs.dealStage}
+**Additional Context:** ${inputs.additionalContext || 'None provided'}
+
+## COMPETITOR FUD INTELLIGENCE (from battlecards)
+${fudContext || 'No specific FUD entries for this competitor. Use general competitive knowledge.'}
+
+---
+
+Generate FOUR distinct sections. Use clear markdown headers so they can be parsed separately:
+
+## FUD RESPONSE SHEET
+Create a table of the top 3-4 FUD claims this competitor will likely use in this deal, with columns:
+| What They'll Say | The Truth | Your Response |
+
+Focus on claims relevant to the ${inputs.solutionArea} solution area and ${inputs.industry} industry.
+
+## AREA SCRIPT (Defensive Objection Handling)
+For the #1 most likely objection in this deal, write a complete AREA script:
+
+**The Objection:** [What the competitor or buyer will say]
+
+**A - Acknowledge:** [Validate without agreeing - 1-2 sentences]
+
+**R - Reframe:** [Shift perspective to what really matters - 2-3 sentences]
+
+**E - Evidence:** [Specific proof points with sources - 2-3 bullets]
+
+**A - Ask:** [The question that reframes the evaluation - 1 powerful question]
+
+## IDEA TALKING POINTS (Offensive Differentiation)
+Write 3 proactive differentiation points using IDEA:
+
+**Point 1: [Topic]**
+- **Insight:** [Surprising truth they don't know]
+- **Differentiator:** [What only SAP can do]
+- **Evidence:** [Proof]
+- **Ask:** [Reframe question]
+
+**Point 2: [Topic]**
+[Same structure]
+
+**Point 3: [Topic]**
+[Same structure]
+
+## DISCOVERY QUESTIONS
+Provide 5 questions the AE should ask to shift evaluation criteria in SAP's favor. These should:
+- Expose competitor weaknesses without naming the competitor
+- Highlight SAP strengths (network scale, integration, TCO)
+- Be appropriate for the ${inputs.dealStage} stage
+- Resonate with a ${inputs.audience}
+
+Format: Question + [Why this works - brief tactical note]`;
 
         default:
             return inputs.prompt || 'Please provide analysis.';

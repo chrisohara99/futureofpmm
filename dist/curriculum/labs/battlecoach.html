@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: BattleCoach | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #0070F2;
+            --navy: #1B365D;
+            --coral: #C84B31;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--navy) 0%, #2C4A7C 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .framework-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 600px) {
+            .framework-grid { grid-template-columns: 1fr; }
+        }
+        
+        .framework-box {
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+        .framework-box.defensive {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid var(--sap-blue);
+        }
+        .framework-box.offensive {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid var(--coral);
+        }
+        .framework-box h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .framework-box.defensive h4 { color: var(--sap-blue); }
+        .framework-box.offensive h4 { color: var(--coral); }
+        .framework-box ul { 
+            font-size: 0.85rem; 
+            margin: 0 0 0 1.25rem; 
+            color: #444;
+        }
+        .framework-box li { margin-bottom: 0.25rem; }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--navy);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            background: white;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .sample-brief-loader {
+            background: #f0f4f8;
+            border: 2px dashed #c0c8d0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .sample-brief-loader h4 {
+            font-size: 0.9rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.75rem;
+        }
+        .sample-btn {
+            background: white;
+            border: 1px solid var(--light-gray);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+            transition: all 0.2s;
+        }
+        .sample-btn:hover {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+        
+        .competitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.5rem;
+        }
+        .competitor-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .competitor-option:hover {
+            border-color: var(--navy);
+        }
+        .competitor-option.selected {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+        .competitor-option input {
+            display: none;
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .run-btn {
+            background: var(--navy);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .run-btn:hover { background: #0d2340; transform: translateY(-2px); }
+        .run-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            overflow: hidden;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            background: var(--navy);
+            color: white;
+            padding: 1.25rem 2rem;
+        }
+        .results-header h2 { font-size: 1.3rem; margin: 0; }
+        .results-header p { font-size: 0.9rem; opacity: 0.85; margin: 0.5rem 0 0; }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--light-gray);
+            background: #f8f9fa;
+        }
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--dark-slate);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab:hover { background: #eef1f4; }
+        .tab.active {
+            background: white;
+            color: var(--navy);
+            border-bottom-color: var(--navy);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+        .tab-content.active { display: block; }
+        
+        .copy-btn {
+            background: var(--light-gray);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            float: right;
+            margin-bottom: 1rem;
+        }
+        .copy-btn:hover { background: var(--navy); color: white; }
+        
+        .results-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            clear: both;
+        }
+        .results-content h1 { font-size: 1.4rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h2 { font-size: 1.2rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h3 { font-size: 1.05rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.35rem; }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code { background: #F0F0F0; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+        .results-content blockquote {
+            border-left: 4px solid var(--navy);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #555;
+            font-style: italic;
+        }
+        .results-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .results-content th, .results-content td {
+            border: 1px solid var(--light-gray);
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .results-content th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: #FFEBEE;
+            color: var(--red);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        @media (max-width: 600px) {
+            .tabs { flex-wrap: wrap; }
+            .tab { flex: 1 1 50%; font-size: 0.8rem; padding: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge">⚔️ Competitive Lab</div>
+        <h1>BattleCoach</h1>
+        <p>Turn competitive chaos into winning plays. Input a deal briefing, get battle-ready artifacts powered by the FUD Engine and proven frameworks.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>From FUD to Differentiation</h2>
+        <p>Every competitive deal comes with noise — claims, objections, and FUD (Fear, Uncertainty, Doubt) that competitors use to create hesitation. BattleCoach helps you cut through it with two battle-tested frameworks:</p>
+        
+        <div class="framework-grid">
+            <div class="framework-box defensive">
+                <h4>🛡️ AREA Framework (Defensive)</h4>
+                <ul>
+                    <li><strong>A</strong>cknowledge — Validate their concern</li>
+                    <li><strong>R</strong>eframe — Shift the perspective</li>
+                    <li><strong>E</strong>vidence — Ground with proof</li>
+                    <li><strong>A</strong>sk — Hand them a new question</li>
+                </ul>
+            </div>
+            <div class="framework-box offensive">
+                <h4>⚔️ IDEA Framework (Offensive)</h4>
+                <ul>
+                    <li><strong>I</strong>nsight — Lead with a surprising truth</li>
+                    <li><strong>D</strong>ifferentiator — What only you can do</li>
+                    <li><strong>E</strong>vidence — Prove it's real</li>
+                    <li><strong>A</strong>sk — Reframe the criteria</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Load a Sample Brief or Start Fresh</h3>
+            </div>
+            
+            <div class="sample-brief-loader">
+                <h4>📋 Quick Start — Load a sample deal:</h4>
+                <button type="button" class="sample-btn" onclick="loadSample('apex')">Apex Packaging vs Jaggaer</button>
+                <button type="button" class="sample-btn" onclick="loadSample('pharma')">Global Pharma vs Coupa</button>
+                <button type="button" class="sample-btn" onclick="loadSample('city')">City of Austin vs Oracle</button>
+                <button type="button" class="sample-btn" onclick="loadSample('retail')">RetailMax vs GEP</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" placeholder="e.g., Apex Packaging Group" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="industry">Industry</label>
+                <input type="text" id="industry" name="industry" placeholder="e.g., Manufacturing, Retail, Public Sector" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="region">Region</label>
+                <input type="text" id="region" name="region" placeholder="e.g., EMEA, NA, APAC" required>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>The Competition</h3>
+            </div>
+            
+            <div class="form-group">
+                <label>Primary Competitor</label>
+                <p class="hint">Select the competitor you're going head-to-head with:</p>
+                <div class="competitor-grid" id="competitorGrid">
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Jaggaer">
+                        Jaggaer
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Coupa">
+                        Coupa
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Oracle">
+                        Oracle
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="GEP">
+                        GEP
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Workday">
+                        Workday
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Ivalua">
+                        Ivalua
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Zycus">
+                        Zycus
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="E2Open">
+                        E2Open
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Blue Yonder">
+                        Blue Yonder
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="C2FO">
+                        C2FO
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="PrimeRevenue">
+                        PrimeRevenue
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Citibank">
+                        Citibank
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="ORO">
+                        ORO
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Zip">
+                        Zip
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Deal Context</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="audience">Primary Buyer Persona</label>
+                <select id="audience">
+                    <option value="CPO">CPO / Chief Procurement Officer</option>
+                    <option value="VP Procurement">VP Procurement</option>
+                    <option value="VP Supply Chain">VP Supply Chain</option>
+                    <option value="CFO">CFO / Finance</option>
+                    <option value="CIO">CIO / IT</option>
+                    <option value="Director Sourcing">Director of Sourcing</option>
+                    <option value="Director Procurement">Director of Procurement</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="solutionArea">Solution Area</label>
+                <select id="solutionArea">
+                    <option value="Source-to-Pay">Source-to-Pay (S2P)</option>
+                    <option value="Sourcing">Strategic Sourcing</option>
+                    <option value="Procurement">Procurement / P2P</option>
+                    <option value="Supply Chain Collaboration">Supply Chain Collaboration</option>
+                    <option value="Supplier Management">Supplier Management</option>
+                    <option value="Invoice Management">Invoice & AP Automation</option>
+                    <option value="Working Capital">Working Capital / SCF</option>
+                    <option value="Spend Analytics">Spend Analytics</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="dealStage">Deal Stage</label>
+                <select id="dealStage">
+                    <option value="Discovery">Discovery / Early Engagement</option>
+                    <option value="Demo-Evaluation">Demo / Evaluation</option>
+                    <option value="RFP">RFP Response</option>
+                    <option value="Negotiation">Negotiation / Final Selection</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalContext">Additional Context (optional)</label>
+                <p class="hint">Any known dynamics, competitor claims you've heard, specific concerns from the buyer, etc.</p>
+                <textarea id="additionalContext" name="additionalContext" placeholder="e.g., Buyer mentioned Jaggaer is offering a significant discount. They're concerned about SAP's implementation timeline. Currently using Oracle EBS for ERP."></textarea>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>⚔️ Generate Battle Plays</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>⚔️ Battle Plays for <span id="resultCustomer"></span></h2>
+            <p>vs <span id="resultCompetitor"></span> • <span id="resultIndustry"></span> • <span id="resultStage"></span></p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('fud')">FUD Response Sheet</div>
+            <div class="tab" onclick="switchTab('area')">AREA Script</div>
+            <div class="tab" onclick="switchTab('idea')">IDEA Points</div>
+            <div class="tab" onclick="switchTab('discovery')">Discovery Qs</div>
+        </div>
+        
+        <div class="tab-content active" id="tab-fud">
+            <button class="copy-btn" onclick="copyTab('fud')">📋 Copy</button>
+            <div class="results-content" id="content-fud"></div>
+        </div>
+        <div class="tab-content" id="tab-area">
+            <button class="copy-btn" onclick="copyTab('area')">📋 Copy</button>
+            <div class="results-content" id="content-area"></div>
+        </div>
+        <div class="tab-content" id="tab-idea">
+            <button class="copy-btn" onclick="copyTab('idea')">📋 Copy</button>
+            <div class="results-content" id="content-idea"></div>
+        </div>
+        <div class="tab-content" id="tab-discovery">
+            <button class="copy-btn" onclick="copyTab('discovery')">📋 Copy</button>
+            <div class="results-content" id="content-discovery"></div>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// Sample briefs
+const sampleBriefs = {
+    apex: {
+        customerName: "Apex Packaging Group",
+        industry: "Manufacturing",
+        region: "EMEA",
+        competitor: "Jaggaer",
+        audience: "CPO",
+        solutionArea: "Sourcing",
+        dealStage: "Demo-Evaluation",
+        additionalContext: "Mid-market packaging manufacturer evaluating sourcing solutions. Currently using manual processes and spreadsheets. Jaggaer is emphasizing their industry-specific bundles and vertical focus. Buyer is concerned about total cost of ownership and implementation complexity."
+    },
+    pharma: {
+        customerName: "GlobalPharma Inc",
+        industry: "Life Sciences / Pharmaceutical",
+        region: "NA",
+        competitor: "Coupa",
+        audience: "VP Procurement",
+        solutionArea: "Source-to-Pay",
+        dealStage: "RFP",
+        additionalContext: "Large pharmaceutical company with complex compliance requirements. Coupa is positioning on ease of use and 'community intelligence'. Buyer team has concerns about supplier adoption rates and working capital optimization. Need strong regulated industry references."
+    },
+    city: {
+        customerName: "City of Austin",
+        industry: "Public Sector",
+        region: "NA",
+        competitor: "Oracle",
+        audience: "Director Procurement",
+        solutionArea: "Procurement",
+        dealStage: "RFP",
+        additionalContext: "Large municipal government modernizing procurement. Oracle is bundling with their existing ERP footprint and claiming 'unified cloud suite' benefits. Budget constraints are real. Need to demonstrate value beyond just ERP integration."
+    },
+    retail: {
+        customerName: "RetailMax Corporation",
+        industry: "Retail",
+        region: "APAC",
+        competitor: "GEP",
+        audience: "VP Supply Chain",
+        solutionArea: "Supply Chain Collaboration",
+        dealStage: "Discovery",
+        additionalContext: "Large retail chain looking to improve supplier collaboration and visibility. GEP is offering aggressive pricing and positioning their consulting + technology bundle. Buyer wants to understand network effects and supplier onboarding approach."
+    }
+};
+
+function loadSample(key) {
+    const brief = sampleBriefs[key];
+    document.getElementById('customerName').value = brief.customerName;
+    document.getElementById('industry').value = brief.industry;
+    document.getElementById('region').value = brief.region;
+    document.getElementById('audience').value = brief.audience;
+    document.getElementById('solutionArea').value = brief.solutionArea;
+    document.getElementById('dealStage').value = brief.dealStage;
+    document.getElementById('additionalContext').value = brief.additionalContext;
+    
+    // Select competitor
+    document.querySelectorAll('.competitor-option').forEach(opt => {
+        opt.classList.remove('selected');
+        const input = opt.querySelector('input');
+        if (input.value === brief.competitor) {
+            opt.classList.add('selected');
+            input.checked = true;
+        }
+    });
+}
+
+// Competitor selection UI
+document.querySelectorAll('.competitor-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.competitor-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+
+// Tab switching
+function switchTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+}
+
+function copyTab(tabId) {
+    const content = document.getElementById(`content-${tabId}`).innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        const btn = document.querySelector(`#tab-${tabId} .copy-btn`);
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+// Form submission
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const selectedCompetitor = document.querySelector('input[name="competitor"]:checked');
+    if (!selectedCompetitor) {
+        errorMessage.textContent = 'Please select a competitor.';
+        errorMessage.classList.add('show');
+        return;
+    }
+    
+    const inputs = {
+        customerName: document.getElementById('customerName').value,
+        industry: document.getElementById('industry').value,
+        region: document.getElementById('region').value,
+        competitor: selectedCompetitor.value,
+        audience: document.getElementById('audience').value,
+        solutionArea: document.getElementById('solutionArea').value,
+        dealStage: document.getElementById('dealStage').value,
+        additionalContext: document.getElementById('additionalContext').value
+    };
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Generating battle plays...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'battlecoach',
+                inputs: inputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        
+        const data = await response.json();
+        
+        // Update header
+        document.getElementById('resultCustomer').textContent = inputs.customerName;
+        document.getElementById('resultCompetitor').textContent = inputs.competitor;
+        document.getElementById('resultIndustry').textContent = inputs.industry;
+        document.getElementById('resultStage').textContent = inputs.dealStage;
+        
+        // Parse and display results
+        document.getElementById('content-fud').innerHTML = marked.parse(data.result.fudSheet || data.result);
+        document.getElementById('content-area').innerHTML = marked.parse(data.result.areaScript || '');
+        document.getElementById('content-idea').innerHTML = marked.parse(data.result.ideaPoints || '');
+        document.getElementById('content-discovery').innerHTML = marked.parse(data.result.discoveryQuestions || '');
+        
+        // If single result, put in all tabs
+        if (typeof data.result === 'string') {
+            const sections = parseMultiSectionResult(data.result);
+            document.getElementById('content-fud').innerHTML = marked.parse(sections.fud);
+            document.getElementById('content-area').innerHTML = marked.parse(sections.area);
+            document.getElementById('content-idea').innerHTML = marked.parse(sections.idea);
+            document.getElementById('content-discovery').innerHTML = marked.parse(sections.discovery);
+        }
+        
+        resultsSection.classList.add('show');
+        switchTab('fud');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '⚔️ Generate Battle Plays';
+        spinner.style.display = 'none';
+    }
+});
+
+function parseMultiSectionResult(text) {
+    // Parse a combined result into sections
+    const sections = { fud: '', area: '', idea: '', discovery: '' };
+    
+    // Try to split by section headers
+    const fudMatch = text.match(/##?\s*(?:FUD|What They'll Say|Signal vs\.? Noise)[\s\S]*?(?=##?\s*(?:AREA|Defensive|Objection)|$)/i);
+    const areaMatch = text.match(/##?\s*(?:AREA|Defensive|Objection Handling)[\s\S]*?(?=##?\s*(?:IDEA|Offensive|Differentiation)|$)/i);
+    const ideaMatch = text.match(/##?\s*(?:IDEA|Offensive|Differentiation|Talking Points)[\s\S]*?(?=##?\s*(?:Discovery|Questions)|$)/i);
+    const discoveryMatch = text.match(/##?\s*(?:Discovery|Questions|Reframe)[\s\S]*$/i);
+    
+    sections.fud = fudMatch ? fudMatch[0] : text;
+    sections.area = areaMatch ? areaMatch[0] : '';
+    sections.idea = ideaMatch ? ideaMatch[0] : '';
+    sections.discovery = discoveryMatch ? discoveryMatch[0] : '';
+    
+    // Fallback: if no sections found, put everything in FUD
+    if (!sections.area && !sections.idea && !sections.discovery) {
+        sections.fud = text;
+    }
+    
+    return sections;
+}
+</script>
+</body>
+</html>
