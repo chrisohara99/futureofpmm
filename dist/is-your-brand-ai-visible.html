@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is Your Brand AI-Visible? A Testing Framework | Future of PMM</title>
+    <meta name="description" content="How to test whether ChatGPT, Perplexity, and Claude know your brand exists — and describe it correctly. A practical framework for measuring AI visibility.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #1a1a2e;
+            --coral: #c84b31;
+            --text: #2d3748;
+            --text-light: #718096;
+            --bg: #ffffff;
+            --bg-alt: #f7fafc;
+            --border: #e2e8f0;
+            --green: #16a34a;
+            --yellow: #ca8a04;
+            --red: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .header {
+            background: var(--dark-slate);
+            padding: 1rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img { height: 60px; }
+        .nav { display: flex; gap: 1.5rem; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, #16213e 100%);
+            padding: 4rem 2rem;
+            color: white;
+        }
+        .hero-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .hero-label {
+            display: inline-block;
+            background: var(--coral);
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        main {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark-slate);
+            margin: 2.5rem 0 1rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin: 2rem 0 0.75rem;
+        }
+        p { margin-bottom: 1.25rem; font-size: 1.05rem; }
+        
+        .lead {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            border-left: 4px solid var(--coral);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        ul, ol { margin: 1rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .test-card {
+            background: var(--bg-alt);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .test-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .test-card .prompt {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .test-card .what-to-look-for {
+            font-size: 0.95rem;
+        }
+        .test-card .what-to-look-for strong {
+            color: var(--coral);
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .score-item {
+            text-align: center;
+            padding: 1.25rem;
+            border-radius: 10px;
+        }
+        .score-item.green { background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .score-item.yellow { background: #fefce8; border: 1px solid #fef08a; }
+        .score-item.red { background: #fef2f2; border: 1px solid #fecaca; }
+        .score-item .emoji { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .score-item h5 { font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .score-item.green h5 { color: var(--green); }
+        .score-item.yellow h5 { color: var(--yellow); }
+        .score-item.red h5 { color: var(--red); }
+        .score-item p { font-size: 0.8rem; color: var(--text-light); margin: 0; }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .results-table th, .results-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .results-table th {
+            background: var(--bg-alt);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .action-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .action-box h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.75rem;
+        }
+        .action-box ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+        .action-box li {
+            color: #78350f;
+            margin-bottom: 0.35rem;
+        }
+        
+        .cta-box {
+            background: var(--dark-slate);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .cta-box h3 { color: white; margin-bottom: 0.75rem; }
+        .cta-box p { opacity: 0.9; margin-bottom: 1.25rem; }
+        .cta-btn {
+            display: inline-block;
+            background: var(--coral);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .score-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/digests/">Digests</a>
+            <a href="/newsletters.html">Newsletter</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <span class="hero-label">Deep Dive</span>
+        <h1>Is Your Brand AI-Visible?</h1>
+        <p class="subtitle">A testing framework to measure whether AI knows you exist — and describes you correctly</p>
+    </div>
+</section>
+
+<main>
+    
+    <p class="lead">Here's an uncomfortable question: If a buyer asks ChatGPT about your category, does your brand come up? And if it does, is the description accurate?</p>
+    
+    <p>Most PMMs have never tested this. They assume that because they rank well on Google, they're visible everywhere. But AI discovery works differently — and the gaps might surprise you.</p>
+    
+    <p>This framework gives you a systematic way to test your AI visibility across the platforms that matter.</p>
+    
+    <h2>The Five-Query Test</h2>
+    
+    <p>Run these five prompts across ChatGPT, Perplexity, and Claude. Document the responses. This takes about 15 minutes and tells you exactly where you stand.</p>
+    
+    <div class="test-card">
+        <h4>🔍 Test 1: Category Query</h4>
+        <div class="prompt">"What are the best [your category] solutions for enterprise companies?"</div>
+        <p class="what-to-look-for"><strong>Look for:</strong> Are you mentioned? Where in the list? How are you described relative to competitors?</p>
+    </div>
+    
+    <div class="test-card">
+        <h4>🏢 Test 2: Direct Brand Query</h4>
+        <div class="prompt">"What is [Your Company]? Tell me about their main products."</div>
+        <p class="what-to-look-for"><strong>Look for:</strong> Is the description accurate? Current? Does it mention your key differentiators or just generic info?</p>
+    </div>
+    
+    <div class="test-card">
+        <h4>⚔️ Test 3: Competitive Comparison</h4>
+        <div class="prompt">"Compare [Your Company] vs [Top Competitor] for [use case]."</div>
+        <p class="what-to-look-for"><strong>Look for:</strong> Is the comparison fair? Are your strengths represented? Any outdated information?</p>
+    </div>
+    
+    <div class="test-card">
+        <h4>💼 Test 4: Use Case Query</h4>
+        <div class="prompt">"What's the best solution for [specific use case your product solves]?"</div>
+        <p class="what-to-look-for"><strong>Look for:</strong> Do you appear for the problems you actually solve? Or are you absent from use-case-specific queries?</p>
+    </div>
+    
+    <div class="test-card">
+        <h4>📊 Test 5: Buying Advice Query</h4>
+        <div class="prompt">"I'm evaluating [your category] vendors. What should I consider and who should I look at?"</div>
+        <p class="what-to-look-for"><strong>Look for:</strong> Are you in the consideration set? What criteria does the AI use — do they favor your strengths?</p>
+    </div>
+    
+    <h2>Scoring Your Results</h2>
+    
+    <p>For each test, score your visibility on a simple scale:</p>
+    
+    <div class="score-grid">
+        <div class="score-item green">
+            <div class="emoji">✅</div>
+            <h5>Strong (3 pts)</h5>
+            <p>Mentioned prominently with accurate, differentiated description</p>
+        </div>
+        <div class="score-item yellow">
+            <div class="emoji">⚠️</div>
+            <h5>Weak (1 pt)</h5>
+            <p>Mentioned but generic, outdated, or buried in list</p>
+        </div>
+        <div class="score-item red">
+            <div class="emoji">❌</div>
+            <h5>Invisible (0 pts)</h5>
+            <p>Not mentioned at all, or described incorrectly</p>
+        </div>
+    </div>
+    
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Score</th>
+                <th>Interpretation</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>12-15</td>
+                <td>Strong AI presence. Focus on maintaining accuracy.</td>
+                <td>Monitor quarterly</td>
+            </tr>
+            <tr>
+                <td>6-11</td>
+                <td>Visible but undifferentiated. GEO improvements needed.</td>
+                <td>Optimize now</td>
+            </tr>
+            <tr>
+                <td>0-5</td>
+                <td>AI-invisible. Urgent remediation required.</td>
+                <td>Critical priority</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Common Problems (And Fixes)</h2>
+    
+    <h3>Problem: "We're not mentioned at all"</h3>
+    <div class="action-box">
+        <h4>Fix: Entity Establishment</h4>
+        <ul>
+            <li>Create or update your Wikidata entry</li>
+            <li>Pursue Wikipedia notability (press coverage, third-party sources)</li>
+            <li>Ensure consistent naming across all web properties</li>
+            <li>Get mentioned on high-authority sites (analyst reports, major publications)</li>
+        </ul>
+    </div>
+    
+    <h3>Problem: "We're mentioned but the description is wrong"</h3>
+    <div class="action-box">
+        <h4>Fix: Content Clarity</h4>
+        <ul>
+            <li>Update your homepage and About page with clear, quotable descriptions</li>
+            <li>Add Schema.org markup with accurate company/product data</li>
+            <li>Publish fresh content that corrects outdated narratives</li>
+            <li>Request corrections on third-party sites with wrong information</li>
+        </ul>
+    </div>
+    
+    <h3>Problem: "We're mentioned but not differentiated"</h3>
+    <div class="action-box">
+        <h4>Fix: Quotable Claims</h4>
+        <ul>
+            <li>Add specific, numbered proof points (customers, transactions, integrations)</li>
+            <li>Create comparison content that highlights your unique strengths</li>
+            <li>Publish customer evidence with named brands and specific outcomes</li>
+            <li>Develop clear "unlike X, we do Y" positioning statements</li>
+        </ul>
+    </div>
+    
+    <h3>Problem: "We appear for brand queries but not category queries"</h3>
+    <div class="action-box">
+        <h4>Fix: Category Association</h4>
+        <ul>
+            <li>Explicitly state your category on key pages ("SAP Datasphere is an enterprise data management platform...")</li>
+            <li>Create content targeting category-level queries</li>
+            <li>Build links from category-defining content (analyst reports, industry guides)</li>
+            <li>Participate in industry conversations that establish category membership</li>
+        </ul>
+    </div>
+    
+    <h2>Track Over Time</h2>
+    
+    <p>AI responses change as models update and new content is indexed. Run this test monthly and track trends:</p>
+    
+    <ul>
+        <li>Screenshot responses for documentation</li>
+        <li>Note which AI platforms mention you most consistently</li>
+        <li>Track whether descriptions improve after content changes</li>
+        <li>Monitor competitors — if they improve, you may need to respond</li>
+    </ul>
+    
+    <div class="cta-box">
+        <h3>Go Deeper</h3>
+        <p>The Unit 2 GEO Lab provides a structured worksheet for running this audit on your own products.</p>
+        <a href="/curriculum/labs/geo-visibility.html" class="cta-btn">Start the GEO Lab →</a>
+    </div>
+    
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>
