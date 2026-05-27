@@ -53,7 +53,12 @@ WHERE LOWER(email) IN (
     'yanhong.tong@sap.com'
 );
 
--- Step 3: Verify the update
+-- Step 3: Mark everyone else as test_user
+UPDATE profiles 
+SET team = 'test_user'
+WHERE team IS NULL;
+
+-- Step 4: Verify the update
 SELECT 
     team,
     COUNT(*) as count
@@ -64,4 +69,5 @@ ORDER BY team;
 -- =====================================================
 -- DONE! You can now query by team:
 -- SELECT * FROM profiles WHERE team = 'dan_yu';
+-- SELECT * FROM profiles WHERE team = 'test_user';
 -- =====================================================
