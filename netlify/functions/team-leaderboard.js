@@ -174,10 +174,17 @@ exports.handler = async (event) => {
         displayName = username.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
       }
       
+      // Special badge overrides
+      const isBrianR = profile.email.toLowerCase() === 'brian.raver@sap.com';
+      const badgeScorecard = isBrianR ? '🍺' : '📊';
+      const badgeCognitive = isBrianR ? '🍺' : '🧠';
+      
       return {
         displayName,
         unitsPassed,
         totalUnits: ACTIVE_UNITS.length,
+        badgeScorecard,
+        badgeCognitive,
         quizzesTaken: userScores.length,
         avgPercentage: Math.round(avgPercentage),
         hasScorecard,
