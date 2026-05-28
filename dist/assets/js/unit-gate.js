@@ -5,11 +5,11 @@
     const UNLOCK_DATES = {
         'unit-01': new Date('2026-05-07'),  // Available
         'unit-02': new Date('2026-05-14'),  // Available
-        'unit-03': new Date('2026-06-04'),  // June 4
-        'unit-04': new Date('2026-06-11'),  // June 11
-        'unit-05': new Date('2026-06-18'),  // June 18
-        'unit-06': new Date('2026-06-25'),  // June 25
-        'unit-07': new Date('2026-07-02'),  // July 2
+        'unit-03': new Date('2026-06-11'),  // June 11
+        'unit-04': new Date('2026-06-18'),  // June 18
+        'unit-05': new Date('2026-06-25'),  // June 25
+        'unit-06': new Date('2026-07-02'),  // July 2
+        'unit-07': new Date('2026-07-09'),  // July 9
     };
     
     // Get current unit from URL path
