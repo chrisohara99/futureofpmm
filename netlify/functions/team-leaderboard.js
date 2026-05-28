@@ -2,6 +2,48 @@
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
+// Dan's team - 40 members (excluding Dan and Chris in the filter below)
+const TEAM_EMAILS = [
+  "a.naji@sap.com",
+  "axel.schuller@sap.com",
+  "brian.raver@sap.com",
+  "cathy.citarelli@sap.com",
+  "corrie.birkeness@sap.com",
+  "daniel.dukes@sap.com",
+  "jacob.brass@sap.com",
+  "jose.chicas@sap.com",
+  "josh.ledbetter@sap.com",
+  "justin.ham@sap.com",
+  "kaiser.larsen@sap.com",
+  "kara.reed@sap.com",
+  "karsten.ruf@sap.com",
+  "katryn.cheng@sap.com",
+  "kendall.dignam@sap.com",
+  "kuba.kufel@sap.com",
+  "lauren.wong@sap.com",
+  "liam.clarke@sap.com",
+  "matthew.lyman@sap.com",
+  "max.law@sap.com",
+  "megan.hoy@sap.com",
+  "neil.whitehead@sap.com",
+  "olivier.duvelleroy@sap.com",
+  "orla.cullen@sap.com",
+  "pam.barrowcliffe@sap.com",
+  "saely.espaillat@sap.com",
+  "savannah.voll@sap.com",
+  "scott.mackenzie@sap.com",
+  "sim.patara@sap.com",
+  "stuart.giles@sap.com",
+  "tara.rogers@sap.com",
+  "teuta.elezaj@sap.com",
+  "thierry.audas@sap.com",
+  "tiffany.baker@sap.com",
+  "tony.fassette@sap.com",
+  "tony.truong@sap.com",
+  "venkata.giduthuri@sap.com",
+  "yanhong.tong@sap.com"
+];
+
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -14,9 +56,10 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Get all team members (dan_yu team)
+    // Get team members by email list
+    const emailList = TEAM_EMAILS.map(e => `"${e}"`).join(',');
     const profilesRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?team=eq.dan_yu&select=id,name,email,created_at`,
+      `${SUPABASE_URL}/rest/v1/profiles?email=in.(${emailList})&select=id,name,email,created_at`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -27,12 +70,11 @@ exports.handler = async (event) => {
     
     let profiles = await profilesRes.json();
     
-    // Exclude Dan Yu and Chris O'Hara
-    const excludeEmails = [
-      'dan.yu@sap.com',
-      'christopher.ohara@sap.com'
-    ];
-    profiles = profiles.filter(p => !excludeEmails.includes(p.email.toLowerCase()));
+    // Handle error response
+    if (profiles.error || profiles.message) {
+      console.error('Supabase error:', profiles);
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Database error', details: profiles }) };
+    }
 
     // Get all quiz scores for these users
     const userIds = profiles.map(p => p.id);
