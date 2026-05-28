@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS survey_responses (
     improvements TEXT,
     nps INTEGER NOT NULL CHECK (nps >= 0 AND nps <= 10),
     email TEXT,  -- Optional, for tracking who responded
+    from_unit TEXT,  -- Which unit triggered this survey (e.g., 'unit-01')
+    triggered_quiz_score INTEGER,  -- Score that triggered the survey
     week_number INTEGER,  -- Week of year for trend analysis
     created_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -29,7 +29,9 @@ exports.handler = async (event) => {
       applying_at_work, 
       improvements, 
       nps,
-      email 
+      email,
+      from_unit,
+      quiz_score
     } = data;
     
     // Validate required fields
@@ -60,6 +62,8 @@ exports.handler = async (event) => {
         improvements,
         nps,
         email: email || null,
+        from_unit: from_unit || null,
+        triggered_quiz_score: quiz_score || null,
         week_number: getWeekNumber()
       })
     });

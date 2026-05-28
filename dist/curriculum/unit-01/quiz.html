@@ -1013,6 +1013,12 @@ function submitAssessment() {
         `;
     }
     
+    // Add survey redirect notice
+    const surveyNotice = document.createElement('div');
+    surveyNotice.style.cssText = 'background: #dbeafe; border: 1px solid #3b82f6; color: #1e40af; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;';
+    surveyNotice.innerHTML = '📋 <strong>Quick feedback survey loading in 3 seconds...</strong><br><span style="font-size: 0.9rem;">Help us improve the curriculum!</span>';
+    document.querySelector('.results-section')?.appendChild(surveyNotice);
+    
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
     saveQuizScore(totalScore, 100, percentage);
 }
@@ -1070,6 +1076,10 @@ async function saveQuizScore(score, total, percentage) {
             showSaveError('Error saving progress: ' + result.error);
         } else {
             console.log('Quiz score saved successfully');
+            // Redirect to survey after short delay to show results
+            setTimeout(() => {
+                window.location.href = `/curriculum/survey.html?unit=unit-01&score=${percentage}`;
+            }, 3000);
         }
     } catch (err) {
         console.error('Save error:', err);

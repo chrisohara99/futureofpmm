@@ -81,6 +81,9 @@
     <header>
         <h1>📋 Curriculum Feedback</h1>
         <p>Help us make the 10× PMM curriculum better</p>
+        <div id="score-banner" style="display:none; background: rgba(255,255,255,0.15); margin-top: 1rem; padding: 1rem; border-radius: 8px;">
+            🎉 <strong>You scored <span id="score-value">--</span>%</strong> on <span id="unit-name">the quiz</span>! Complete this quick survey to continue.
+        </div>
     </header>
     
     <main>
@@ -253,6 +256,26 @@
     </footer>
     
     <script>
+    // Check for quiz redirect params
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromUnit = urlParams.get('unit');
+    const quizScore = urlParams.get('score');
+    
+    if (fromUnit && quizScore) {
+        document.getElementById('score-banner').style.display = 'block';
+        document.getElementById('score-value').textContent = quizScore;
+        const unitNames = {
+            'unit-01': 'Unit 1',
+            'unit-02': 'Unit 2',
+            'unit-03': 'Unit 3',
+            'unit-04': 'Unit 4',
+            'unit-05': 'Unit 5',
+            'unit-06': 'Unit 6',
+            'unit-07': 'Unit 7'
+        };
+        document.getElementById('unit-name').textContent = unitNames[fromUnit] || fromUnit;
+    }
+    
     document.getElementById('feedback-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -288,6 +311,12 @@
                 }
             } catch (e) {}
             
+            // Add unit context if coming from quiz
+            if (fromUnit) {
+                data.from_unit = fromUnit;
+                data.quiz_score = parseInt(quizScore) || null;
+            }
+            
             const res = await fetch('/.netlify/functions/save-survey', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -298,6 +327,13 @@
             
             document.getElementById('survey-form').style.display = 'none';
             document.getElementById('success-msg').style.display = 'block';
+            
+            // If came from quiz, auto-redirect after 2 seconds
+            if (fromUnit) {
+                setTimeout(() => {
+                    window.location.href = '/curriculum/';
+                }, 2000);
+            }
             
         } catch (err) {
             errorMsg.textContent = 'Error submitting feedback. Please try again.';
