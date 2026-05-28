@@ -59,7 +59,7 @@ exports.handler = async (event) => {
     // Get team members by email list
     const emailList = TEAM_EMAILS.map(e => `"${e}"`).join(',');
     const profilesRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?email=in.(${emailList})&select=id,name,email,created_at`,
+      `${SUPABASE_URL}/rest/v1/profiles?email=in.(${emailList})&select=id,first_name,last_name,email,created_at`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -137,10 +137,15 @@ exports.handler = async (event) => {
       const totalPoints = (unitsPassed * 100) + Math.round(avgPercentage) + baselineBonus;
       
       // Format display name (First + Last Initial for privacy)
-      let displayName = profile.name || profile.email.split('@')[0];
-      const nameParts = displayName.trim().split(/\s+/);
-      if (nameParts.length >= 2) {
-        displayName = `${nameParts[0]} ${nameParts[nameParts.length - 1][0]}.`;
+      let displayName;
+      if (profile.first_name && profile.last_name) {
+        displayName = `${profile.first_name} ${profile.last_name[0]}.`;
+      } else if (profile.first_name) {
+        displayName = profile.first_name;
+      } else {
+        // Fallback to email username, capitalize first letter
+        const username = profile.email.split('@')[0].replace(/[._]/g, ' ');
+        displayName = username.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
       }
       
       return {
