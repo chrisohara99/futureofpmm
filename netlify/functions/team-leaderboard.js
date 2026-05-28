@@ -119,16 +119,22 @@ exports.handler = async (event) => {
       const userScores = scores.filter(s => s.user_id === profile.id);
       const userAssessments = assessments.filter(a => a.user_id === profile.id);
       
-      // Count unique units passed (80%+ threshold)
-      const unitsPassed = new Set(
-        userScores
-          .filter(s => s.percentage >= 80)
-          .map(s => s.chapter)
-      ).size;
+      // Get best score per unit
+      const bestPerUnit = {};
+      userScores.forEach(s => {
+        if (!bestPerUnit[s.chapter] || s.percentage > bestPerUnit[s.chapter]) {
+          bestPerUnit[s.chapter] = s.percentage;
+        }
+      });
       
-      // Calculate average quiz percentage
-      const avgPercentage = userScores.length > 0
-        ? userScores.reduce((sum, s) => sum + (s.percentage || 0), 0) / userScores.length
+      // Count unique units passed (80%+ threshold)
+      const unitsPassed = Object.values(bestPerUnit).filter(p => p >= 80).length;
+      
+      // Calculate average from BEST 2 UNITS only (fairer scoring)
+      const bestScores = Object.values(bestPerUnit).sort((a, b) => b - a);
+      const best2 = bestScores.slice(0, 2);
+      const avgPercentage = best2.length > 0
+        ? best2.reduce((sum, p) => sum + p, 0) / best2.length
         : 0;
       
       // Check if baseline assessments completed
