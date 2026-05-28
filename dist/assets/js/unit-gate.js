@@ -3,13 +3,13 @@
 
 (function() {
     const UNLOCK_DATES = {
-        'unit-01': new Date('2026-05-07'),  // Week 1 - Now
-        'unit-02': new Date('2026-05-14'),  // Week 2
-        'unit-03': new Date('2026-05-21'),  // Week 3
-        'unit-04': new Date('2026-05-28'),  // Week 4
-        'unit-05': new Date('2026-06-04'),  // Week 5
-        'unit-06': new Date('2026-06-11'),  // Week 6
-        'unit-07': new Date('2026-06-18'),  // Week 7
+        'unit-01': new Date('2026-05-07'),  // Available
+        'unit-02': new Date('2026-05-14'),  // Available
+        'unit-03': new Date('2026-06-04'),  // June 4
+        'unit-04': new Date('2026-06-11'),  // June 11
+        'unit-05': new Date('2026-06-18'),  // June 18
+        'unit-06': new Date('2026-06-25'),  // June 25
+        'unit-07': new Date('2026-07-02'),  // July 2
     };
     
     // Get current unit from URL path
