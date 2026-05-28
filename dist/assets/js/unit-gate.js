@@ -2,6 +2,20 @@
 // Updates: Just change UNLOCK_DATES to roll out new units
 
 (function() {
+    // Superusers bypass all time gates
+    const SUPERUSERS = ['christopher.ohara@sap.com', 'dan.yu@sap.com'];
+    
+    try {
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (directUser) {
+            const email = JSON.parse(directUser).email?.toLowerCase();
+            if (SUPERUSERS.includes(email)) {
+                console.log('Superuser detected - bypassing unit gate');
+                return; // Skip all gating
+            }
+        }
+    } catch (e) {}
+    
     const UNLOCK_DATES = {
         'unit-01': new Date('2026-05-07'),  // Available
         'unit-02': new Date('2026-05-14'),  // Available

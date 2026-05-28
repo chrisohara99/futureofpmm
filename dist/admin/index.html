@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Dashboard | 10× PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --green: #16a34a; --red: #dc2626; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.6; }
+        
+        header { background: var(--pmm-dark); color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 1.25rem; }
+        header .user { opacity: 0.8; font-size: 0.9rem; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        
+        .card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.5rem; }
+        .card .big { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; color: var(--pmm-dark); }
+        .card .sub { font-size: 0.9rem; color: #64748b; }
+        
+        .section { background: #fff; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .section h2 { font-size: 1.1rem; color: var(--pmm-dark); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { text-align: left; padding: 0.75rem; background: #f8fafc; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        td { padding: 0.75rem; border-top: 1px solid #e2e8f0; }
+        tr:hover { background: #f8fafc; }
+        
+        .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge.green { background: #dcfce7; color: #166534; }
+        .badge.blue { background: #dbeafe; color: #1e40af; }
+        .badge.yellow { background: #fef3c7; color: #92400e; }
+        .badge.red { background: #fee2e2; color: #991b1b; }
+        
+        .nps-score { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+        .nps-score.promoter { color: var(--green); }
+        .nps-score.passive { color: #f59e0b; }
+        .nps-score.detractor { color: var(--red); }
+        
+        .loading { text-align: center; padding: 3rem; color: #64748b; }
+        .error { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; }
+        
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .tab { padding: 0.5rem 1rem; border: none; background: #e2e8f0; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .tab.active { background: var(--pmm-blue); color: #fff; }
+        
+        .access-denied { text-align: center; padding: 4rem 2rem; }
+        .access-denied h1 { color: var(--red); margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading">Loading admin dashboard...</div>
+    </div>
+    
+    <script>
+    const SUPERUSERS = ['christopher.ohara@sap.com', 'dan.yu@sap.com'];
+    
+    // Check access
+    let currentUser = null;
+    try {
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (directUser) {
+            currentUser = JSON.parse(directUser).email?.toLowerCase();
+        }
+    } catch (e) {}
+    
+    if (!currentUser || !SUPERUSERS.includes(currentUser)) {
+        document.getElementById('app').innerHTML = `
+            <div class="access-denied">
+                <h1>🔒 Access Denied</h1>
+                <p>This page is restricted to administrators.</p>
+                <p style="margin-top: 1rem;"><a href="/curriculum/">← Back to Curriculum</a></p>
+            </div>
+        `;
+    } else {
+        loadDashboard();
+    }
+    
+    async function loadDashboard() {
+        document.getElementById('app').innerHTML = `
+            <header>
+                <h1>🛠️ Admin Dashboard</h1>
+                <div class="user">Logged in as ${currentUser}</div>
+            </header>
+            <div class="container">
+                <div class="grid" id="stats-grid">
+                    <div class="card"><h2>Loading...</h2></div>
+                </div>
+                <div class="section" id="survey-section">
+                    <h2>📋 Survey Responses</h2>
+                    <div class="loading">Loading survey data...</div>
+                </div>
+                <div class="section" id="users-section">
+                    <h2>👥 User Activity</h2>
+                    <div class="loading">Loading user data...</div>
+                </div>
+            </div>
+        `;
+        
+        // Load data
+        await Promise.all([
+            loadStats(),
+            loadSurveys(),
+            loadUsers()
+        ]);
+    }
+    
+    async function loadStats() {
+        try {
+            const [leaderboard, surveys] = await Promise.all([
+                fetch('/.netlify/functions/team-leaderboard').then(r => r.json()),
+                fetch('/.netlify/functions/admin-surveys').then(r => r.json()).catch(() => ({ responses: [] }))
+            ]);
+            
+            const totalUsers = leaderboard.totalMembers || 0;
+            const activeUsers = leaderboard.leaderboard?.filter(l => l.quizzesTaken > 0).length || 0;
+            const surveyCount = surveys.responses?.length || 0;
+            const avgNPS = surveys.responses?.length > 0 
+                ? (surveys.responses.reduce((sum, r) => sum + (r.nps || 0), 0) / surveys.responses.length).toFixed(1)
+                : '--';
+            
+            document.getElementById('stats-grid').innerHTML = `
+                <div class="card">
+                    <h2>Total Enrolled</h2>
+                    <div class="big">${totalUsers}</div>
+                    <div class="sub">Team members</div>
+                </div>
+                <div class="card">
+                    <h2>Active Learners</h2>
+                    <div class="big">${activeUsers}</div>
+                    <div class="sub">Completed quizzes</div>
+                </div>
+                <div class="card">
+                    <h2>Survey Responses</h2>
+                    <div class="big">${surveyCount}</div>
+                    <div class="sub">Feedback collected</div>
+                </div>
+                <div class="card">
+                    <h2>Average NPS</h2>
+                    <div class="big">${avgNPS}</div>
+                    <div class="sub">Net Promoter Score</div>
+                </div>
+            `;
+        } catch (err) {
+            document.getElementById('stats-grid').innerHTML = `<div class="error">Error loading stats: ${err.message}</div>`;
+        }
+    }
+    
+    async function loadSurveys() {
+        try {
+            const res = await fetch('/.netlify/functions/admin-surveys');
+            if (!res.ok) throw new Error('Failed to load surveys');
+            const { responses } = await res.json();
+            
+            if (!responses || responses.length === 0) {
+                document.querySelector('#survey-section .loading').innerHTML = '<p style="color: #64748b;">No survey responses yet.</p>';
+                return;
+            }
+            
+            let html = `<table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Value</th>
+                        <th>NPS</th>
+                        <th>Quiz Diff</th>
+                        <th>Top Learning</th>
+                        <th>Improvements</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            responses.slice(0, 50).forEach(r => {
+                const date = new Date(r.created_at).toLocaleDateString();
+                const npsClass = r.nps >= 9 ? 'promoter' : r.nps >= 7 ? 'passive' : 'detractor';
+                html += `<tr>
+                    <td>${date}</td>
+                    <td><span class="badge ${r.value_rating >= 4 ? 'green' : r.value_rating >= 3 ? 'yellow' : 'red'}">${r.value_rating}/5</span></td>
+                    <td><span class="nps-score ${npsClass}">${r.nps}</span></td>
+                    <td>${r.quiz_difficulty || '—'}</td>
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.top_learning || '—'}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.improvements || '—'}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            document.querySelector('#survey-section .loading').innerHTML = html;
+        } catch (err) {
+            document.querySelector('#survey-section .loading').innerHTML = `<div class="error">Error: ${err.message}</div>`;
+        }
+    }
+    
+    async function loadUsers() {
+        try {
+            const res = await fetch('/.netlify/functions/team-leaderboard');
+            const { leaderboard } = await res.json();
+            
+            let html = `<table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Units</th>
+                        <th>Quizzes</th>
+                        <th>Avg %</th>
+                        <th>Badges</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            leaderboard.forEach(u => {
+                html += `<tr>
+                    <td>#${u.rank}</td>
+                    <td><strong>${u.displayName}</strong></td>
+                    <td>${u.unitsPassed}/${u.totalUnits}</td>
+                    <td>${u.quizzesTaken}</td>
+                    <td>${u.avgPercentage}%</td>
+                    <td>${u.hasScorecard ? '📊' : '⬜'} ${u.hasCognitive ? '🧠' : '⬜'}</td>
+                    <td><strong>${u.totalPoints}</strong></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            document.querySelector('#users-section .loading').innerHTML = html;
+        } catch (err) {
+            document.querySelector('#users-section .loading').innerHTML = `<div class="error">Error: ${err.message}</div>`;
+        }
+    }
+    </script>
+</body>
+</html>
