@@ -86,7 +86,7 @@ exports.handler = async (event) => {
     // Fetch quiz scores for all team members (UUIDs need quotes)
     const userIdList = userIds.map(id => `"${id}"`).join(',');
     const scoresRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/quiz_scores?user_id=in.(${userIdList})&select=user_id,chapter,score,percentage,passed`,
+      `${SUPABASE_URL}/rest/v1/quiz_scores?user_id=in.(${userIdList})&select=user_id,chapter,score,percentage`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -122,7 +122,7 @@ exports.handler = async (event) => {
       // Count unique units passed (80%+ threshold)
       const unitsPassed = new Set(
         userScores
-          .filter(s => s.passed || s.percentage >= 80)
+          .filter(s => s.percentage >= 80)
           .map(s => s.chapter)
       ).size;
       
