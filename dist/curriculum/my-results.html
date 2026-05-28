@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Assessment Results | 10× PMM Curriculum</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --pmm-blue: #3b82f6;
@@ -169,9 +168,6 @@
     </footer>
     
     <script>
-    const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
-    
     // Cognitive roles data (full descriptions from Where Do You Sit assessment)
     const ROLES = {
         '0-0-0': { 
@@ -286,34 +282,16 @@
     async function loadResults() {
         console.log('loadResults called');
         try {
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-        console.log('Supabase client created');
-        
-        let userId = null;
-        
-        // Check Supabase session
-        const { data: { session } } = await client.auth.getSession();
-        if (session) {
-            userId = session.user.id;
-        } else {
-            // Check for direct access user
-            try {
-                const directUser = localStorage.getItem('pmm_direct_user');
-                if (directUser) {
-                    const email = JSON.parse(directUser).email;
-                    const { data: profile } = await client
-                        .from('profiles')
-                        .select('id')
-                        .eq('email', email.toLowerCase())
-                        .single();
-                    if (profile) userId = profile.id;
-                }
-            } catch (e) { console.warn('Direct user lookup failed:', e); }
+        // Get user email from localStorage
+        let userEmail = null;
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (directUser) {
+            userEmail = JSON.parse(directUser).email;
         }
         
-        console.log('UserId:', userId ? 'found' : 'not found');
+        console.log('User email:', userEmail ? 'found' : 'not found');
         
-        if (!userId) {
+        if (!userEmail) {
             document.getElementById('content').innerHTML = `
                 <div class="empty-state">
                     <h2>Sign in to view your results</h2>
@@ -324,16 +302,27 @@
             return;
         }
         
-        // Fetch all assessment results
-        const { data: results, error } = await client
-            .from('assessment_results')
-            .select('*')
-            .eq('user_id', userId)
-            .order('completed_at', { ascending: false });
+        // Fetch results via serverless function (bypasses corporate proxy)
+        const response = await fetch('/.netlify/functions/get-user-scores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail })
+        });
         
-        if (error) {
-            console.error('Error loading results:', error);
-            document.getElementById('content').innerHTML = `<div class="empty-state"><h2>Error loading results</h2><p>${error.message}</p></div>`;
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        
+        const { assessments: results, scores: quizScores } = await response.json();
+        
+        if (!results || results.length === 0) {
+            document.getElementById('content').innerHTML = `
+                <div class="empty-state">
+                    <h2>No assessments completed yet</h2>
+                    <p>Complete the pre-requisite assessments to establish your baseline and get personalized curriculum recommendations.</p>
+                    <a href="/10x-scorecard.html?flow=curriculum" class="btn">Start Assessment</a>
+                </div>
+            `;
             return;
         }
         
@@ -586,33 +575,8 @@
         return interpretations[role.name] || 'Your cognitive profile suggests a unique integration pattern. The curriculum will help you optimize your approach.';
     }
     
-    // Wait for Supabase to load then run
-    (function init() {
-        let attempts = 0;
-        const maxAttempts = 50;
-        
-        function check() {
-            console.log('Checking for Supabase, attempt', attempts + 1);
-            if (typeof supabase !== 'undefined') {
-                console.log('Supabase found, calling loadResults');
-                loadResults();
-            } else if (++attempts < maxAttempts) {
-                setTimeout(check, 100);
-            } else {
-                console.error('Supabase failed to load after', maxAttempts, 'attempts');
-                document.getElementById('content').innerHTML = `
-                    <div class="empty-state">
-                        <h2>Loading Error</h2>
-                        <p>Could not load the Supabase library. Please refresh and try again.</p>
-                        <a href="/curriculum/" class="btn">Back to Curriculum</a>
-                    </div>
-                `;
-            }
-        }
-        
-        // Start checking immediately
-        check();
-    })();
+    // Load results on page load (no Supabase dependency - uses serverless function)
+    document.addEventListener('DOMContentLoaded', loadResults);
     </script>
 </body>
 </html>
