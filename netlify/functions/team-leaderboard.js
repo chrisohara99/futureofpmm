@@ -2,6 +2,9 @@
 const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
+// CONFIG: Only count these units (update weekly as new units release)
+const ACTIVE_UNITS = ['unit-01', 'unit-02'];  // Week 2 - update each Monday
+
 // Dan's team - 40 members (excluding Dan and Chris in the filter below)
 const TEAM_EMAILS = [
   "a.naji@sap.com",
@@ -119,13 +122,15 @@ exports.handler = async (event) => {
       const userScores = scores.filter(s => s.user_id === profile.id);
       const userAssessments = assessments.filter(a => a.user_id === profile.id);
       
-      // Get best score per unit
+      // Get best score per unit (only count ACTIVE_UNITS)
       const bestPerUnit = {};
-      userScores.forEach(s => {
-        if (!bestPerUnit[s.chapter] || s.percentage > bestPerUnit[s.chapter]) {
-          bestPerUnit[s.chapter] = s.percentage;
-        }
-      });
+      userScores
+        .filter(s => ACTIVE_UNITS.includes(s.chapter))
+        .forEach(s => {
+          if (!bestPerUnit[s.chapter] || s.percentage > bestPerUnit[s.chapter]) {
+            bestPerUnit[s.chapter] = s.percentage;
+          }
+        });
       
       // Count unique units passed (80%+ threshold)
       const unitsPassed = Object.values(bestPerUnit).filter(p => p >= 80).length;
@@ -170,7 +175,7 @@ exports.handler = async (event) => {
       return {
         displayName,
         unitsPassed,
-        totalUnits: 7,
+        totalUnits: ACTIVE_UNITS.length,
         quizzesTaken: userScores.length,
         avgPercentage: Math.round(avgPercentage),
         hasScorecard,
