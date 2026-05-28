@@ -83,9 +83,10 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers, body: JSON.stringify({ leaderboard: [] }) };
     }
 
-    // Fetch quiz scores for all team members
+    // Fetch quiz scores for all team members (UUIDs need quotes)
+    const userIdList = userIds.map(id => `"${id}"`).join(',');
     const scoresRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/quiz_scores?user_id=in.(${userIds.join(',')})&select=user_id,chapter,score,percentage,passed`,
+      `${SUPABASE_URL}/rest/v1/quiz_scores?user_id=in.(${userIdList})&select=user_id,chapter,score,percentage,passed`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -94,10 +95,13 @@ exports.handler = async (event) => {
       }
     );
     const allScores = await scoresRes.json();
+    
+    // Handle empty or error responses
+    const scores = Array.isArray(allScores) ? allScores : [];
 
     // Fetch assessment results for all team members
     const assessRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/assessment_results?user_id=in.(${userIds.join(',')})&select=user_id,assessment_type,result_data`,
+      `${SUPABASE_URL}/rest/v1/assessment_results?user_id=in.(${userIdList})&select=user_id,assessment_type,result_data`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -106,11 +110,14 @@ exports.handler = async (event) => {
       }
     );
     const allAssessments = await assessRes.json();
+    
+    // Handle empty or error responses
+    const assessments = Array.isArray(allAssessments) ? allAssessments : [];
 
     // Build leaderboard
     const leaderboard = profiles.map(profile => {
-      const userScores = allScores.filter(s => s.user_id === profile.id);
-      const userAssessments = allAssessments.filter(a => a.user_id === profile.id);
+      const userScores = scores.filter(s => s.user_id === profile.id);
+      const userAssessments = assessments.filter(a => a.user_id === profile.id);
       
       // Count unique units passed (80%+ threshold)
       const unitsPassed = new Set(
