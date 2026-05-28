@@ -66,6 +66,18 @@ document.documentElement.style.display = 'none';
                     // Continue anyway - don't block page load
                 }
                 
+                // CRITICAL: Set pmm_direct_user for quiz saving to work
+                // This ensures saveQuizScore can find the user's email
+                try {
+                    localStorage.setItem('pmm_direct_user', JSON.stringify({
+                        email: session.user.email,
+                        source: 'supabase_auth'
+                    }));
+                    window.pmmCurrentUser = { email: session.user.email };
+                } catch (e) {
+                    console.warn('Could not set localStorage:', e);
+                }
+                
                 // Show page
                 document.documentElement.style.display = '';
             } else {
