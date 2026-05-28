@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS survey_responses (
     content_rating INTEGER CHECK (content_rating >= 0 AND content_rating <= 5),
     assessments_rating INTEGER CHECK (assessments_rating >= 0 AND assessments_rating <= 5),
     labs_rating INTEGER CHECK (labs_rating >= 0 AND labs_rating <= 5),
+    presentation_rating INTEGER CHECK (presentation_rating >= 1 AND presentation_rating <= 5),
+    quiz_difficulty TEXT,  -- 'too-easy', 'just-right', 'too-hard', 'not-taken'
     top_learning TEXT NOT NULL,
     most_useful_unit TEXT NOT NULL,
     applying_at_work TEXT NOT NULL,
