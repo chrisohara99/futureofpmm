@@ -139,9 +139,15 @@ exports.handler = async (event) => {
       const scorecardResult = userAssessments.find(a => a.assessment_type === '10x-scorecard-content');
       const scorecardScore = scorecardResult?.result_data?.average || null;
       
-      // Calculate total points: units passed * 100 + avg percentage + baseline bonuses
-      const baselineBonus = (hasScorecard ? 50 : 0) + (hasCognitive ? 50 : 0);
-      const totalPoints = (unitsPassed * 100) + Math.round(avgPercentage) + baselineBonus;
+      // Calculate total points:
+      // - 10x Scorecard: score × 20 (max 100 pts for 5.0 score)
+      // - Cognitive Profile: +50 pts
+      // - Unit Passed: +100 pts each
+      // - Quiz Average: adds to total
+      const scorecardPoints = scorecardScore ? Math.round(scorecardScore * 20) : 0;
+      const cognitivePoints = hasCognitive ? 50 : 0;
+      const unitPoints = unitsPassed * 100;
+      const totalPoints = scorecardPoints + cognitivePoints + unitPoints + Math.round(avgPercentage);
       
       // Format display name (First + Last Initial for privacy)
       let displayName;
