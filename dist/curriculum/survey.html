@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Feedback | 10× PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pmm-blue: #3b82f6;
+            --pmm-dark: #1e3a5f;
+            --green: #16a34a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; min-height: 100vh; }
+        
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: #fff; padding: 2rem; text-align: center; }
+        header h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        header p { opacity: 0.9; }
+        
+        main { max-width: 600px; margin: 0 auto; padding: 2rem 1.5rem; }
+        
+        .survey-card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        
+        .question { margin-bottom: 2rem; }
+        .question:last-of-type { margin-bottom: 1.5rem; }
+        .question label { display: block; font-weight: 600; color: var(--pmm-dark); margin-bottom: 0.75rem; }
+        .question .hint { font-size: 0.85rem; color: #64748b; margin-bottom: 0.5rem; }
+        
+        /* Rating scale */
+        .rating-scale { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .rating-scale label { display: flex; flex-direction: column; align-items: center; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; flex: 1; min-width: 50px; }
+        .rating-scale label:hover { border-color: var(--pmm-blue); }
+        .rating-scale input { display: none; }
+        .rating-scale input:checked + span { background: var(--pmm-blue); color: #fff; }
+        .rating-scale span { font-size: 1.25rem; font-weight: 700; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f1f5f9; transition: all 0.2s; }
+        .rating-scale .scale-label { font-size: 0.7rem; color: #64748b; margin-top: 0.25rem; }
+        
+        /* NPS */
+        .nps-scale { display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: space-between; }
+        .nps-scale label { padding: 0.5rem; border: 2px solid #e2e8f0; border-radius: 6px; cursor: pointer; transition: all 0.2s; min-width: 36px; text-align: center; }
+        .nps-scale label:hover { border-color: var(--pmm-blue); }
+        .nps-scale input { display: none; }
+        .nps-scale input:checked + span { background: var(--pmm-blue); color: #fff; border-radius: 4px; }
+        .nps-scale span { font-weight: 600; padding: 0.25rem 0.5rem; display: block; }
+        .nps-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; }
+        
+        /* Select */
+        select { width: 100%; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; background: #fff; cursor: pointer; }
+        select:focus { outline: none; border-color: var(--pmm-blue); }
+        
+        /* Radio buttons */
+        .radio-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .radio-group label { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .radio-group label:hover { border-color: var(--pmm-blue); }
+        .radio-group input[type="radio"] { width: 20px; height: 20px; cursor: pointer; }
+        
+        /* Textarea */
+        textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical; min-height: 100px; }
+        textarea:focus { outline: none; border-color: var(--pmm-blue); }
+        
+        /* Submit */
+        .submit-btn { width: 100%; padding: 1rem; background: var(--pmm-blue); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .submit-btn:hover { background: #2563eb; }
+        .submit-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        
+        /* Success */
+        .success-msg { text-align: center; padding: 3rem 2rem; }
+        .success-msg .icon { font-size: 4rem; margin-bottom: 1rem; }
+        .success-msg h2 { color: var(--green); margin-bottom: 0.5rem; }
+        .success-msg p { color: #64748b; }
+        .success-msg a { display: inline-block; margin-top: 1.5rem; color: var(--pmm-blue); text-decoration: none; font-weight: 600; }
+        
+        /* Error */
+        .error-msg { background: #fee2e2; border: 1px solid #ef4444; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: none; }
+        
+        footer { text-align: center; padding: 2rem; color: #64748b; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📋 Curriculum Feedback</h1>
+        <p>Help us make the 10× PMM curriculum better</p>
+    </header>
+    
+    <main>
+        <div class="survey-card" id="survey-form">
+            <div class="error-msg" id="error-msg"></div>
+            
+            <form id="feedback-form">
+                <!-- Q1: Value Rating -->
+                <div class="question">
+                    <label>1. How valuable has the curriculum been so far?</label>
+                    <div class="rating-scale">
+                        <label><input type="radio" name="value_rating" value="1" required><span>1</span><div class="scale-label">Not at all</div></label>
+                        <label><input type="radio" name="value_rating" value="2"><span>2</span><div class="scale-label"></div></label>
+                        <label><input type="radio" name="value_rating" value="3"><span>3</span><div class="scale-label">Neutral</div></label>
+                        <label><input type="radio" name="value_rating" value="4"><span>4</span><div class="scale-label"></div></label>
+                        <label><input type="radio" name="value_rating" value="5"><span>5</span><div class="scale-label">Extremely</div></label>
+                    </div>
+                </div>
+                
+                <!-- Q2: Top Learning -->
+                <div class="question">
+                    <label>2. What's the #1 thing you've learned so far?</label>
+                    <textarea name="top_learning" placeholder="Share your biggest takeaway..." required></textarea>
+                </div>
+                
+                <!-- Q3: Most Useful Unit -->
+                <div class="question">
+                    <label>3. Which unit has been most useful?</label>
+                    <select name="most_useful_unit" required>
+                        <option value="">Select a unit...</option>
+                        <option value="unit-01">Unit 1: Foundation</option>
+                        <option value="unit-02">Unit 2: Content & Messaging</option>
+                        <option value="havent-completed">Haven't completed any yet</option>
+                    </select>
+                </div>
+                
+                <!-- Q4: Applying at Work -->
+                <div class="question">
+                    <label>4. Are you applying what you've learned at work?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="applying_at_work" value="yes" required> Yes, already using it</label>
+                        <label><input type="radio" name="applying_at_work" value="somewhat"> Somewhat, starting to</label>
+                        <label><input type="radio" name="applying_at_work" value="not-yet"> Not yet, but plan to</label>
+                        <label><input type="radio" name="applying_at_work" value="no"> No, not applicable</label>
+                    </div>
+                </div>
+                
+                <!-- Q5: Improvements -->
+                <div class="question">
+                    <label>5. What would make the curriculum better?</label>
+                    <textarea name="improvements" placeholder="Your suggestions for improvement..."></textarea>
+                </div>
+                
+                <!-- Q6: NPS -->
+                <div class="question">
+                    <label>6. How likely are you to recommend this curriculum to a colleague?</label>
+                    <div class="nps-scale">
+                        <label><input type="radio" name="nps" value="0" required><span>0</span></label>
+                        <label><input type="radio" name="nps" value="1"><span>1</span></label>
+                        <label><input type="radio" name="nps" value="2"><span>2</span></label>
+                        <label><input type="radio" name="nps" value="3"><span>3</span></label>
+                        <label><input type="radio" name="nps" value="4"><span>4</span></label>
+                        <label><input type="radio" name="nps" value="5"><span>5</span></label>
+                        <label><input type="radio" name="nps" value="6"><span>6</span></label>
+                        <label><input type="radio" name="nps" value="7"><span>7</span></label>
+                        <label><input type="radio" name="nps" value="8"><span>8</span></label>
+                        <label><input type="radio" name="nps" value="9"><span>9</span></label>
+                        <label><input type="radio" name="nps" value="10"><span>10</span></label>
+                    </div>
+                    <div class="nps-labels">
+                        <span>Not likely</span>
+                        <span>Very likely</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submit-btn">Submit Feedback</button>
+            </form>
+        </div>
+        
+        <div class="survey-card success-msg" id="success-msg" style="display: none;">
+            <div class="icon">🎉</div>
+            <h2>Thank you!</h2>
+            <p>Your feedback helps us make the curriculum better every week.</p>
+            <a href="/curriculum/">← Back to Curriculum</a>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Your responses are anonymous and help improve the learning experience.</p>
+    </footer>
+    
+    <script>
+    document.getElementById('feedback-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submit-btn');
+        const errorMsg = document.getElementById('error-msg');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+        errorMsg.style.display = 'none';
+        
+        try {
+            const formData = new FormData(this);
+            const data = {
+                value_rating: parseInt(formData.get('value_rating')),
+                top_learning: formData.get('top_learning'),
+                most_useful_unit: formData.get('most_useful_unit'),
+                applying_at_work: formData.get('applying_at_work'),
+                improvements: formData.get('improvements') || null,
+                nps: parseInt(formData.get('nps')),
+                submitted_at: new Date().toISOString()
+            };
+            
+            // Try to get user email if logged in (optional, for tracking)
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    data.email = JSON.parse(directUser).email;
+                }
+            } catch (e) {}
+            
+            const res = await fetch('/.netlify/functions/save-survey', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (!res.ok) throw new Error('Failed to submit');
+            
+            document.getElementById('survey-form').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'block';
+            
+        } catch (err) {
+            errorMsg.textContent = 'Error submitting feedback. Please try again.';
+            errorMsg.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Submit Feedback';
+        }
+    });
+    </script>
+</body>
+</html>
