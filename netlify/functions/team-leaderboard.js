@@ -155,10 +155,12 @@ exports.handler = async (event) => {
       // - Cognitive Profile: +50 pts
       // - Unit Passed: +100 pts each
       // - Quiz Average: adds to total
+      // - Engagement: +2 pts per quiz attempt (capped at 50)
       const scorecardPoints = scorecardScore ? Math.round(scorecardScore * 20) : 0;
       const cognitivePoints = hasCognitive ? 50 : 0;
       const unitPoints = unitsPassed * 100;
-      const totalPoints = scorecardPoints + cognitivePoints + unitPoints + Math.round(avgPercentage);
+      const engagementPoints = Math.min(userScores.length * 2, 50);  // 2 pts per attempt, max 50
+      const totalPoints = scorecardPoints + cognitivePoints + unitPoints + Math.round(avgPercentage) + engagementPoints;
       
       // Format display name (First + Last Initial for privacy)
       let displayName;
