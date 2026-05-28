@@ -11,6 +11,21 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.6; }
         
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+        .modal { background: #fff; border-radius: 12px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1.25rem; color: var(--pmm-dark); }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }
+        .modal-body { padding: 1.5rem; }
+        .detail-row { display: flex; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
+        .detail-label { width: 180px; font-weight: 600; color: #64748b; font-size: 0.85rem; }
+        .detail-value { flex: 1; }
+        .detail-value.rating { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .detail-value.text { background: #f8fafc; padding: 0.75rem; border-radius: 6px; white-space: pre-wrap; }
+        tr.clickable { cursor: pointer; }
+        tr.clickable:hover { background: #e0f2fe !important; }
+        
         header { background: var(--pmm-dark); color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         header h1 { font-size: 1.25rem; }
         header .user { opacity: 0.8; font-size: 0.9rem; }
@@ -153,18 +168,29 @@
         }
     }
     
+    let surveyData = [];
+    
     async function loadSurveys() {
         try {
             const res = await fetch('/.netlify/functions/admin-surveys');
             if (!res.ok) throw new Error('Failed to load surveys');
-            const { responses } = await res.json();
+            const { responses, summary } = await res.json();
+            surveyData = responses || [];
             
             if (!responses || responses.length === 0) {
                 document.querySelector('#survey-section .loading').innerHTML = '<p style="color: #64748b;">No survey responses yet.</p>';
                 return;
             }
             
-            let html = `<table>
+            // Add summary stats
+            let html = `<div style="display: flex; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <div><strong>Total:</strong> ${summary?.total || responses.length}</div>
+                <div><strong>Avg Value:</strong> ${summary?.avgValue || '--'}/5</div>
+                <div><strong>NPS Score:</strong> ${summary?.npsScore || '--'}</div>
+                <div style="font-size: 0.85rem; color: #64748b;">👍 ${summary?.promoters || 0} promoters · 😐 ${summary?.passives || 0} passive · 👎 ${summary?.detractors || 0} detractors</div>
+            </div>`;
+            
+            html += `<table>
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -172,29 +198,119 @@
                         <th>NPS</th>
                         <th>Quiz Diff</th>
                         <th>Top Learning</th>
-                        <th>Improvements</th>
+                        <th>From Unit</th>
                     </tr>
                 </thead>
                 <tbody>`;
             
-            responses.slice(0, 50).forEach(r => {
+            responses.slice(0, 50).forEach((r, i) => {
                 const date = new Date(r.created_at).toLocaleDateString();
                 const npsClass = r.nps >= 9 ? 'promoter' : r.nps >= 7 ? 'passive' : 'detractor';
-                html += `<tr>
+                html += `<tr class="clickable" onclick="showSurveyDetail(${i})">
                     <td>${date}</td>
                     <td><span class="badge ${r.value_rating >= 4 ? 'green' : r.value_rating >= 3 ? 'yellow' : 'red'}">${r.value_rating}/5</span></td>
                     <td><span class="nps-score ${npsClass}">${r.nps}</span></td>
                     <td>${r.quiz_difficulty || '—'}</td>
                     <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.top_learning || '—'}</td>
-                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${r.improvements || '—'}</td>
+                    <td>${r.from_unit || '—'}</td>
                 </tr>`;
             });
             
             html += '</tbody></table>';
+            html += '<p style="margin-top: 1rem; font-size: 0.85rem; color: #64748b;">💡 Click any row to see full details</p>';
             document.querySelector('#survey-section .loading').innerHTML = html;
         } catch (err) {
             document.querySelector('#survey-section .loading').innerHTML = `<div class="error">Error: ${err.message}</div>`;
         }
+    }
+    
+    function showSurveyDetail(index) {
+        const r = surveyData[index];
+        if (!r) return;
+        
+        const date = new Date(r.created_at).toLocaleString();
+        const npsClass = r.nps >= 9 ? 'promoter' : r.nps >= 7 ? 'passive' : 'detractor';
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        
+        modal.innerHTML = `
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>📋 Survey Response</h3>
+                    <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-row">
+                        <div class="detail-label">Submitted</div>
+                        <div class="detail-value">${date}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value">${r.email || 'Anonymous'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">From Unit</div>
+                        <div class="detail-value">${r.from_unit || '—'} ${r.triggered_quiz_score ? `(scored ${r.triggered_quiz_score}%)` : ''}</div>
+                    </div>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem; color: var(--pmm-dark);">📊 Ratings</h4>
+                    <div class="detail-row">
+                        <div class="detail-label">Overall Value</div>
+                        <div class="detail-value rating">${r.value_rating}/5</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Newsletter</div>
+                        <div class="detail-value rating">${r.newsletter_rating || '—'}/5</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Content</div>
+                        <div class="detail-value rating">${r.content_rating || '—'}/5</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Assessments</div>
+                        <div class="detail-value rating">${r.assessments_rating || '—'}/5</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">AI Labs</div>
+                        <div class="detail-value rating">${r.labs_rating || '—'}/5</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Presentation</div>
+                        <div class="detail-value rating">${r.presentation_rating || '—'}/5</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Quiz Difficulty</div>
+                        <div class="detail-value">${r.quiz_difficulty || '—'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">NPS</div>
+                        <div class="detail-value rating"><span class="nps-score ${npsClass}">${r.nps}/10</span></div>
+                    </div>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem; color: var(--pmm-dark);">💬 Open Responses</h4>
+                    <div class="detail-row">
+                        <div class="detail-label">Most Useful Unit</div>
+                        <div class="detail-value">${r.most_useful_unit || '—'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Applying at Work</div>
+                        <div class="detail-value">${r.applying_at_work || '—'}</div>
+                    </div>
+                    <div class="detail-row" style="flex-direction: column; gap: 0.5rem;">
+                        <div class="detail-label">#1 Thing Learned</div>
+                        <div class="detail-value text">${r.top_learning || '—'}</div>
+                    </div>
+                    <div class="detail-row" style="flex-direction: column; gap: 0.5rem;">
+                        <div class="detail-label">Improvements</div>
+                        <div class="detail-value text">${r.improvements || '—'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
     }
     
     async function loadUsers() {
