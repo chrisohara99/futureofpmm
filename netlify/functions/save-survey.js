@@ -17,7 +17,11 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body || '{}');
     
     const { 
-      value_rating, 
+      value_rating,
+      newsletter_rating,
+      content_rating,
+      assessments_rating,
+      labs_rating,
       top_learning, 
       most_useful_unit, 
       applying_at_work, 
@@ -42,6 +46,10 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         value_rating,
+        newsletter_rating: newsletter_rating || null,
+        content_rating: content_rating || null,
+        assessments_rating: assessments_rating || null,
+        labs_rating: labs_rating || null,
         top_learning,
         most_useful_unit,
         applying_at_work,

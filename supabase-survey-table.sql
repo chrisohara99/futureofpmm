@@ -4,6 +4,10 @@
 CREATE TABLE IF NOT EXISTS survey_responses (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     value_rating INTEGER NOT NULL CHECK (value_rating >= 1 AND value_rating <= 5),
+    newsletter_rating INTEGER CHECK (newsletter_rating >= 0 AND newsletter_rating <= 5),
+    content_rating INTEGER CHECK (content_rating >= 0 AND content_rating <= 5),
+    assessments_rating INTEGER CHECK (assessments_rating >= 0 AND assessments_rating <= 5),
+    labs_rating INTEGER CHECK (labs_rating >= 0 AND labs_rating <= 5),
     top_learning TEXT NOT NULL,
     most_useful_unit TEXT NOT NULL,
     applying_at_work TEXT NOT NULL,
