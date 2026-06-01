@@ -4,6 +4,134 @@ A complete guide to deploying the Future of PMM curriculum site on your own infr
 
 ---
 
+## Development Environment Setup
+
+Before diving into deployment, you need a proper development environment. This section covers the essentials.
+
+### Option A: Local Development with Cursor/Claude
+
+**Cursor** is an AI-native code editor (fork of VS Code) that integrates Claude directly. SAP provides Cursor licenses.
+
+#### Getting Cursor from SAP
+1. Go to **SAP Software Center** or check with your IT department
+2. Search for "Cursor" or "AI Development Tools"
+3. Request a license if not already provisioned
+4. Download and install Cursor from [cursor.com](https://cursor.com)
+
+#### Setting Up Claude in Cursor
+1. Open Cursor → **Settings** (Cmd/Ctrl + ,)
+2. Navigate to **AI → Claude**
+3. If SAP provides API keys, enter them here
+4. Otherwise, use Cursor's built-in Claude integration (requires Cursor Pro)
+
+#### Alternative: VS Code + Claude Extension
+If Cursor isn't available:
+1. Install VS Code from [code.visualstudio.com](https://code.visualstudio.com)
+2. Install the **Claude** extension from the marketplace
+3. Sign in with your Anthropic account or API key
+
+### Option B: Cloud Development with VPS
+
+A **VPS (Virtual Private Server)** gives you a persistent cloud environment that's always on — useful for:
+- Running automated tasks (crons, digests)
+- Avoiding corporate proxy issues
+- Having a consistent environment across devices
+
+#### Setting Up a DigitalOcean Droplet
+
+1. **Create Account:** Go to [digitalocean.com](https://digitalocean.com) and sign up
+   - They often have $200 free credits for new accounts
+
+2. **Create a Droplet:**
+   - Click **Create → Droplets**
+   - **Region:** New York (NYC) or closest to you
+   - **Image:** Ubuntu 24.04 LTS
+   - **Size:** Basic → $6/month (1 GB RAM) is enough for development
+   - **Authentication:** SSH key recommended (more secure than password)
+   - **Hostname:** Something memorable like `pmm-dev`
+
+3. **Connect via SSH:**
+   ```bash
+   ssh root@YOUR_DROPLET_IP
+   ```
+
+4. **Initial Setup:**
+   ```bash
+   # Update system
+   apt update && apt upgrade -y
+   
+   # Install essentials
+   apt install -y git nodejs npm
+   
+   # Install Node.js 20+ (if needed)
+   curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+   apt install -y nodejs
+   
+   # Verify versions
+   node -v  # Should be 20+
+   npm -v   # Should be 10+
+   ```
+
+5. **Clone the Repository:**
+   ```bash
+   mkdir -p ~/projects
+   cd ~/projects
+   git clone https://github.com/chrisohara99/futureofpmm.git
+   cd futureofpmm
+   ```
+
+#### Optional: Install OpenClaw for Automation
+
+[OpenClaw](https://github.com/openclaw/openclaw) is an AI agent framework that can automate tasks like:
+- Daily digest generation
+- Newsletter scheduling
+- Site monitoring
+
+```bash
+npm install -g openclaw
+openclaw init
+```
+
+### Local Development Workflow
+
+Once your environment is set up:
+
+```bash
+# Navigate to project
+cd futureofpmm
+
+# Install dependencies (for serverless functions)
+npm install
+
+# Start local development server
+npx netlify dev
+```
+
+This runs the site locally at `http://localhost:8888` with serverless functions working.
+
+### Git Basics
+
+Essential commands you'll use:
+
+```bash
+# Check status
+git status
+
+# Pull latest changes
+git pull
+
+# Stage all changes
+git add .
+
+# Commit with message
+git commit -m "Your commit message"
+
+# Push to GitHub (triggers Netlify deploy)
+git push
+```
+
+---
+
 ## Overview
 
 **What this site does:**
@@ -314,4 +442,4 @@ For questions about this codebase, contact:
 
 ---
 
-*Last updated: May 24, 2026*
+*Last updated: June 1, 2026*
