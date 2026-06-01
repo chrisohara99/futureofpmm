@@ -237,6 +237,127 @@ Guide</h1>
 <p>A complete guide to deploying the Future of PMM curriculum site on
 your own infrastructure.</p>
 <hr />
+<h2 id="development-environment-setup">Development Environment
+Setup</h2>
+<p>Before diving into deployment, you need a proper development
+environment. This section covers the essentials.</p>
+<h3 id="option-a-local-development-with-cursorclaude">Option A: Local
+Development with Cursor/Claude</h3>
+<p><strong>Cursor</strong> is an AI-native code editor (fork of VS Code)
+that integrates Claude directly. SAP provides Cursor licenses.</p>
+<h4 id="getting-cursor-from-sap">Getting Cursor from SAP</h4>
+<ol type="1">
+<li>Go to <strong>SAP Software Center</strong> or check with your IT
+department</li>
+<li>Search for “Cursor” or “AI Development Tools”</li>
+<li>Request a license if not already provisioned</li>
+<li>Download and install Cursor from <a
+href="https://cursor.com">cursor.com</a></li>
+</ol>
+<h4 id="setting-up-claude-in-cursor">Setting Up Claude in Cursor</h4>
+<ol type="1">
+<li>Open Cursor → <strong>Settings</strong> (Cmd/Ctrl + ,)</li>
+<li>Navigate to <strong>AI → Claude</strong></li>
+<li>If SAP provides API keys, enter them here</li>
+<li>Otherwise, use Cursor’s built-in Claude integration (requires Cursor
+Pro)</li>
+</ol>
+<h4 id="alternative-vs-code-claude-extension">Alternative: VS Code +
+Claude Extension</h4>
+<p>If Cursor isn’t available: 1. Install VS Code from <a
+href="https://code.visualstudio.com">code.visualstudio.com</a> 2.
+Install the <strong>Claude</strong> extension from the marketplace 3.
+Sign in with your Anthropic account or API key</p>
+<h3 id="option-b-cloud-development-with-vps">Option B: Cloud Development
+with VPS</h3>
+<p>A <strong>VPS (Virtual Private Server)</strong> gives you a
+persistent cloud environment that’s always on — useful for: - Running
+automated tasks (crons, digests) - Avoiding corporate proxy issues -
+Having a consistent environment across devices</p>
+<h4 id="setting-up-a-digitalocean-droplet">Setting Up a DigitalOcean
+Droplet</h4>
+<ol type="1">
+<li><p><strong>Create Account:</strong> Go to <a
+href="https://digitalocean.com">digitalocean.com</a> and sign up</p>
+<ul>
+<li>They often have $200 free credits for new accounts</li>
+</ul></li>
+<li><p><strong>Create a Droplet:</strong></p>
+<ul>
+<li>Click <strong>Create → Droplets</strong></li>
+<li><strong>Region:</strong> New York (NYC) or closest to you</li>
+<li><strong>Image:</strong> Ubuntu 24.04 LTS</li>
+<li><strong>Size:</strong> Basic → $6/month (1 GB RAM) is enough for
+development</li>
+<li><strong>Authentication:</strong> SSH key recommended (more secure
+than password)</li>
+<li><strong>Hostname:</strong> Something memorable like
+<code>pmm-dev</code></li>
+</ul></li>
+<li><p><strong>Connect via SSH:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> root@YOUR_DROPLET_IP</span></code></pre></div></li>
+<li><p><strong>Initial Setup:</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update system</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> update <span class="kw">&amp;&amp;</span> <span class="ex">apt</span> upgrade <span class="at">-y</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install essentials</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> install <span class="at">-y</span> git nodejs npm</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Node.js 20+ (if needed)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://deb.nodesource.com/setup_20.x <span class="kw">|</span> <span class="fu">bash</span> <span class="at">-</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> install <span class="at">-y</span> nodejs</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify versions</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">node</span> <span class="at">-v</span>  <span class="co"># Should be 20+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> <span class="at">-v</span>   <span class="co"># Should be 10+</span></span></code></pre></div></li>
+<li><p><strong>Clone the Repository:</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/projects</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/projects</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/chrisohara99/futureofpmm.git</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> futureofpmm</span></code></pre></div></li>
+</ol>
+<h4 id="optional-install-openclaw-for-automation">Optional: Install
+OpenClaw for Automation</h4>
+<p><a href="https://github.com/openclaw/openclaw">OpenClaw</a> is an AI
+agent framework that can automate tasks like: - Daily digest generation
+- Newsletter scheduling - Site monitoring</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> openclaw</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openclaw</span> init</span></code></pre></div>
+<h3 id="local-development-workflow">Local Development Workflow</h3>
+<p>Once your environment is set up:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigate to project</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> futureofpmm</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install dependencies (for serverless functions)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Start local development server</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> netlify dev</span></code></pre></div>
+<p>This runs the site locally at <code>http://localhost:8888</code> with
+serverless functions working.</p>
+<h3 id="git-basics">Git Basics</h3>
+<p>Essential commands you’ll use:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check status</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull latest changes</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Stage all changes</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Commit with message</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Your commit message&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Push to GitHub (triggers Netlify deploy)</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
+<hr />
 <h2 id="overview">Overview</h2>
 <p><strong>What this site does:</strong> - AI-powered PMM training
 curriculum (7 units with quizzes) - User authentication via email
@@ -255,9 +376,9 @@ works) 3. <strong>Supabase</strong> — for database (free tier works) 4.
 emails/day)</p>
 <hr />
 <h2 id="step-1-clone-the-repository">Step 1: Clone the Repository</h2>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/chrisohara99/futureofpmm.git</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> futureofpmm</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/chrisohara99/futureofpmm.git</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> futureofpmm</span></code></pre></div>
 <p>Or fork it to your own GitHub account first.</p>
 <hr />
 <h2 id="step-2-set-up-supabase">Step 2: Set Up Supabase</h2>
@@ -276,69 +397,69 @@ new project</li>
 <h3 id="create-database-tables">2.2 Create Database Tables</h3>
 <p>Go to <strong>SQL Editor</strong> in Supabase and run this
 schema:</p>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Profiles table</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> profiles (</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  email TEXT <span class="kw">UNIQUE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  first_name TEXT,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  last_name TEXT,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">role</span> TEXT,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  company TEXT <span class="kw">DEFAULT</span> <span class="st">&#39;SAP&#39;</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  created_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>);</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- Quiz scores</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> quiz_scores (</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  chapter TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  score <span class="dt">INTEGER</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  total <span class="dt">INTEGER</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  percentage <span class="dt">INTEGER</span>,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>);</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">-- Chapter progress</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> chapter_progress (</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  chapter TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  completed <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">FALSE</span>,</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ,</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">UNIQUE</span>(user_id, chapter)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>);</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">-- Assessment results</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> assessment_results (</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  assessment_type TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  result_key TEXT,</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  result_name TEXT,</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  result_data JSONB,</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>);</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">-- Indexes for performance</span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_quiz_scores_user <span class="kw">ON</span> quiz_scores(user_id);</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_quiz_scores_chapter <span class="kw">ON</span> quiz_scores(chapter);</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_chapter_progress_user <span class="kw">ON</span> chapter_progress(user_id);</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_assessment_results_user <span class="kw">ON</span> assessment_results(user_id);</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Profiles table</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> profiles (</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  email TEXT <span class="kw">UNIQUE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  first_name TEXT,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  last_name TEXT,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">role</span> TEXT,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  company TEXT <span class="kw">DEFAULT</span> <span class="st">&#39;SAP&#39;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  created_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- Quiz scores</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> quiz_scores (</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  chapter TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  score <span class="dt">INTEGER</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  total <span class="dt">INTEGER</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  percentage <span class="dt">INTEGER</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">-- Chapter progress</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> chapter_progress (</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  chapter TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  completed <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">FALSE</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">UNIQUE</span>(user_id, chapter)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co">-- Assessment results</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> assessment_results (</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> gen_random_uuid(),</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  user_id UUID <span class="kw">REFERENCES</span> profiles(<span class="kw">id</span>) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  assessment_type TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  result_key TEXT,</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  result_name TEXT,</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  result_data JSONB,</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  completed_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="co">-- Indexes for performance</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_quiz_scores_user <span class="kw">ON</span> quiz_scores(user_id);</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_quiz_scores_chapter <span class="kw">ON</span> quiz_scores(chapter);</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_chapter_progress_user <span class="kw">ON</span> chapter_progress(user_id);</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> idx_assessment_results_user <span class="kw">ON</span> assessment_results(user_id);</span></code></pre></div>
 <h3 id="enable-row-level-security-optional-but-recommended">2.3 Enable
 Row Level Security (Optional but Recommended)</h3>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Enable RLS on all tables</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> profiles <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> quiz_scores <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> chapter_progress <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> assessment_results <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Allow service role full access (for serverless functions)</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> profiles <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> quiz_scores <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> chapter_progress <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> assessment_results <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Enable RLS on all tables</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> profiles <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> quiz_scores <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> chapter_progress <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> assessment_results <span class="kw">ENABLE</span> <span class="kw">ROW</span> <span class="kw">LEVEL</span> SECURITY;</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Allow service role full access (for serverless functions)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> profiles <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> quiz_scores <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> chapter_progress <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> POLICY <span class="ot">&quot;Service role full access&quot;</span> <span class="kw">ON</span> assessment_results <span class="cf">FOR</span> <span class="kw">ALL</span> <span class="kw">USING</span> (<span class="kw">true</span>);</span></code></pre></div>
 <hr />
 <h2 id="step-3-set-up-resend">Step 3: Set Up Resend</h2>
 <ol type="1">
@@ -366,14 +487,14 @@ Keys</h3>
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...  →  YOUR_SUPABASE_ANON_KEY</code></pre>
 <h3 id="update-email-from-address">4.2 Update Email “From” Address</h3>
 <p>In <code>netlify/functions/send-verification.js</code>, update:</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span><span class="op">:</span> <span class="st">&#39;Future of PMM &lt;noreply@futureofpmm.com&gt;&#39;</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span><span class="op">:</span> <span class="st">&#39;Future of PMM &lt;noreply@futureofpmm.com&gt;&#39;</span></span></code></pre></div>
 <p>to your verified domain.</p>
 <h3 id="update-verification-redirect-url">4.3 Update Verification
 Redirect URL</h3>
 <p>In <code>netlify/functions/send-verification.js</code>, update:</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> verifyUrl <span class="op">=</span> <span class="vs">`https://futureofpmm.com/curriculum/verify.html?token=...`</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> verifyUrl <span class="op">=</span> <span class="vs">`https://futureofpmm.com/curriculum/verify.html?token=...`</span></span></code></pre></div>
 <p>to your domain.</p>
 <hr />
 <h2 id="step-5-deploy-to-netlify">Step 5: Deploy to Netlify</h2>
@@ -486,8 +607,8 @@ Reference</h2>
 <h3 id="change-allowed-email-domains">Change Allowed Email Domains</h3>
 <p>In <code>dist/curriculum/signup.html</code> and
 <code>dist/curriculum/login.html</code>:</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ALLOWED_DOMAINS <span class="op">=</span> [<span class="st">&#39;sap.com&#39;</span>]<span class="op">;</span>  <span class="co">// Change to your domain(s)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ALLOWED_DOMAINS <span class="op">=</span> [<span class="st">&#39;sap.com&#39;</span>]<span class="op">;</span>  <span class="co">// Change to your domain(s)</span></span></code></pre></div>
 <h3 id="modify-quiz-content">Modify Quiz Content</h3>
 <p>Quiz files are in <code>dist/curriculum/unit-XX/quiz.html</code>.
 Each contains: - Questions and answers in JavaScript - Scoring logic -
@@ -530,6 +651,6 @@ corporate network allows HTTPS to your Netlify domain.</p>
 <p>For questions about this codebase, contact: - <strong>Chris
 O’Hara</strong> — christopher.ohara@sap.com</p>
 <hr />
-<p><em>Last updated: May 24, 2026</em></p>
+<p><em>Last updated: June 1, 2026</em></p>
 </body>
 </html>
