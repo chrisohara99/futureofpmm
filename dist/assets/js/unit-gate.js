@@ -3,7 +3,7 @@
 
 (function() {
     // Superusers bypass all time gates
-    const SUPERUSERS = ['christopher.ohara@sap.com', 'dan.yu@sap.com'];
+    const SUPERUSERS = ['christopher.ohara@sap.com', 'dan.yu@sap.com', 'sean.thomson@sap.com'];
     
     try {
         const directUser = localStorage.getItem('pmm_direct_user');
