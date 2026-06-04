@@ -274,7 +274,42 @@ If there are compelling non-approved tools that would be valuable, add a separat
 
 You provide specific, actionable recommendations with tool suggestions. You're practical and prioritize quick wins that build momentum.
 
-Format responses with clear sections, tables where helpful, and be direct about what to do FIRST.`
+Format responses with clear sections, tables where helpful, and be direct about what to do FIRST.`,
+
+        'messaging-lab': `You are an expert B2B messaging strategist, specifically for enterprise software positioning.
+
+You help PMMs create compelling value propositions and messaging frameworks using the proven "Messaging House" structure:
+
+**Core Messaging Framework:**
+1. **Value Proposition**: One sentence that captures the unique value (Problem → Solution → Outcome)
+2. **Key Messages** (3 pillars): Supporting proof points that ladder up to the value prop
+3. **Proof Points**: Specific evidence (stats, customer quotes, capabilities) for each pillar
+4. **Persona Variants**: How the message changes for different buyer roles
+
+**Good messaging is:**
+- Specific (not "leading" or "best-in-class")
+- Outcome-focused (what changes for the buyer)
+- Differentiated (why you, not alternatives)
+- Verifiable (backed by evidence)
+- Concise (under 25 words for key statements)
+
+You write in a confident, conversational tone. You avoid jargon unless it's truly meaningful to the buyer.`,
+
+        'pricing-rationale': `You are an expert in B2B software pricing strategy and value-based selling.
+
+You help PMMs and sales teams build compelling pricing rationale documents that:
+1. Quantify the value delivered (ROI, time savings, risk reduction)
+2. Frame the investment against alternatives (cost of status quo, competitor pricing)
+3. Create urgency through opportunity cost analysis
+4. Provide ammunition for procurement negotiations
+
+**Your frameworks include:**
+- **Value Waterfall**: Break down total value into measurable components
+- **TCO Analysis**: Compare total cost of ownership vs alternatives
+- **Payback Period**: When does the investment pay for itself?
+- **Risk-Adjusted ROI**: Factor in implementation and adoption risks
+
+You write executive-ready content that finance teams will find credible. You use conservative assumptions and cite sources where possible.`
     };
 
     return prompts[labType] || prompts['geo-audit'];
@@ -652,6 +687,113 @@ These questions should:
 ---
 
 **PRO TIP:** Ask these early in discovery before the buyer has locked in evaluation criteria based on ${inputs.competitor}'s framing.`;
+
+        case 'messaging-lab':
+            return `Create a messaging framework for this product:
+
+**Product/Solution:** ${inputs.product}
+**Product Category:** ${inputs.category}
+**Primary Buyer Persona:** ${inputs.persona}
+**Industry/Vertical:** ${inputs.industry || 'Cross-industry'}
+
+**Key Capabilities/Features:**
+${inputs.capabilities}
+
+**Target Pain Points:**
+${inputs.painPoints}
+
+**Competitive Alternatives:**
+${inputs.alternatives}
+
+**Proof Points Available (customer wins, stats, etc.):**
+${inputs.proofPoints}
+
+Generate a complete messaging framework:
+
+## 1. Value Proposition
+Create a single compelling statement (under 25 words) following: [Pain/Problem] → [Solution/Approach] → [Outcome/Transformation]
+
+## 2. Messaging Pillars (3)
+For each pillar provide:
+- **Pillar Name**: (2-4 words)
+- **Key Message**: One sentence that supports the value prop
+- **Proof Points**: 2-3 specific evidence items
+- **Competitor Contrast**: How this differentiates from alternatives
+
+## 3. Persona Variants
+Reframe the value prop for these roles:
+- **Economic Buyer** (CFO/Finance): Focus on ROI/cost
+- **Technical Buyer** (IT/Ops): Focus on integration/risk
+- **End User**: Focus on daily experience improvement
+
+## 4. Elevator Pitches
+- **10-second version**: For networking/quick intros
+- **30-second version**: For first meetings
+- **2-minute version**: For presentations
+
+## 5. Common Objections & Responses
+Anticipate 3 likely objections and provide response frameworks.`;
+
+        case 'pricing-rationale':
+            return `Build a pricing rationale document for this deal:
+
+**Product/Solution:** ${inputs.product}
+**Annual Contract Value:** ${inputs.acv}
+**Customer Company:** ${inputs.customer}
+**Industry:** ${inputs.industry}
+**Company Size:** ${inputs.companySize}
+
+**Current State (What they're doing today):**
+${inputs.currentState}
+
+**Key Value Drivers (What our solution enables):**
+${inputs.valueDrivers}
+
+**Known Metrics (any baseline data we have):**
+${inputs.knownMetrics}
+
+**Competitive Alternative Being Considered:**
+${inputs.alternative}
+
+Generate a comprehensive pricing rationale:
+
+## 1. Executive Summary
+One paragraph making the business case for this investment.
+
+## 2. Value Waterfall
+Break down the total value into measurable components:
+| Value Driver | Calculation Approach | Conservative Estimate | Notes |
+|--------------|---------------------|----------------------|-------|
+
+## 3. ROI Analysis
+- **Total Investment**: (License + Implementation + Training)
+- **Year 1 Value**: 
+- **Year 2-3 Value**:
+- **Payback Period**:
+- **3-Year ROI**:
+
+## 4. Cost of Inaction
+What does it cost them NOT to act?
+- Direct costs of current approach
+- Opportunity costs
+- Risk exposure
+
+## 5. Competitive Comparison
+Position the investment against:
+- Status quo (current tools/processes)
+- Alternative vendor being considered
+- Build vs buy
+
+## 6. Risk Mitigation
+Address procurement concerns:
+- Implementation risk and how we mitigate
+- Adoption risk and success planning
+- Contractual protections
+
+## 7. Negotiation Talking Points
+3 key points for the champion to use with procurement.
+
+Use conservative assumptions. Mark any estimates that need customer validation.`;
 
         default:
             return inputs.prompt || 'Please provide analysis.';

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Messaging Framework Generator | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #0070F2;
+            --navy: #1B365D;
+            --coral: #C84B31;
+            --purple: #7c3aed;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--purple) 0%, #5b21b6 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .framework-box {
+            background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%);
+            border-left: 4px solid var(--purple);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .framework-box h4 { color: var(--purple); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .framework-box ul { font-size: 0.85rem; margin: 0 0 0 1.25rem; color: #444; }
+        .framework-box li { margin-bottom: 0.25rem; }
+        
+        .lab-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .lab-card h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .sample-btns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .sample-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sample-btn:hover {
+            background: var(--purple);
+            color: white;
+            border-color: var(--purple);
+        }
+        
+        .run-btn {
+            background: var(--purple);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .run-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+        .run-btn:disabled { background: #a5b4c3; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .run-btn.loading .spinner { display: block; }
+        .run-btn.loading span { display: none; }
+        
+        .results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        .results-section.visible { display: block; }
+        
+        .results-header {
+            background: linear-gradient(135deg, var(--purple) 0%, #5b21b6 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+        }
+        .results-header h2 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+        .results-header p { opacity: 0.9; font-size: 0.9rem; }
+        
+        .results-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+            border-top: none;
+        }
+        .results-content h2 { font-size: 1.3rem; color: var(--purple); margin: 1.5rem 0 0.75rem; }
+        .results-content h2:first-child { margin-top: 0; }
+        .results-content h3 { font-size: 1.1rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.5rem; }
+        .results-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        .results-content th, .results-content td { padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left; }
+        .results-content th { background: #f8fafc; font-weight: 600; }
+        .results-content blockquote { 
+            background: #f8fafc; 
+            border-left: 4px solid var(--purple); 
+            padding: 1rem 1.25rem; 
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        .results-content strong { color: var(--dark-slate); }
+        
+        .copy-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            float: right;
+            margin-top: -0.5rem;
+        }
+        .copy-btn:hover { background: #e5e7eb; }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.visible { display: block; }
+        
+        @media (max-width: 600px) {
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.6rem; }
+            main { padding: 1rem; }
+            .lab-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/curriculum/" class="logo">
+                <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+            </a>
+            <nav class="nav">
+                <a href="/curriculum/">Dashboard</a>
+                <a href="/curriculum/labs/">All Labs</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="lab-badge">🧪 AI Lab</span>
+            <h1>Messaging Framework Generator</h1>
+            <p>Create compelling value propositions and complete messaging frameworks using proven B2B positioning strategies.</p>
+        </div>
+    </section>
+
+    <main>
+        <div class="lab-intro">
+            <h2>How This Lab Works</h2>
+            <p>Input your product details, target buyer, and key proof points. The AI will generate a complete messaging framework including:</p>
+            <div class="framework-box">
+                <h4>📝 What You'll Get</h4>
+                <ul>
+                    <li><strong>Value Proposition</strong> — One compelling sentence</li>
+                    <li><strong>3 Messaging Pillars</strong> — With proof points and competitor contrast</li>
+                    <li><strong>Persona Variants</strong> — CFO, IT, End User versions</li>
+                    <li><strong>Elevator Pitches</strong> — 10-second, 30-second, 2-minute</li>
+                    <li><strong>Objection Handlers</strong> — Top 3 anticipated objections</li>
+                </ul>
+            </div>
+        </div>
+
+        <form id="messagingForm">
+            <div class="lab-card">
+                <h3>📦 Product Information</h3>
+                
+                <div class="sample-btns">
+                    <span style="font-size: 0.85rem; color: #666; margin-right: 0.5rem;">Try a sample:</span>
+                    <button type="button" class="sample-btn" onclick="loadSample('ariba')">SAP Ariba</button>
+                    <button type="button" class="sample-btn" onclick="loadSample('bdc')">SAP BDC</button>
+                    <button type="button" class="sample-btn" onclick="loadSample('generic')">Generic SaaS</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product">Product/Solution Name</label>
+                    <input type="text" id="product" placeholder="e.g., SAP Ariba, SAP Business Data Cloud" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Product Category</label>
+                    <input type="text" id="category" placeholder="e.g., Procurement Software, Customer Data Platform">
+                </div>
+                
+                <div class="form-group">
+                    <label for="persona">Primary Buyer Persona</label>
+                    <select id="persona">
+                        <option value="CPO / Chief Procurement Officer">CPO / Chief Procurement Officer</option>
+                        <option value="CFO / Chief Financial Officer">CFO / Chief Financial Officer</option>
+                        <option value="CIO / Chief Information Officer">CIO / Chief Information Officer</option>
+                        <option value="CMO / Chief Marketing Officer">CMO / Chief Marketing Officer</option>
+                        <option value="VP Operations">VP Operations</option>
+                        <option value="VP Supply Chain">VP Supply Chain</option>
+                        <option value="VP IT">VP IT</option>
+                        <option value="Director of Procurement">Director of Procurement</option>
+                        <option value="Director of Marketing">Director of Marketing</option>
+                        <option value="Other">Other (specify in capabilities)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Industry/Vertical (optional)</label>
+                    <input type="text" id="industry" placeholder="e.g., Manufacturing, Retail, Healthcare (or leave blank for cross-industry)">
+                </div>
+            </div>
+            
+            <div class="lab-card">
+                <h3>💡 Key Inputs</h3>
+                
+                <div class="form-group">
+                    <label for="capabilities">Key Capabilities/Features</label>
+                    <p class="hint">What does the product do? List 3-5 main capabilities.</p>
+                    <textarea id="capabilities" placeholder="e.g.,
+- AI-powered spend analytics
+- Supplier network with 5M+ businesses
+- Automated invoice processing
+- Real-time contract compliance" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="painPoints">Target Pain Points</label>
+                    <p class="hint">What problems does your buyer face that this solves?</p>
+                    <textarea id="painPoints" placeholder="e.g.,
+- Maverick spending outside contracts
+- No visibility into supplier risk
+- Manual, error-prone procurement processes
+- Difficulty tracking savings realization" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="alternatives">Competitive Alternatives</label>
+                    <p class="hint">What else might the buyer consider instead?</p>
+                    <textarea id="alternatives" placeholder="e.g.,
+- Coupa (ease of use, modern UX)
+- Oracle (bundled with ERP)
+- Status quo (spreadsheets + manual processes)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="proofPoints">Proof Points Available</label>
+                    <p class="hint">Customer wins, stats, awards, or other evidence you can cite.</p>
+                    <textarea id="proofPoints" placeholder="e.g.,
+- 90% of suppliers pay zero fees on SAP Business Network
+- $6T in commerce processed annually
+- 5.5M+ organizations on the network
+- Gartner Leader 10 years running"></textarea>
+                </div>
+            </div>
+            
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>✨ Generate Messaging Framework</span>
+                <div class="spinner"></div>
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>✨ Messaging Framework: <span id="resultProduct"></span></h2>
+                <p>For <span id="resultPersona"></span></p>
+            </div>
+            <div class="results-content">
+                <button class="copy-btn" onclick="copyResults()">📋 Copy All</button>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/js/user-menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const sampleData = {
+            ariba: {
+                product: "SAP Ariba",
+                category: "Source-to-Pay / Procurement",
+                persona: "CPO / Chief Procurement Officer",
+                industry: "Cross-industry",
+                capabilities: `- Strategic sourcing with AI-powered recommendations
+- Procure-to-pay automation
+- Supplier management and risk monitoring
+- SAP Business Network access (5.5M+ organizations)
+- Real-time spend visibility and analytics
+- Contract lifecycle management`,
+                painPoints: `- Maverick spending outside negotiated contracts
+- Poor visibility into supplier risk and ESG compliance
+- Manual, paper-based procurement processes
+- Inability to capture and prove savings
+- Fragmented supplier relationships across BUs`,
+                alternatives: `- Coupa (positions on UX and "community intelligence")
+- Oracle (bundles with ERP)
+- Jaggaer (industry-specific solutions)
+- Status quo (spreadsheets, email, manual processes)`,
+                proofPoints: `- $6 trillion in commerce on SAP Business Network annually
+- 5.5M+ organizations connected
+- 90%+ of suppliers pay zero transaction fees
+- Gartner Magic Quadrant Leader for 10+ years
+- Native integration with S/4HANA`
+            },
+            bdc: {
+                product: "SAP Business Data Cloud",
+                category: "Enterprise Data Platform / Data Mesh",
+                persona: "CIO / Chief Information Officer",
+                industry: "Cross-industry",
+                capabilities: `- Unified business data semantics across SAP and non-SAP
+- Pre-built data products for common use cases
+- AI-ready data foundations
+- Real-time data federation (no ETL required)
+- Built-in governance and lineage`,
+                painPoints: `- Siloed data across dozens of systems
+- Months to integrate new data sources
+- Can't trust data quality for AI/ML initiatives
+- Data teams overwhelmed with ad-hoc requests
+- No single source of truth for business metrics`,
+                alternatives: `- Snowflake + dbt (requires heavy custom work)
+- Databricks (technical, not business-user friendly)
+- Build your own data mesh (18-24 month projects)
+- Status quo (report sprawl, data chaos)`,
+                proofPoints: `- Integrates with 200+ SAP data sources out of the box
+- 50% faster time-to-insight vs. custom builds
+- Used by Fortune 500 companies globally
+- Native Joule AI integration for natural language queries`
+            },
+            generic: {
+                product: "CloudWidget Pro",
+                category: "Workflow Automation Platform",
+                persona: "VP Operations",
+                industry: "",
+                capabilities: `- No-code workflow builder
+- 500+ pre-built integrations
+- AI-powered process recommendations
+- Real-time analytics dashboard
+- Enterprise-grade security (SOC 2 Type II)`,
+                painPoints: `- Manual, repetitive processes eating up team time
+- Too many disconnected tools
+- No visibility into process bottlenecks
+- IT backlog too long for custom solutions
+- Compliance documentation is manual`,
+                alternatives: `- Zapier (consumer-grade, limited governance)
+- Microsoft Power Automate (complex, requires training)
+- Custom development (expensive, slow)
+- Status quo (manual processes, spreadsheets)`,
+                proofPoints: `- 10,000+ customers globally
+- Average 12 hours saved per employee per month
+- 99.9% uptime SLA
+- Implementation in 30 days or less
+- G2 Leader for 8 consecutive quarters`
+            }
+        };
+
+        function loadSample(key) {
+            const data = sampleData[key];
+            document.getElementById('product').value = data.product;
+            document.getElementById('category').value = data.category;
+            document.getElementById('persona').value = data.persona;
+            document.getElementById('industry').value = data.industry;
+            document.getElementById('capabilities').value = data.capabilities;
+            document.getElementById('painPoints').value = data.painPoints;
+            document.getElementById('alternatives').value = data.alternatives;
+            document.getElementById('proofPoints').value = data.proofPoints;
+        }
+
+        document.getElementById('messagingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('runBtn');
+            const errorEl = document.getElementById('errorMessage');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            btn.classList.add('loading');
+            btn.disabled = true;
+            errorEl.classList.remove('visible');
+            resultsSection.classList.remove('visible');
+            
+            const inputs = {
+                product: document.getElementById('product').value,
+                category: document.getElementById('category').value,
+                persona: document.getElementById('persona').value,
+                industry: document.getElementById('industry').value,
+                capabilities: document.getElementById('capabilities').value,
+                painPoints: document.getElementById('painPoints').value,
+                alternatives: document.getElementById('alternatives').value,
+                proofPoints: document.getElementById('proofPoints').value
+            };
+            
+            try {
+                const response = await fetch('/.netlify/functions/lab-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ labType: 'messaging-lab', inputs })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate messaging');
+                }
+                
+                document.getElementById('resultProduct').textContent = inputs.product;
+                document.getElementById('resultPersona').textContent = inputs.persona;
+                document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
+                resultsSection.classList.add('visible');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                errorEl.textContent = error.message || 'Something went wrong. Please try again.';
+                errorEl.classList.add('visible');
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        function copyResults() {
+            const content = document.getElementById('resultsContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
