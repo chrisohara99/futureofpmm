@@ -26,13 +26,7 @@
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-        }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
         
         .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
         .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
@@ -42,176 +36,120 @@
         .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
         .nav a:hover { color: white; }
         
-        .hero {
-            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
-            padding: 2rem 2rem;
-            color: white;
-            text-align: center;
-        }
+        .hero { background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%); padding: 2rem; color: white; text-align: center; }
         .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
         .hero p { opacity: 0.9; }
         
         main { max-width: 900px; margin: 0 auto; padding: 2rem; }
         
-        .assessment-intro {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+        .assessment-intro { background: white; border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .assessment-intro p { color: #666; margin-bottom: 0.5rem; }
-        .scoring-info {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--light-gray);
-            flex-wrap: wrap;
-        }
+        .scoring-info { display: flex; gap: 2rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--light-gray); flex-wrap: wrap; }
         .scoring-info div { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
         
-        .exercise {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .exercise-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--light-gray);
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
+        .exercise { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .exercise-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--light-gray); flex-wrap: wrap; gap: 0.5rem; }
         .exercise-number { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
         .exercise-title { font-size: 1.2rem; color: var(--dark-slate); font-weight: 600; }
+        .exercise-points { background: var(--light-blue); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
         
-        .exercise-points {
-            background: var(--light-blue);
+        .exercise-instructions { background: #F8F9FA; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem; color: #555; }
+        
+        /* Sorting Exercise */
+        .sort-items { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .sort-item {
+            background: var(--dark-slate);
             color: white;
-            padding: 0.35rem 0.85rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
         }
+        .sort-item:hover { transform: scale(1.02); }
+        .sort-item.selected { background: var(--sap-orange); box-shadow: 0 4px 12px rgba(237,125,49,0.3); }
+        .sort-item.placed { opacity: 0.4; cursor: default; }
         
-        .question-text {
-            font-size: 1.05rem;
-            margin-bottom: 1.5rem;
-            color: var(--text);
-        }
+        .sort-zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        @media (max-width: 700px) { .sort-zones { grid-template-columns: 1fr; } }
+        .sort-zones.two-col { grid-template-columns: repeat(2, 1fr); }
         
-        .options { display: flex; flex-direction: column; gap: 0.75rem; }
-        
-        .option {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 1rem;
-            border: 2px solid var(--light-gray);
+        .sort-zone {
+            min-height: 140px;
+            border: 2px dashed #ccc;
             border-radius: 8px;
+            padding: 1rem;
+            background: #FAFAFA;
             cursor: pointer;
             transition: all 0.2s;
         }
+        .sort-zone:hover { background: #F0F4F8; border-color: #aaa; }
+        .sort-zone.active { background: #E3F2FD; border-color: var(--sap-blue); }
+        .sort-zone-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.75rem; text-align: center; padding: 0.5rem; border-radius: 6px; }
+        .sort-zone.seat .sort-zone-title { background: #f5f5f5; color: #666; }
+        .sort-zone.consumption .sort-zone-title { background: #E3F2FD; color: var(--sap-blue); }
+        .sort-zone.outcome .sort-zone-title { background: #E8F5E9; color: var(--green); }
+        .sort-zone-items { display: flex; flex-direction: column; gap: 0.5rem; }
+        .sort-zone-items .sort-item { background: var(--sap-blue); font-size: 0.8rem; padding: 0.5rem 0.75rem; }
+        .sort-zone.seat .sort-zone-items .sort-item { background: #666; }
+        .sort-zone.consumption .sort-zone-items .sort-item { background: var(--sap-blue); }
+        .sort-zone.outcome .sort-zone-items .sort-item { background: var(--green); }
         
+        .help-text { font-size: 0.8rem; color: #888; margin-top: 1rem; text-align: center; }
+        
+        /* Matching Exercise */
+        .match-container { display: flex; flex-direction: column; gap: 1rem; }
+        .match-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+        @media (max-width: 600px) { .match-row { grid-template-columns: 1fr; gap: 0.5rem; } .match-arrow { display: none; } }
+        .match-left { background: var(--dark-slate); color: white; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9rem; text-align: center; }
+        .match-arrow { font-size: 1.2rem; color: #ccc; }
+        .match-select { padding: 0.75rem 1rem; border: 2px solid var(--light-gray); border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; background: white; }
+        .match-select:focus { outline: none; border-color: var(--sap-blue); }
+        .match-select.correct { border-color: var(--green); background: #E8F5E9; }
+        .match-select.incorrect { border-color: var(--red); background: #FFEBEE; }
+        
+        /* Scenario */
+        .scenario-box { background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 4px solid var(--gold); }
+        .scenario-box h4 { color: #F57C00; margin-bottom: 0.75rem; }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 2px solid var(--light-gray); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
         .option:hover { border-color: var(--sap-blue); background: #F8FAFC; }
         .option.selected { border-color: var(--sap-blue); background: #EBF4FF; }
         .option.correct { border-color: var(--green); background: #E8F5E9; }
         .option.incorrect { border-color: var(--red); background: #FFEBEE; }
-        
         .option input { display: none; }
-        
-        .option-marker {
-            width: 28px;
-            height: 28px;
-            border: 2px solid #ccc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #888;
-            flex-shrink: 0;
-        }
-        
+        .option-marker { width: 28px; height: 28px; border: 2px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; color: #888; flex-shrink: 0; }
         .option.selected .option-marker { border-color: var(--sap-blue); background: var(--sap-blue); color: white; }
         .option.correct .option-marker { border-color: var(--green); background: var(--green); color: white; }
         .option.incorrect .option-marker { border-color: var(--red); background: var(--red); color: white; }
-        
         .option-text { flex: 1; font-size: 0.95rem; }
         
-        .feedback-box {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            display: none;
-        }
+        .feedback-box { margin-top: 1rem; padding: 1rem; border-radius: 8px; font-size: 0.9rem; display: none; }
         .feedback-box.show { display: block; }
         .feedback-box.correct { background: #e8f5e9; border-left: 4px solid var(--green); }
         .feedback-box.incorrect { background: #ffebee; border-left: 4px solid var(--red); }
         
         .submit-section { text-align: center; margin-top: 2rem; }
-        
-        .submit-btn {
-            background: var(--sap-orange);
-            color: white;
-            border: none;
-            padding: 1rem 3rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
+        .submit-btn { background: var(--sap-orange); color: white; border: none; padding: 1rem 3rem; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
         
         .results-container { display: none; margin-top: 2rem; }
         .results-container.show { display: block; }
-        
-        .results-header {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-        
+        .results-header { text-align: center; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
         .results-header.pass { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
         .results-header.fail { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
-        
         .results-score { font-size: 3.5rem; font-weight: 700; margin-bottom: 0.5rem; }
         .results-header.pass .results-score { color: var(--green); }
         .results-header.fail .results-score { color: var(--red); }
-        
         .results-message { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; }
         .results-detail { color: #666; }
         
-        .results-breakdown {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
-        }
-        
+        .results-breakdown { background: white; border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 2rem; }
         .results-breakdown h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
-        
-        .breakdown-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--light-gray);
-        }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray); }
         .breakdown-row:last-child { border-bottom: none; }
         .breakdown-label { color: #666; }
         .breakdown-score { font-weight: 600; }
@@ -219,23 +157,9 @@
         .breakdown-score.partial { color: var(--gold); }
         .breakdown-score.zero { color: var(--red); }
         
-        .next-steps {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            text-align: center;
-        }
+        .next-steps { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
         .next-steps h3 { margin-bottom: 1rem; }
-        
-        .next-btn {
-            display: inline-block;
-            padding: 0.875rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            margin: 0.5rem;
-        }
+        .next-btn { display: inline-block; padding: 0.875rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 500; margin: 0.5rem; }
         .next-btn.primary { background: var(--green); color: white; }
         .next-btn.secondary { background: transparent; color: var(--sap-blue); border: 2px solid var(--sap-blue); }
     </style>
@@ -254,12 +178,12 @@
     
     <section class="hero">
         <h1>Unit 8 Assessment</h1>
-        <p>Pricing & Packaging in the Agent Era • 5 questions • ~10 minutes</p>
+        <p>Pricing & Packaging in the Agent Era • 4 exercises • ~15 minutes</p>
     </section>
     
     <main>
         <div class="assessment-intro">
-            <p>Test your understanding of <strong>pricing model evolution</strong> and its implications for product marketing.</p>
+            <p>This assessment tests your ability to <strong>apply</strong> pricing concepts. Tap items to select, then tap zones to place them.</p>
             <div class="scoring-info">
                 <div><span>🎯</span> 100 points total</div>
                 <div><span>✅</span> 80+ to pass</div>
@@ -267,209 +191,244 @@
             </div>
         </div>
         
-        <!-- Question 1 -->
-        <div class="exercise" id="q1">
+        <!-- Exercise 1: Sort Characteristics to Pricing Models -->
+        <div class="exercise" id="exercise1">
             <div class="exercise-header">
                 <div>
-                    <div class="exercise-number">Question 1 of 5</div>
-                    <div class="exercise-title">Pricing Model Evolution</div>
+                    <div class="exercise-number">Exercise 1 of 4</div>
+                    <div class="exercise-title">Pricing Model Characteristics</div>
                 </div>
-                <div class="exercise-points">20 points</div>
+                <div class="exercise-points">30 points</div>
+            </div>
+            <p class="exercise-instructions">Sort each characteristic to the pricing model it best describes. Tap an item, then tap a zone.</p>
+            
+            <div class="sort-items" id="items1">
+                <div class="sort-item" data-answer="seat" data-id="1">Count named users</div>
+                <div class="sort-item" data-answer="seat" data-id="2">Easy to budget annually</div>
+                <div class="sort-item" data-answer="seat" data-id="3">Shelfware risk</div>
+                <div class="sort-item" data-answer="consumption" data-id="4">Capacity Units</div>
+                <div class="sort-item" data-answer="consumption" data-id="5">Pay for actual usage</div>
+                <div class="sort-item" data-answer="consumption" data-id="6">Bill shock possible</div>
+                <div class="sort-item" data-answer="outcome" data-id="7">Per resolution pricing</div>
+                <div class="sort-item" data-answer="outcome" data-id="8">Attribution challenges</div>
+                <div class="sort-item" data-answer="outcome" data-id="9">Vendor shares risk</div>
             </div>
             
-            <p class="question-text">What is the primary driver forcing enterprise software vendors to move away from traditional seat-based pricing?</p>
-            
-            <div class="options" id="options1">
-                <label class="option" data-value="a">
-                    <input type="radio" name="q1" value="a">
-                    <span class="option-marker">A</span>
-                    <span class="option-text">Customers prefer unpredictable bills to fixed contracts</span>
-                </label>
-                <label class="option" data-value="b">
-                    <input type="radio" name="q1" value="b">
-                    <span class="option-marker">B</span>
-                    <span class="option-text">AI agents doing work don't need "seats," breaking the human-count pricing model</span>
-                </label>
-                <label class="option" data-value="c">
-                    <input type="radio" name="q1" value="c">
-                    <span class="option-marker">C</span>
-                    <span class="option-text">Regulators are mandating consumption-based pricing for data products</span>
-                </label>
-                <label class="option" data-value="d">
-                    <input type="radio" name="q1" value="d">
-                    <span class="option-marker">D</span>
-                    <span class="option-text">Seat-based pricing is too expensive for vendors to administer</span>
-                </label>
+            <div class="sort-zones" id="zones1">
+                <div class="sort-zone seat" data-zone="seat">
+                    <div class="sort-zone-title">👤 Seat-Based</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone consumption" data-zone="consumption">
+                    <div class="sort-zone-title">📊 Consumption</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone outcome" data-zone="outcome">
+                    <div class="sort-zone-title">🎯 Outcome</div>
+                    <div class="sort-zone-items"></div>
+                </div>
             </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
             <div class="feedback-box" id="feedback1"></div>
         </div>
         
-        <!-- Question 2 -->
-        <div class="exercise" id="q2">
+        <!-- Exercise 2: Match Companies to Pricing Innovation -->
+        <div class="exercise" id="exercise2">
             <div class="exercise-header">
                 <div>
-                    <div class="exercise-number">Question 2 of 5</div>
-                    <div class="exercise-title">SAP Capacity Units</div>
+                    <div class="exercise-number">Exercise 2 of 4</div>
+                    <div class="exercise-title">Match the Pricing Innovation</div>
                 </div>
                 <div class="exercise-points">20 points</div>
             </div>
+            <p class="exercise-instructions">Match each company to their pricing innovation:</p>
             
-            <p class="question-text">What does SAP's Capacity Unit (CU) model for HANA Cloud and Datasphere represent?</p>
-            
-            <div class="options" id="options2">
-                <label class="option" data-value="a">
-                    <input type="radio" name="q2" value="a">
-                    <span class="option-marker">A</span>
-                    <span class="option-text">A fixed per-user licensing fee that scales with headcount</span>
-                </label>
-                <label class="option" data-value="b">
-                    <input type="radio" name="q2" value="b">
-                    <span class="option-marker">B</span>
-                    <span class="option-text">A universal currency for cloud workloads that can be applied to compute, storage, or data services</span>
-                </label>
-                <label class="option" data-value="c">
-                    <input type="radio" name="q2" value="c">
-                    <span class="option-marker">C</span>
-                    <span class="option-text">An outcome-based metric that charges based on business results achieved</span>
-                </label>
-                <label class="option" data-value="d">
-                    <input type="radio" name="q2" value="d">
-                    <span class="option-marker">D</span>
-                    <span class="option-text">A physical hardware allocation in SAP's data centers</span>
-                </label>
+            <div class="match-container" id="matches">
+                <div class="match-row">
+                    <div class="match-left">SAP (HANA/Datasphere)</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="cu">
+                        <option value="">Select...</option>
+                        <option value="cu">Capacity Units</option>
+                        <option value="ar">Automated Resolutions</option>
+                        <option value="conv">Per-Conversation</option>
+                        <option value="results">Pay for Results</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <div class="match-left">Zendesk (AI Agents)</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="ar">
+                        <option value="">Select...</option>
+                        <option value="cu">Capacity Units</option>
+                        <option value="ar">Automated Resolutions</option>
+                        <option value="conv">Per-Conversation</option>
+                        <option value="results">Pay for Results</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <div class="match-left">Salesforce Agentforce</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="conv">
+                        <option value="">Select...</option>
+                        <option value="cu">Capacity Units</option>
+                        <option value="ar">Automated Resolutions</option>
+                        <option value="conv">Per-Conversation</option>
+                        <option value="results">Pay for Results</option>
+                    </select>
+                </div>
+                <div class="match-row">
+                    <div class="match-left">Sierra AI</div>
+                    <div class="match-arrow">→</div>
+                    <select class="match-select" data-answer="results">
+                        <option value="">Select...</option>
+                        <option value="cu">Capacity Units</option>
+                        <option value="ar">Automated Resolutions</option>
+                        <option value="conv">Per-Conversation</option>
+                        <option value="results">Pay for Results</option>
+                    </select>
+                </div>
             </div>
             <div class="feedback-box" id="feedback2"></div>
         </div>
         
-        <!-- Question 3 -->
-        <div class="exercise" id="q3">
+        <!-- Exercise 3: PMM Role Sorting -->
+        <div class="exercise" id="exercise3">
             <div class="exercise-header">
                 <div>
-                    <div class="exercise-number">Question 3 of 5</div>
-                    <div class="exercise-title">Hybrid Pricing Models</div>
+                    <div class="exercise-number">Exercise 3 of 4</div>
+                    <div class="exercise-title">PMM vs. Not PMM Responsibilities</div>
                 </div>
-                <div class="exercise-points">20 points</div>
+                <div class="exercise-points">24 points</div>
+            </div>
+            <p class="exercise-instructions">Which of these are PMM responsibilities in pricing strategy?</p>
+            
+            <div class="sort-items" id="items3">
+                <div class="sort-item" data-answer="pmm" data-id="a">Value articulation</div>
+                <div class="sort-item" data-answer="pmm" data-id="b">ROI calculators</div>
+                <div class="sort-item" data-answer="pmm" data-id="c">Competitive positioning</div>
+                <div class="sort-item" data-answer="notpmm" data-id="d">Setting price points</div>
+                <div class="sort-item" data-answer="notpmm" data-id="e">Approving discounts</div>
+                <div class="sort-item" data-answer="notpmm" data-id="f">Negotiating contracts</div>
             </div>
             
-            <p class="question-text">Why are hybrid pricing models (fixed base + consumption add-ons) dominating enterprise software in 2025-2026?</p>
-            
-            <div class="options" id="options3">
-                <label class="option" data-value="a">
-                    <input type="radio" name="q3" value="a">
-                    <span class="option-marker">A</span>
-                    <span class="option-text">They combine predictability for budgeting with flexibility for scaling, which both vendors and buyers need during the transition</span>
-                </label>
-                <label class="option" data-value="b">
-                    <input type="radio" name="q3" value="b">
-                    <span class="option-marker">B</span>
-                    <span class="option-text">Pure consumption models are illegal in most enterprise contracts</span>
-                </label>
-                <label class="option" data-value="c">
-                    <input type="radio" name="q3" value="c">
-                    <span class="option-marker">C</span>
-                    <span class="option-text">Customers have rejected outcome-based pricing entirely</span>
-                </label>
-                <label class="option" data-value="d">
-                    <input type="radio" name="q3" value="d">
-                    <span class="option-marker">D</span>
-                    <span class="option-text">Hybrid models are mandated by cloud infrastructure providers</span>
-                </label>
+            <div class="sort-zones two-col" id="zones3">
+                <div class="sort-zone consumption" data-zone="pmm">
+                    <div class="sort-zone-title">✅ PMM Responsibility</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone seat" data-zone="notpmm">
+                    <div class="sort-zone-title">❌ Not PMM</div>
+                    <div class="sort-zone-items"></div>
+                </div>
             </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
             <div class="feedback-box" id="feedback3"></div>
         </div>
         
-        <!-- Question 4 -->
-        <div class="exercise" id="q4">
+        <!-- Exercise 4: Scenario -->
+        <div class="exercise" id="exercise4">
             <div class="exercise-header">
                 <div>
-                    <div class="exercise-number">Question 4 of 5</div>
-                    <div class="exercise-title">PMM Role in Pricing</div>
+                    <div class="exercise-number">Exercise 4 of 4</div>
+                    <div class="exercise-title">Pricing Scenario</div>
                 </div>
-                <div class="exercise-points">20 points</div>
+                <div class="exercise-points">26 points</div>
             </div>
             
-            <p class="question-text">What is the PMM's primary role in pricing strategy?</p>
+            <div class="scenario-box">
+                <h4>📋 Scenario</h4>
+                <p>A prospect asks: "We're evaluating SAP Datasphere vs. a competitor that charges per-user. How do I explain your Capacity Unit model to our CFO who wants predictable costs?"</p>
+                <p style="margin-top:0.75rem;"><strong>As the PMM, what's the best approach?</strong></p>
+            </div>
             
-            <div class="options" id="options4">
+            <div class="options" id="scenario1">
                 <label class="option" data-value="a">
-                    <input type="radio" name="q4" value="a">
+                    <input type="radio" name="scenario1" value="a">
                     <span class="option-marker">A</span>
-                    <span class="option-text">Setting the actual price points based on competitive analysis</span>
+                    <span class="option-text">Tell them per-user pricing is outdated and they should embrace consumption-based models.</span>
                 </label>
                 <label class="option" data-value="b">
-                    <input type="radio" name="q4" value="b">
+                    <input type="radio" name="scenario1" value="b">
                     <span class="option-marker">B</span>
-                    <span class="option-text">Negotiating contracts directly with customers</span>
+                    <span class="option-text">Explain that SAP offers committed capacity options — buy a block of CUs upfront at a discount for budget predictability, with flexibility to allocate across services.</span>
                 </label>
                 <label class="option" data-value="c">
-                    <input type="radio" name="q4" value="c">
+                    <input type="radio" name="scenario1" value="c">
                     <span class="option-marker">C</span>
-                    <span class="option-text">Owning the value narrative that makes pricing make sense to buyers — translating abstract units into business value</span>
+                    <span class="option-text">Recommend they go with the per-user competitor if predictable costs are important.</span>
                 </label>
                 <label class="option" data-value="d">
-                    <input type="radio" name="q4" value="d">
+                    <input type="radio" name="scenario1" value="d">
                     <span class="option-marker">D</span>
-                    <span class="option-text">Approving all discount requests from the sales team</span>
+                    <span class="option-text">Focus only on the technology features and avoid discussing pricing details.</span>
                 </label>
             </div>
-            <div class="feedback-box" id="feedback4"></div>
-        </div>
-        
-        <!-- Question 5 -->
-        <div class="exercise" id="q5">
-            <div class="exercise-header">
-                <div>
-                    <div class="exercise-number">Question 5 of 5</div>
-                    <div class="exercise-title">Outcome-Based Pricing Challenge</div>
-                </div>
-                <div class="exercise-points">20 points</div>
+            <div class="feedback-box" id="feedback4a"></div>
+            
+            <div class="scenario-box" style="margin-top: 2rem;">
+                <h4>📋 Scenario 2</h4>
+                <p>Your sales team keeps losing deals because prospects say "your pricing is confusing." What should PMM do?</p>
             </div>
             
-            <p class="question-text">What is the primary challenge preventing widespread adoption of true outcome-based pricing for AI and data products?</p>
-            
-            <div class="options" id="options5">
+            <div class="options" id="scenario2">
                 <label class="option" data-value="a">
-                    <input type="radio" name="q5" value="a">
+                    <input type="radio" name="scenario2" value="a">
                     <span class="option-marker">A</span>
-                    <span class="option-text">Customers refuse to pay for outcomes</span>
+                    <span class="option-text">Ask product to simplify the pricing model.</span>
                 </label>
                 <label class="option" data-value="b">
-                    <input type="radio" name="q5" value="b">
+                    <input type="radio" name="scenario2" value="b">
                     <span class="option-marker">B</span>
-                    <span class="option-text">Measurement and attribution complexity — it's hard to isolate the software's contribution when multiple inputs affect business results</span>
+                    <span class="option-text">Create value translation tools — calculators, TCO comparisons, and simple analogies that help sales explain "what you get for your investment."</span>
                 </label>
                 <label class="option" data-value="c">
-                    <input type="radio" name="q5" value="c">
+                    <input type="radio" name="scenario2" value="c">
                     <span class="option-marker">C</span>
-                    <span class="option-text">AI products don't generate measurable outcomes</span>
+                    <span class="option-text">Train sales to redirect pricing questions to the finance team.</span>
                 </label>
                 <label class="option" data-value="d">
-                    <input type="radio" name="q5" value="d">
+                    <input type="radio" name="scenario2" value="d">
                     <span class="option-marker">D</span>
-                    <span class="option-text">Outcome-based pricing is more expensive for vendors to implement</span>
+                    <span class="option-text">Focus on winning technical evaluations instead of pricing discussions.</span>
                 </label>
             </div>
-            <div class="feedback-box" id="feedback5"></div>
+            <div class="feedback-box" id="feedback4b"></div>
         </div>
         
         <div class="submit-section">
-            <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Assessment</button>
+            <button class="submit-btn" id="submitBtn">Submit Assessment</button>
         </div>
         
-        <div class="results-container" id="results">
+        <div class="results-container" id="resultsContainer">
             <div class="results-header" id="resultsHeader">
                 <div class="results-score" id="resultsScore">0%</div>
-                <div class="results-message" id="resultsMessage">Your Results</div>
+                <div class="results-message" id="resultsMessage"></div>
                 <div class="results-detail" id="resultsDetail"></div>
             </div>
             
             <div class="results-breakdown">
                 <h3>Score Breakdown</h3>
-                <div id="breakdownContent"></div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 1: Pricing Characteristics (9 items)</span>
+                    <span class="breakdown-score" id="score1">0/30</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 2: Company Matching (4 items)</span>
+                    <span class="breakdown-score" id="score2">0/20</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 3: PMM Responsibilities (6 items)</span>
+                    <span class="breakdown-score" id="score3">0/24</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 4: Scenarios (2 questions)</span>
+                    <span class="breakdown-score" id="score4">0/26</span>
+                </div>
             </div>
             
-            <div class="next-steps">
-                <h3>What's Next?</h3>
+            <div class="next-steps" id="nextSteps">
+                <h3 id="nextStepsTitle"></h3>
                 <div id="nextStepsContent"></div>
             </div>
         </div>
@@ -477,135 +436,180 @@
 
 <script src="/assets/js/user-menu.js"></script>
 <script>
-const CORRECT_ANSWERS = {
-    q1: 'b',
-    q2: 'b',
-    q3: 'a',
-    q4: 'c',
-    q5: 'b'
-};
+// Sorting logic
+let selectedItem = null;
 
-const FEEDBACK = {
-    q1: {
-        correct: "Correct! AI agents performing work that humans used to do — but without needing 'seats' — is fundamentally breaking the seat-based pricing model.",
-        incorrect: "Not quite. The key driver is AI agents doing work without needing seats. When an agent does the work of 5 analysts, the seat-count model no longer makes sense."
-    },
-    q2: {
-        correct: "Correct! Capacity Units are SAP's universal currency for cloud workloads, providing flexible allocation across compute, storage, and data services regardless of hyperscaler.",
-        incorrect: "Not quite. SAP's Capacity Unit is a consumption-based currency for workloads — not per-user licensing, not outcome-based, and not physical hardware."
-    },
-    q3: {
-        correct: "Correct! Hybrid models offer the best of both worlds during the transition: predictable base costs for budgeting plus flexible consumption for scaling as needs change.",
-        incorrect: "Not quite. Hybrid models dominate because they balance predictability (what buyers need for budgeting) with flexibility (what both sides need during the AI transition)."
-    },
-    q4: {
-        correct: "Correct! PMMs don't set prices, but they own the value narrative that makes pricing make sense. Translating abstract units like CUs into concrete business value is essential.",
-        incorrect: "Not quite. PMMs don't set prices or negotiate contracts — that's product/finance and sales. PMMs own the value narrative that helps buyers understand why the price is worth paying."
-    },
-    q5: {
-        correct: "Correct! When multiple factors (AI tools, human effort, other systems) contribute to an outcome, attributing success to any single software product is extremely difficult.",
-        incorrect: "Not quite. The main challenge is measurement and attribution — real business outcomes have multiple inputs, making it hard to isolate software's specific contribution."
-    }
-};
+document.querySelectorAll('.sort-item').forEach(item => {
+    item.addEventListener('click', function() {
+        if (this.classList.contains('placed')) return;
+        
+        document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedItem = this;
+    });
+});
 
-const POINTS_PER_QUESTION = 20;
+document.querySelectorAll('.sort-zone').forEach(zone => {
+    zone.addEventListener('click', function() {
+        if (!selectedItem) return;
+        
+        const zoneItems = this.querySelector('.sort-zone-items');
+        const clone = selectedItem.cloneNode(true);
+        clone.classList.remove('selected');
+        clone.classList.add('placed');
+        clone.addEventListener('click', function() {
+            this.remove();
+            const original = document.querySelector(`.sort-item[data-id="${this.dataset.id}"]`);
+            if (original) original.classList.remove('placed');
+        });
+        
+        zoneItems.appendChild(clone);
+        selectedItem.classList.add('placed');
+        selectedItem.classList.remove('selected');
+        selectedItem = null;
+    });
+});
 
-// Selection handling
+// Option selection
 document.querySelectorAll('.option').forEach(option => {
     option.addEventListener('click', function() {
-        const questionId = this.closest('.exercise').id;
-        document.querySelectorAll(`#${questionId} .option`).forEach(o => o.classList.remove('selected'));
+        const name = this.querySelector('input').name;
+        document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+            input.closest('.option').classList.remove('selected');
+        });
         this.classList.add('selected');
         this.querySelector('input').checked = true;
     });
 });
 
-function submitQuiz() {
+// Submit
+document.getElementById('submitBtn').addEventListener('click', function() {
     let totalScore = 0;
-    const breakdown = [];
+    const scores = { ex1: 0, ex2: 0, ex3: 0, ex4: 0 };
     
-    for (let i = 1; i <= 5; i++) {
-        const questionId = `q${i}`;
-        const selected = document.querySelector(`input[name="${questionId}"]:checked`);
-        const options = document.querySelectorAll(`#${questionId} .option`);
-        const feedbackBox = document.getElementById(`feedback${i}`);
-        
-        let questionScore = 0;
-        let isCorrect = false;
-        
-        if (selected && selected.value === CORRECT_ANSWERS[questionId]) {
-            questionScore = POINTS_PER_QUESTION;
-            isCorrect = true;
+    // Exercise 1: Sorting (30 pts, ~3.33 each)
+    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) scores.ex1 += 3.33;
+    });
+    scores.ex1 = Math.round(scores.ex1);
+    
+    // Exercise 2: Matching (20 pts, 5 each)
+    document.querySelectorAll('.match-select').forEach(select => {
+        const isCorrect = select.value === select.dataset.answer;
+        select.classList.remove('correct', 'incorrect');
+        select.classList.add(isCorrect ? 'correct' : 'incorrect');
+        if (isCorrect) scores.ex2 += 5;
+    });
+    
+    // Exercise 3: PMM sorting (24 pts, 4 each)
+    document.querySelectorAll('#zones3 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) scores.ex3 += 4;
+    });
+    
+    // Exercise 4: Scenarios (26 pts, 13 each)
+    const s1 = document.querySelector('input[name="scenario1"]:checked');
+    const s2 = document.querySelector('input[name="scenario2"]:checked');
+    
+    document.querySelectorAll('#scenario1 .option, #scenario2 .option').forEach(opt => {
+        opt.classList.remove('correct', 'incorrect');
+    });
+    
+    if (s1) {
+        const opt = s1.closest('.option');
+        if (s1.value === 'b') {
+            scores.ex4 += 13;
+            opt.classList.add('correct');
+            document.getElementById('feedback4a').innerHTML = '✅ Correct! Committed capacity options give CFOs budget predictability while maintaining consumption flexibility.';
+            document.getElementById('feedback4a').className = 'feedback-box show correct';
+        } else {
+            opt.classList.add('incorrect');
+            document.querySelector('#scenario1 .option[data-value="b"]').classList.add('correct');
+            document.getElementById('feedback4a').innerHTML = '❌ The best approach is explaining committed capacity options — they provide budget predictability with usage flexibility.';
+            document.getElementById('feedback4a').className = 'feedback-box show incorrect';
         }
-        
-        totalScore += questionScore;
-        
-        // Show feedback
-        options.forEach(opt => {
-            opt.classList.remove('correct', 'incorrect');
-            const val = opt.dataset.value;
-            if (val === CORRECT_ANSWERS[questionId]) {
-                opt.classList.add('correct');
-            } else if (selected && val === selected.value) {
-                opt.classList.add('incorrect');
-            }
-        });
-        
-        feedbackBox.innerHTML = isCorrect ? FEEDBACK[questionId].correct : FEEDBACK[questionId].incorrect;
-        feedbackBox.className = `feedback-box show ${isCorrect ? 'correct' : 'incorrect'}`;
-        
-        breakdown.push({
-            label: `Question ${i}`,
-            score: questionScore,
-            max: POINTS_PER_QUESTION
-        });
     }
     
-    // Show results
-    const percentage = totalScore;
-    const passed = percentage >= 80;
+    if (s2) {
+        const opt = s2.closest('.option');
+        if (s2.value === 'b') {
+            scores.ex4 += 13;
+            opt.classList.add('correct');
+            document.getElementById('feedback4b').innerHTML = '✅ Correct! PMMs own value translation — making abstract pricing models understandable through calculators, comparisons, and simple narratives.';
+            document.getElementById('feedback4b').className = 'feedback-box show correct';
+        } else {
+            opt.classList.add('incorrect');
+            document.querySelector('#scenario2 .option[data-value="b"]').classList.add('correct');
+            document.getElementById('feedback4b').innerHTML = '❌ PMMs should create value translation tools — that\'s our job, not asking product to change pricing or deflecting to finance.';
+            document.getElementById('feedback4b').className = 'feedback-box show incorrect';
+        }
+    }
     
-    document.getElementById('resultsScore').textContent = `${percentage}%`;
+    totalScore = scores.ex1 + scores.ex2 + scores.ex3 + scores.ex4;
+    const passed = totalScore >= 80;
+    
+    // Show sorting feedback
+    ['1', '3'].forEach(exNum => {
+        const fb = document.getElementById(`feedback${exNum}`);
+        const zoneId = exNum === '1' ? 'zones1' : 'zones3';
+        let correct = 0;
+        document.querySelectorAll(`#${zoneId} .sort-zone-items .sort-item`).forEach(item => {
+            const zone = item.closest('.sort-zone').dataset.zone;
+            if (item.dataset.answer === zone) correct++;
+        });
+        const total = document.querySelectorAll(`#items${exNum} .sort-item`).length;
+        fb.innerHTML = `${correct}/${total} items placed correctly`;
+        fb.className = `feedback-box show ${correct === total ? 'correct' : 'incorrect'}`;
+    });
+    
+    // Matching feedback
+    const matchFb = document.getElementById('feedback2');
+    const matchCorrect = document.querySelectorAll('.match-select.correct').length;
+    matchFb.innerHTML = `${matchCorrect}/4 matches correct`;
+    matchFb.className = `feedback-box show ${matchCorrect === 4 ? 'correct' : 'incorrect'}`;
+    
+    // Display results
+    document.getElementById('resultsScore').textContent = `${totalScore}%`;
     document.getElementById('resultsHeader').className = `results-header ${passed ? 'pass' : 'fail'}`;
-    document.getElementById('resultsMessage').textContent = passed ? '🎉 Excellent Work!' : 'Keep Learning!';
+    document.getElementById('resultsMessage').textContent = passed ? '🎉 Pricing Master!' : 'Keep Learning!';
     document.getElementById('resultsDetail').textContent = passed 
-        ? 'You\'ve mastered pricing and packaging concepts.'
+        ? 'You understand pricing models and PMM\'s role in value articulation.'
         : 'Review the unit content and try again.';
     
-    // Breakdown
-    const breakdownHtml = breakdown.map(item => `
-        <div class="breakdown-row">
-            <span class="breakdown-label">${item.label}</span>
-            <span class="breakdown-score ${item.score === item.max ? 'full' : item.score > 0 ? 'partial' : 'zero'}">${item.score}/${item.max}</span>
-        </div>
-    `).join('');
-    document.getElementById('breakdownContent').innerHTML = breakdownHtml;
+    document.getElementById('score1').textContent = `${scores.ex1}/30`;
+    document.getElementById('score1').className = `breakdown-score ${scores.ex1 >= 27 ? 'full' : scores.ex1 > 0 ? 'partial' : 'zero'}`;
+    document.getElementById('score2').textContent = `${scores.ex2}/20`;
+    document.getElementById('score2').className = `breakdown-score ${scores.ex2 === 20 ? 'full' : scores.ex2 > 0 ? 'partial' : 'zero'}`;
+    document.getElementById('score3').textContent = `${scores.ex3}/24`;
+    document.getElementById('score3').className = `breakdown-score ${scores.ex3 === 24 ? 'full' : scores.ex3 > 0 ? 'partial' : 'zero'}`;
+    document.getElementById('score4').textContent = `${scores.ex4}/26`;
+    document.getElementById('score4').className = `breakdown-score ${scores.ex4 === 26 ? 'full' : scores.ex4 > 0 ? 'partial' : 'zero'}`;
     
-    // Next steps
+    document.getElementById('nextStepsTitle').textContent = passed ? 'Congratulations!' : 'Not quite there yet';
     document.getElementById('nextStepsContent').innerHTML = passed
-        ? `<p>You've completed the Pricing & Packaging unit!</p>
+        ? `<p>You've mastered pricing and packaging concepts!</p>
            <a href="/curriculum/" class="next-btn primary">Back to Curriculum</a>
            <a href="/curriculum/labs/pricing-rationale.html" class="next-btn secondary">Try the Pricing Lab</a>`
         : `<p>Review the pricing concepts and try again.</p>
            <a href="index.html" class="next-btn secondary">Review Unit 8</a>
            <a href="javascript:location.reload()" class="next-btn primary">Retry Assessment</a>`;
     
-    document.getElementById('results').classList.add('show');
+    document.getElementById('resultsContainer').classList.add('show');
     document.getElementById('submitBtn').disabled = true;
     
     // Save score
-    saveScore(percentage);
+    saveScore(totalScore);
     
-    // Scroll to results
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-}
+    document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+});
 
 async function saveScore(percentage) {
     try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
         
-        const response = await fetch('/.netlify/functions/save-result', {
+        await fetch('/.netlify/functions/save-result', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
