@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/unit-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 8: Pricing & Packaging in the Agent Era | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar {
+            background: var(--light-gray);
+            height: 4px;
+        }
+        .progress-fill {
+            background: var(--sap-orange);
+            height: 100%;
+            width: 100%;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .unit-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        .funnel-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .hero .time {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+        
+        section { margin-bottom: 3rem; }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin: 2rem 0 0.75rem;
+        }
+        
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        
+        .objectives-box h2 {
+            border: none;
+            padding: 0;
+            margin-bottom: 1rem;
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+        }
+        
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        
+        .key-concept h4 {
+            color: var(--sap-orange);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        
+        .case-study h4 {
+            color: #F57C00;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        @media (max-width: 600px) {
+            .comparison-box { grid-template-columns: 1fr; }
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        
+        .comparison-card.old { border-top: 4px solid #888; }
+        .comparison-card.new { border-top: 4px solid var(--green); }
+        
+        .comparison-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-card.old h4 { color: #666; }
+        .comparison-card.new h4 { color: var(--green); }
+        
+        .comparison-card ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .evolution-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            position: relative;
+        }
+        .evolution-timeline::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: linear-gradient(90deg, #888 0%, var(--sap-blue) 50%, var(--green) 100%);
+            border-radius: 2px;
+        }
+        .evolution-stage {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        .evolution-stage .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+        .evolution-stage:nth-child(1) .icon { background: #E0E0E0; }
+        .evolution-stage:nth-child(2) .icon { background: #BBDEFB; }
+        .evolution-stage:nth-child(3) .icon { background: #C8E6C9; }
+        .evolution-stage h5 { font-size: 0.9rem; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .evolution-stage p { font-size: 0.8rem; color: #666; margin: 0; }
+        
+        @media (max-width: 600px) {
+            .evolution-timeline { flex-direction: column; gap: 1rem; }
+            .evolution-timeline::before { display: none; }
+        }
+        
+        .pricing-model-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .pricing-model-card h4 {
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .pricing-model-card .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        th {
+            background: var(--dark-slate);
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) { background: #f8f9fa; }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn.prev {
+            background: var(--light-gray);
+            color: var(--dark-slate);
+        }
+        .nav-btn.prev:hover { background: #d0d0d0; }
+        
+        .nav-btn.next {
+            background: var(--sap-orange);
+            color: white;
+        }
+        .nav-btn.next:hover { background: #d66a25; }
+        
+        .sap-example {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--green);
+        }
+        .sap-example h4 {
+            color: var(--green);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--sap-orange);
+        }
+        .warning-box h4 {
+            color: var(--sap-orange);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="unit-label">Unit 8 <span class="funnel-badge">💰 Commercialization</span></div>
+        <h1>Pricing & Packaging in the Agent Era</h1>
+        <div class="time">⏱️ 25 minutes • 📖 Reading + Examples</div>
+    </div>
+</section>
+
+<main>
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand the evolution from seat-based to consumption-based to outcome-based pricing</li>
+            <li>Learn how SAP's Capacity Unit model works for HANA Cloud and Datasphere</li>
+            <li>Recognize the PMM's role in pricing strategy and value communication</li>
+            <li>Apply pricing principles to data platform and AI product positioning</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The Pricing Tectonic Shift</h2>
+        
+        <p>For decades, enterprise software pricing followed a simple formula: <strong>count the humans, multiply by a price</strong>. Named users. Concurrent users. Seats. The model was predictable, easy to budget, and aligned with how companies thought about software adoption.</p>
+        
+        <p>Then three forces converged to break it:</p>
+        
+        <ol>
+            <li><strong>Cloud infrastructure</strong> made compute and storage variable costs, not fixed assets</li>
+            <li><strong>API-first architectures</strong> meant software increasingly talked to other software, not humans</li>
+            <li><strong>AI agents</strong> began doing work that humans used to do—but don't need "seats"</li>
+        </ol>
+        
+        <p>The result? According to Metronome's 2025 State of Usage-Based Pricing report, <strong>77% of the largest software companies now incorporate consumption-based pricing</strong> into their revenue models. And it's accelerating.</p>
+        
+        <div class="evolution-timeline">
+            <div class="evolution-stage">
+                <div class="icon">👤</div>
+                <h5>Seat-Based</h5>
+                <p>Per user, per month</p>
+            </div>
+            <div class="evolution-stage">
+                <div class="icon">📊</div>
+                <h5>Consumption-Based</h5>
+                <p>Pay for what you use</p>
+            </div>
+            <div class="evolution-stage">
+                <div class="icon">🎯</div>
+                <h5>Outcome-Based</h5>
+                <p>Pay for results</p>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>💡 Why This Matters for PMM</h4>
+            <p>Pricing isn't just a finance or product decision—it's a <strong>positioning decision</strong>. How you price signals what you value, who you're for, and how you expect customers to measure success. As PMMs, we own the narrative that makes pricing make sense.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Stage 1: Seat-Based Pricing</h2>
+        
+        <p>The traditional model still dominates legacy enterprise software. It's simple: <strong>10 users = 10 licenses</strong>.</p>
+        
+        <h3>Advantages</h3>
+        <ul>
+            <li><strong>Predictable revenue</strong> for the vendor</li>
+            <li><strong>Predictable costs</strong> for the buyer (easy to budget)</li>
+            <li><strong>Easy to administer</strong> (count heads, bill accordingly)</li>
+        </ul>
+        
+        <h3>The Breaking Point</h3>
+        <ul>
+            <li><strong>Shelfware problem</strong>: Companies buy 100 seats, only 40 people use it</li>
+            <li><strong>Adoption misalignment</strong>: Vendor gets paid whether customer gets value or not</li>
+            <li><strong>AI disruption</strong>: When an agent does the work of 5 analysts, do you need 5 seats?</li>
+        </ul>
+        
+        <div class="case-study">
+            <h4>📌 The CIO.com Warning (November 2025)</h4>
+            <p>"Fueled by workforce reductions, which are in turn driven by AI, vendors are <strong>abandoning per-seat pricing and moving to charging by consumption and/or agent interactions</strong>."</p>
+            <p style="font-size: 0.85rem; margin-top: 0.75rem; margin-bottom: 0;">This shift is forcing CIOs to completely rethink negotiation tactics. Fixed annual contracts are giving way to variable consumption commitments with usage floors and ceilings.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Stage 2: Consumption-Based Pricing</h2>
+        
+        <p>Also called <strong>usage-based pricing (UBP)</strong>, this model charges based on actual consumption—compute cycles, storage gigabytes, API calls, data processed, or custom "units" that represent workload.</p>
+        
+        <h3>The SAP Approach: Capacity Units</h3>
+        
+        <p>SAP has adopted a <strong>Capacity Unit (CU)</strong> model for its data and analytics portfolio. This is particularly relevant for HANA Cloud, Datasphere, and the broader Business Data Cloud.</p>
+        
+        <div class="sap-example">
+            <h4>🟢 SAP Datasphere Pricing Model (Public)</h4>
+            <p>SAP Datasphere uses Business Technology Platform Capacity Units rather than per-user licensing. According to SAP's public pricing documentation:</p>
+            <ul style="margin-top: 0.75rem;">
+                <li><strong>Flexible allocation</strong>: CUs can be applied to compute, storage, or data services</li>
+                <li><strong>Hyperscaler agnostic</strong>: Same CU model works across AWS, Azure, and GCP</li>
+                <li><strong>Workload-based</strong>: The number of CUs required depends on your specific workload, not user count</li>
+                <li><strong>Adaptable</strong>: Scale up or down as data volumes and processing needs change</li>
+            </ul>
+        </div>
+        
+        <div class="pricing-model-card">
+            <h4>Understanding Capacity Units</h4>
+            <p class="subtitle">What a CU actually represents</p>
+            <p>A Capacity Unit is SAP's <strong>universal currency for cloud workloads</strong>. Think of it like buying "compute credits" that can be spent on different services:</p>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>CU Consumption Driver</th>
+                </tr>
+                <tr>
+                    <td>SAP HANA Cloud</td>
+                    <td>Memory size × hours running</td>
+                </tr>
+                <tr>
+                    <td>SAP Datasphere</td>
+                    <td>Data storage + compute for modeling</td>
+                </tr>
+                <tr>
+                    <td>SAP Analytics Cloud</td>
+                    <td>Query processing + user activity</td>
+                </tr>
+                <tr>
+                    <td>Data Integration</td>
+                    <td>Volume of data moved/transformed</td>
+                </tr>
+            </table>
+        </div>
+        
+        <h3>Benefits of Consumption Pricing</h3>
+        
+        <div class="comparison-box">
+            <div class="comparison-card new">
+                <h4>✅ For Customers</h4>
+                <ul>
+                    <li>Pay only for actual usage</li>
+                    <li>Scale costs with business value</li>
+                    <li>No shelfware waste</li>
+                    <li>Lower barrier to start</li>
+                </ul>
+            </div>
+            <div class="comparison-card new">
+                <h4>✅ For Vendors</h4>
+                <ul>
+                    <li>Revenue grows with adoption</li>
+                    <li>Natural expansion motion</li>
+                    <li>Incentive to drive usage</li>
+                    <li>Usage data informs product</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h3>The Challenges</h3>
+        
+        <div class="warning-box">
+            <h4>⚠️ Bill Shock: The Consumption Pricing Risk</h4>
+            <p>A recent E3 Magazine analysis warned about <strong>"cloud bill shock"</strong>—when customers see unexpectedly high invoices due to usage spikes they didn't anticipate.</p>
+            <p style="margin-top: 0.75rem; margin-bottom: 0;">This is why SAP (and most enterprise vendors) offer <strong>committed capacity options</strong>: buy a block of CUs upfront at a discount, with flexibility to use them across services. It combines the predictability of fixed pricing with the flexibility of consumption.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Stage 3: Outcome-Based Pricing</h2>
+        
+        <p>The frontier of pricing innovation: <strong>charge based on the results the software delivers</strong>, not the resources it consumes.</p>
+        
+        <p>This is nascent but growing fast. Gartner predicts that by 2026, <strong>60% of large IT services contracts will include "AI clawback" clauses or outcome-linked levers</strong>.</p>
+        
+        <h3>Early Examples</h3>
+        
+        <ul>
+            <li><strong>Zendesk</strong> (August 2024): First major SaaS vendor to launch outcome-based pricing for AI agents—billing per "Automated Resolution" (a support ticket resolved by AI without human intervention)</li>
+            <li><strong>Salesforce Agentforce</strong>: Per-conversation pricing model that charges for agent interactions rather than human seats</li>
+            <li><strong>Sierra AI</strong>: "We're only paid when we drive real results"—pure outcome-based model</li>
+        </ul>
+        
+        <div class="key-concept">
+            <h4>💡 The Measurement Challenge</h4>
+            <p>Outcome-based pricing sounds ideal but is <strong>hard to implement</strong>. Real business outcomes (revenue increase, cost savings, retention) have multiple inputs. If an AI tool contributes to an outcome but the customer's team or other tools also play a role, how do you attribute success? This complexity is why only ~17% of enterprise SaaS vendors have implemented true outcome-based pricing.</p>
+        </div>
+        
+        <h3>What Outcome-Based Could Look Like for Data Platforms</h3>
+        
+        <p>For SAP's data portfolio, outcome-based pricing might eventually include:</p>
+        
+        <ul>
+            <li><strong>Per insight delivered</strong>: Charge when an AI-generated insight is viewed/acted upon</li>
+            <li><strong>Per decision supported</strong>: Track when data from the platform influences a documented business decision</li>
+            <li><strong>Per automation completed</strong>: When data pipelines successfully execute end-to-end workflows</li>
+            <li><strong>Per prediction accuracy</strong>: Tie pricing to the accuracy/value of AI model outputs</li>
+        </ul>
+        
+        <div class="case-study">
+            <h4>📌 The Hybrid Reality (2025-2026)</h4>
+            <p>According to Flexera's research, most enterprises are landing on <strong>hybrid models</strong>: a fixed base subscription with variable consumption add-ons. Pure usage or pure outcome models remain rare because neither vendors nor buyers are ready for the unpredictability.</p>
+            <p style="font-size: 0.9rem; margin-top: 0.75rem; margin-bottom: 0;">This is where SAP's BTP Capacity Unit model sits—<strong>committed capacity</strong> (predictable base) with <strong>flexible allocation</strong> (consumption flexibility).</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The PMM's Role in Pricing</h2>
+        
+        <p>Product marketers don't set prices—but we <strong>set the context that makes prices make sense</strong>. Here's how pricing intersects with PMM work:</p>
+        
+        <h3>1. Value Articulation</h3>
+        <p>If the price is based on Capacity Units, we need to help customers understand <strong>what they get for a CU</strong>. Abstract units need concrete value translation.</p>
+        
+        <div class="key-concept">
+            <h4>💡 The Value Bridge</h4>
+            <p>Don't sell "Capacity Units." Sell what CUs enable: "Process 10 million transactions per month" or "Support 500 concurrent analytics users" or "Store 3 years of transactional history with instant query response."</p>
+        </div>
+        
+        <h3>2. Competitive Positioning</h3>
+        <p>Different pricing models create different competitive narratives:</p>
+        
+        <table>
+            <tr>
+                <th>Pricing Model</th>
+                <th>Competitive Angle</th>
+            </tr>
+            <tr>
+                <td>Per-seat</td>
+                <td>"Predictable, easy to budget"</td>
+            </tr>
+            <tr>
+                <td>Consumption</td>
+                <td>"Pay only for value received"</td>
+            </tr>
+            <tr>
+                <td>Outcome</td>
+                <td>"We're so confident we tie our fee to your success"</td>
+            </tr>
+        </table>
+        
+        <h3>3. Sales Enablement</h3>
+        <p>Sales teams need to <strong>defend pricing</strong> in negotiations. PMMs provide:</p>
+        <ul>
+            <li><strong>ROI calculators</strong> that translate units to business value</li>
+            <li><strong>TCO comparisons</strong> showing how consumption models beat alternatives</li>
+            <li><strong>Reference stories</strong> of customers who scaled efficiently</li>
+            <li><strong>Objection handlers</strong> for "bill shock" and unpredictability concerns</li>
+        </ul>
+        
+        <h3>4. Packaging Strategy</h3>
+        <p>How you bundle features affects perceived value. For SAP BDC, this might mean:</p>
+        <ul>
+            <li><strong>Starter packages</strong>: Fixed CU allocation for predictable entry</li>
+            <li><strong>Growth packages</strong>: Committed capacity + burst allowance</li>
+            <li><strong>Enterprise packages</strong>: Unlimited within a band, true consumption above</li>
+        </ul>
+    </section>
+    
+    <section>
+        <h2>SAP's Pricing Evolution in Context</h2>
+        
+        <p>SAP has been on its own pricing transformation journey:</p>
+        
+        <h3>The RISE with SAP Model</h3>
+        <p>RISE with SAP represents SAP's move toward <strong>bundled cloud subscriptions</strong>:</p>
+        <ul>
+            <li>S/4HANA Cloud as the core</li>
+            <li>BTP credits included for extension and integration</li>
+            <li>Success services bundled in</li>
+            <li>Hyperscaler infrastructure wrapped</li>
+        </ul>
+        
+        <p>This is a <strong>hybrid model</strong>: fixed subscription base with consumption flexibility for BTP services.</p>
+        
+        <h3>The BDC Opportunity</h3>
+        <p>For the Business Data Cloud team specifically, the Capacity Unit model positions SAP well for the AI era:</p>
+        
+        <ul>
+            <li><strong>Workload-based</strong>: Pricing reflects actual data processing, not arbitrary user counts</li>
+            <li><strong>AI-ready</strong>: When AI agents query HANA Cloud, they consume CUs—no "seat" awkwardness</li>
+            <li><strong>Scalable</strong>: Customers can start small and grow consumption as they derive value</li>
+            <li><strong>Unified</strong>: Same CU currency across HANA, Datasphere, and Analytics Cloud</li>
+        </ul>
+        
+        <div class="sap-example">
+            <h4>🟢 Positioning the CU Model</h4>
+            <p><strong>Old narrative</strong>: "How many named users do you need for HANA?"</p>
+            <p><strong>New narrative</strong>: "How much data do you want to activate, and how fast do you need answers?"</p>
+            <p style="margin-top: 0.75rem; margin-bottom: 0;">The shift from counting people to measuring workload is the foundation for outcome-based pricing evolution.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Looking Ahead: Pricing in the Agentic Era</h2>
+        
+        <p>As AI agents become more prevalent, pricing models will continue evolving:</p>
+        
+        <h3>Near-Term (2026-2027)</h3>
+        <ul>
+            <li><strong>Hybrid dominates</strong>: Fixed base + consumption add-ons remain the norm</li>
+            <li><strong>Agent-specific pricing</strong>: New SKUs for AI agent workloads vs. human workloads</li>
+            <li><strong>Committed capacity</strong>: Enterprises lock in CU commitments to manage costs</li>
+        </ul>
+        
+        <h3>Medium-Term (2027-2028)</h3>
+        <ul>
+            <li><strong>Outcome experiments</strong>: Early adopters pilot outcome-linked pricing for specific use cases</li>
+            <li><strong>Value attribution</strong>: Better tools to measure software's contribution to business results</li>
+            <li><strong>Risk sharing</strong>: Vendors take on more risk with performance guarantees</li>
+        </ul>
+        
+        <h3>Long-Term Vision</h3>
+        <ul>
+            <li><strong>True outcome-based</strong>: "Pay when the AI generates a validated insight that drives action"</li>
+            <li><strong>Autonomous procurement</strong>: AI agents comparing pricing models on behalf of buyers</li>
+            <li><strong>Dynamic pricing</strong>: Real-time price adjustments based on demand and value delivered</li>
+        </ul>
+        
+        <div class="key-concept">
+            <h4>💡 The PMM Opportunity</h4>
+            <p>As pricing becomes more complex, the need for <strong>clear value narratives</strong> increases. The PMM who can translate abstract units and outcome metrics into compelling business stories will be invaluable.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ol>
+            <li><strong>Pricing is evolving</strong> from seats → consumption → outcomes, driven by cloud economics and AI</li>
+            <li><strong>SAP's Capacity Unit model</strong> is a consumption-based approach that positions well for AI workloads</li>
+            <li><strong>Hybrid models dominate</strong> because pure consumption or outcome pricing is still too unpredictable</li>
+            <li><strong>PMMs own the value narrative</strong> that makes pricing make sense to buyers</li>
+            <li><strong>The future is outcome-linked</strong>, but measurement and attribution challenges remain</li>
+        </ol>
+    </section>
+    
+    <div class="nav-buttons">
+        <a href="/curriculum/unit-07/" class="nav-btn prev">← Unit 7: Demo Stack</a>
+        <a href="quiz.html" class="nav-btn next">Take the Quiz →</a>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>
