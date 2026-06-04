@@ -62,9 +62,10 @@ exports.handler = async (event) => {
         improvements,
         nps,
         email: email || null,
-        from_unit: from_unit || null,
-        triggered_quiz_score: quiz_score || null,
         week_number: getWeekNumber()
+        // NOTE: from_unit and triggered_quiz_score columns need to be added to production DB
+        // Run: ALTER TABLE survey_responses ADD COLUMN from_unit TEXT;
+        // Run: ALTER TABLE survey_responses ADD COLUMN triggered_quiz_score INTEGER;
       })
     });
 
