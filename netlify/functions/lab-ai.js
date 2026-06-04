@@ -309,7 +309,71 @@ You help PMMs and sales teams build compelling pricing rationale documents that:
 - **Payback Period**: When does the investment pay for itself?
 - **Risk-Adjusted ROI**: Factor in implementation and adoption risks
 
-You write executive-ready content that finance teams will find credible. You use conservative assumptions and cite sources where possible.`
+You write executive-ready content that finance teams will find credible. You use conservative assumptions and cite sources where possible.`,
+
+        'launch-planner': `You are an expert GTM launch planner for enterprise B2B software companies, specifically SAP.
+
+You create comprehensive Launch Bills of Materials (BOMs) — task trackers that cover all workstreams needed for a successful product launch, event, or campaign.
+
+**Your BOMs follow the SAP launch playbook structure:**
+- Tasks organized by workstream (Content, Web, Demand Gen, Enablement, Video, Social, PR/AR, Partners, etc.)
+- T-minus timing (Pre-Launch, Launch, Post-Launch phases)
+- Owner placeholders by function
+- Clear dependencies and status tracking
+
+**You understand:**
+- Tier 1 launches need full coverage (all workstreams)
+- Tier 2 launches focus on key workstreams
+- Tier 3 launches are essentials only
+- Timing varies: 8-12 weeks for major launches, 4-6 for features, 2-4 for campaigns
+
+You create practical, actionable task lists that PMMs can immediately use to track their launch.`,
+
+        'launch-planner-timeline': `You are an expert at creating visual T-minus launch timelines.
+
+You organize launch tasks into clear phases:
+- **T-8 to T-4 weeks**: Foundation (MPFs, web templates, video scripts)
+- **T-4 to T-2 weeks**: Production (content creation, page builds, asset finalization)
+- **T-2 to T-1 week**: Pre-launch (amplification, enablement, final reviews)
+- **Launch Week**: Go-live activities
+- **Post-Launch**: Follow-up, measurement, iteration
+
+Your timelines are easy to scan and show dependencies clearly.`,
+
+        'launch-planner-raci': `You are an expert at creating RACI matrices for GTM launches.
+
+RACI = Responsible, Accountable, Consulted, Informed
+
+You map typical GTM roles:
+- PMM (Product Marketing Manager)
+- Content Marketing
+- Web Team
+- Demand Gen
+- Field Marketing
+- Sales Enablement
+- PR/Comms
+- Product Management
+- Design/Creative
+
+Your RACI matrices help teams understand who owns what and reduce confusion during busy launch periods.`,
+
+        'launch-planner-risks': `You are an expert at identifying launch risks and creating mitigation plans.
+
+Common launch risks include:
+- Content delays (reviews, approvals, production)
+- Dependency failures (web team bandwidth, design resources)
+- Scope creep (stakeholder additions)
+- Technical issues (demo environments, integrations)
+- External factors (market timing, competitive moves)
+
+You create practical risk registers with:
+- Risk description
+- Likelihood (High/Medium/Low)
+- Impact (High/Medium/Low)
+- Mitigation strategy
+- Owner
+
+Your risk assessments help teams proactively address potential blockers.`
     };
 
     return prompts[labType] || prompts['geo-audit'];
@@ -794,6 +858,222 @@ Address procurement concerns:
 3 key points for the champion to use with procurement.
 
 Use conservative assumptions. Mark any estimates that need customer validation.`;
+
+        case 'launch-planner':
+            const workstreamsList = Array.isArray(inputs.workstreams) ? inputs.workstreams.join(', ') : inputs.workstreams;
+            return `Create a comprehensive Launch Bill of Materials (BOM) for this launch:
+
+## LAUNCH BRIEFING
+**Launch Name:** ${inputs.launchName}
+**Target Launch Date:** ${inputs.launchDate}
+**Launch Type:** ${inputs.launchType}
+**Solutions/Products:** ${inputs.solutions}
+**Launch Tier:** ${inputs.launchTier}
+**Team Size:** ${inputs.teamSize}
+**Primary Audience:** ${inputs.audience}
+**Region:** ${inputs.region}
+
+**Workstreams to Include:** ${workstreamsList}
+
+**Additional Context/Requirements:**
+${inputs.additionalContext || 'None specified'}
+
+---
+
+Generate a **Launch BOM** as markdown tables, organized by workstream.
+
+## Launch Overview
+Brief summary of the launch scope and key milestones.
+
+## Bill of Materials
+
+For each workstream included (${workstreamsList}), create a table:
+
+### [Workstream Emoji] [Workstream Name]
+
+| Deliverable | Timing | Owner | Status | Dependencies | Notes |
+|-------------|--------|-------|--------|--------------|-------|
+| [Task name] | T-X weeks / Pre-Launch / Launch / Post-Launch | [Role placeholder] | Not Started | [Any blockers] | [Brief context] |
+
+**Timing conventions:**
+- T-8 to T-4: Foundation phase
+- T-4 to T-2: Production phase  
+- T-2 to Launch: Final prep
+- Launch: Go-live day
+- Post-Launch: Week 1-4 follow-up
+
+**Owner placeholders:** Use role names (PMM, Content, Web, Demand Gen, Enablement, Video, Design, PR, etc.)
+
+**Status options:** Not Started, In Progress, In Review, Complete, Blocked
+
+Include 5-10 tasks per workstream based on the launch tier:
+- Tier 1: Full task list
+- Tier 2: Key tasks only
+- Tier 3: Essentials only
+
+## Key Milestones
+List the 5-6 most critical dates/milestones for this launch.
+
+## Dependencies & Risks
+Flag any obvious dependencies or risks based on the context provided.`;
+
+        case 'launch-planner-timeline':
+            const workstreamsTimeline = Array.isArray(inputs.workstreams) ? inputs.workstreams.join(', ') : inputs.workstreams;
+            return `Create a visual T-minus timeline for this launch:
+
+**Launch:** ${inputs.launchName}
+**Launch Date:** ${inputs.launchDate}
+**Type:** ${inputs.launchType}
+**Solutions:** ${inputs.solutions}
+**Tier:** ${inputs.launchTier}
+**Workstreams:** ${workstreamsTimeline}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Create a **Visual Timeline** showing the launch countdown:
+
+## 📅 T-Minus Timeline: ${inputs.launchName}
+
+### Phase 1: Foundation (T-8 to T-4 weeks)
+| Week | Key Activities | Workstream |
+|------|---------------|------------|
+| T-8 | [Activities] | [Workstreams] |
+| T-6 | [Activities] | [Workstreams] |
+| T-4 | [Activities] | [Workstreams] |
+
+### Phase 2: Production (T-4 to T-2 weeks)
+| Week | Key Activities | Workstream |
+|------|---------------|------------|
+
+### Phase 3: Pre-Launch (T-2 to T-1 week)
+| Week | Key Activities | Workstream |
+|------|---------------|------------|
+
+### Phase 4: Launch Week
+| Day | Key Activities |
+|-----|---------------|
+| Mon | |
+| Tue | |
+| Wed | |
+| Thu | |
+| Fri | |
+
+### Phase 5: Post-Launch (Week 1-4)
+| Week | Key Activities |
+|------|---------------|
+
+## Critical Path
+List the 5-6 items that are on the critical path (if they slip, the launch slips).
+
+## Milestone Checkpoints
+Key go/no-go decision points.`;
+
+        case 'launch-planner-raci':
+            const workstreamsRaci = Array.isArray(inputs.workstreams) ? inputs.workstreams.join(', ') : inputs.workstreams;
+            return `Create a RACI matrix for this launch:
+
+**Launch:** ${inputs.launchName}
+**Type:** ${inputs.launchType}
+**Team Size:** ${inputs.teamSize}
+**Workstreams:** ${workstreamsRaci}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Create a **RACI Matrix** (Responsible, Accountable, Consulted, Informed):
+
+## 👥 RACI Matrix: ${inputs.launchName}
+
+### Key Roles
+Define the typical roles involved based on team size (${inputs.teamSize}):
+- **PMM Lead**: Overall launch owner
+- **Content**: Blog, whitepapers, scripts
+- **Web**: Page builds, updates
+- **Demand Gen**: Campaigns, ads, nurture
+- **Enablement**: Sales training, toolkits
+- **Video**: Demo videos, sizzles
+- **Design**: Visuals, creative
+- **PR/Comms**: Press, analyst relations
+- **Product**: Technical accuracy, roadmap
+
+### RACI by Workstream
+
+| Activity | PMM Lead | Content | Web | Demand Gen | Enablement | Design | PR |
+|----------|----------|---------|-----|------------|------------|--------|-----|
+| [Activity] | A | R | C | I | I | C | I |
+
+**Legend:**
+- **R** = Responsible (does the work)
+- **A** = Accountable (final decision maker, only ONE per row)
+- **C** = Consulted (provides input)
+- **I** = Informed (kept in the loop)
+
+### Key Handoffs
+List critical handoff points between teams.
+
+### Escalation Path
+Who to escalate to when decisions stall.`;
+
+        case 'launch-planner-risks':
+            return `Create a risk register for this launch:
+
+**Launch:** ${inputs.launchName}
+**Launch Date:** ${inputs.launchDate}
+**Type:** ${inputs.launchType}
+**Tier:** ${inputs.launchTier}
+**Team Size:** ${inputs.teamSize}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Create a **Risk Register** for this launch:
+
+## ⚠️ Risk Register: ${inputs.launchName}
+
+### Risk Assessment Matrix
+
+| Risk | Likelihood | Impact | Risk Score | Mitigation | Owner | Trigger |
+|------|------------|--------|------------|------------|-------|---------|
+| [Risk description] | H/M/L | H/M/L | H/M/L | [Mitigation strategy] | [Role] | [When to escalate] |
+
+**Include risks across these categories:**
+
+### Content & Creative Risks
+- Review/approval delays
+- Resource availability
+- Quality issues
+
+### Technical Risks
+- Web/demo environment issues
+- Integration dependencies
+- Performance concerns
+
+### Timeline Risks
+- Scope creep
+- Dependency delays
+- External factors
+
+### Resource Risks
+- Team bandwidth
+- Budget constraints
+- Skill gaps
+
+### External Risks
+- Competitive timing
+- Market conditions
+- Customer readiness
+
+## Risk Scoring
+- **High (H)**: Likely to occur AND significant impact
+- **Medium (M)**: Possible OR moderate impact
+- **Low (L)**: Unlikely AND minimal impact
+
+## Top 3 Risks to Watch
+Highlight the highest priority risks that need active monitoring.
+
+## Contingency Plans
+For top risks, provide specific backup plans.`;
 
         default:
             return inputs.prompt || 'Please provide analysis.';

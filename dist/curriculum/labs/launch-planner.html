@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Launch Planner | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #0070F2;
+            --navy: #1B365D;
+            --coral: #C84B31;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--navy) 0%, #2C4A7C 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .workstream-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .workstream-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .workstream-grid { grid-template-columns: 1fr; }
+        }
+        
+        .workstream-box {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 3px solid var(--navy);
+            font-size: 0.85rem;
+        }
+        .workstream-box strong { color: var(--navy); }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--navy);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            background: white;
+        }
+        input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.5rem;
+        }
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .checkbox-option:hover { border-color: var(--navy); }
+        .checkbox-option.selected {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+        .checkbox-option input { display: none; }
+        
+        .sample-loader {
+            background: #f0f4f8;
+            border: 2px dashed #c0c8d0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .sample-loader h4 {
+            font-size: 0.9rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.75rem;
+        }
+        .sample-btn {
+            background: white;
+            border: 1px solid var(--light-gray);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+            transition: all 0.2s;
+        }
+        .sample-btn:hover {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .run-btn {
+            background: var(--navy);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .run-btn:hover { background: #0d2340; transform: translateY(-2px); }
+        .run-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            overflow: hidden;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            background: var(--navy);
+            color: white;
+            padding: 1.25rem 2rem;
+        }
+        .results-header h2 { font-size: 1.3rem; margin: 0; }
+        .results-header p { font-size: 0.9rem; opacity: 0.85; margin: 0.5rem 0 0; }
+        
+        .result-block {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .result-block.hidden { display: none; }
+        .result-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .result-block-header h3 {
+            font-size: 1.1rem;
+            color: var(--dark-slate);
+            margin: 0;
+        }
+        
+        .copy-btn {
+            background: var(--light-gray);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--navy); color: white; }
+        
+        .export-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 0.5rem;
+        }
+        .export-btn:hover { background: #5a9a38; }
+        
+        .results-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            clear: both;
+        }
+        .results-content h1 { font-size: 1.4rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h2 { font-size: 1.2rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; border-bottom: 2px solid var(--light-gray); padding-bottom: 0.5rem; }
+        .results-content h3 { font-size: 1.05rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.35rem; }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code { background: #F0F0F0; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+        .results-content blockquote {
+            border-left: 4px solid var(--navy);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #555;
+            font-style: italic;
+        }
+        .results-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        .results-content th, .results-content td {
+            border: 1px solid var(--light-gray);
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+        }
+        .results-content th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .results-content tr:nth-child(even) { background: #fafafa; }
+        
+        .more-outputs {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .more-outputs p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .output-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .output-btn {
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            min-width: 180px;
+        }
+        .output-btn:hover {
+            border-color: var(--navy);
+            background: #f0f4f8;
+        }
+        .output-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .output-btn.done {
+            border-color: var(--green);
+            background: #f0fff4;
+        }
+        .output-btn span {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-slate);
+            font-size: 0.95rem;
+        }
+        .output-btn small {
+            display: block;
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+        
+        .error-message {
+            background: #FFEBEE;
+            color: var(--red);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Burndown chart styling */
+        .burndown-chart {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .burndown-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .burndown-label {
+            width: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .burndown-track {
+            flex: 1;
+            height: 20px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .burndown-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green) 0%, var(--gold) 100%);
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 600px) {
+            .output-buttons { flex-direction: column; }
+            .output-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge">🚀 Launch Lab</div>
+        <h1>Launch Planner</h1>
+        <p>From idea to launch day. Input your project details, get a complete Bill of Materials with T-minus timeline and task tracking.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>Your Launch Command Center</h2>
+        <p>Product launches involve dozens of moving parts across multiple teams. This lab generates a structured BOM (Bill of Materials) based on SAP's launch playbook, with tasks organized by workstream and timing.</p>
+        
+        <div class="workstream-grid">
+            <div class="workstream-box"><strong>📝 Content</strong><br>Blogs, whitepapers, scripts</div>
+            <div class="workstream-box"><strong>🌐 Web</strong><br>Pages, demos, updates</div>
+            <div class="workstream-box"><strong>📣 Demand Gen</strong><br>E-books, campaigns, ads</div>
+            <div class="workstream-box"><strong>🎓 Enablement</strong><br>L0/L1, training, toolkits</div>
+            <div class="workstream-box"><strong>🎬 Video</strong><br>Demos, sizzles, tutorials</div>
+            <div class="workstream-box"><strong>📱 Social</strong><br>Amplification, influencers</div>
+            <div class="workstream-box"><strong>🤝 Partners</strong><br>Co-marketing, briefings</div>
+            <div class="workstream-box"><strong>📊 Analytics</strong><br>Tracking, reporting</div>
+        </div>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Launch Overview</h3>
+            </div>
+            
+            <div class="sample-loader">
+                <h4>📋 Quick Start — Load a sample launch:</h4>
+                <button type="button" class="sample-btn" onclick="loadSample('product')">Product Launch (SAP Datasphere)</button>
+                <button type="button" class="sample-btn" onclick="loadSample('event')">Virtual Event (Webinar)</button>
+                <button type="button" class="sample-btn" onclick="loadSample('campaign')">Campaign (Q1 Surge)</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="launchName">Launch Name</label>
+                <input type="text" id="launchName" name="launchName" placeholder="e.g., SAP Datasphere Q2 Launch" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="launchDate">Target Launch Date</label>
+                    <input type="date" id="launchDate" name="launchDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="launchType">Launch Type</label>
+                    <select id="launchType" required>
+                        <option value="">Select type...</option>
+                        <option value="Major Product Launch">Major Product Launch</option>
+                        <option value="Feature Release">Feature Release</option>
+                        <option value="Virtual Event">Virtual Event / Webinar</option>
+                        <option value="Campaign">Marketing Campaign</option>
+                        <option value="Roadshow">Roadshow / Field Event</option>
+                        <option value="Partner Launch">Partner Launch</option>
+                        <option value="Analyst Briefing">Analyst Briefing</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="solutions">Primary Solutions/Products</label>
+                <p class="hint">What are you launching? (can list multiple)</p>
+                <input type="text" id="solutions" name="solutions" placeholder="e.g., SAP Datasphere, SAP Analytics Cloud" required>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>Scope & Workstreams</h3>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="launchTier">Launch Tier</label>
+                    <select id="launchTier">
+                        <option value="Tier 1">Tier 1 — Full GTM (all workstreams)</option>
+                        <option value="Tier 2">Tier 2 — Standard (key workstreams)</option>
+                        <option value="Tier 3">Tier 3 — Light (essentials only)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="teamSize">Estimated Team Size</label>
+                    <select id="teamSize">
+                        <option value="Small">Small (2-5 people)</option>
+                        <option value="Medium">Medium (5-10 people)</option>
+                        <option value="Large">Large (10+ people)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Workstreams to Include</label>
+                <p class="hint">Select all that apply to your launch:</p>
+                <div class="checkbox-grid" id="workstreamGrid">
+                    <label class="checkbox-option selected">
+                        <input type="checkbox" name="workstream" value="Content" checked>
+                        📝 Content
+                    </label>
+                    <label class="checkbox-option selected">
+                        <input type="checkbox" name="workstream" value="Web" checked>
+                        🌐 Web
+                    </label>
+                    <label class="checkbox-option selected">
+                        <input type="checkbox" name="workstream" value="Demand Gen" checked>
+                        📣 Demand Gen
+                    </label>
+                    <label class="checkbox-option selected">
+                        <input type="checkbox" name="workstream" value="Enablement" checked>
+                        🎓 Enablement
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="workstream" value="Video">
+                        🎬 Video
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="workstream" value="Social">
+                        📱 Social/Amplification
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="workstream" value="Partners">
+                        🤝 Partners
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="workstream" value="Events">
+                        🎪 Events
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="workstream" value="PR/AR">
+                        📰 PR/Analyst Relations
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="workstream" value="Customer">
+                        💼 Customer References
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Additional Context</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="audience">Primary Audience</label>
+                <select id="audience">
+                    <option value="Enterprise Buyers">Enterprise Buyers (CXO, VP)</option>
+                    <option value="IT Leaders">IT Leaders (CIO, Architects)</option>
+                    <option value="Line of Business">Line of Business (Functional Leaders)</option>
+                    <option value="Developers">Developers / Technical</option>
+                    <option value="Partners">Partners / ISVs</option>
+                    <option value="Mixed">Mixed / Multiple Personas</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="region">Primary Region</label>
+                <select id="region">
+                    <option value="Global">Global</option>
+                    <option value="NA">North America</option>
+                    <option value="EMEA">EMEA</option>
+                    <option value="APAC">APJ</option>
+                    <option value="LAC">Latin America</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalContext">Special Requirements (optional)</label>
+                <p class="hint">Any dependencies, constraints, known deliverables, or stakeholder requirements</p>
+                <textarea id="additionalContext" name="additionalContext" placeholder="e.g., Need customer video testimonial by T-2 weeks. Webinar registration page already exists. Stinson Design handling visuals. KL needs to approve all L0/L1 content."></textarea>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🚀 Generate Launch BOM</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>🚀 <span id="resultName"></span></h2>
+            <p>Launch: <span id="resultDate"></span> • Type: <span id="resultType"></span> • <span id="resultTier"></span></p>
+        </div>
+        
+        <div class="result-block" id="block-bom">
+            <div class="result-block-header">
+                <h3>📋 Launch Bill of Materials</h3>
+                <div>
+                    <button class="copy-btn" onclick="copyBlock('bom')">📋 Copy</button>
+                    <button class="export-btn" onclick="exportToCSV()">📥 Export CSV</button>
+                </div>
+            </div>
+            <div class="results-content" id="content-bom"></div>
+        </div>
+        
+        <div class="more-outputs">
+            <p>Need more? Generate additional launch artifacts:</p>
+            <div class="output-buttons">
+                <button class="output-btn" id="btn-timeline" onclick="generateMore('timeline')">
+                    <span>📅 Visual Timeline</span>
+                    <small>T-minus countdown view</small>
+                </button>
+                <button class="output-btn" id="btn-raci" onclick="generateMore('raci')">
+                    <span>👥 RACI Matrix</span>
+                    <small>Role assignments</small>
+                </button>
+                <button class="output-btn" id="btn-risks" onclick="generateMore('risks')">
+                    <span>⚠️ Risk Register</span>
+                    <small>Potential blockers</small>
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-block hidden" id="block-timeline">
+            <div class="result-block-header">
+                <h3>📅 Visual Timeline</h3>
+                <button class="copy-btn" onclick="copyBlock('timeline')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-timeline"></div>
+        </div>
+        
+        <div class="result-block hidden" id="block-raci">
+            <div class="result-block-header">
+                <h3>👥 RACI Matrix</h3>
+                <button class="copy-btn" onclick="copyBlock('raci')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-raci"></div>
+        </div>
+        
+        <div class="result-block hidden" id="block-risks">
+            <div class="result-block-header">
+                <h3>⚠️ Risk Register</h3>
+                <button class="copy-btn" onclick="copyBlock('risks')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-risks"></div>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// Store current inputs for follow-up generations
+let currentLaunchInputs = null;
+let bomData = null; // Store raw BOM for CSV export
+
+// Sample launches
+const sampleLaunches = {
+    product: {
+        launchName: "SAP Datasphere Q2 Launch",
+        launchDate: getDateOffset(45), // 45 days from now
+        launchType: "Major Product Launch",
+        solutions: "SAP Datasphere, SAP Analytics Cloud",
+        launchTier: "Tier 1",
+        teamSize: "Large",
+        workstreams: ["Content", "Web", "Demand Gen", "Enablement", "Video", "Social", "PR/AR", "Customer"],
+        audience: "Enterprise Buyers",
+        region: "Global",
+        additionalContext: "Major product launch with executive keynote. Need customer testimonials from 3 industries. Webinar series planned for post-launch. Stinson Design handling hero visuals. KL approval required for all L0/L1 content."
+    },
+    event: {
+        launchName: "Data Fabric Virtual Summit",
+        launchDate: getDateOffset(30),
+        launchType: "Virtual Event",
+        solutions: "SAP Business Data Cloud, SAP Datasphere",
+        launchTier: "Tier 2",
+        teamSize: "Medium",
+        workstreams: ["Content", "Web", "Demand Gen", "Social", "Events"],
+        audience: "IT Leaders",
+        region: "NA",
+        additionalContext: "90-minute virtual event with 3 customer speakers. Registration goal: 500 attendees. G+M producing video content. Need promotion countdown 10 days before."
+    },
+    campaign: {
+        launchName: "Q1 Surge Campaign",
+        launchDate: getDateOffset(21),
+        launchType: "Campaign",
+        solutions: "SAP Business Data Cloud, BW Modernization",
+        launchTier: "Tier 2",
+        teamSize: "Medium",
+        workstreams: ["Content", "Web", "Demand Gen", "Enablement", "Video"],
+        audience: "Mixed",
+        region: "Global",
+        additionalContext: "Integrated campaign across all BDC solutions. Hero asset: GigaOm TCO report. Need MPF updates for 5 solutions. Batch demo videos in production with G+M."
+    }
+};
+
+function getDateOffset(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+}
+
+function loadSample(key) {
+    const sample = sampleLaunches[key];
+    document.getElementById('launchName').value = sample.launchName;
+    document.getElementById('launchDate').value = sample.launchDate;
+    document.getElementById('launchType').value = sample.launchType;
+    document.getElementById('solutions').value = sample.solutions;
+    document.getElementById('launchTier').value = sample.launchTier;
+    document.getElementById('teamSize').value = sample.teamSize;
+    document.getElementById('audience').value = sample.audience;
+    document.getElementById('region').value = sample.region;
+    document.getElementById('additionalContext').value = sample.additionalContext;
+    
+    // Update workstream checkboxes
+    document.querySelectorAll('.checkbox-option').forEach(opt => {
+        const input = opt.querySelector('input');
+        if (sample.workstreams.includes(input.value)) {
+            opt.classList.add('selected');
+            input.checked = true;
+        } else {
+            opt.classList.remove('selected');
+            input.checked = false;
+        }
+    });
+}
+
+// Checkbox selection UI
+document.querySelectorAll('.checkbox-option').forEach(option => {
+    option.addEventListener('click', function(e) {
+        e.preventDefault();
+        const input = this.querySelector('input');
+        input.checked = !input.checked;
+        this.classList.toggle('selected', input.checked);
+    });
+});
+
+function copyBlock(blockId) {
+    const content = document.getElementById(`content-${blockId}`).innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        const btn = document.querySelector(`#block-${blockId} .copy-btn`);
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+function exportToCSV() {
+    // Parse the BOM content into CSV
+    const content = document.getElementById('content-bom').innerText;
+    // Simple conversion - for real implementation would parse the table
+    const blob = new Blob([content], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `launch-bom-${currentLaunchInputs?.launchName?.replace(/\s+/g, '-') || 'export'}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Form submission
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const selectedWorkstreams = Array.from(document.querySelectorAll('input[name="workstream"]:checked')).map(cb => cb.value);
+    
+    if (selectedWorkstreams.length === 0) {
+        errorMessage.textContent = 'Please select at least one workstream.';
+        errorMessage.classList.add('show');
+        return;
+    }
+    
+    currentLaunchInputs = {
+        launchName: document.getElementById('launchName').value,
+        launchDate: document.getElementById('launchDate').value,
+        launchType: document.getElementById('launchType').value,
+        solutions: document.getElementById('solutions').value,
+        launchTier: document.getElementById('launchTier').value,
+        teamSize: document.getElementById('teamSize').value,
+        workstreams: selectedWorkstreams,
+        audience: document.getElementById('audience').value,
+        region: document.getElementById('region').value,
+        additionalContext: document.getElementById('additionalContext').value
+    };
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Generating...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    // Reset additional outputs
+    ['timeline', 'raci', 'risks'].forEach(id => {
+        document.getElementById(`block-${id}`).classList.add('hidden');
+        document.getElementById(`btn-${id}`).classList.remove('done');
+        document.getElementById(`btn-${id}`).disabled = false;
+    });
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'launch-planner',
+                inputs: currentLaunchInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        
+        const data = await response.json();
+        
+        // Update header
+        document.getElementById('resultName').textContent = currentLaunchInputs.launchName;
+        document.getElementById('resultDate').textContent = new Date(currentLaunchInputs.launchDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById('resultType').textContent = currentLaunchInputs.launchType;
+        document.getElementById('resultTier').textContent = currentLaunchInputs.launchTier;
+        
+        // Display BOM result
+        document.getElementById('content-bom').innerHTML = marked.parse(data.result);
+        
+        resultsSection.classList.add('show');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '🚀 Generate Launch BOM';
+        spinner.style.display = 'none';
+    }
+});
+
+// Generate additional outputs
+async function generateMore(outputType) {
+    if (!currentLaunchInputs) return;
+    
+    const btn = document.getElementById(`btn-${outputType}`);
+    const block = document.getElementById(`block-${outputType}`);
+    const content = document.getElementById(`content-${outputType}`);
+    
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Generating...';
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: `launch-planner-${outputType}`,
+                inputs: currentLaunchInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed');
+        
+        const data = await response.json();
+        content.innerHTML = marked.parse(data.result);
+        
+        block.classList.remove('hidden');
+        btn.classList.add('done');
+        
+        const labels = { timeline: '📅 Visual Timeline', raci: '👥 RACI Matrix', risks: '⚠️ Risk Register' };
+        btn.querySelector('span').textContent = '✓ ' + labels[outputType];
+        
+        block.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        btn.querySelector('span').textContent = 'Failed - Try Again';
+        btn.disabled = false;
+    }
+}
+
+// Set default date to 30 days from now
+document.getElementById('launchDate').value = getDateOffset(30);
+</script>
+</body>
+</html>
