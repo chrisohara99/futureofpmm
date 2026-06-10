@@ -71,15 +71,14 @@ exports.handler = async (event) => {
     // Get all quiz scores
     const { data: quizScores, error: quizError } = await supabase
       .from('quiz_scores')
-      .select('user_id, chapter, score, percentage, created_at')
-      .order('created_at', { ascending: false });
+      .select('user_id, chapter, score, percentage');
 
     if (quizError) throw quizError;
 
     // Get all assessment results
     const { data: assessments, error: assessError } = await supabase
       .from('assessment_results')
-      .select('user_id, assessment_type, created_at');
+      .select('user_id, assessment_type');
 
     if (assessError) throw assessError;
 
@@ -140,13 +139,8 @@ exports.handler = async (event) => {
       const scorecard = userAssessments.some(a => a.assessment_type === '10x-scorecard');
       const cognitive = userAssessments.some(a => a.assessment_type === 'cognitive');
 
-      // Find last activity (most recent quiz or assessment)
-      const allDates = [
-        ...userQuizzes.map(q => q.created_at),
-        ...userAssessments.map(a => a.created_at),
-        profile.created_at
-      ].filter(Boolean);
-      const lastActivity = allDates.sort((a, b) => new Date(b) - new Date(a))[0];
+      // Last activity = registration date (quiz/assessment tables don't have timestamps)
+      const lastActivity = profile.created_at;
 
       return {
         email,
