@@ -68,13 +68,20 @@ exports.handler = async (event) => {
 
     if (profileError) throw profileError;
 
-    // Get all quiz results
-    const { data: results, error: resultsError } = await supabase
-      .from('results')
-      .select('user_id, quiz_id, score, passed, created_at')
+    // Get all quiz scores
+    const { data: quizScores, error: quizError } = await supabase
+      .from('quiz_scores')
+      .select('user_id, chapter, score, percentage, created_at')
       .order('created_at', { ascending: false });
 
-    if (resultsError) throw resultsError;
+    if (quizError) throw quizError;
+
+    // Get all assessment results
+    const { data: assessments, error: assessError } = await supabase
+      .from('assessment_results')
+      .select('user_id, assessment_type, created_at');
+
+    if (assessError) throw assessError;
 
     // Build profile map by email
     const profileMap = {};
@@ -82,13 +89,22 @@ exports.handler = async (event) => {
       profileMap[p.email.toLowerCase()] = p;
     });
 
-    // Build results map by user_id
-    const resultsMap = {};
-    results.forEach(r => {
-      if (!resultsMap[r.user_id]) {
-        resultsMap[r.user_id] = [];
+    // Build quiz scores map by user_id
+    const quizMap = {};
+    (quizScores || []).forEach(r => {
+      if (!quizMap[r.user_id]) {
+        quizMap[r.user_id] = [];
       }
-      resultsMap[r.user_id].push(r);
+      quizMap[r.user_id].push(r);
+    });
+
+    // Build assessments map by user_id
+    const assessMap = {};
+    (assessments || []).forEach(a => {
+      if (!assessMap[a.user_id]) {
+        assessMap[a.user_id] = [];
+      }
+      assessMap[a.user_id].push(a);
     });
 
     // Build subscriber status list
@@ -114,18 +130,23 @@ exports.handler = async (event) => {
         };
       }
 
-      const userResults = resultsMap[profile.id] || [];
+      const userQuizzes = quizMap[profile.id] || [];
+      const userAssessments = assessMap[profile.id] || [];
       
-      // Check what's completed
-      const unit1 = userResults.some(r => r.quiz_id === 'unit-01' && r.passed);
-      const unit2 = userResults.some(r => r.quiz_id === 'unit-02' && r.passed);
-      const unit3 = userResults.some(r => r.quiz_id === 'unit-03' && r.passed);
-      const scorecard = userResults.some(r => r.quiz_id === '10x-scorecard');
-      const cognitive = userResults.some(r => r.quiz_id === 'cognitive-assessment');
+      // Check what's completed (80% pass threshold)
+      const unit1 = userQuizzes.some(r => r.chapter === 'unit-01' && r.percentage >= 80);
+      const unit2 = userQuizzes.some(r => r.chapter === 'unit-02' && r.percentage >= 80);
+      const unit3 = userQuizzes.some(r => r.chapter === 'unit-03' && r.percentage >= 80);
+      const scorecard = userAssessments.some(a => a.assessment_type === '10x-scorecard');
+      const cognitive = userAssessments.some(a => a.assessment_type === 'cognitive');
 
-      // Find last activity
-      const lastResult = userResults[0];
-      const lastActivity = lastResult ? lastResult.created_at : profile.created_at;
+      // Find last activity (most recent quiz or assessment)
+      const allDates = [
+        ...userQuizzes.map(q => q.created_at),
+        ...userAssessments.map(a => a.created_at),
+        profile.created_at
+      ].filter(Boolean);
+      const lastActivity = allDates.sort((a, b) => new Date(b) - new Date(a))[0];
 
       return {
         email,
