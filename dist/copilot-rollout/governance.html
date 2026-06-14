@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+<meta name="robots" content="noindex, nofollow">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-LL6G27YPXX');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Governance & Safety | Future of PMM</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --pmm-dark: #1e3a5f; --msft-blue: #0078d4; --accent: #c84b31; --success: #16a34a; --danger: #dc2626; --warning: #f59e0b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo img { height: 135px; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        nav { display: flex; gap: 0.5rem; }
+        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; }
+        nav > a:hover { color: var(--msft-blue); background: #f3f4f6; }
+        .hamburger { display: none; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; }
+            .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; }
+            nav { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px; transition: right 0.3s ease; z-index: 1000; }
+            nav.open { right: 0; }
+            nav > a { color: rgba(255,255,255,0.8) !important; margin-bottom: 1rem; }
+        }
+        
+        .breadcrumb { padding: 1rem 0; font-size: 0.85rem; color: #64748b; }
+        .breadcrumb a { color: var(--msft-blue); text-decoration: none; }
+        
+        .hero { background: linear-gradient(135deg, #374151 0%, #1f2937 100%); color: white; padding: 2.5rem 0; }
+        .hero .container { max-width: 800px; }
+        .hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; margin-bottom: 0.75rem; }
+        .hero-sub { font-size: 1rem; opacity: 0.9; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+        
+        h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; margin: 2.5rem 0 1rem; color: var(--pmm-dark); }
+        h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: var(--pmm-dark); }
+        p { margin-bottom: 1.25rem; }
+        ul, ol { margin: 0 0 1.25rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--msft-blue); }
+        
+        .rule-card {
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+        .rule-card.do { background: #ecfdf5; border-left: 4px solid var(--success); }
+        .rule-card.dont { background: #fef2f2; border-left: 4px solid var(--danger); }
+        .rule-card.caution { background: #fffbeb; border-left: 4px solid var(--warning); }
+        .rule-card h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 0.75rem;
+        }
+        .rule-card.do h4 { color: var(--success); }
+        .rule-card.dont h4 { color: var(--danger); }
+        .rule-card.caution h4 { color: var(--warning); }
+        .rule-card ul { margin: 0; padding-left: 1.25rem; }
+        .rule-card li { margin-bottom: 0.4rem; font-size: 0.95rem; }
+        
+        .principle-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .principle-box h4 {
+            font-size: 1.05rem;
+            margin: 0 0 0.5rem;
+            color: var(--pmm-dark);
+        }
+        .principle-box p { margin: 0; color: #64748b; }
+        
+        .tldr {
+            background: var(--pmm-dark);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .tldr h3 { color: white; margin: 0 0 1rem; font-size: 1.1rem; }
+        .tldr ul { margin: 0; padding-left: 1.25rem; }
+        .tldr li { margin-bottom: 0.5rem; }
+        
+        .faq-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-item h4 {
+            font-size: 1rem;
+            margin: 0 0 0.5rem;
+            color: var(--pmm-dark);
+        }
+        .faq-item p { margin: 0; color: #64748b; font-size: 0.95rem; }
+        
+        footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; margin-top: 3rem; }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+        footer a { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')"><span></span><span></span><span></span></button>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/digests/">Digests</a>
+                <a href="/blog.html">Articles</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container"><div class="breadcrumb"><a href="/copilot-rollout/">Copilot Rollout</a> → Governance & Safety</div></div>
+
+<section class="hero">
+    <div class="container">
+        <div style="font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; margin-bottom: 0.75rem;">🛡️ Guidelines</div>
+        <h1>Governance & Safety</h1>
+        <p class="hero-sub">What you can and can't do with Copilot. The rules are simpler than you think.</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="tldr">
+        <h3>TL;DR — The Three Rules</h3>
+        <ul>
+            <li><strong>No customer data</strong> in prompts (names, deals, PII)</li>
+            <li><strong>No proprietary code</strong> in unapproved tools</li>
+            <li><strong>Review before sharing</strong> — AI output is a draft, not a final</li>
+        </ul>
+    </div>
+    
+    <h2>Why Enterprise Copilot is Different</h2>
+    
+    <p>Microsoft 365 Copilot (the version you access through your work account) has enterprise-grade data protection:</p>
+    
+    <ul>
+        <li><strong>Your prompts aren't used to train models.</strong> What you type stays in your tenant.</li>
+        <li><strong>Data stays within your compliance boundary.</strong> Same protections as other M365 data.</li>
+        <li><strong>Outputs inherit permissions.</strong> If you can't access a file, Copilot can't either.</li>
+    </ul>
+    
+    <p>This is different from consumer ChatGPT or free Copilot. Enterprise Copilot is designed for work use — that's why we're using it.</p>
+    
+    <h2>What You CAN Do</h2>
+    
+    <div class="rule-card do">
+        <h4>✓ Approved Uses</h4>
+        <ul>
+            <li>Draft internal documents (briefs, emails, presentations)</li>
+            <li>Summarize meetings and long documents</li>
+            <li>Brainstorm ideas and outlines</li>
+            <li>Research public information (market trends, competitors)</li>
+            <li>Edit and improve your own writing</li>
+            <li>Generate templates and frameworks</li>
+            <li>Analyze data you have legitimate access to</li>
+            <li>Prepare for meetings and calls</li>
+        </ul>
+    </div>
+    
+    <h2>What You CANNOT Do</h2>
+    
+    <div class="rule-card dont">
+        <h4>✗ Prohibited Uses</h4>
+        <ul>
+            <li>Input customer names, deal details, or account information</li>
+            <li>Share personal data (employee info, contact details, PII)</li>
+            <li>Paste proprietary source code</li>
+            <li>Input confidential financial data or M&A information</li>
+            <li>Use AI output as-is for external communications without review</li>
+            <li>Make claims about product capabilities based solely on AI output</li>
+            <li>Bypass security or compliance controls</li>
+        </ul>
+    </div>
+    
+    <h2>Use Caution With</h2>
+    
+    <div class="rule-card caution">
+        <h4>⚠ Proceed Carefully</h4>
+        <ul>
+            <li><strong>Competitive intelligence:</strong> Verify claims independently. AI can hallucinate competitor features.</li>
+            <li><strong>Legal/compliance topics:</strong> Get human review before acting on AI legal advice.</li>
+            <li><strong>Pricing and contracts:</strong> AI doesn't know current pricing. Verify with official sources.</li>
+            <li><strong>Customer-facing content:</strong> Always review and fact-check before publishing.</li>
+            <li><strong>Technical specifications:</strong> Cross-reference with documentation.</li>
+        </ul>
+    </div>
+    
+    <h2>The Review Principle</h2>
+    
+    <div class="principle-box">
+        <h4>AI Output = First Draft</h4>
+        <p>Treat every Copilot response as a starting point, not a final answer. You are responsible for the accuracy, appropriateness, and quality of anything you share externally. Copilot helps you work faster — it doesn't replace your judgment.</p>
+    </div>
+    
+    <h3>Before Sharing AI-Assisted Work</h3>
+    <ol>
+        <li><strong>Fact-check</strong> any specific claims, statistics, or product details</li>
+        <li><strong>Verify</strong> that tone and messaging align with brand guidelines</li>
+        <li><strong>Confirm</strong> you haven't inadvertently included confidential information</li>
+        <li><strong>Read it aloud</strong> — does it sound like something you'd actually say?</li>
+    </ol>
+    
+    <h2>Common Questions</h2>
+    
+    <div class="faq-item">
+        <h4>Can I paste a customer email into Copilot?</h4>
+        <p>Avoid it. Even with enterprise protections, customer communications may contain sensitive information. Summarize the situation in your own words instead of pasting verbatim.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4>Can I use Copilot for competitive research?</h4>
+        <p>Yes, but verify independently. Copilot may have outdated information or hallucinate features. Use it to generate questions and frameworks, then verify with primary sources.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4>Can I share that I used AI to create something?</h4>
+        <p>Generally yes, internally. For external content, use judgment — a blog post assisted by AI is fine, but implying AI-generated content is original research isn't.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4>What if I accidentally input something I shouldn't have?</h4>
+        <p>Don't panic. With enterprise Copilot, the data isn't used for training. But do be more careful going forward, and report to IT if you believe there's a compliance issue.</p>
+    </div>
+    
+    <div class="faq-item">
+        <h4>Can I use external AI tools like ChatGPT?</h4>
+        <p>Check the approved tool list. Some external tools are allowed with restrictions; others are prohibited. When in doubt, use enterprise-approved alternatives.</p>
+    </div>
+    
+    <h2>When to Escalate</h2>
+    
+    <p>Contact IT or your manager if:</p>
+    <ul>
+        <li>You're unsure whether a use case is approved</li>
+        <li>You accidentally input sensitive data</li>
+        <li>Copilot produces output that seems to include confidential information from other sources</li>
+        <li>You discover a potential security or compliance issue</li>
+    </ul>
+    
+    <div class="principle-box">
+        <h4>The Golden Rule</h4>
+        <p>If you wouldn't put it in an email to a colleague, don't put it in a Copilot prompt. Same judgment, same caution, same professionalism.</p>
+    </div>
+    
+    <h2>Additional Resources</h2>
+    
+    <ul>
+        <li><a href="https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy" target="_blank">Microsoft's Copilot Privacy Documentation</a></li>
+        <li><a href="/pmm-ai-tool-stack.html">The PMM AI Tool Stack</a> — Approved tools by tier</li>
+        <li>Internal IT policy (check your company intranet)</li>
+    </ul>
+    
+</main>
+
+<footer>
+    <div class="container">
+        <p>Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

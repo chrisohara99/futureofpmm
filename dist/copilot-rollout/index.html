@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+<meta name="robots" content="noindex, nofollow">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Rollout: PMM Team Enablement | Future of PMM</title>
+    <meta name="description" content="Complete rollout strategy for Microsoft Copilot adoption across the PMM team. Quick start, progression path, practice labs, and adoption metrics.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --accent: #c84b31; --msft-blue: #0078d4; --success: #16a34a; --warning: #ca8a04; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover { color: var(--pmm-blue); background: #f3f4f6; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            nav { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px 24px; transition: right 0.3s ease; z-index: 1000; }
+            nav.open { right: 0; }
+            nav > a { margin: 0 0 1.25rem 0; font-size: 1.1rem; color: rgba(255,255,255,0.8) !important; }
+        }
+        
+        .hero { background: linear-gradient(135deg, var(--msft-blue) 0%, #106ebe 100%); color: white; padding: 3rem 0; }
+        .hero .container { max-width: 900px; }
+        .hero-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.8); margin-bottom: 1rem; font-weight: 600; }
+        .hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.4rem; font-weight: 700; line-height: 1.3; margin-bottom: 1rem; }
+        .hero-sub { font-size: 1.1rem; opacity: 0.9; max-width: 600px; }
+        @media (max-width: 600px) { .hero h1 { font-size: 1.8rem; } }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+        
+        h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; margin: 2.5rem 0 1rem; color: var(--pmm-dark); }
+        h3 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--pmm-dark); }
+        p { margin-bottom: 1.25rem; }
+        ul, ol { margin: 0 0 1.25rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--msft-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        .phase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        @media (max-width: 768px) { .phase-grid { grid-template-columns: 1fr; } }
+        
+        .phase-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .phase-card.active { border-color: var(--msft-blue); border-width: 2px; }
+        .phase-num {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--msft-blue);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .phase-card h4 { font-size: 1.1rem; margin: 0.5rem 0; color: var(--pmm-dark); }
+        .phase-card p { font-size: 0.9rem; color: #64748b; margin: 0; }
+        .phase-timeline { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--msft-blue); margin-top: 1rem; }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        @media (max-width: 600px) { .resource-grid { grid-template-columns: 1fr; } }
+        
+        .resource-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        .resource-card:hover { border-color: var(--msft-blue); box-shadow: 0 4px 12px rgba(0,120,212,0.1); text-decoration: none; }
+        .resource-icon { font-size: 1.5rem; }
+        .resource-card h5 { font-size: 0.95rem; margin: 0 0 0.25rem; color: var(--pmm-dark); }
+        .resource-card span { font-size: 0.85rem; color: #64748b; }
+        
+        .callout {
+            background: #eff6ff;
+            border-left: 4px solid var(--msft-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .callout.warning { background: #fef9c3; border-left-color: var(--warning); }
+        .callout.success { background: #dcfce7; border-left-color: var(--success); }
+        
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        .metrics-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .metrics-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .cta-section {
+            background: var(--pmm-dark);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .cta-section h3 { color: white; margin: 0 0 1rem; font-size: 1.4rem; }
+        .cta-section p { opacity: 0.9; margin-bottom: 1.5rem; }
+        .cta-btn {
+            display: inline-block;
+            background: var(--msft-blue);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 0.5rem;
+        }
+        .cta-btn:hover { background: #106ebe; text-decoration: none; }
+        .cta-btn.secondary { background: transparent; border: 2px solid rgba(255,255,255,0.5); }
+        
+        footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; margin-top: 3rem; }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+        footer a { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/digests/">Digests</a>
+                <a href="/blog.html">Articles</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-label">🚀 Team Enablement</div>
+        <h1>Microsoft Copilot Rollout</h1>
+        <p class="hero-sub">A three-phase approach to Copilot adoption: from quick start basics to in-app productivity, with hands-on practice at every step.</p>
+    </div>
+</section>
+
+<main>
+    <h2>The Rollout Strategy</h2>
+    
+    <p>This isn't about watching demos. It's about building muscle memory through real work. The rollout moves through three phases, each unlocking new capabilities while reinforcing the last.</p>
+    
+    <div class="phase-grid">
+        <div class="phase-card active">
+            <span class="phase-num">PHASE 1</span>
+            <h4>Copilot Chat</h4>
+            <p>Foundation skills. Everyone starts here. Browser-based, no special provisioning needed.</p>
+            <div class="phase-timeline">Week 1-2</div>
+        </div>
+        <div class="phase-card">
+            <span class="phase-num">PHASE 2</span>
+            <h4>Copilot in M365</h4>
+            <p>In-app integration. Word, PowerPoint, Excel, Teams, Outlook. Requires license provisioning.</p>
+            <div class="phase-timeline">Week 3-6</div>
+        </div>
+        <div class="phase-card">
+            <span class="phase-num">PHASE 3</span>
+            <h4>Advanced Workflows</h4>
+            <p>Agents, automation, custom GPTs. Transform how work gets done.</p>
+            <div class="phase-timeline">Week 7+</div>
+        </div>
+    </div>
+    
+    <div class="callout">
+        <strong>Current Status:</strong> Phase 1 is available NOW. Phase 2 (Copilot in-app) is pending approval — this rollout prepares the team so we're ready the moment licenses are provisioned.
+    </div>
+    
+    <h2>Phase 1: Copilot Chat Quick Start</h2>
+    
+    <p>Copilot Chat is the foundation. It's free, it's available now, and it's the fastest way to build AI fluency before in-app features unlock.</p>
+    
+    <div class="resource-grid">
+        <a href="quick-start.html" class="resource-card">
+            <span class="resource-icon">📖</span>
+            <div>
+                <h5>Quick Start Guide</h5>
+                <span>Get productive in 15 minutes</span>
+            </div>
+        </a>
+        <a href="lab.html" class="resource-card">
+            <span class="resource-icon">🧪</span>
+            <div>
+                <h5>Practice Lab</h5>
+                <span>Hands-on exercises for PMM work</span>
+            </div>
+        </a>
+        <a href="prompts.html" class="resource-card">
+            <span class="resource-icon">💬</span>
+            <div>
+                <h5>Prompt Library</h5>
+                <span>PMM-specific prompts that work</span>
+            </div>
+        </a>
+        <a href="governance.html" class="resource-card">
+            <span class="resource-icon">🛡️</span>
+            <div>
+                <h5>Governance & Safety</h5>
+                <span>What you can and can't do</span>
+            </div>
+        </a>
+    </div>
+    
+    <h3>Access Points (Available Now)</h3>
+    <ul>
+        <li><strong>Microsoft 365 Portal:</strong> <a href="https://m365.cloud.microsoft/chat" target="_blank">m365.cloud.microsoft/chat</a></li>
+        <li><strong>Edge Browser:</strong> Click Copilot icon in sidebar (or press Ctrl+Shift+.)</li>
+        <li><strong>Windows:</strong> Press Win+C (Windows 11 with Copilot enabled)</li>
+        <li><strong>Teams:</strong> Search for "Copilot" in apps</li>
+    </ul>
+    
+    <h2>Phase 2: Copilot in Applications</h2>
+    
+    <p>This is where the real productivity gains unlock. Copilot embedded directly in Word, PowerPoint, Excel, Outlook, and Teams — working with your actual documents and data.</p>
+    
+    <div class="callout warning">
+        <strong>⏳ Pending Approval:</strong> In-app Copilot requires per-user licensing. We're preparing the team now so adoption is immediate when licenses are provisioned.
+    </div>
+    
+    <h3>What Unlocks in Phase 2</h3>
+    
+    <table class="metrics-table">
+        <thead>
+            <tr>
+                <th>Application</th>
+                <th>Capability</th>
+                <th>PMM Use Case</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Word</strong></td>
+                <td>Draft, rewrite, summarize documents</td>
+                <td>First drafts of briefs, messaging docs, case studies</td>
+            </tr>
+            <tr>
+                <td><strong>PowerPoint</strong></td>
+                <td>Generate slides from prompts or documents</td>
+                <td>Sales decks, exec briefings, launch presentations</td>
+            </tr>
+            <tr>
+                <td><strong>Excel</strong></td>
+                <td>Analyze data, generate formulas, create charts</td>
+                <td>Win/loss analysis, pricing models, market sizing</td>
+            </tr>
+            <tr>
+                <td><strong>Outlook</strong></td>
+                <td>Draft emails, summarize threads, schedule</td>
+                <td>Stakeholder comms, meeting prep</td>
+            </tr>
+            <tr>
+                <td><strong>Teams</strong></td>
+                <td>Meeting summaries, action items, catch-up</td>
+                <td>Never miss context from a meeting you couldn't attend</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Phase 3: Advanced Workflows</h2>
+    
+    <p>Once the team has Copilot fluency, we move to automation and custom agents:</p>
+    
+    <ul>
+        <li><strong>Copilot Studio:</strong> Build custom agents for repetitive PMM tasks</li>
+        <li><strong>Power Automate + Copilot:</strong> Automated workflows triggered by natural language</li>
+        <li><strong>Custom GPTs:</strong> Team-specific assistants trained on your content</li>
+    </ul>
+    
+    <h2>Rollout Timeline</h2>
+    
+    <table class="metrics-table">
+        <thead>
+            <tr>
+                <th>Week</th>
+                <th>Milestone</th>
+                <th>Deliverable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Week 1</td>
+                <td>Kickoff + Quick Start</td>
+                <td>Team completes Quick Start Guide, first lab exercise</td>
+            </tr>
+            <tr>
+                <td>Week 2</td>
+                <td>Practice Sprint</td>
+                <td>Complete 3 lab exercises, share one output in Teams</td>
+            </tr>
+            <tr>
+                <td>Week 3</td>
+                <td>Office Hours #1</td>
+                <td>Live Q&A, troubleshooting, prompt refinement</td>
+            </tr>
+            <tr>
+                <td>Week 4</td>
+                <td>In-App Training (if licensed)</td>
+                <td>Word + PowerPoint deep dive</td>
+            </tr>
+            <tr>
+                <td>Week 5</td>
+                <td>Real Work Integration</td>
+                <td>Each person ships one deliverable using Copilot</td>
+            </tr>
+            <tr>
+                <td>Week 6</td>
+                <td>Office Hours #2 + Showcase</td>
+                <td>Team shares wins, establishes best practices</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Success Metrics</h2>
+    
+    <table class="metrics-table">
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Target</th>
+                <th>Measured By</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Quick Start Completion</td>
+                <td>100% by Week 1</td>
+                <td>Self-reported in Teams</td>
+            </tr>
+            <tr>
+                <td>Lab Exercise Completion</td>
+                <td>3+ per person by Week 2</td>
+                <td>Submission to shared folder</td>
+            </tr>
+            <tr>
+                <td>Weekly Active Users</td>
+                <td>80%+ using Copilot weekly</td>
+                <td>Admin usage reports</td>
+            </tr>
+            <tr>
+                <td>Deliverables Shipped</td>
+                <td>1+ per person by Week 5</td>
+                <td>Showcase presentation</td>
+            </tr>
+            <tr>
+                <td>Time Saved (self-reported)</td>
+                <td>2+ hours/week</td>
+                <td>Week 6 survey</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="cta-section">
+        <h3>Ready to Start?</h3>
+        <p>Begin with the Quick Start Guide — you'll be productive with Copilot in 15 minutes.</p>
+        <a href="quick-start.html" class="cta-btn">Quick Start Guide →</a>
+        <a href="lab.html" class="cta-btn secondary">Practice Lab →</a>
+    </div>
+    
+</main>
+
+<footer>
+    <div class="container">
+        <p>Future of PMM · <a href="https://futureofpmm.com">futureofpmm.com</a></p>
+    </div>
+</footer>
+
+</body>
+</html>
