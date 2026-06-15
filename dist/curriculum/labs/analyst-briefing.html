@@ -385,6 +385,47 @@
             background: #faf5ff;
         }
         
+        /* Two-column insight cards */
+        .insight-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0 1.5rem 0;
+        }
+        @media (max-width: 600px) {
+            .insight-row { grid-template-columns: 1fr; }
+        }
+        .insight-card {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .insight-card.why {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #1976d2;
+        }
+        .insight-card.trap {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid #f57c00;
+        }
+        .insight-card .card-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .insight-card.why .card-label { color: #1565c0; }
+        .insight-card.trap .card-label { color: #e65100; }
+        .insight-card p {
+            margin: 0;
+            color: #333;
+            line-height: 1.5;
+        }
+        
         .more-outputs {
             background: #f8f9fa;
             padding: 1.5rem;
@@ -757,6 +798,63 @@ function copyBlock(blockId) {
     });
 }
 
+// Transform "Why they'll ask" and "Trap to avoid" into two-column cards
+function formatResultCards(html) {
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    
+    // Find all paragraphs
+    const paragraphs = container.querySelectorAll('p');
+    
+    paragraphs.forEach(p => {
+        const text = p.innerHTML;
+        
+        // Check if this paragraph has "Why they'll ask:" pattern
+        if (text.includes('<strong>Why they') || text.includes('<strong>Why They')) {
+            // Look for the next sibling that might be "Trap to avoid"
+            let nextEl = p.nextElementSibling;
+            let trapEl = null;
+            
+            // Skip any whitespace text nodes
+            while (nextEl && nextEl.tagName === 'P') {
+                if (nextEl.innerHTML.includes('<strong>Trap') || nextEl.innerHTML.includes('<strong>trap')) {
+                    trapEl = nextEl;
+                    break;
+                }
+                break;
+            }
+            
+            // Extract content after the bold label
+            const whyContent = text.replace(/<strong>Why they['']ll ask:?<\/strong>:?\s*/i, '').trim();
+            
+            // Create the card row
+            const row = document.createElement('div');
+            row.className = 'insight-row';
+            
+            // Why card
+            const whyCard = document.createElement('div');
+            whyCard.className = 'insight-card why';
+            whyCard.innerHTML = `<div class="card-label">🎯 Why They'll Ask</div><p>${whyContent}</p>`;
+            row.appendChild(whyCard);
+            
+            // Trap card (if found)
+            if (trapEl) {
+                const trapContent = trapEl.innerHTML.replace(/<strong>Trap to avoid:?<\/strong>:?\s*/i, '').trim();
+                const trapCard = document.createElement('div');
+                trapCard.className = 'insight-card trap';
+                trapCard.innerHTML = `<div class="card-label">⚠️ Trap to Avoid</div><p>${trapContent}</p>`;
+                row.appendChild(trapCard);
+                trapEl.remove();
+            }
+            
+            // Replace the paragraph with the row
+            p.replaceWith(row);
+        }
+    });
+    
+    return container.innerHTML;
+}
+
 const form = document.getElementById('labForm');
 const runBtn = document.getElementById('runBtn');
 const spinner = document.getElementById('spinner');
@@ -829,8 +927,8 @@ form.addEventListener('submit', async (e) => {
         document.getElementById('resultCategory').textContent = currentInputs.marketCategory;
         document.getElementById('resultCompetitors').textContent = [currentInputs.competitor1, currentInputs.competitor2].filter(Boolean).join(', ');
         
-        // Display result
-        document.getElementById('content-questions').innerHTML = marked.parse(data.result);
+        // Display result with enhanced formatting
+        document.getElementById('content-questions').innerHTML = formatResultCards(marked.parse(data.result));
         
         resultsSection.classList.add('show');
         resultsSection.scrollIntoView({ behavior: 'smooth' });
