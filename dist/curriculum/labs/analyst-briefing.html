@@ -146,16 +146,16 @@
             .form-row { grid-template-columns: 1fr; }
         }
         
-        .analyst-options {
+        .analyst-options, .competitor-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.75rem;
             margin-bottom: 1rem;
         }
         @media (max-width: 600px) {
-            .analyst-options { grid-template-columns: 1fr; }
+            .analyst-options, .competitor-options { grid-template-columns: 1fr; }
         }
-        .analyst-option {
+        .analyst-option, .competitor-option {
             padding: 1rem;
             border: 2px solid var(--light-gray);
             border-radius: 8px;
@@ -163,11 +163,11 @@
             text-align: center;
             transition: all 0.2s;
         }
-        .analyst-option:hover { border-color: var(--purple); background: #faf5ff; }
-        .analyst-option.selected { border-color: var(--purple); background: #f3e5f5; }
-        .analyst-option input { display: none; }
-        .analyst-option .firm-name { font-weight: 600; color: var(--dark-slate); margin-bottom: 0.25rem; }
-        .analyst-option .firm-output { font-size: 0.8rem; color: #888; }
+        .analyst-option:hover, .competitor-option:hover { border-color: var(--purple); background: #faf5ff; }
+        .analyst-option.selected, .competitor-option.selected { border-color: var(--purple); background: #f3e5f5; }
+        .analyst-option input, .competitor-option input { display: none; }
+        .analyst-option .firm-name, .competitor-option .competitor-name { font-weight: 600; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .analyst-option .firm-output, .competitor-option .competitor-note { font-size: 0.8rem; color: #888; }
         
         .sample-scenarios {
             display: flex;
@@ -356,7 +356,7 @@
     <div class="hero-inner">
         <span class="lab-badge">🔬 AI Lab • Unit 4</span>
         <h1>📊 Analyst Briefing Simulator</h1>
-        <p>Use agent simulation to predict analyst questions and prepare for your next Gartner, Forrester, or IDC briefing.</p>
+        <p>Prepare for Gartner, Forrester, or IDC briefings on SAP Application Data Clouds vs. Salesforce, Oracle, and Workday.</p>
     </div>
 </section>
 
@@ -366,7 +366,7 @@
     <div class="lab-intro">
         <h2>How This Works</h2>
         <p>Industry analysts and AI agents evaluate vendors the same way: systematically comparing capabilities, weighting evidence, and surfacing gaps. This lab uses that insight to your advantage.</p>
-        <p>Input your positioning, competitors, and briefing context. The simulator runs an agent-style competitive evaluation to predict the questions and concerns an analyst will raise — so you can prepare counter-evidence before you're in the room.</p>
+        <p>Input your SAP Application Data Cloud positioning against Salesforce, Oracle, or Workday. The simulator predicts the questions and concerns an analyst will raise — so you can prepare counter-evidence before you're in the room.</p>
         
         <div class="insight-box">
             <p><strong>Key insight from Unit 4:</strong> The gaps agents find are the gaps analysts probe. Prepare for both at once.</p>
@@ -382,9 +382,9 @@
             
             <p class="hint" style="margin-bottom: 1rem;">Try a sample scenario or enter your own:</p>
             <div class="sample-scenarios">
-                <button type="button" class="sample-btn" onclick="loadSample('sap-spend')">SAP Spend Management</button>
-                <button type="button" class="sample-btn" onclick="loadSample('sap-cx')">SAP Customer Experience</button>
-                <button type="button" class="sample-btn" onclick="loadSample('sap-hcm')">SAP SuccessFactors</button>
+                <button type="button" class="sample-btn" onclick="loadSample('sap-datasphere')">SAP Datasphere</button>
+                <button type="button" class="sample-btn" onclick="loadSample('sap-analytics')">SAP Analytics Cloud</button>
+                <button type="button" class="sample-btn" onclick="loadSample('sap-btp')">SAP Business Technology Platform</button>
             </div>
             
             <div class="form-row">
@@ -417,15 +417,36 @@
                 <h3>Competitive Context</h3>
             </div>
             
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="competitor1">Primary Competitor</label>
-                    <input type="text" id="competitor1" name="competitor1" required placeholder="e.g., Coupa">
+            <div class="form-group">
+                <label>Primary Competitor</label>
+                <div class="competitor-options">
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor1" value="Salesforce" required>
+                        <div class="competitor-name">Salesforce</div>
+                        <div class="competitor-note">Data Cloud, Tableau</div>
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor1" value="Oracle">
+                        <div class="competitor-name">Oracle</div>
+                        <div class="competitor-note">Fusion, Analytics Cloud</div>
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor1" value="Workday">
+                        <div class="competitor-name">Workday</div>
+                        <div class="competitor-note">Prism Analytics</div>
+                    </label>
                 </div>
-                <div class="form-group">
-                    <label for="competitor2">Secondary Competitor</label>
-                    <input type="text" id="competitor2" name="competitor2" placeholder="e.g., Jaggaer">
-                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="competitor2">Secondary Competitor (optional)</label>
+                <select id="competitor2" name="competitor2">
+                    <option value="">None</option>
+                    <option value="Snowflake">Snowflake</option>
+                    <option value="Databricks">Databricks</option>
+                    <option value="Microsoft">Microsoft (Fabric/Power BI)</option>
+                    <option value="Google">Google (BigQuery/Looker)</option>
+                </select>
             </div>
             
             <div class="form-group">
@@ -554,41 +575,41 @@
 let currentInputs = null;
 
 const sampleScenarios = {
-    'sap-spend': {
-        companyName: 'SAP Ariba / SAP Business Network',
-        marketCategory: 'Procure-to-Pay / Source-to-Pay',
-        keyPositioning: 'Largest B2B trading network with 5.5M+ connected suppliers. Native integration with SAP S/4HANA and ERP systems. Unified source-to-pay platform covering sourcing, procurement, invoicing, and supplier management. AI-powered spend visibility and category insights. Strong in regulated industries.',
-        knownWeaknesses: 'UI modernization still in progress. Perceived complexity for mid-market. Some customers report long implementation timelines. Recent executive changes.',
-        competitor1: 'Coupa',
-        competitor2: 'Jaggaer',
-        competitorClaims: 'Coupa emphasizes "community intelligence," faster time-to-value, and modern UX. Claims easier supplier adoption. Jaggaer positions on vertical specialization and autonomous procurement vision. Both attack SAP on UI/UX and mid-market fit.',
+    'sap-datasphere': {
+        companyName: 'SAP Datasphere',
+        marketCategory: 'Data Management / Data Fabric / Application Data Cloud',
+        keyPositioning: 'Unified data fabric connecting SAP and non-SAP data with business semantics preserved. Native integration with SAP applications providing pre-built business content and data models. Federation capabilities allowing data to remain in place. Built-in data marketplace for third-party data. Strong governance with lineage and cataloging.',
+        knownWeaknesses: 'Newer to market than established data platforms. Perception as SAP-centric despite open architecture. Pricing model complexity. Some gaps in advanced ML/AI workloads.',
+        competitor1: 'Salesforce',
+        competitor2: 'Snowflake',
+        competitorClaims: 'Salesforce Data Cloud claims real-time customer 360 and native CRM integration. Snowflake emphasizes cloud-native architecture, data sharing, and ecosystem. Both question whether SAP can win outside SAP-centric use cases.',
         analystFirm: 'Gartner',
         briefingPurpose: 'MQ/Wave Update',
-        additionalContext: 'Preparing for Magic Quadrant for Procure-to-Pay Suites evaluation. Recent acquisition of Taulia for working capital. New AI features launching next quarter.'
+        additionalContext: 'Preparing for Magic Quadrant for Data Integration Tools. Key message: business data fabric vs. technical data warehouse. Recent partnership announcements with hyperscalers.'
     },
-    'sap-cx': {
-        companyName: 'SAP Customer Experience (C/4HANA)',
-        marketCategory: 'CRM / Customer Experience Platform',
-        keyPositioning: 'Unified commerce, marketing, sales, and service on one platform. Deep integration with SAP ERP and supply chain. Strong in B2B commerce and complex product configuration. Composable architecture with microservices.',
-        knownWeaknesses: 'Market share below Salesforce. Some portfolio rationalization in progress. Sales cloud perceived as less mature. Partner ecosystem smaller than competitors.',
+    'sap-analytics': {
+        companyName: 'SAP Analytics Cloud',
+        marketCategory: 'Business Intelligence / Analytics / Planning',
+        keyPositioning: 'Unified BI, planning, and predictive in single solution. Live connectivity to SAP sources preserving semantics. Embedded analytics in SAP applications. Strong enterprise planning capabilities. AI-powered insights and augmented analytics.',
+        knownWeaknesses: 'Visualization capabilities perceived as behind Tableau/Power BI. Self-service data prep less mature. Market share in pure BI lower than leaders. Performance on large datasets.',
         competitor1: 'Salesforce',
-        competitor2: 'Adobe Experience Cloud',
-        competitorClaims: 'Salesforce claims market leadership and largest ecosystem. Adobe emphasizes creative-to-commerce integration. Both question SAP commitment to CX market.',
+        competitor2: 'Microsoft',
+        competitorClaims: 'Salesforce/Tableau claims visualization leadership and ease of use. Microsoft Power BI emphasizes price/value and Microsoft 365 integration. Both attack SAP on requiring SAP expertise.',
         analystFirm: 'Forrester',
-        briefingPurpose: 'Strategy Update',
-        additionalContext: 'Need to address portfolio simplification narrative. Strong recent wins in B2B commerce. Want to highlight integration story.'
-    },
-    'sap-hcm': {
-        companyName: 'SAP SuccessFactors',
-        marketCategory: 'Human Capital Management (HCM)',
-        keyPositioning: 'Comprehensive HCM suite covering core HR, talent management, learning, workforce analytics. Native integration with SAP ERP for payroll and finance. Strong global presence with localization for 100+ countries. AI-powered skills matching and career development.',
-        knownWeaknesses: 'Some modules perceived as less innovative than point solutions. User experience varies across modules. Talent intelligence narrative still developing.',
-        competitor1: 'Workday',
-        competitor2: 'Oracle HCM Cloud',
-        competitorClaims: 'Workday emphasizes modern architecture and user experience. Claims faster innovation pace. Oracle bundles aggressively with existing ERP footprint.',
-        analystFirm: 'IDC',
         briefingPurpose: 'MQ/Wave Update',
-        additionalContext: 'MarketScape for Integrated Talent Management. Recent AI announcements for skills graph. Want to differentiate from Workday on enterprise complexity.'
+        additionalContext: 'Wave for Augmented BI Platforms evaluation. Strength is unified BI+Planning story. Need to address visualization perception gap.'
+    },
+    'sap-btp': {
+        companyName: 'SAP Business Technology Platform',
+        marketCategory: 'Application Development Platform / Integration / Data & Analytics',
+        keyPositioning: 'Unified platform for application development, integration, data management, and analytics. Clean core strategy enabling S/4HANA extensibility. Pre-built integrations and business content. AI foundation with Joule and generative AI capabilities. Strong partner ecosystem.',
+        knownWeaknesses: 'Platform complexity and pricing model. Perception as SAP-only vs. general purpose. Developer experience compared to hyperscalers. Speed of innovation on AI.',
+        competitor1: 'Oracle',
+        competitor2: 'Workday',
+        competitorClaims: 'Oracle positions Fusion as complete cloud suite, questions SAP cloud transition. Workday emphasizes modern architecture and faster innovation. Hyperscalers claim AI leadership.',
+        analystFirm: 'IDC',
+        briefingPurpose: 'Strategy Update',
+        additionalContext: 'Focus on AI strategy and Joule. Clean core message resonating with customers. Need to address hyperscaler comparison on AI capabilities.'
     }
 };
 
@@ -598,12 +619,22 @@ function loadSample(key) {
     document.getElementById('marketCategory').value = scenario.marketCategory;
     document.getElementById('keyPositioning').value = scenario.keyPositioning;
     document.getElementById('knownWeaknesses').value = scenario.knownWeaknesses;
-    document.getElementById('competitor1').value = scenario.competitor1;
-    document.getElementById('competitor2').value = scenario.competitor2;
+    document.getElementById('competitor2').value = scenario.competitor2 || '';
     document.getElementById('competitorClaims').value = scenario.competitorClaims;
     document.getElementById('briefingPurpose').value = scenario.briefingPurpose;
     document.getElementById('additionalContext').value = scenario.additionalContext;
     
+    // Select competitor
+    document.querySelectorAll('.competitor-option').forEach(opt => {
+        opt.classList.remove('selected');
+        const input = opt.querySelector('input');
+        if (input.value === scenario.competitor1) {
+            opt.classList.add('selected');
+            input.checked = true;
+        }
+    });
+    
+    // Select analyst firm
     document.querySelectorAll('.analyst-option').forEach(opt => {
         opt.classList.remove('selected');
         const input = opt.querySelector('input');
@@ -618,6 +649,15 @@ function loadSample(key) {
 document.querySelectorAll('.analyst-option').forEach(option => {
     option.addEventListener('click', function() {
         document.querySelectorAll('.analyst-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+
+// Competitor selection UI
+document.querySelectorAll('.competitor-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.competitor-option').forEach(o => o.classList.remove('selected'));
         this.classList.add('selected');
         this.querySelector('input').checked = true;
     });
@@ -642,6 +682,14 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const selectedFirm = document.querySelector('input[name="analystFirm"]:checked');
+    const selectedCompetitor = document.querySelector('input[name="competitor1"]:checked');
+    
+    if (!selectedCompetitor) {
+        errorMessage.textContent = 'Please select a primary competitor.';
+        errorMessage.classList.add('show');
+        return;
+    }
+    
     if (!selectedFirm) {
         errorMessage.textContent = 'Please select an analyst firm.';
         errorMessage.classList.add('show');
@@ -653,7 +701,7 @@ form.addEventListener('submit', async (e) => {
         marketCategory: document.getElementById('marketCategory').value,
         keyPositioning: document.getElementById('keyPositioning').value,
         knownWeaknesses: document.getElementById('knownWeaknesses').value,
-        competitor1: document.getElementById('competitor1').value,
+        competitor1: selectedCompetitor.value,
         competitor2: document.getElementById('competitor2').value,
         competitorClaims: document.getElementById('competitorClaims').value,
         analystFirm: selectedFirm.value,
