@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Analyst Briefing Simulator | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #4472C4;
+            --purple: #7030A0;
+            --light-purple: #9B59B6;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--light-purple) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .insight-box {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-left: 4px solid var(--purple);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+        .insight-box p { margin: 0; font-size: 0.95rem; color: #333; }
+        .insight-box strong { color: var(--purple); }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--purple);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+        
+        .analyst-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 600px) {
+            .analyst-options { grid-template-columns: 1fr; }
+        }
+        .analyst-option {
+            padding: 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .analyst-option:hover { border-color: var(--purple); background: #faf5ff; }
+        .analyst-option.selected { border-color: var(--purple); background: #f3e5f5; }
+        .analyst-option input { display: none; }
+        .analyst-option .firm-name { font-weight: 600; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .analyst-option .firm-output { font-size: 0.8rem; color: #888; }
+        
+        .sample-scenarios {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .sample-btn {
+            padding: 0.5rem 1rem;
+            background: #f3e5f5;
+            border: 1px solid #ce93d8;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--purple);
+            transition: all 0.2s;
+        }
+        .sample-btn:hover { background: #e1bee7; }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .run-btn {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--light-purple) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .run-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(112, 48, 160, 0.3); }
+        .run-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .error-message {
+            background: #ffebee;
+            color: var(--red);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--light-purple) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+        }
+        .results-header h2 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+        .results-header p { opacity: 0.9; font-size: 0.95rem; }
+        
+        .result-block {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .result-block.standalone {
+            border-radius: 12px;
+        }
+        .result-block.hidden { display: none; }
+        
+        .result-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .result-block-header h3 { font-size: 1rem; color: var(--dark-slate); }
+        
+        .copy-btn {
+            padding: 0.4rem 0.75rem;
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--light-gray); }
+        
+        .results-content {
+            padding: 1.5rem;
+        }
+        .results-content h1, .results-content h2, .results-content h3, .results-content h4 {
+            color: var(--dark-slate);
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .results-content h1:first-child, .results-content h2:first-child, .results-content h3:first-child {
+            margin-top: 0;
+        }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.35rem; }
+        .results-content strong { color: var(--purple); }
+        .results-content blockquote {
+            border-left: 3px solid var(--purple);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #555;
+            font-style: italic;
+        }
+        
+        .more-outputs {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        .more-outputs p { margin-bottom: 1rem; color: #555; font-size: 0.95rem; }
+        .output-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        .output-btn {
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .output-btn:hover { border-color: var(--purple); background: #faf5ff; }
+        .output-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .output-btn.done { border-color: var(--green); background: #f1f8e9; }
+        .output-btn span { display: block; font-weight: 600; color: var(--dark-slate); margin-bottom: 0.25rem; }
+        .output-btn small { color: #888; font-size: 0.8rem; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <span class="lab-badge">🔬 AI Lab • Unit 4</span>
+        <h1>📊 Analyst Briefing Simulator</h1>
+        <p>Use agent simulation to predict analyst questions and prepare for your next Gartner, Forrester, or IDC briefing.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>How This Works</h2>
+        <p>Industry analysts and AI agents evaluate vendors the same way: systematically comparing capabilities, weighting evidence, and surfacing gaps. This lab uses that insight to your advantage.</p>
+        <p>Input your positioning, competitors, and briefing context. The simulator runs an agent-style competitive evaluation to predict the questions and concerns an analyst will raise — so you can prepare counter-evidence before you're in the room.</p>
+        
+        <div class="insight-box">
+            <p><strong>Key insight from Unit 4:</strong> The gaps agents find are the gaps analysts probe. Prepare for both at once.</p>
+        </div>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>Your Company & Positioning</h3>
+            </div>
+            
+            <p class="hint" style="margin-bottom: 1rem;">Try a sample scenario or enter your own:</p>
+            <div class="sample-scenarios">
+                <button type="button" class="sample-btn" onclick="loadSample('sap-spend')">SAP Spend Management</button>
+                <button type="button" class="sample-btn" onclick="loadSample('sap-cx')">SAP Customer Experience</button>
+                <button type="button" class="sample-btn" onclick="loadSample('sap-hcm')">SAP SuccessFactors</button>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="companyName">Company / Product Name</label>
+                    <input type="text" id="companyName" name="companyName" required placeholder="e.g., SAP Ariba">
+                </div>
+                <div class="form-group">
+                    <label for="marketCategory">Market Category</label>
+                    <input type="text" id="marketCategory" name="marketCategory" required placeholder="e.g., Procure-to-Pay, CRM, HCM">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="keyPositioning">Your Key Positioning Claims</label>
+                <p class="hint">What are your main differentiators and value propositions?</p>
+                <textarea id="keyPositioning" name="keyPositioning" required placeholder="e.g., Largest B2B network with 5M+ suppliers, native SAP ERP integration, unified source-to-pay on one platform, AI-powered spend visibility..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="knownWeaknesses">Known Weaknesses or Gaps (optional)</label>
+                <p class="hint">Be honest — analysts will find these anyway. Better to prepare.</p>
+                <textarea id="knownWeaknesses" name="knownWeaknesses" placeholder="e.g., UI modernization in progress, mid-market pricing concerns, recent leadership changes..."></textarea>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>Competitive Context</h3>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="competitor1">Primary Competitor</label>
+                    <input type="text" id="competitor1" name="competitor1" required placeholder="e.g., Coupa">
+                </div>
+                <div class="form-group">
+                    <label for="competitor2">Secondary Competitor</label>
+                    <input type="text" id="competitor2" name="competitor2" placeholder="e.g., Jaggaer">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="competitorClaims">Competitor Claims You've Heard</label>
+                <p class="hint">What are competitors saying about themselves or about you?</p>
+                <textarea id="competitorClaims" name="competitorClaims" placeholder="e.g., Coupa claims 'community intelligence' and faster time-to-value. Jaggaer emphasizes vertical specialization. Both attack SAP on UI/UX..."></textarea>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Briefing Context</h3>
+            </div>
+            
+            <div class="form-group">
+                <label>Analyst Firm</label>
+                <div class="analyst-options">
+                    <label class="analyst-option">
+                        <input type="radio" name="analystFirm" value="Gartner" required>
+                        <div class="firm-name">Gartner</div>
+                        <div class="firm-output">Magic Quadrant</div>
+                    </label>
+                    <label class="analyst-option">
+                        <input type="radio" name="analystFirm" value="Forrester">
+                        <div class="firm-name">Forrester</div>
+                        <div class="firm-output">Wave Report</div>
+                    </label>
+                    <label class="analyst-option">
+                        <input type="radio" name="analystFirm" value="IDC">
+                        <div class="firm-name">IDC</div>
+                        <div class="firm-output">MarketScape</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="briefingPurpose">Briefing Purpose</label>
+                <select id="briefingPurpose">
+                    <option value="MQ/Wave Update">Magic Quadrant / Wave Evaluation</option>
+                    <option value="New Product Briefing">New Product / Capability Briefing</option>
+                    <option value="Strategy Update">Company Strategy Update</option>
+                    <option value="Customer Reference">Customer Reference Discussion</option>
+                    <option value="Inquiry Prep">Inquiry Preparation</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalContext">Additional Briefing Context (optional)</label>
+                <p class="hint">Anything else relevant: recent news, analyst history, specific concerns...</p>
+                <textarea id="additionalContext" name="additionalContext" placeholder="e.g., This analyst has been critical of our UI in past reports. We just announced a major acquisition. We're launching a new AI feature next quarter..."></textarea>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>📊 Simulate Analyst Briefing</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>📊 <span id="resultFirm"></span> Briefing Prep: <span id="resultCompany"></span></h2>
+            <p><span id="resultCategory"></span> • vs. <span id="resultCompetitors"></span></p>
+        </div>
+        
+        <div class="result-block" id="block-questions">
+            <div class="result-block-header">
+                <h3>❓ Predicted Analyst Questions</h3>
+                <button class="copy-btn" onclick="copyBlock('questions')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-questions"></div>
+        </div>
+        
+        <div class="more-outputs">
+            <p>Generate additional briefing prep artifacts:</p>
+            <div class="output-buttons">
+                <button class="output-btn" id="btn-cautions" onclick="generateMore('cautions')">
+                    <span>⚠️ Potential "Cautions"</span>
+                    <small>What they might write about you</small>
+                </button>
+                <button class="output-btn" id="btn-evidence" onclick="generateMore('evidence')">
+                    <span>📋 Counter-Evidence Needed</span>
+                    <small>Proof points to prepare</small>
+                </button>
+                <button class="output-btn" id="btn-checklist" onclick="generateMore('checklist')">
+                    <span>✅ Briefing Checklist</span>
+                    <small>Pre-briefing preparation</small>
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-block standalone hidden" id="block-cautions">
+            <div class="result-block-header">
+                <h3>⚠️ Potential "Cautions" Section</h3>
+                <button class="copy-btn" onclick="copyBlock('cautions')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-cautions"></div>
+        </div>
+        
+        <div class="result-block standalone hidden" id="block-evidence">
+            <div class="result-block-header">
+                <h3>📋 Counter-Evidence Needed</h3>
+                <button class="copy-btn" onclick="copyBlock('evidence')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-evidence"></div>
+        </div>
+        
+        <div class="result-block standalone hidden" id="block-checklist">
+            <div class="result-block-header">
+                <h3>✅ Briefing Preparation Checklist</h3>
+                <button class="copy-btn" onclick="copyBlock('checklist')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-checklist"></div>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+let currentInputs = null;
+
+const sampleScenarios = {
+    'sap-spend': {
+        companyName: 'SAP Ariba / SAP Business Network',
+        marketCategory: 'Procure-to-Pay / Source-to-Pay',
+        keyPositioning: 'Largest B2B trading network with 5.5M+ connected suppliers. Native integration with SAP S/4HANA and ERP systems. Unified source-to-pay platform covering sourcing, procurement, invoicing, and supplier management. AI-powered spend visibility and category insights. Strong in regulated industries.',
+        knownWeaknesses: 'UI modernization still in progress. Perceived complexity for mid-market. Some customers report long implementation timelines. Recent executive changes.',
+        competitor1: 'Coupa',
+        competitor2: 'Jaggaer',
+        competitorClaims: 'Coupa emphasizes "community intelligence," faster time-to-value, and modern UX. Claims easier supplier adoption. Jaggaer positions on vertical specialization and autonomous procurement vision. Both attack SAP on UI/UX and mid-market fit.',
+        analystFirm: 'Gartner',
+        briefingPurpose: 'MQ/Wave Update',
+        additionalContext: 'Preparing for Magic Quadrant for Procure-to-Pay Suites evaluation. Recent acquisition of Taulia for working capital. New AI features launching next quarter.'
+    },
+    'sap-cx': {
+        companyName: 'SAP Customer Experience (C/4HANA)',
+        marketCategory: 'CRM / Customer Experience Platform',
+        keyPositioning: 'Unified commerce, marketing, sales, and service on one platform. Deep integration with SAP ERP and supply chain. Strong in B2B commerce and complex product configuration. Composable architecture with microservices.',
+        knownWeaknesses: 'Market share below Salesforce. Some portfolio rationalization in progress. Sales cloud perceived as less mature. Partner ecosystem smaller than competitors.',
+        competitor1: 'Salesforce',
+        competitor2: 'Adobe Experience Cloud',
+        competitorClaims: 'Salesforce claims market leadership and largest ecosystem. Adobe emphasizes creative-to-commerce integration. Both question SAP commitment to CX market.',
+        analystFirm: 'Forrester',
+        briefingPurpose: 'Strategy Update',
+        additionalContext: 'Need to address portfolio simplification narrative. Strong recent wins in B2B commerce. Want to highlight integration story.'
+    },
+    'sap-hcm': {
+        companyName: 'SAP SuccessFactors',
+        marketCategory: 'Human Capital Management (HCM)',
+        keyPositioning: 'Comprehensive HCM suite covering core HR, talent management, learning, workforce analytics. Native integration with SAP ERP for payroll and finance. Strong global presence with localization for 100+ countries. AI-powered skills matching and career development.',
+        knownWeaknesses: 'Some modules perceived as less innovative than point solutions. User experience varies across modules. Talent intelligence narrative still developing.',
+        competitor1: 'Workday',
+        competitor2: 'Oracle HCM Cloud',
+        competitorClaims: 'Workday emphasizes modern architecture and user experience. Claims faster innovation pace. Oracle bundles aggressively with existing ERP footprint.',
+        analystFirm: 'IDC',
+        briefingPurpose: 'MQ/Wave Update',
+        additionalContext: 'MarketScape for Integrated Talent Management. Recent AI announcements for skills graph. Want to differentiate from Workday on enterprise complexity.'
+    }
+};
+
+function loadSample(key) {
+    const scenario = sampleScenarios[key];
+    document.getElementById('companyName').value = scenario.companyName;
+    document.getElementById('marketCategory').value = scenario.marketCategory;
+    document.getElementById('keyPositioning').value = scenario.keyPositioning;
+    document.getElementById('knownWeaknesses').value = scenario.knownWeaknesses;
+    document.getElementById('competitor1').value = scenario.competitor1;
+    document.getElementById('competitor2').value = scenario.competitor2;
+    document.getElementById('competitorClaims').value = scenario.competitorClaims;
+    document.getElementById('briefingPurpose').value = scenario.briefingPurpose;
+    document.getElementById('additionalContext').value = scenario.additionalContext;
+    
+    document.querySelectorAll('.analyst-option').forEach(opt => {
+        opt.classList.remove('selected');
+        const input = opt.querySelector('input');
+        if (input.value === scenario.analystFirm) {
+            opt.classList.add('selected');
+            input.checked = true;
+        }
+    });
+}
+
+// Analyst firm selection UI
+document.querySelectorAll('.analyst-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.analyst-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+
+function copyBlock(blockId) {
+    const content = document.getElementById(`content-${blockId}`).innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        const btn = document.querySelector(`#block-${blockId} .copy-btn`);
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const selectedFirm = document.querySelector('input[name="analystFirm"]:checked');
+    if (!selectedFirm) {
+        errorMessage.textContent = 'Please select an analyst firm.';
+        errorMessage.classList.add('show');
+        return;
+    }
+    
+    currentInputs = {
+        companyName: document.getElementById('companyName').value,
+        marketCategory: document.getElementById('marketCategory').value,
+        keyPositioning: document.getElementById('keyPositioning').value,
+        knownWeaknesses: document.getElementById('knownWeaknesses').value,
+        competitor1: document.getElementById('competitor1').value,
+        competitor2: document.getElementById('competitor2').value,
+        competitorClaims: document.getElementById('competitorClaims').value,
+        analystFirm: selectedFirm.value,
+        briefingPurpose: document.getElementById('briefingPurpose').value,
+        additionalContext: document.getElementById('additionalContext').value
+    };
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Simulating...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    // Reset additional outputs
+    ['cautions', 'evidence', 'checklist'].forEach(id => {
+        document.getElementById(`block-${id}`).classList.add('hidden');
+        document.getElementById(`btn-${id}`).classList.remove('done');
+        document.getElementById(`btn-${id}`).disabled = false;
+    });
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'analyst-briefing-questions',
+                inputs: currentInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        
+        const data = await response.json();
+        
+        // Update header
+        document.getElementById('resultFirm').textContent = currentInputs.analystFirm;
+        document.getElementById('resultCompany').textContent = currentInputs.companyName;
+        document.getElementById('resultCategory').textContent = currentInputs.marketCategory;
+        document.getElementById('resultCompetitors').textContent = [currentInputs.competitor1, currentInputs.competitor2].filter(Boolean).join(', ');
+        
+        // Display result
+        document.getElementById('content-questions').innerHTML = marked.parse(data.result);
+        
+        resultsSection.classList.add('show');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '📊 Simulate Analyst Briefing';
+        spinner.style.display = 'none';
+    }
+});
+
+async function generateMore(outputType) {
+    if (!currentInputs) return;
+    
+    const btn = document.getElementById(`btn-${outputType}`);
+    const block = document.getElementById(`block-${outputType}`);
+    const content = document.getElementById(`content-${outputType}`);
+    
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Generating...';
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: `analyst-briefing-${outputType}`,
+                inputs: currentInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed');
+        
+        const data = await response.json();
+        content.innerHTML = marked.parse(data.result);
+        
+        block.classList.remove('hidden');
+        btn.classList.add('done');
+        
+        const labels = { 
+            cautions: '⚠️ Cautions', 
+            evidence: '📋 Evidence', 
+            checklist: '✅ Checklist' 
+        };
+        btn.querySelector('span').textContent = '✓ ' + labels[outputType];
+        
+        block.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        btn.querySelector('span').textContent = 'Failed - Try Again';
+        btn.disabled = false;
+    }
+}
+</script>
+</body>
+</html>

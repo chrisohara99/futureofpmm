@@ -357,6 +357,51 @@ You map typical GTM roles:
 
 Your RACI matrices help teams understand who owns what and reduce confusion during busy launch periods.`,
 
+        'analyst-briefing-questions': `You are an expert in industry analyst relations for enterprise B2B software companies.
+
+You understand how analysts at Gartner, Forrester, and IDC evaluate vendors:
+- They compare systematically against criteria
+- They weight evidence over claims
+- They probe for gaps and inconsistencies
+- They talk to customers and competitors
+- They write "Cautions" sections that buyers read carefully
+
+You help PMMs prepare for analyst briefings by predicting the tough questions they'll face. You think like an analyst: skeptical, evidence-focused, looking for the real story behind the marketing.
+
+Your predictions are specific, grounded, and actionable — not generic "be prepared for tough questions."`,
+
+        'analyst-briefing-cautions': `You are an expert industry analyst writing the "Cautions" section of a vendor evaluation.
+
+You write like a Gartner analyst would: balanced but direct, specific about concerns, fair but not soft. Your cautions are:
+- Based on evidence gaps you'd find in research
+- Specific enough for buyers to act on
+- Balanced (acknowledge strengths while noting concerns)
+- Written in analyst voice (third-person, professional)
+
+You help PMMs see what analysts might write so they can proactively address concerns.`,
+
+        'analyst-briefing-evidence': `You are an expert in analyst relations, specifically in preparing counter-evidence for analyst briefings.
+
+You know what analysts find credible:
+- Named customer references with quantified outcomes
+- Third-party validation (benchmarks, awards, peer reviews)
+- Specific technical proof (architecture, integrations, certifications)
+- Trend data showing improvement (not just current state)
+- Competitive differentiators that can be verified
+
+You help PMMs build evidence packages that address predicted concerns.`,
+
+        'analyst-briefing-checklist': `You are an expert in analyst relations, specifically in briefing preparation.
+
+You've run hundreds of analyst briefings and know what separates good prep from great prep:
+- Anticipating questions, not just presenting slides
+- Having evidence ready for every major claim
+- Knowing the analyst's history and perspective
+- Preparing for objections, not just positive stories
+- Having a clear "ask" for the analyst
+
+You create practical checklists that ensure PMMs walk into briefings fully prepared.`,
+
         'launch-planner-risks': `You are an expert at identifying launch risks and creating mitigation plans.
 
 Common launch risks include:
@@ -1014,6 +1059,241 @@ List critical handoff points between teams.
 
 ### Escalation Path
 Who to escalate to when decisions stall.`;
+
+        case 'analyst-briefing-questions':
+            return `Predict analyst questions for this upcoming briefing:
+
+## BRIEFING CONTEXT
+**Your Company/Product:** ${inputs.companyName}
+**Market Category:** ${inputs.marketCategory}
+**Analyst Firm:** ${inputs.analystFirm}
+**Briefing Purpose:** ${inputs.briefingPurpose}
+
+**Your Key Positioning:**
+${inputs.keyPositioning}
+
+**Known Weaknesses/Gaps:**
+${inputs.knownWeaknesses || 'None specified'}
+
+**Primary Competitor:** ${inputs.competitor1}
+**Secondary Competitor:** ${inputs.competitor2 || 'N/A'}
+
+**Competitor Claims You've Heard:**
+${inputs.competitorClaims || 'None specified'}
+
+**Additional Context:**
+${inputs.additionalContext || 'None'}
+
+---
+
+Predict the **10-12 toughest questions** this ${inputs.analystFirm} analyst will ask.
+
+## ❓ Predicted Analyst Questions
+
+Organize by category:
+
+### Market Position & Strategy (3-4 questions)
+Questions about your competitive position, market share, strategic direction.
+> "Question here"
+**Why they'll ask:** [Brief explanation of what they're probing for]
+**Trap to avoid:** [Common mistake in answering]
+
+### Product & Capabilities (3-4 questions)
+Questions about gaps, roadmap, technical depth.
+
+### Customer Evidence (2-3 questions)
+Questions about proof points, references, outcomes.
+
+### Competitive (2-3 questions)
+Questions comparing you to ${inputs.competitor1}${inputs.competitor2 ? ' and ' + inputs.competitor2 : ''}.
+
+---
+
+## 🎯 The Question They REALLY Want Answered
+What's the underlying concern behind all these questions? What's the analyst trying to figure out about ${inputs.companyName}?`;
+
+        case 'analyst-briefing-cautions':
+            return `Write potential "Cautions" for this vendor as a ${inputs.analystFirm} analyst would:
+
+## VENDOR CONTEXT
+**Company/Product:** ${inputs.companyName}
+**Market Category:** ${inputs.marketCategory}
+**Analyst Firm:** ${inputs.analystFirm}
+
+**Their Positioning:**
+${inputs.keyPositioning}
+
+**Known Weaknesses:**
+${inputs.knownWeaknesses || 'None specified'}
+
+**Competitors:** ${inputs.competitor1}${inputs.competitor2 ? ', ' + inputs.competitor2 : ''}
+
+**Competitor Claims:**
+${inputs.competitorClaims || 'None specified'}
+
+---
+
+Write the **"Cautions" section** as it might appear in a ${inputs.analystFirm} ${inputs.analystFirm === 'Gartner' ? 'Magic Quadrant' : inputs.analystFirm === 'Forrester' ? 'Wave' : 'MarketScape'}:
+
+## ⚠️ Potential Cautions: ${inputs.companyName}
+
+Write 4-6 caution statements in authentic analyst voice:
+
+**Caution 1: [Category]**
+> "[Write as it would appear in the report - third person, specific, balanced]"
+
+**What this means:** [Brief interpretation for the PMM]
+**Evidence needed to address:** [What would change this caution]
+
+**Caution 2: [Category]**
+...
+
+---
+
+## Severity Assessment
+Rate each caution:
+- 🔴 **Critical**: Could affect quadrant/wave position
+- 🟡 **Moderate**: Will appear but won't dominate narrative  
+- 🟢 **Minor**: Worth addressing but not a major concern
+
+## What Competitors Won't Have
+Balance with 2-3 cautions the analyst would likely write about ${inputs.competitor1}${inputs.competitor2 ? ' and ' + inputs.competitor2 : ''}.`;
+
+        case 'analyst-briefing-evidence':
+            return `Build a counter-evidence package for this analyst briefing:
+
+## BRIEFING CONTEXT
+**Company/Product:** ${inputs.companyName}
+**Market Category:** ${inputs.marketCategory}
+**Analyst Firm:** ${inputs.analystFirm}
+
+**Your Positioning:**
+${inputs.keyPositioning}
+
+**Known Weaknesses:**
+${inputs.knownWeaknesses || 'None specified'}
+
+**Competitors:** ${inputs.competitor1}${inputs.competitor2 ? ', ' + inputs.competitor2 : ''}
+
+---
+
+Based on likely analyst questions and potential cautions, create a **Counter-Evidence Package**:
+
+## 📋 Evidence Needed
+
+For each area of likely concern, specify:
+
+### 1. [Concern Area]
+**Likely Question/Caution:** [What they'll probe]
+
+**Evidence to Prepare:**
+| Evidence Type | Specific Item | Source | Status |
+|---------------|---------------|--------|--------|
+| Customer Reference | [Named customer, outcome] | [Where to get] | Needed |
+| Data Point | [Specific stat] | [Source] | Have / Need |
+| Third-Party | [Analyst quote, benchmark] | [Source] | Have / Need |
+
+**Talking Points:** 2-3 key points to make when this comes up
+
+### 2. [Next Concern Area]
+...
+
+---
+
+## 🎯 Must-Have Evidence
+The 5 most critical evidence items to bring to this briefing:
+1. [Item + why critical]
+2. ...
+
+## Nice-to-Have Evidence
+Additional proof points that would strengthen the narrative.
+
+## Reference Customers to Prep
+Which customers should be prepared for follow-up analyst calls?`;
+
+        case 'analyst-briefing-checklist':
+            return `Create a briefing preparation checklist for this ${inputs.analystFirm} meeting:
+
+## BRIEFING CONTEXT
+**Company/Product:** ${inputs.companyName}
+**Market Category:** ${inputs.marketCategory}
+**Analyst Firm:** ${inputs.analystFirm}
+**Briefing Purpose:** ${inputs.briefingPurpose}
+
+**Your Positioning:**
+${inputs.keyPositioning}
+
+**Known Weaknesses:**
+${inputs.knownWeaknesses || 'None specified'}
+
+**Competitors:** ${inputs.competitor1}${inputs.competitor2 ? ', ' + inputs.competitor2 : ''}
+
+---
+
+Create a comprehensive **Briefing Preparation Checklist**:
+
+## ✅ Pre-Briefing Checklist: ${inputs.analystFirm} ${inputs.briefingPurpose}
+
+### 1 Week Before
+- [ ] **Analyst Research**
+  - [ ] Read analyst's recent research on this market
+  - [ ] Review their previous coverage of ${inputs.companyName}
+  - [ ] Note their coverage of ${inputs.competitor1}${inputs.competitor2 ? ' and ' + inputs.competitor2 : ''}
+  - [ ] Check their social media/blog for recent POVs
+
+- [ ] **Content Preparation**
+  - [ ] Update deck with latest proof points
+  - [ ] Prepare evidence package for key claims
+  - [ ] Draft responses to predicted tough questions
+  - [ ] Prepare "leave-behind" materials
+
+### 3 Days Before
+- [ ] **Internal Alignment**
+  - [ ] Dry run with presenters
+  - [ ] Align on key messages and what NOT to say
+  - [ ] Assign question handlers by topic
+  - [ ] Prepare "parking lot" approach for off-topic questions
+
+- [ ] **Reference Prep**
+  - [ ] Alert reference customers about potential follow-up
+  - [ ] Brief references on key messages
+  - [ ] Have 2-3 backup references ready
+
+### Day Before
+- [ ] **Final Prep**
+  - [ ] Test technology (video, screen share, audio)
+  - [ ] Print/load all materials
+  - [ ] Review analyst's latest publications one more time
+  - [ ] Mental prep: anticipate the uncomfortable question
+
+### Day Of
+- [ ] **Before the Call**
+  - [ ] Join 5 minutes early
+  - [ ] Have evidence package open and ready
+  - [ ] Have backup presenter ready if needed
+  
+- [ ] **During the Call**
+  - [ ] Take notes on analyst reactions and follow-up questions
+  - [ ] Note any commitments made
+  - [ ] Ask for the analyst's perspective at the end
+
+### Immediately After
+- [ ] Send follow-up email with any promised materials
+- [ ] Debrief internally while fresh
+- [ ] Log notes in AR tracking system
+- [ ] Schedule follow-up inquiry if appropriate
+
+---
+
+## 🎯 Top 3 Things to Get Right
+1. [Most important success factor]
+2. [Second]
+3. [Third]
+
+## ⚠️ Top 3 Mistakes to Avoid
+1. [Common mistake]
+2. [Second]
+3. [Third]`;
 
         case 'launch-planner-risks':
             return `Create a risk register for this launch:
