@@ -60,10 +60,10 @@ exports.handler = async (event, context) => {
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': apiKey,
-                'anthropic-version': '2024-01-01'
+                'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-3-5-sonnet-latest',
+                model: 'claude-3-sonnet-20240229',
                 max_tokens: 4096,
                 system: systemPrompt,
                 messages: [{ role: 'user', content: userPrompt }]
