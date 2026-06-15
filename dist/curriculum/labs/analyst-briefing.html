@@ -732,9 +732,11 @@ form.addEventListener('submit', async (e) => {
             })
         });
         
-        if (!response.ok) throw new Error('Generation failed. Please try again.');
-        
         const data = await response.json();
+        
+        if (!response.ok || data.error) {
+            throw new Error(data.error || `Generation failed (${response.status}). Please try again.`);
+        }
         
         // Update header
         document.getElementById('resultFirm').textContent = currentInputs.analystFirm;
@@ -778,9 +780,12 @@ async function generateMore(outputType) {
             })
         });
         
-        if (!response.ok) throw new Error('Generation failed');
-        
         const data = await response.json();
+        
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'Generation failed');
+        }
+        
         content.innerHTML = marked.parse(data.result);
         
         block.classList.remove('hidden');
