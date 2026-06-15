@@ -39,7 +39,7 @@ exports.handler = async (event, context) => {
         return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.LAB_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
         return { 
             statusCode: 500, 
@@ -63,7 +63,7 @@ exports.handler = async (event, context) => {
                 'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-3-sonnet-20240229',
+                model: 'claude-3-5-sonnet-20241022',
                 max_tokens: 4096,
                 system: systemPrompt,
                 messages: [{ role: 'user', content: userPrompt }]
