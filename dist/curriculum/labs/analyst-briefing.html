@@ -804,28 +804,32 @@ function formatResultCards(html) {
     container.innerHTML = html;
     
     // Find all paragraphs
-    const paragraphs = container.querySelectorAll('p');
+    const paragraphs = Array.from(container.querySelectorAll('p'));
     
-    paragraphs.forEach(p => {
+    for (let i = 0; i < paragraphs.length; i++) {
+        const p = paragraphs[i];
         const text = p.innerHTML;
         
-        // Check if this paragraph has "Why they'll ask:" pattern
-        if (text.includes('<strong>Why they') || text.includes('<strong>Why They')) {
-            // Look for the next sibling that might be "Trap to avoid"
-            let nextEl = p.nextElementSibling;
-            let trapEl = null;
+        // Check for "Why they'll ask:" pattern (various formats)
+        const whyMatch = text.match(/^<strong>Why they.ll ask:?<\/strong>:?\s*/i);
+        
+        if (whyMatch) {
+            const whyContent = text.replace(whyMatch[0], '').trim();
             
-            // Skip any whitespace text nodes
-            while (nextEl && nextEl.tagName === 'P') {
-                if (nextEl.innerHTML.includes('<strong>Trap') || nextEl.innerHTML.includes('<strong>trap')) {
-                    trapEl = nextEl;
-                    break;
+            // Look for next paragraph with "Trap to avoid"
+            let trapContent = null;
+            const nextP = paragraphs[i + 1];
+            
+            if (nextP) {
+                const nextText = nextP.innerHTML;
+                const trapMatch = nextText.match(/^<strong>Trap to avoid:?<\/strong>:?\s*/i);
+                
+                if (trapMatch) {
+                    trapContent = nextText.replace(trapMatch[0], '').trim();
+                    nextP.remove();
+                    i++; // Skip this paragraph in the loop
                 }
-                break;
             }
-            
-            // Extract content after the bold label
-            const whyContent = text.replace(/<strong>Why they['']ll ask:?<\/strong>:?\s*/i, '').trim();
             
             // Create the card row
             const row = document.createElement('div');
@@ -838,19 +842,17 @@ function formatResultCards(html) {
             row.appendChild(whyCard);
             
             // Trap card (if found)
-            if (trapEl) {
-                const trapContent = trapEl.innerHTML.replace(/<strong>Trap to avoid:?<\/strong>:?\s*/i, '').trim();
+            if (trapContent) {
                 const trapCard = document.createElement('div');
                 trapCard.className = 'insight-card trap';
                 trapCard.innerHTML = `<div class="card-label">⚠️ Trap to Avoid</div><p>${trapContent}</p>`;
                 row.appendChild(trapCard);
-                trapEl.remove();
             }
             
             // Replace the paragraph with the row
             p.replaceWith(row);
         }
-    });
+    }
     
     return container.innerHTML;
 }
