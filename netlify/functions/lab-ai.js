@@ -71,20 +71,13 @@ exports.handler = async (event, context) => {
         });
 
         if (!response.ok) {
-            const error = await response.text();
-            console.error('Anthropic API error:', response.status, error);
-            // Return detailed error for debugging
-            let errorMsg = 'AI service error';
-            try {
-                const parsed = JSON.parse(error);
-                errorMsg = parsed.error?.message || error;
-            } catch(e) {
-                errorMsg = error.substring(0, 200);
-            }
+            const errorText = await response.text();
+            console.error('Anthropic API error:', response.status, errorText);
+            // Return full error for debugging
             return { 
                 statusCode: response.status, 
                 headers, 
-                body: JSON.stringify({ error: errorMsg }) 
+                body: JSON.stringify({ error: `API Error ${response.status}: ${errorText.substring(0, 500)}` }) 
             };
         }
 
