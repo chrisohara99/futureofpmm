@@ -46,7 +46,7 @@ const DAN_TEAM = new Set([
 
 const SUPERUSERS = new Set([
   'christopher.ohara@sap.com', 'dan.yu@sap.com', 'sean.thomson@sap.com',
-  'brian.raver@sap.com', 'olivier.duvelleroy@sap.com'
+  'brian.raver@sap.com', 'olivier.duvelleroy@sap.com', 'j.chen02@sap.com'
 ]);
 
 exports.handler = async (event) => {
