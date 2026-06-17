@@ -25,11 +25,18 @@ exports.handler = async (event) => {
       }
     );
     
-    const responses = await res.json();
+    const rawResponses = await res.json();
     
-    if (responses.error) {
-      return { statusCode: 500, headers, body: JSON.stringify({ error: responses.error }) };
+    if (rawResponses.error) {
+      return { statusCode: 500, headers, body: JSON.stringify({ error: rawResponses.error }) };
     }
+
+    // Filter out test surveys (test users and admin test submissions)
+    const TEST_EMAILS = ['test.user@sap.com', 'testy.user@sap.com'];
+    const responses = rawResponses.filter(r => {
+      const email = (r.user_email || r.email || '').toLowerCase();
+      return !TEST_EMAILS.includes(email) && !email.includes('test');
+    });
 
     // Calculate summary stats
     const total = responses.length;

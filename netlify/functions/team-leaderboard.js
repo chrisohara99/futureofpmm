@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 // CONFIG: Only count these units (update weekly as new units release)
-const ACTIVE_UNITS = ['unit-01', 'unit-02'];  // Week 2 - update each Monday
+const ACTIVE_UNITS = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'unit-06', 'unit-07', 'unit-08'];  // All 8 units active
 
 // Dan's team - 40 members (excluding Dan and Chris in the filter below)
 const TEAM_EMAILS = [
@@ -41,7 +41,6 @@ const TEAM_EMAILS = [
   "teuta.elezaj@sap.com",
   "thierry.audas@sap.com",
   "tiffany.baker@sap.com",
-  "tony.fassette@sap.com",
   "tony.truong@sap.com",
   "venkata.giduthuri@sap.com",
   "yanhong.tong@sap.com"
