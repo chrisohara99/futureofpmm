@@ -17,7 +17,7 @@ exports.handler = async (event) => {
   try {
     // Update a.naji@sap.com surveys to have high scores
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/survey_responses?user_email=eq.a.naji@sap.com`,
+      `${SUPABASE_URL}/rest/v1/survey_responses?email=eq.a.naji@sap.com`,
       {
         method: 'PATCH',
         headers: {
