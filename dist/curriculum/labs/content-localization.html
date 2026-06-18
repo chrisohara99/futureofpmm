@@ -335,9 +335,21 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="sourceUrl">Import from URL (optional)</label>
+                    <p class="hint">Paste a web page URL to auto-extract its content</p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="sourceUrl" placeholder="https://www.sap.com/products/..." style="flex: 1;">
+                        <button type="button" id="fetchBtn" onclick="fetchFromUrl()" style="background: var(--indigo); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                            🔗 Fetch
+                        </button>
+                    </div>
+                    <p class="hint" id="fetchStatus" style="margin-top: 0.5rem; display: none;"></p>
+                </div>
+                
+                <div class="form-group">
                     <label for="sourceContent">Source Content (English)</label>
-                    <p class="hint">Paste the approved content you want to localize</p>
-                    <textarea id="sourceContent" class="large" placeholder="Paste your source content here..." required></textarea>
+                    <p class="hint">Paste content manually, or use "Fetch" above to import from a URL</p>
+                    <textarea id="sourceContent" class="large" placeholder="Paste your source content here, or fetch from a URL above..." required></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -490,6 +502,72 @@ Trusted by 10,000+ organizations worldwide, including 75% of the Fortune 500.`,
             document.getElementById('contentType').value = data.contentType;
             document.getElementById('sourceContent').value = data.sourceContent;
             document.getElementById('product').value = data.product || '';
+        }
+
+        async function fetchFromUrl() {
+            const urlInput = document.getElementById('sourceUrl');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const statusEl = document.getElementById('fetchStatus');
+            const contentArea = document.getElementById('sourceContent');
+            
+            const url = urlInput.value.trim();
+            if (!url) {
+                statusEl.textContent = '⚠️ Please enter a URL';
+                statusEl.style.color = '#b91c1c';
+                statusEl.style.display = 'block';
+                return;
+            }
+            
+            // Show loading state
+            fetchBtn.disabled = true;
+            fetchBtn.innerHTML = '⏳ Fetching...';
+            statusEl.textContent = 'Fetching content from URL...';
+            statusEl.style.color = '#6366f1';
+            statusEl.style.display = 'block';
+            
+            try {
+                const response = await fetch('/.netlify/functions/fetch-url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch URL');
+                }
+                
+                // Populate the content area
+                contentArea.value = data.content;
+                
+                // Show success message
+                let msg = '✅ Content imported successfully';
+                if (data.title) {
+                    msg += ` from "${data.title}"`;
+                }
+                if (data.truncated) {
+                    msg += ' (truncated to 15,000 characters)';
+                }
+                statusEl.textContent = msg;
+                statusEl.style.color = '#059669';
+                
+                // Auto-detect content type based on URL
+                if (url.includes('/products/') || url.includes('/solutions/')) {
+                    document.getElementById('contentType').value = 'product-page';
+                } else if (url.includes('/customers/') || url.includes('/case-study')) {
+                    document.getElementById('contentType').value = 'case-study';
+                } else if (url.includes('/news/') || url.includes('/press/')) {
+                    document.getElementById('contentType').value = 'press-release';
+                }
+                
+            } catch (error) {
+                statusEl.textContent = '❌ ' + (error.message || 'Failed to fetch content');
+                statusEl.style.color = '#b91c1c';
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.innerHTML = '🔗 Fetch';
+            }
         }
 
         document.getElementById('localizationForm').addEventListener('submit', async (e) => {
