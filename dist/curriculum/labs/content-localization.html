@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Content Localization Agent | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #0070F2;
+            --navy: #1B365D;
+            --coral: #C84B31;
+            --indigo: #6366f1;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--indigo) 0%, #4f46e5 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .framework-box {
+            background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+            border-left: 4px solid var(--indigo);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .framework-box h4 { color: var(--indigo); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .framework-box ul { font-size: 0.85rem; margin: 0 0 0 1.25rem; color: #444; }
+        .framework-box li { margin-bottom: 0.25rem; }
+        
+        .lab-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .lab-card h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--indigo);
+        }
+        textarea { min-height: 150px; resize: vertical; }
+        textarea.large { min-height: 250px; }
+        
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .checkbox-group label:hover { background: #e5e7eb; }
+        .checkbox-group input[type="checkbox"] { width: auto; }
+        .checkbox-group input:checked + span { color: var(--indigo); font-weight: 600; }
+        
+        .sample-btns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .sample-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sample-btn:hover {
+            background: var(--indigo);
+            color: white;
+            border-color: var(--indigo);
+        }
+        
+        .run-btn {
+            background: var(--indigo);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .run-btn:hover { background: #4f46e5; transform: translateY(-1px); }
+        .run-btn:disabled { background: #a5b4c3; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .run-btn.loading .spinner { display: block; }
+        .run-btn.loading span { display: none; }
+        
+        .results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        .results-section.visible { display: block; }
+        
+        .results-header {
+            background: linear-gradient(135deg, var(--indigo) 0%, #4f46e5 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+        }
+        .results-header h2 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+        .results-header p { opacity: 0.9; font-size: 0.9rem; }
+        
+        .results-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+            border-top: none;
+        }
+        .results-content h2 { font-size: 1.3rem; color: var(--indigo); margin: 1.5rem 0 0.75rem; }
+        .results-content h2:first-child { margin-top: 0; }
+        .results-content h3 { font-size: 1.1rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content h4 { font-size: 1rem; color: var(--dark-slate); margin: 1rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.5rem; }
+        .results-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        .results-content th, .results-content td { padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left; }
+        .results-content th { background: #f8fafc; font-weight: 600; }
+        .results-content blockquote { 
+            background: #eef2ff; 
+            border-left: 4px solid var(--indigo); 
+            padding: 1rem 1.25rem; 
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+        .results-content pre { background: #f8fafc; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+        
+        .copy-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            float: right;
+            margin-top: -0.5rem;
+        }
+        .copy-btn:hover { background: #e5e7eb; }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.visible { display: block; }
+        
+        @media (max-width: 600px) {
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.6rem; }
+            main { padding: 1rem; }
+            .lab-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/curriculum/" class="logo">
+                <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+            </a>
+            <nav class="nav">
+                <a href="/curriculum/">Dashboard</a>
+                <a href="/curriculum/labs/">All Labs</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="lab-badge">🧪 AI Lab</span>
+            <h1>Content Localization Agent</h1>
+            <p>Adapt approved content across regions and languages while preserving messaging intent and brand safety.</p>
+        </div>
+    </section>
+
+    <main>
+        <div class="lab-intro">
+            <h2>How This Lab Works</h2>
+            <p>Paste your approved source content and select target regions. The AI will generate localized versions that:</p>
+            <div class="framework-box">
+                <h4>🌍 What You'll Get</h4>
+                <ul>
+                    <li><strong>Localized Content</strong> — Adapted for each target region</li>
+                    <li><strong>Cultural Context Notes</strong> — What was changed and why</li>
+                    <li><strong>Terminology Mapping</strong> — Key term translations/adaptations</li>
+                    <li><strong>Tone Adjustments</strong> — How the voice shifts for each market</li>
+                    <li><strong>Compliance Flags</strong> — Region-specific regulatory considerations</li>
+                    <li><strong>Back-Translation Summary</strong> — Verify meaning preservation</li>
+                </ul>
+            </div>
+        </div>
+
+        <form id="localizationForm">
+            <div class="lab-card">
+                <h3>📝 Source Content</h3>
+                
+                <div class="sample-btns">
+                    <span style="font-size: 0.85rem; color: #666; margin-right: 0.5rem;">Try a sample:</span>
+                    <button type="button" class="sample-btn" onclick="loadSample('value-prop')">Value Proposition</button>
+                    <button type="button" class="sample-btn" onclick="loadSample('email')">Marketing Email</button>
+                    <button type="button" class="sample-btn" onclick="loadSample('landing')">Landing Page</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contentType">Content Type</label>
+                    <select id="contentType">
+                        <option value="value-prop">Value Proposition / Messaging</option>
+                        <option value="email">Marketing Email</option>
+                        <option value="landing-page">Landing Page Copy</option>
+                        <option value="sales-deck">Sales Deck Narrative</option>
+                        <option value="case-study">Customer Case Study</option>
+                        <option value="product-page">Product Page</option>
+                        <option value="social">Social Media Post</option>
+                        <option value="press-release">Press Release</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sourceContent">Source Content (English)</label>
+                    <p class="hint">Paste the approved content you want to localize</p>
+                    <textarea id="sourceContent" class="large" placeholder="Paste your source content here..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product">Product/Solution (optional)</label>
+                    <input type="text" id="product" placeholder="e.g., SAP Ariba, SAP SuccessFactors">
+                </div>
+            </div>
+            
+            <div class="lab-card">
+                <h3>🌍 Target Regions</h3>
+                <p class="hint" style="margin-bottom: 1rem;">Select the regions you want to localize for</p>
+                
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="regions" value="dach" checked> <span>🇩🇪 DACH (German)</span></label>
+                    <label><input type="checkbox" name="regions" value="france"> <span>🇫🇷 France (French)</span></label>
+                    <label><input type="checkbox" name="regions" value="spain"> <span>🇪🇸 Spain (Spanish)</span></label>
+                    <label><input type="checkbox" name="regions" value="italy"> <span>🇮🇹 Italy (Italian)</span></label>
+                    <label><input type="checkbox" name="regions" value="nordics"> <span>🇸🇪 Nordics (English)</span></label>
+                    <label><input type="checkbox" name="regions" value="japan"> <span>🇯🇵 Japan (Japanese)</span></label>
+                    <label><input type="checkbox" name="regions" value="latam"> <span>🇧🇷 LATAM (Portuguese/Spanish)</span></label>
+                    <label><input type="checkbox" name="regions" value="mena"> <span>🇦🇪 MENA (Arabic)</span></label>
+                </div>
+            </div>
+            
+            <div class="lab-card">
+                <h3>⚙️ Localization Settings</h3>
+                
+                <div class="form-group">
+                    <label for="tone">Tone Adaptation</label>
+                    <select id="tone">
+                        <option value="preserve">Preserve original tone as closely as possible</option>
+                        <option value="adapt">Adapt tone for local business culture</option>
+                        <option value="formal">Make more formal for all regions</option>
+                        <option value="casual">Make more conversational for all regions</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Industry Context (optional)</label>
+                    <p class="hint">Helps adapt industry-specific terminology</p>
+                    <select id="industry">
+                        <option value="">General / Cross-Industry</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="retail">Retail & Consumer</option>
+                        <option value="financial-services">Financial Services</option>
+                        <option value="healthcare">Healthcare & Life Sciences</option>
+                        <option value="technology">Technology</option>
+                        <option value="energy">Energy & Utilities</option>
+                        <option value="public-sector">Public Sector</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialInstructions">Special Instructions (optional)</label>
+                    <textarea id="specialInstructions" placeholder="e.g., Keep all product names in English, use formal 'Sie' in German, avoid idioms..."></textarea>
+                </div>
+            </div>
+            
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🌍 Generate Localizations</span>
+                <div class="spinner"></div>
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>🌍 Localized Content</h2>
+                <p><span id="resultRegions"></span></p>
+            </div>
+            <div class="results-content">
+                <button class="copy-btn" onclick="copyResults()">📋 Copy All</button>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/js/user-menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const sampleData = {
+            'value-prop': {
+                contentType: 'value-prop',
+                sourceContent: `SAP Ariba helps procurement leaders gain complete visibility into their spend, reduce maverick purchasing, and drive sustainable supplier relationships.
+
+Our intelligent source-to-pay platform connects you to the world's largest business network — 5.5 million organizations and $6 trillion in annual commerce — so you can find the right suppliers, negotiate better terms, and ensure every dollar supports your business goals.
+
+Key benefits:
+• 90%+ of suppliers transact at zero cost, driving adoption
+• AI-powered recommendations surface savings opportunities automatically
+• Native integration with S/4HANA eliminates data silos
+• Real-time risk monitoring protects your supply chain
+
+Join the companies that have transformed procurement from a cost center to a strategic advantage.`,
+                product: 'SAP Ariba'
+            },
+            'email': {
+                contentType: 'email',
+                sourceContent: `Subject: You're leaving money on the table
+
+Hi [First Name],
+
+Every day your team processes invoices manually, your company loses money. Not just in labor costs — in missed early payment discounts, duplicate payments, and compliance risks that only surface during audits.
+
+SAP Business Network can change that.
+
+Our customers typically see:
+• 40% reduction in invoice processing time
+• 99.5% touchless invoice processing rates
+• $2.3M average annual savings (mid-market)
+
+I'd love to show you how [Company Name] could achieve similar results.
+
+Worth a 15-minute conversation?
+
+Best,
+[Your Name]`,
+                product: 'SAP Business Network'
+            },
+            'landing': {
+                contentType: 'landing-page',
+                sourceContent: `# Transform Your Workforce Planning
+
+Your people data is scattered across dozens of systems. Your HR team is drowning in spreadsheets. Your executives are making workforce decisions based on gut feel, not insight.
+
+There's a better way.
+
+## SAP SuccessFactors delivers:
+
+**Complete visibility** — See your entire workforce in one place, across all entities and geographies
+
+**AI-powered insights** — Predict attrition before it happens, identify skills gaps, optimize headcount planning
+
+**Seamless experience** — Self-service for employees, automation for HR, strategic insights for leadership
+
+**Global compliance** — Stay ahead of labor regulations in 100+ countries
+
+## Ready to modernize your HR?
+
+[Request a Demo] [Watch the 2-minute Overview]
+
+Trusted by 10,000+ organizations worldwide, including 75% of the Fortune 500.`,
+                product: 'SAP SuccessFactors'
+            }
+        };
+
+        function loadSample(key) {
+            const data = sampleData[key];
+            document.getElementById('contentType').value = data.contentType;
+            document.getElementById('sourceContent').value = data.sourceContent;
+            document.getElementById('product').value = data.product || '';
+        }
+
+        document.getElementById('localizationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('runBtn');
+            const errorEl = document.getElementById('errorMessage');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            btn.classList.add('loading');
+            btn.disabled = true;
+            errorEl.classList.remove('visible');
+            resultsSection.classList.remove('visible');
+            
+            const selectedRegions = Array.from(document.querySelectorAll('input[name="regions"]:checked')).map(cb => cb.value);
+            
+            if (selectedRegions.length === 0) {
+                errorEl.textContent = 'Please select at least one target region.';
+                errorEl.classList.add('visible');
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                return;
+            }
+            
+            const inputs = {
+                contentType: document.getElementById('contentType').value,
+                sourceContent: document.getElementById('sourceContent').value,
+                product: document.getElementById('product').value,
+                regions: selectedRegions,
+                tone: document.getElementById('tone').value,
+                industry: document.getElementById('industry').value,
+                specialInstructions: document.getElementById('specialInstructions').value
+            };
+            
+            try {
+                const response = await fetch('/.netlify/functions/lab-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ labType: 'content-localization', inputs })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate localizations');
+                }
+                
+                const regionNames = {
+                    'dach': 'DACH (German)',
+                    'france': 'France (French)',
+                    'spain': 'Spain (Spanish)',
+                    'italy': 'Italy (Italian)',
+                    'nordics': 'Nordics',
+                    'japan': 'Japan (Japanese)',
+                    'latam': 'LATAM',
+                    'mena': 'MENA (Arabic)'
+                };
+                
+                document.getElementById('resultRegions').textContent = selectedRegions.map(r => regionNames[r]).join(' · ');
+                document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
+                resultsSection.classList.add('visible');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                errorEl.textContent = error.message || 'Something went wrong. Please try again.';
+                errorEl.classList.add('visible');
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        function copyResults() {
+            const content = document.getElementById('resultsContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+            });
+        }
+    </script>
+</body>
+</html>

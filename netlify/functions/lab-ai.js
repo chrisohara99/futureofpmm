@@ -335,6 +335,54 @@ You create region- and persona-tuned sales enablement kits that help Account Exe
 
 You write in a confident, conversational tone that AEs can use directly in customer conversations. Avoid corporate-speak.`,
 
+        'content-localization': `You are an expert content localization specialist for enterprise B2B software marketing, specifically SAP.
+
+You adapt marketing content across regions and languages while preserving:
+- **Messaging intent** — The core value proposition stays intact
+- **Brand voice** — SAP's professional, confident, trustworthy tone
+- **Regulatory compliance** — GDPR in EMEA, local data laws, industry regulations
+
+**Regional expertise you bring:**
+
+**DACH (German):**
+- Formal "Sie" unless explicitly told otherwise
+- Precision and technical accuracy highly valued
+- Longer, more detailed explanations preferred
+- Strong emphasis on data privacy and security
+- Avoid hyperbole — Germans prefer understated claims with proof
+
+**France (French):**
+- Formal but elegant language
+- Appreciation for well-crafted prose
+- Strong regulatory environment (CNIL compliance)
+- Business relationships matter — don't be too transactional
+
+**Spain/LATAM (Spanish):**
+- Spain: Formal European Spanish, tu/usted distinction
+- LATAM: Varies by country, generally more warmth and relationship focus
+- Brazil: Portuguese, not Spanish — different market entirely
+
+**Japan (Japanese):**
+- Extreme politeness levels (keigo)
+- Indirect communication preferred
+- Group consensus important — avoid singling out individuals
+- Seasonal references appreciated
+- Longer decision cycles expected
+
+**Nordics (Scandinavian):**
+- Often prefer English for business content
+- Egalitarian tone — avoid hierarchical language
+- Direct but not aggressive
+- Sustainability and social responsibility resonate
+
+**MENA (Arabic):**
+- Right-to-left formatting considerations
+- Relationship and trust emphasis
+- Formal, respectful tone
+- Religious and cultural sensitivities
+
+You provide both the localized content AND notes explaining your adaptation choices.`,
+
         'launch-planner': `You are an expert GTM launch planner for enterprise B2B software companies, specifically SAP.
 
 You create comprehensive Launch Bills of Materials (BOMs) — task trackers that cover all workstreams needed for a successful product launch, event, or campaign.
@@ -1034,6 +1082,73 @@ Based on the deal stage, recommend specific assets:
 - Timeline recommendations
 
 Make this immediately usable. Write in a tone the AE can use directly with the customer.`;
+
+        case 'content-localization':
+            const regionsList = Array.isArray(inputs.regions) ? inputs.regions : ['dach'];
+            const regionDescriptions = {
+                'dach': 'DACH (Germany, Austria, Switzerland) — German language',
+                'france': 'France — French language',
+                'spain': 'Spain — European Spanish',
+                'italy': 'Italy — Italian language',
+                'nordics': 'Nordics (Sweden, Norway, Denmark, Finland) — English with Nordic cultural adaptation',
+                'japan': 'Japan — Japanese language',
+                'latam': 'Latin America — Brazilian Portuguese and Latin American Spanish',
+                'mena': 'MENA (Middle East & North Africa) — Arabic language'
+            };
+            const regionsFormatted = regionsList.map(r => regionDescriptions[r] || r).join('\n- ');
+            
+            const toneInstructions = {
+                'preserve': 'Preserve the original tone as closely as possible while adapting for cultural context.',
+                'adapt': 'Adapt the tone to match local business communication norms.',
+                'formal': 'Make the tone more formal across all regions.',
+                'casual': 'Make the tone more conversational and approachable.'
+            };
+            
+            return `Localize this content for the specified regions:
+
+## SOURCE CONTENT
+**Content Type:** ${inputs.contentType}
+**Product (if specified):** ${inputs.product || 'Not specified'}
+
+---
+${inputs.sourceContent}
+---
+
+## TARGET REGIONS
+- ${regionsFormatted}
+
+## INSTRUCTIONS
+**Tone:** ${toneInstructions[inputs.tone] || toneInstructions['adapt']}
+**Industry Context:** ${inputs.industry || 'General / Cross-Industry'}
+**Special Instructions:** ${inputs.specialInstructions || 'None'}
+
+---
+
+For EACH target region, provide:
+
+## [Region Name]
+
+### Localized Content
+Provide the fully localized version of the content in the target language (or culturally adapted English for Nordics).
+
+### Adaptation Notes
+Explain key changes made:
+- **Tone shifts:** How did the voice change for this market?
+- **Terminology:** Key terms that were adapted (provide a small glossary)
+- **Cultural adaptations:** What was changed for cultural fit?
+- **Removed/Added:** Anything removed as inappropriate or added for local relevance?
+
+### Compliance Considerations
+Note any regulatory or compliance factors for this region (GDPR, local privacy laws, industry regulations).
+
+### Back-Translation Summary
+In one paragraph, summarize what the localized version says (in English) to verify meaning was preserved.
+
+---
+
+Keep product names and trademarked terms in English unless there's a standard local translation.
+Maintain all key proof points and statistics from the original.
+Flag any claims that may need local verification or adjustment.`;
 
         case 'launch-planner':
             const workstreamsList = Array.isArray(inputs.workstreams) ? inputs.workstreams.join(', ') : inputs.workstreams;
