@@ -430,15 +430,16 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Assets to Include</label>
-                    <p class="hint">Select the types of content to recommend</p>
+                    <label>What Do You Need?</label>
+                    <p class="hint">Select ONE for focused output, or multiple for a combined kit</p>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="assets" value="case-studies" checked> <span>Case Studies</span></label>
-                        <label><input type="checkbox" name="assets" value="roi-tools" checked> <span>ROI Tools</span></label>
-                        <label><input type="checkbox" name="assets" value="demo-scripts" checked> <span>Demo Scripts</span></label>
-                        <label><input type="checkbox" name="assets" value="battlecards"> <span>Battlecards</span></label>
-                        <label><input type="checkbox" name="assets" value="analyst-reports"> <span>Analyst Reports</span></label>
-                        <label><input type="checkbox" name="assets" value="reference-customers"> <span>Reference Customers</span></label>
+                        <label><input type="checkbox" name="assets" value="case-studies"> <span>📖 Case Studies</span></label>
+                        <label><input type="checkbox" name="assets" value="roi-tools"> <span>💰 ROI / Business Case</span></label>
+                        <label><input type="checkbox" name="assets" value="demo-scripts"> <span>🎬 Demo Script</span></label>
+                        <label><input type="checkbox" name="assets" value="battlecards"> <span>⚔️ Competitive Battlecard</span></label>
+                        <label><input type="checkbox" name="assets" value="analyst-reports"> <span>📊 Analyst Talking Points</span></label>
+                        <label><input type="checkbox" name="assets" value="reference-customers"> <span>🤝 Reference Strategy</span></label>
+                        <label><input type="checkbox" name="assets" value="full-kit"> <span>📦 Full Enablement Kit</span></label>
                     </div>
                 </div>
             </div>
@@ -552,6 +553,14 @@
             resultsSection.classList.remove('visible');
             
             const selectedAssets = Array.from(document.querySelectorAll('input[name="assets"]:checked')).map(cb => cb.value);
+            
+            if (selectedAssets.length === 0) {
+                errorEl.textContent = 'Please select at least one output type.';
+                errorEl.classList.add('visible');
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                return;
+            }
             
             const inputs = {
                 product: document.getElementById('product').value,

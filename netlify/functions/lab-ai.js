@@ -977,7 +977,12 @@ Address procurement concerns:
 Use conservative assumptions. Mark any estimates that need customer validation.`;
 
         case 'enablement-bundler':
-            const assetsArray = Array.isArray(inputs.assets) ? inputs.assets : ['case-studies', 'roi-tools', 'demo-scripts'];
+            let assetsArray = Array.isArray(inputs.assets) ? inputs.assets : [];
+            // If full-kit is selected or nothing selected, generate full kit
+            const isFullKit = assetsArray.includes('full-kit') || assetsArray.length === 0 || assetsArray.length > 2;
+            if (isFullKit) {
+                assetsArray = ['full-kit'];
+            }
             const assetsRequested = assetsArray.join(', ');
             const regionMap = {
                 'north-america': 'North America',
