@@ -1072,9 +1072,21 @@ How to win against the alternatives mentioned:
 - Traps to avoid
 
 ## 6. Recommended Assets
-Based on the deal stage, recommend specific assets:
-| Asset Type | Specific Recommendation | When to Use | Talk Track |
-|------------|------------------------|-------------|------------|
+**IMPORTANT:** Only include recommendations for the asset types the user selected: ${assetsRequested}
+
+For EACH selected asset type, provide a specific recommendation:
+| Asset Type | Specific Recommendation | When to Use | How to Position It |
+|------------|------------------------|-------------|-------------------|
+
+Asset type descriptions:
+- **case-studies**: Customer success stories with quantified outcomes
+- **roi-tools**: Calculators, TCO comparisons, business case templates
+- **demo-scripts**: Structured demo flows with talk tracks
+- **battlecards**: Competitive comparison guides
+- **analyst-reports**: Gartner, Forrester, IDC reports
+- **reference-customers**: Named customers willing to take calls
+
+Skip any asset types NOT in the selected list above.
 
 ## 7. Next Steps
 - Suggested call-to-action for this conversation
