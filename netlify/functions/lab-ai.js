@@ -977,7 +977,8 @@ Address procurement concerns:
 Use conservative assumptions. Mark any estimates that need customer validation.`;
 
         case 'enablement-bundler':
-            const assetsRequested = Array.isArray(inputs.assets) ? inputs.assets.join(', ') : (inputs.assets || 'case-studies, roi-tools, demo-scripts');
+            const assetsArray = Array.isArray(inputs.assets) ? inputs.assets : ['case-studies', 'roi-tools', 'demo-scripts'];
+            const assetsRequested = assetsArray.join(', ');
             const regionMap = {
                 'north-america': 'North America',
                 'emea-uk': 'EMEA — UK/Ireland',
@@ -1011,9 +1012,9 @@ Use conservative assumptions. Mark any estimates that need customer validation.`
                 'proposal': 'Proposal — Final decision',
                 'negotiation': 'Negotiation — Contract stage'
             };
-            return `Create a comprehensive sales enablement kit for this opportunity:
-
-## DEAL CONTEXT
+            
+            // Build dynamic output sections based on selected assets
+            const dealContext = `## DEAL CONTEXT
 **Product/Solution:** ${inputs.product}
 **Deal Stage:** ${stageMap[inputs.dealStage] || inputs.dealStage}
 **Deal Size:** ${inputs.dealSize}
@@ -1028,13 +1029,373 @@ ${inputs.currentSituation}
 ${inputs.competitors || 'Not specified'}
 
 **Known Objections:**
-${inputs.keyObjections || 'Not specified'}
+${inputs.keyObjections || 'Not specified'}`;
 
-**Assets to Include:** ${assetsRequested}
+            // Check if ONLY battlecards is selected
+            if (assetsArray.length === 1 && assetsArray[0] === 'battlecards') {
+                return `Generate a **Competitive Battlecard** for this opportunity:
+
+${dealContext}
 
 ---
 
-Generate a complete sales enablement kit with these sections:
+Create a detailed **Battlecard** with these sections:
+
+## ⚔️ Competitive Battlecard: ${inputs.product} vs. Competition
+
+### Executive Summary
+2-3 sentences on the competitive landscape for this deal.
+
+### Head-to-Head Comparison
+| Capability | ${inputs.product} | Competitor(s) |
+|------------|------------------|---------------|
+| [Key area 1] | ✅ [Strength] | ⚠️ [Weakness] |
+| [Key area 2] | ... | ... |
+| [Key area 3] | ... | ... |
+| [Key area 4] | ... | ... |
+| [Key area 5] | ... | ... |
+
+### Our Strengths (Lead With These)
+- **[Strength 1]**: [Why it matters to this ${personaMap[inputs.persona] || inputs.persona}]
+- **[Strength 2]**: [Specific proof point]
+- **[Strength 3]**: [Specific proof point]
+
+### Their Weaknesses (Expose Carefully)
+- **[Weakness 1]**: [Discovery question to surface this]
+- **[Weakness 2]**: [Discovery question to surface this]
+
+### FUD They'll Spread (And How to Counter)
+| What They'll Say | The Truth | Your Response |
+|------------------|-----------|---------------|
+| "[Claim 1]" | [Reality] | "[Talk track]" |
+| "[Claim 2]" | [Reality] | "[Talk track]" |
+| "[Claim 3]" | [Reality] | "[Talk track]" |
+
+### Trap-Setting Questions
+Questions to ask early that shift criteria in our favor:
+1. "[Question that exposes competitor weakness]"
+2. "[Question that highlights our strength]"
+3. "[Question that reveals hidden costs/risks]"
+
+### If They're Already Using [Competitor]
+- Migration talking points
+- Switching cost reframe
+- Quick wins to demonstrate value
+
+Make this specific to the deal context. Use confident but professional language.`;
+            }
+            
+            // Check if ONLY demo-scripts is selected
+            if (assetsArray.length === 1 && assetsArray[0] === 'demo-scripts') {
+                return `Generate a **Demo Script** for this opportunity:
+
+${dealContext}
+
+---
+
+Create a structured **Demo Script** with transformation narrative:
+
+## 🎬 Demo Script: ${inputs.product}
+
+### Pre-Demo Setup
+- **Duration**: [Recommended time]
+- **Attendees to request**: [Key roles to have in the room]
+- **Environment prep**: [What to have ready]
+
+### Opening (2 min)
+**Hook**: Start with their pain, not your product.
+> "[Opening line that references their specific situation]"
+
+**Agenda frame**:
+> "Today I want to show you three things: [1], [2], and [3]. But more importantly, I want you to leave knowing exactly how this solves [their main pain point]. Fair?"
+
+### Act 1: The Current State Pain (3-5 min)
+Show/describe what their world looks like today:
+- [Specific pain point 1 - make it visceral]
+- [Specific pain point 2]
+- [Bridge to transformation]: "Now let me show you what this looks like with ${inputs.product}..."
+
+### Act 2: The Transformation (10-15 min)
+**Scene 1: [Key workflow/capability]**
+> "[Talk track for what you're showing]"
+> [Click path: Where to click, what to highlight]
+> **Pause point**: "What questions do you have about [X]?"
+
+**Scene 2: [Second key capability]**
+> "[Talk track]"
+> [Click path]
+> **Connect to their pain**: "Remember that issue with [X]? This is how that goes away."
+
+**Scene 3: [Third key capability]**
+> "[Talk track]"
+> [Click path]
+
+### Act 3: The Future State (3 min)
+Paint the picture of their transformed life:
+> "So imagine it's 90 days from now. [Describe their new reality]..."
+
+### Objection Handling (have ready)
+| If they say... | You say... |
+|----------------|------------|
+| "[Objection 1]" | "[Response]" |
+| "[Objection 2]" | "[Response]" |
+
+### Closing & Next Steps (2 min)
+> "[Transition to next step appropriate for ${inputs.dealStage} stage]"
+
+### Post-Demo Follow-up
+- Send within 24 hours: [What to send]
+- Key points to reinforce: [What to emphasize]
+
+Make the talk tracks conversational and natural, not robotic.`;
+            }
+            
+            // Check if ONLY roi-tools is selected
+            if (assetsArray.length === 1 && assetsArray[0] === 'roi-tools') {
+                return `Generate an **ROI/Business Case Framework** for this opportunity:
+
+${dealContext}
+
+---
+
+Create an **ROI Framework** the AE can use with this customer:
+
+## 💰 ROI Framework: ${inputs.product}
+
+### Executive Summary
+One paragraph making the business case for investment.
+
+### Value Drivers
+| Value Driver | How to Quantify | Typical Range | Questions to Ask |
+|--------------|-----------------|---------------|------------------|
+| [Driver 1] | [Calculation] | [X-Y%] | "[Question to get their number]" |
+| [Driver 2] | [Calculation] | [X-Y%] | "[Question]" |
+| [Driver 3] | [Calculation] | [$X-$Y] | "[Question]" |
+| [Driver 4] | [Calculation] | [X hours/week] | "[Question]" |
+
+### Cost of Inaction Analysis
+Help them quantify what doing nothing costs:
+- **Direct costs**: [What they're paying today]
+- **Opportunity costs**: [What they're missing]
+- **Risk exposure**: [Compliance, security, competitive]
+
+### Sample Business Case (for ${inputs.dealSize} deal)
+| Category | Year 1 | Year 2 | Year 3 |
+|----------|--------|--------|--------|
+| Investment | $X | $X | $X |
+| Savings/Value | $X | $X | $X |
+| Net Value | $X | $X | $X |
+| Cumulative ROI | X% | X% | X% |
+
+**Payback period**: [X months]
+
+### Discovery Questions for Business Case
+Questions to get their specific numbers:
+1. "[Question to quantify pain point 1]"
+2. "[Question to quantify pain point 2]"
+3. "[Question about current spend]"
+4. "[Question about headcount/time]"
+
+### Talking to Finance/Procurement
+Key points that resonate with financial buyers:
+- [Point 1 with proof]
+- [Point 2 with proof]
+- [Point 3 with proof]
+
+### Risk Mitigation Talking Points
+Address their concerns about investment risk:
+- **Implementation risk**: [How we mitigate]
+- **Adoption risk**: [How we ensure success]
+- **Timeline risk**: [How we deliver on time]
+
+Use conservative assumptions. Mark estimates that need customer validation with [VERIFY].`;
+            }
+            
+            // Check if ONLY case-studies is selected
+            if (assetsArray.length === 1 && assetsArray[0] === 'case-studies') {
+                return `Generate **Customer Reference Talking Points** for this opportunity:
+
+${dealContext}
+
+---
+
+Create **Reference Story Talking Points** relevant to this deal:
+
+## 📖 Customer Reference Talking Points
+
+### Ideal Reference Profile for This Deal
+Based on the context, the ideal reference would be:
+- **Industry**: ${inputs.industry} or similar
+- **Region**: ${regionMap[inputs.region] || inputs.region} preferred
+- **Size**: Similar to ${inputs.dealSize}
+- **Use case**: [Matching their pain points]
+
+### Reference Story 1: [Industry] Company
+**The Situation**: [1-2 sentences on their challenge - similar to this customer's]
+
+**The Solution**: [What they implemented]
+
+**The Results**:
+- [Quantified outcome 1]
+- [Quantified outcome 2]
+- [Quantified outcome 3]
+
+**Quote to use**:
+> "[A compelling quote from the customer]"
+
+**How to position this for your deal**:
+> "I was talking to the [role] at [company type], and they had a very similar challenge to what you described with [X]. Here's what they found..."
+
+### Reference Story 2: [Region-Specific]
+[Same structure]
+
+### Reference Story 3: [Persona-Specific]
+[Same structure - relevant to ${personaMap[inputs.persona] || inputs.persona}]
+
+### How to Request a Reference Call
+- **When to offer**: [Right moment in the sales cycle]
+- **How to position it**: "[Talk track for offering a reference]"
+- **Prep the reference**: [What to tell them about this prospect]
+
+### If No Perfect Reference Exists
+Alternative proof points to use:
+- Analyst validation: [Specific reports/quotes]
+- Industry data: [Relevant statistics]
+- Platform proof: [Network/scale metrics]
+
+Make references specific and believable for the ${inputs.industry} industry.`;
+            }
+            
+            // Check if ONLY analyst-reports is selected
+            if (assetsArray.length === 1 && assetsArray[0] === 'analyst-reports') {
+                return `Generate **Analyst Relations Talking Points** for this opportunity:
+
+${dealContext}
+
+---
+
+Create **Analyst Report Talking Points** for this deal:
+
+## 📊 Analyst Talking Points
+
+### Relevant Analyst Coverage
+| Analyst Firm | Report Type | Key Finding | How to Use |
+|--------------|-------------|-------------|------------|
+| Gartner | [MQ/Critical Capabilities] | [Position/Quote] | "[Talk track]" |
+| Forrester | [Wave/Report] | [Position/Quote] | "[Talk track]" |
+| IDC | [MarketScape/Report] | [Position/Quote] | "[Talk track]" |
+
+### Key Quotes to Use
+**For ${personaMap[inputs.persona] || inputs.persona}**:
+> "[Analyst quote relevant to their concerns]"
+— [Analyst name], [Firm], [Report]
+
+**For Technical Evaluation**:
+> "[Quote about technical capabilities]"
+
+**For Business Case**:
+> "[Quote about ROI/value]"
+
+### Strengths Analysts Highlight
+- [Strength 1]: "[How analysts describe it]"
+- [Strength 2]: "[How analysts describe it]"
+- [Strength 3]: "[How analysts describe it]"
+
+### Cautions to Be Prepared For
+Analysts also note these areas (and how to address them):
+| Analyst Caution | Reality | Your Response |
+|-----------------|---------|---------------|
+| "[Caution 1]" | [Context] | "[How to address]" |
+| "[Caution 2]" | [Context] | "[How to address]" |
+
+### How to Position Analyst Content
+> "I don't know if you've seen the latest [Gartner/Forrester] report on [space], but they specifically called out [key finding]. I can send that over—it might be useful for your internal business case."
+
+### Requesting Analyst Inquiry
+If the customer wants to talk to analysts directly:
+- When to suggest: [Right moment]
+- How to facilitate: [Process]
+- What to prep them for: [Key questions analysts will ask]
+
+Focus on reports relevant to ${inputs.product} and ${inputs.industry}.`;
+            }
+            
+            // Check if ONLY reference-customers is selected
+            if (assetsArray.length === 1 && assetsArray[0] === 'reference-customers') {
+                return `Generate **Reference Customer Strategy** for this opportunity:
+
+${dealContext}
+
+---
+
+Create a **Reference Customer Strategy**:
+
+## 🤝 Reference Customer Strategy
+
+### Ideal Reference Criteria
+For this specific deal, prioritize references with:
+- ☐ Same industry: ${inputs.industry}
+- ☐ Same region: ${regionMap[inputs.region] || inputs.region}
+- ☐ Similar size: ${inputs.dealSize}
+- ☐ Same persona led the decision: ${personaMap[inputs.persona] || inputs.persona}
+- ☐ Similar pain points: [Based on their situation]
+- ☐ Competed against same alternatives: [Based on competitors mentioned]
+
+### Reference Call Strategy
+
+**When to Offer**
+- ✅ Good time: [When in the sales cycle]
+- ❌ Too early: [When to avoid]
+- 💡 Trigger phrases: "[What the customer says that signals they need a reference]"
+
+**How to Position the Offer**
+> "Would it be helpful to talk to someone who's been through this exact evaluation? I know the [role] at [company type] who had very similar concerns about [X]. I could set up a 20-minute call if that would be useful."
+
+**Preparing the Reference**
+Before the call, brief your reference on:
+- [ ] Prospect's main concerns: [Specific to this deal]
+- [ ] Questions they'll likely ask: [Predict 3-5]
+- [ ] Points to emphasize: [Key proof points]
+- [ ] What to avoid: [Sensitive topics]
+
+### Reference Call Format
+**Suggested agenda (30 min)**:
+1. (5 min) Introductions and context
+2. (10 min) Reference shares their journey
+3. (10 min) Prospect Q&A
+4. (5 min) Wrap-up and next steps
+
+**Key questions to plant** (suggest the prospect ask):
+- "[Question that surfaces a key strength]"
+- "[Question about implementation]"
+- "[Question about ROI/results]"
+
+### Alternative to Live Reference
+If no perfect reference is available:
+- **Video testimonials**: [What's available]
+- **Written case studies**: [Relevant ones]
+- **Peer review sites**: G2, TrustRadius quotes
+- **Conference recordings**: Customer sessions
+
+### Post-Reference Call
+Follow up within 24 hours:
+- Thank the reference
+- Debrief with the prospect: "What resonated most from that conversation?"
+- Use their feedback to address remaining concerns
+
+Tailor this to the ${inputs.industry} industry and ${personaMap[inputs.persona] || inputs.persona} buyer.`;
+            }
+            
+            // Default: Generate full enablement kit for multiple selections
+            return `Create a comprehensive sales enablement kit for this opportunity:
+
+${dealContext}
+
+**Selected Asset Types:** ${assetsRequested}
+
+---
+
+Generate a sales enablement kit with these sections:
 
 ## 1. Executive Briefing
 A one-page summary the AE can read in 2 minutes before the call. Include:
@@ -1072,21 +1433,9 @@ How to win against the alternatives mentioned:
 - Traps to avoid
 
 ## 6. Recommended Assets
-**IMPORTANT:** Only include recommendations for the asset types the user selected: ${assetsRequested}
-
-For EACH selected asset type, provide a specific recommendation:
+For each selected type (${assetsRequested}), provide specific recommendations:
 | Asset Type | Specific Recommendation | When to Use | How to Position It |
 |------------|------------------------|-------------|-------------------|
-
-Asset type descriptions:
-- **case-studies**: Customer success stories with quantified outcomes
-- **roi-tools**: Calculators, TCO comparisons, business case templates
-- **demo-scripts**: Structured demo flows with talk tracks
-- **battlecards**: Competitive comparison guides
-- **analyst-reports**: Gartner, Forrester, IDC reports
-- **reference-customers**: Named customers willing to take calls
-
-Skip any asset types NOT in the selected list above.
 
 ## 7. Next Steps
 - Suggested call-to-action for this conversation
