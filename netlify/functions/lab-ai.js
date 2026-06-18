@@ -312,6 +312,29 @@ You help PMMs and sales teams build compelling pricing rationale documents that:
 
 You write executive-ready content that finance teams will find credible. You use conservative assumptions and cite sources where possible.`,
 
+        'enablement-bundler': `You are an expert sales enablement strategist for enterprise B2B software, specifically SAP.
+
+You create region- and persona-tuned sales enablement kits that help Account Executives have better conversations and close deals faster. Your kits are:
+
+**Practical:** Ready to use in the next customer call, not theoretical
+**Contextual:** Tailored to the specific region, persona, industry, and deal stage
+**Evidence-based:** Grounded in real proof points, customer wins, and competitive differentiation
+**Actionable:** Clear talk tracks, objection handlers, and next-step recommendations
+
+**Regional considerations you factor in:**
+- NA: Direct, ROI-focused, fast-paced decision cycles
+- EMEA: Relationship-oriented, compliance-conscious, longer consensus-building
+- APJ: Varies by market — ANZ is direct like NA, Japan requires more formal process, India values references
+- LATAM: Relationship-driven, price-sensitive, flexibility important
+
+**Deal stage considerations:**
+- Discovery: Focus on pain validation and qualification questions
+- Evaluation: Focus on differentiation and proof points
+- Proposal: Focus on value quantification and risk mitigation  
+- Negotiation: Focus on procurement ammunition and final objection handling
+
+You write in a confident, conversational tone that AEs can use directly in customer conversations. Avoid corporate-speak.`,
+
         'launch-planner': `You are an expert GTM launch planner for enterprise B2B software companies, specifically SAP.
 
 You create comprehensive Launch Bills of Materials (BOMs) — task trackers that cover all workstreams needed for a successful product launch, event, or campaign.
@@ -904,6 +927,113 @@ Address procurement concerns:
 3 key points for the champion to use with procurement.
 
 Use conservative assumptions. Mark any estimates that need customer validation.`;
+
+        case 'enablement-bundler':
+            const assetsRequested = Array.isArray(inputs.assets) ? inputs.assets.join(', ') : (inputs.assets || 'case-studies, roi-tools, demo-scripts');
+            const regionMap = {
+                'north-america': 'North America',
+                'emea-uk': 'EMEA — UK/Ireland',
+                'emea-dach': 'EMEA — DACH (Germany, Austria, Switzerland)',
+                'emea-nordics': 'EMEA — Nordics',
+                'emea-france': 'EMEA — France',
+                'emea-southern': 'EMEA — Southern Europe',
+                'apj-anz': 'APJ — Australia/New Zealand',
+                'apj-japan': 'APJ — Japan',
+                'apj-india': 'APJ — India',
+                'apj-sea': 'APJ — Southeast Asia',
+                'latam': 'Latin America'
+            };
+            const personaMap = {
+                'cfo': 'CFO / Chief Financial Officer',
+                'cio': 'CIO / Chief Information Officer',
+                'cpo': 'CPO / Chief Procurement Officer',
+                'chro': 'CHRO / Chief Human Resources Officer',
+                'cmo': 'CMO / Chief Marketing Officer',
+                'coo': 'COO / Chief Operating Officer',
+                'vp-it': 'VP IT / IT Director',
+                'vp-finance': 'VP Finance / Controller',
+                'vp-ops': 'VP Operations',
+                'vp-supply-chain': 'VP Supply Chain',
+                'director-procurement': 'Director of Procurement',
+                'director-hr': 'Director of HR'
+            };
+            const stageMap = {
+                'discovery': 'Discovery — Early qualification',
+                'evaluation': 'Evaluation — Active comparison',
+                'proposal': 'Proposal — Final decision',
+                'negotiation': 'Negotiation — Contract stage'
+            };
+            return `Create a comprehensive sales enablement kit for this opportunity:
+
+## DEAL CONTEXT
+**Product/Solution:** ${inputs.product}
+**Deal Stage:** ${stageMap[inputs.dealStage] || inputs.dealStage}
+**Deal Size:** ${inputs.dealSize}
+**Region:** ${regionMap[inputs.region] || inputs.region}
+**Buyer Persona:** ${personaMap[inputs.persona] || inputs.persona}
+**Industry:** ${inputs.industry}
+
+**Current Situation / Pain Points:**
+${inputs.currentSituation}
+
+**Competitive Situation:**
+${inputs.competitors || 'Not specified'}
+
+**Known Objections:**
+${inputs.keyObjections || 'Not specified'}
+
+**Assets to Include:** ${assetsRequested}
+
+---
+
+Generate a complete sales enablement kit with these sections:
+
+## 1. Executive Briefing
+A one-page summary the AE can read in 2 minutes before the call. Include:
+- What this customer cares about (based on persona + industry + pain)
+- The 3 most important things to convey
+- What success looks like for this deal
+
+## 2. Talk Track
+A conversation guide appropriate for the ${inputs.dealStage} stage:
+- Opening (how to frame the conversation)
+- Key questions to ask
+- Key points to make (with specific proof points)
+- Transition to next step
+
+Write this as actual dialogue the AE could use, not bullet points.
+
+## 3. Proof Points
+Region- and industry-specific evidence:
+- Relevant customer references (name industries/regions, even if fictional examples)
+- Quantified outcomes (ROI, time savings, etc.)
+- Third-party validation (analyst quotes, awards)
+
+## 4. Objection Handlers
+For each known objection, provide:
+- **Objection:** [What they'll say]
+- **Acknowledge:** [Validate without agreeing]
+- **Reframe:** [Shift perspective]
+- **Evidence:** [Specific proof]
+- **Bridge:** [Transition back to value]
+
+## 5. Competitive Positioning
+How to win against the alternatives mentioned:
+- Key differentiators (specific, not generic)
+- Questions that expose competitor weaknesses
+- Traps to avoid
+
+## 6. Recommended Assets
+Based on the deal stage, recommend specific assets:
+| Asset Type | Specific Recommendation | When to Use | Talk Track |
+|------------|------------------------|-------------|------------|
+
+## 7. Next Steps
+- Suggested call-to-action for this conversation
+- What to send after the meeting
+- Timeline recommendations
+
+Make this immediately usable. Write in a tone the AE can use directly with the customer.`;
 
         case 'launch-planner':
             const workstreamsList = Array.isArray(inputs.workstreams) ? inputs.workstreams.join(', ') : inputs.workstreams;
