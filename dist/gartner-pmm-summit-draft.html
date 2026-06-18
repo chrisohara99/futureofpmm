@@ -1,90 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DRAFT: Six Signals from Gartner That PMM Is About to Change | Sean Thomson</title>
+    <title>Six Signals from Gartner That PMM Is About to Change | The Future of PMM</title>
+    <meta name="description" content="Key takeaways from Gartner Marketing Symposium 2026: PMM is evolving from messaging and launches into strategic GTM orchestration.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: Georgia, serif; max-width: 700px; margin: 40px auto; padding: 20px; line-height: 1.8; color: #2B3A4A; }
-        h1 { font-size: 2rem; line-height: 1.3; margin-bottom: 0.5rem; }
-        .byline { color: #666; font-size: 0.95rem; margin-bottom: 2rem; }
-        h2 { font-size: 1.3rem; margin-top: 2.5rem; color: #44546A; }
-        p { margin-bottom: 1.25rem; }
-        blockquote { border-left: 3px solid #ED7D31; padding-left: 1.25rem; margin: 1.5rem 0; font-style: italic; color: #555; }
-        .callout { background: #f8f9fa; padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; }
-        .draft-note { background: #fff3cd; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-size: 0.9rem; }
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --pmm-light: #F5F6F7; --accent: #c84b31; --sap-blue: #0070f2; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: var(--pmm-blue); background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; }
+        .nav-menu a:hover { background: #f3f4f6; color: var(--pmm-blue); }
+        
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; transition: all 0.3s ease; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            nav { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { right: 0; }
+            nav > a, .nav-dropdown > .nav-trigger { margin: 0 0 1.25rem 0; font-size: 1.1rem; color: rgba(255,255,255,0.8) !important; }
+        }
+        
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: white; padding: 3rem 0; }
+        .hero .container { max-width: 800px; }
+        .hero-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; font-weight: 600; }
+        .hero h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: white; }
+        .hero-meta { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+        .hero-meta a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 600px) { .hero h1 { font-size: 1.6rem; } }
+        
+        /* Draft Banner */
+        .draft-banner { background: #fef3c7; border-bottom: 1px solid #f59e0b; padding: 0.75rem 1rem; text-align: center; font-size: 0.9rem; color: #92400e; }
+        .draft-banner strong { color: #78350f; }
+        
+        /* Article Content */
+        .article-container { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+        .article-content h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--pmm-dark); }
+        .article-content h3 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--pmm-dark); }
+        .article-content p { margin-bottom: 1.25rem; }
+        .article-content ul, .article-content ol { margin: 0 0 1.25rem 1.5rem; }
+        .article-content li { margin-bottom: 0.5rem; }
+        .article-content a { color: var(--pmm-blue); text-decoration: none; }
+        .article-content a:hover { text-decoration: underline; }
+        .article-content strong { font-weight: 600; }
+        .article-content blockquote {
+            background: #f3f4f6;
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #64748b;
+        }
+        .article-content hr {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 2.5rem 0;
+        }
+        .callout {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+        }
+        .callout strong { color: var(--pmm-dark); }
+        .callout ul { margin: 0.75rem 0 0 1.25rem; }
+        
+        /* Footer */
+        footer { background: var(--pmm-dark); color: white; padding: 3rem 0; margin-top: 3rem; }
+        footer .container { max-width: 800px; text-align: center; }
+        footer p { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+        footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+        footer a:hover { color: white; }
     </style>
 </head>
 <body>
+    <div class="draft-banner">
+        <strong>DRAFT</strong> — For review. Not yet published.
+    </div>
+    
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="/" class="logo">
+                    <img src="/assets/images/logo.svg" alt="The Future of PMM">
+                </a>
+                <button class="hamburger" onclick="document.querySelector('nav').classList.toggle('open')">
+                    <span></span><span></span><span></span>
+                </button>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/curriculum/">Curriculum</a>
+                    <a href="/blog.html">Blog</a>
+                    <div id="user-menu-container"></div>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-<div class="draft-note">
-    <strong>DRAFT</strong> — For review by Chris O'Hara<br>
-    Author: Sean Thomson | Source: Gartner Marketing Symposium 2026
-</div>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-label">Gartner Marketing Symposium 2026</div>
+            <h1>Six Signals from Gartner That PMM Is About to Change</h1>
+            <p class="hero-meta">By <a href="https://www.linkedin.com/in/sean-thomson-a873224/">Sean Thomson</a> · June 2026</p>
+        </div>
+    </section>
 
-<h1>Six Signals from Gartner That PMM Is About to Change</h1>
-<p class="byline">By Sean Thomson · June 2026</p>
+    <div class="article-container">
+        <div class="article-content">
+            <p>I spent last week at Gartner Marketing Symposium listening to sessions on AI, GTM transformation, customer growth, market intelligence, and CMO leadership. Across all of them, a consistent theme emerged that should matter to every product marketer: PMM is evolving from a function focused on messaging, launches, and content creation into something much bigger—a strategic GTM orchestration capability that connects market intelligence, commercialization, customer growth, and business decision-making.</p>
 
-<p>I spent last week at Gartner Marketing Symposium listening to sessions on AI, GTM transformation, customer growth, market intelligence, and CMO leadership. Across all of them, a consistent theme emerged that should matter to every product marketer: PMM is evolving from a function focused on messaging, launches, and content creation into something much bigger—a strategic GTM orchestration capability that connects market intelligence, commercialization, customer growth, and business decision-making.</p>
+            <p>If you've felt like your role is expanding beyond what the job description said when you signed up, Gartner just validated that instinct. Here are six signals worth paying attention to.</p>
 
-<p>If you've felt like your role is expanding beyond what the job description said when you signed up, Gartner just validated that instinct. Here are six signals worth paying attention to.</p>
+            <h2>1. AI Will Transform the PMM Operating Model—Not Just Improve Productivity</h2>
 
-<h2>1. AI Will Transform the PMM Operating Model—Not Just Improve Productivity</h2>
+            <p>The conversation has moved past "AI helps you write faster." Leading organizations are now thinking about AI-enabled GTM orchestration—using AI to design, govern, and optimize workflows and decision processes across the entire go-to-market motion.</p>
 
-<p>The conversation has moved past "AI helps you write faster." Leading organizations are now thinking about AI-enabled GTM orchestration—using AI to design, govern, and optimize workflows and decision processes across the entire go-to-market motion.</p>
+            <p>This is a meaningful shift. Instead of asking "how can AI help me draft this positioning doc?" the question becomes "how do I design an AI-driven system that continuously refines positioning based on market signals, competitive moves, and sales feedback?"</p>
 
-<p>This is a meaningful shift. Instead of asking "how can AI help me draft this positioning doc?" the question becomes "how do I design an AI-driven system that continuously refines positioning based on market signals, competitive moves, and sales feedback?"</p>
+            <p>PMMs who learn to operate these systems—not just use AI tools—will find themselves in a fundamentally different role than those who don't.</p>
 
-<p>PMMs who learn to operate these systems—not just use AI tools—will find themselves in a fundamentally different role than those who don't.</p>
+            <h2>2. Market Intelligence Is Becoming a Core Strategic Capability</h2>
 
-<h2>2. Market Intelligence Is Becoming a Core Strategic Capability</h2>
+            <p>Here's the uncomfortable truth: AI democratizes access to information and content creation. If everyone can generate decent messaging in minutes, the competitive advantage shifts upstream—to insight generation, signal detection, prioritization, and strategic decision-making.</p>
 
-<p>Here's the uncomfortable truth: AI democratizes access to information and content creation. If everyone can generate decent messaging in minutes, the competitive advantage shifts upstream—to insight generation, signal detection, prioritization, and strategic decision-making.</p>
+            <p>The PMMs who will matter most are the ones who can connect market trends, competitive intelligence, customer signals, and business performance into a coherent view that shapes strategy. The ones who are really good at writing positioning statements but can't tell you what's actually happening in the market? Their value proposition is eroding.</p>
 
-<p>The PMMs who will matter most are the ones who can connect market trends, competitive intelligence, customer signals, and business performance into a coherent view that shapes strategy. The ones who are really good at writing positioning statements but can't tell you what's actually happening in the market? Their value proposition is eroding.</p>
+            <h2>3. PMM Is Emerging as the Natural GTM Orchestrator</h2>
 
-<h2>3. PMM Is Emerging as the Natural GTM Orchestrator</h2>
+            <p>Gartner found that many organizations are looking to PMM to align Product, Marketing, Sales, Customer Success, and Operations around a unified GTM strategy. This isn't about owning more headcount—it's about owning the connective tissue between functions.</p>
 
-<p>Gartner found that many organizations are looking to PMM to align Product, Marketing, Sales, Customer Success, and Operations around a unified GTM strategy. This isn't about owning more headcount—it's about owning the connective tissue between functions.</p>
+            <p>That requires stronger influence skills, broader business acumen, and greater ownership of commercialization and lifecycle growth. If your career development plan focuses only on becoming a better marketer, you might be optimizing for yesterday's job.</p>
 
-<p>That requires stronger influence skills, broader business acumen, and greater ownership of commercialization and lifecycle growth. If your career development plan focuses only on becoming a better marketer, you might be optimizing for yesterday's job.</p>
+            <h2>4. Customer Growth Is Becoming Part of the PMM Charter</h2>
 
-<h2>4. Customer Growth Is Becoming Part of the PMM Charter</h2>
+            <p>The most forward-looking organizations are extending PMM's role beyond launches and acquisition. Adoption, retention, expansion, customer advocacy—these are increasingly showing up in PMM OKRs.</p>
 
-<p>The most forward-looking organizations are extending PMM's role beyond launches and acquisition. Adoption, retention, expansion, customer advocacy—these are increasingly showing up in PMM OKRs.</p>
+            <p>Why? Because AI-powered customer insights make it possible for PMMs to play a larger role in customer lifecycle strategy. And because the economics of SaaS have made it obvious that acquiring customers you can't retain is an expensive way to go nowhere.</p>
 
-<p>Why? Because AI-powered customer insights make it possible for PMMs to play a larger role in customer lifecycle strategy. And because the economics of SaaS have made it obvious that acquiring customers you can't retain is an expensive way to go nowhere.</p>
+            <p>If you're still thinking of your job as "get them in the door and hand them to CS," expect that to change.</p>
 
-<p>If you're still thinking of your job as "get them in the door and hand them to CS," expect that to change.</p>
+            <h2>5. Centralized Standards with Federated Execution—The COE Model Returns</h2>
 
-<h2>5. Centralized Standards with Federated Execution—The COE Model Returns</h2>
+            <p>As AI accelerates content creation and decision-making, organizations need stronger governance. Shared frameworks. Common taxonomies. Cross-functional alignment. Gartner repeatedly reinforced the value of centralized centers of excellence paired with domain expertise embedded within business units.</p>
 
-<p>As AI accelerates content creation and decision-making, organizations need stronger governance. Shared frameworks. Common taxonomies. Cross-functional alignment. Gartner repeatedly reinforced the value of centralized centers of excellence paired with domain expertise embedded within business units.</p>
+            <p>This is the "hub and spoke" model that's been debated for years, but now there's a forcing function: without centralized standards, AI-generated content becomes a consistency nightmare. The PMM function may be uniquely positioned to own those standards—if it steps up to claim them.</p>
 
-<p>This is the "hub and spoke" model that's been debated for years, but now there's a forcing function: without centralized standards, AI-generated content becomes a consistency nightmare. The PMM function may be uniquely positioned to own those standards—if it steps up to claim them.</p>
+            <h2>6. Market Shaping—Not Just Market Execution</h2>
 
-<h2>6. Market Shaping—Not Just Market Execution</h2>
+            <p>The most successful CMOs, according to Gartner, differentiate themselves by shaping customer preferences, anticipating market shifts, influencing innovation, and guiding business strategy. They don't just deliver marketing results—they shape the conditions that make marketing results possible.</p>
 
-<p>The most successful CMOs, according to Gartner, differentiate themselves by shaping customer preferences, anticipating market shifts, influencing innovation, and guiding business strategy. They don't just deliver marketing results—they shape the conditions that make marketing results possible.</p>
+            <p>That's a high bar. But it reinforces where PMM needs to go: stronger market intelligence, deeper customer insight, more sophisticated competitive strategy, and real influence on business decisions. The function that masters these capabilities becomes essential. The one that stays focused on launch checklists becomes a cost center.</p>
 
-<p>That's a high bar. But it reinforces where PMM needs to go: stronger market intelligence, deeper customer insight, more sophisticated competitive strategy, and real influence on business decisions. The function that masters these capabilities becomes essential. The one that stays focused on launch checklists becomes a cost center.</p>
+            <hr>
 
-<h2>The Bottom Line</h2>
+            <h2>The Bottom Line</h2>
 
-<p>Gartner's message was clear: AI won't replace PMM. It will elevate PMM into a more strategic role—if we're willing to evolve with it.</p>
+            <p>Gartner's message was clear: AI won't replace PMM. It will elevate PMM into a more strategic role—if we're willing to evolve with it.</p>
 
-<p>The organizations that win will combine AI capabilities with strong market intelligence, customer insight, and commercialization excellence. That's a bigger job than most of us signed up for. It's also a more interesting one.</p>
+            <p>The organizations that win will combine AI capabilities with strong market intelligence, customer insight, and commercialization excellence. That's a bigger job than most of us signed up for. It's also a more interesting one.</p>
 
-<div class="callout">
-<strong>Related Resources from Gartner Marketing Symposium:</strong>
-<ul style="margin: 0.5rem 0 0 1.25rem;">
-<li>Operationalizing PMM</li>
-<li>GTM Directions</li>
-<li>Customer Marketing with AI</li>
-<li>Operating Models & Roles</li>
-<li>Market Shaper CMO</li>
-</ul>
-</div>
+            <div class="callout">
+                <strong>Related Resources from Gartner Marketing Symposium:</strong>
+                <ul>
+                    <li>Operationalizing PMM</li>
+                    <li>GTM Directions</li>
+                    <li>Customer Marketing with AI</li>
+                    <li>Operating Models & Roles</li>
+                    <li>Market Shaper CMO</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 The Future of PMM · <a href="/about.html">About</a></p>
+        </div>
+    </footer>
 
 </body>
 </html>
