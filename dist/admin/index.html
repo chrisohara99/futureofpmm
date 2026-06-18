@@ -106,7 +106,10 @@
         document.getElementById('app').innerHTML = `
             <header>
                 <h1>🛠️ Admin Dashboard</h1>
-                <div class="user">Logged in as ${currentUser}</div>
+                <div class="user">
+                    <span id="last-updated" style="margin-right: 1rem; opacity: 0.7;"></span>
+                    Logged in as ${currentUser}
+                </div>
             </header>
             <div class="container">
                 <div class="grid" id="stats-grid">
@@ -122,11 +125,10 @@
                 </div>
                 
                 <div class="section" id="subscribers-section">
-                    <h2>📧 All Subscribers (63)</h2>
+                    <h2>📧 All Subscribers</h2>
                     <div class="tabs" id="subscriber-tabs">
-                        <button class="tab active" data-filter="all">All (63)</button>
-                        <button class="tab" data-filter="completed">Completed U1+U2</button>
-                        <button class="tab" data-filter="unit1only">Unit 1 Only</button>
+                        <button class="tab active" data-filter="all">All</button>
+                        <button class="tab" data-filter="active">Active (1+ units)</button>
                         <button class="tab" data-filter="notstarted">Not Started</button>
                         <button class="tab" data-filter="danteam">Dan's Team</button>
                         <button class="tab" data-filter="superuser">Superusers</button>
@@ -142,6 +144,9 @@
             loadSurveys(),
             loadUsers()
         ]);
+        
+        // Update timestamp
+        document.getElementById('last-updated').textContent = `Updated: ${new Date().toLocaleString()}`;
     }
     
     async function loadStats() {
@@ -388,13 +393,12 @@
                 let count = 0;
                 switch(filter) {
                     case 'all': count = allSubscribers.length; break;
-                    case 'completed': count = allSubscribers.filter(s => s.unit1 && s.unit2).length; break;
-                    case 'unit1only': count = allSubscribers.filter(s => s.unit1 && !s.unit2).length; break;
-                    case 'notstarted': count = allSubscribers.filter(s => !s.unit1 && !s.unit2).length; break;
+                    case 'active': count = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3).length; break;
+                    case 'notstarted': count = allSubscribers.filter(s => !s.unit1 && !s.unit2 && !s.unit3).length; break;
                     case 'danteam': count = allSubscribers.filter(s => s.danTeam).length; break;
                     case 'superuser': count = allSubscribers.filter(s => s.superuser).length; break;
                 }
-                tab.textContent = tab.textContent.replace(/\(\d+\)/, `(${count})`);
+                tab.textContent = `${tab.textContent.split('(')[0].trim()} (${count})`;
             });
             
             // Add tab click handlers
@@ -416,20 +420,22 @@
         let filtered = allSubscribers;
         
         switch(filter) {
-            case 'completed': filtered = allSubscribers.filter(s => s.unit1 && s.unit2); break;
-            case 'unit1only': filtered = allSubscribers.filter(s => s.unit1 && !s.unit2); break;
-            case 'notstarted': filtered = allSubscribers.filter(s => !s.unit1 && !s.unit2); break;
+            case 'active': filtered = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3); break;
+            case 'notstarted': filtered = allSubscribers.filter(s => !s.unit1 && !s.unit2 && !s.unit3); break;
             case 'danteam': filtered = allSubscribers.filter(s => s.danTeam); break;
             case 'superuser': filtered = allSubscribers.filter(s => s.superuser); break;
         }
         
         // Stats bar
+        const activeCount = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3).length;
         let html = `<div style="display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; font-size: 0.9rem;">
-            <div>📊 <strong>Unit 1:</strong> ${subscriberStats.unit1Passed || 0} passed</div>
-            <div>📊 <strong>Unit 2:</strong> ${subscriberStats.unit2Passed || 0} passed</div>
-            <div>📊 <strong>Unit 3:</strong> ${subscriberStats.unit3Passed || 0} passed</div>
-            <div>✅ <strong>Both U1+U2:</strong> ${subscriberStats.bothUnitsPassed || 0}</div>
-        </div>`;
+            <div>👥 <strong>Total:</strong> ${allSubscribers.length}</div>
+            <div>✅ <strong>Active:</strong> ${activeCount} (${Math.round(activeCount/allSubscribers.length*100)}%)</div>
+            <div>📊 <strong>U1:</strong> ${subscriberStats.unit1Passed || 0}</div>
+            <div>📊 <strong>U2:</strong> ${subscriberStats.unit2Passed || 0}</div>
+            <div>📊 <strong>U3:</strong> ${subscriberStats.unit3Passed || 0}</div>
+        </div>
+        <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;">Last updated: ${new Date().toLocaleString()}</p>`;
         
         html += `<table>
             <thead>
@@ -437,9 +443,7 @@
                     <th>Email</th>
                     <th>Name</th>
                     <th>Team</th>
-                    <th>U1</th>
-                    <th>U2</th>
-                    <th>U3</th>
+                    <th>Units</th>
                     <th>Registered</th>
                 </tr>
             </thead>
@@ -450,13 +454,17 @@
             if (s.danTeam) teamBadges.push('<span class="badge blue">Dan\'s Team</span>');
             if (s.superuser) teamBadges.push('<span class="badge yellow">🔑 Super</span>');
             
+            // Count units passed
+            const unitsPassed = [s.unit1, s.unit2, s.unit3].filter(Boolean).length;
+            const unitsDisplay = unitsPassed > 0 
+                ? `<span class="badge green">${unitsPassed}/8</span>` 
+                : '<span style="color:#cbd5e1;">0/8</span>';
+            
             html += `<tr>
                 <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">${s.email}</td>
                 <td>${s.name || '<span style="color:#94a3b8;">—</span>'}</td>
                 <td>${teamBadges.join(' ') || '<span style="color:#94a3b8;">—</span>'}</td>
-                <td>${s.unit1 ? '<span class="badge green">✓</span>' : '<span style="color:#cbd5e1;">—</span>'}</td>
-                <td>${s.unit2 ? '<span class="badge green">✓</span>' : '<span style="color:#cbd5e1;">—</span>'}</td>
-                <td>${s.unit3 ? '<span class="badge green">✓</span>' : '<span style="color:#cbd5e1;">—</span>'}</td>
+                <td>${unitsDisplay}</td>
                 <td>${s.registered ? new Date(s.registeredAt).toLocaleDateString() : '<span class="badge red">No</span>'}</td>
             </tr>`;
         });
