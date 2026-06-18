@@ -462,14 +462,37 @@ async function fetchPageContent() {
     btn.textContent = 'Fetching...';
     
     try {
-        // Use a CORS proxy or your own endpoint
-        // For now, we'll show a message about manual paste
-        alert('Auto-fetch coming soon! For now, please visit your product page and copy/paste the main content into the text area.');
+        const response = await fetch('/.netlify/functions/fetch-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to fetch URL');
+        }
+        
+        // Populate the content area
+        contentArea.value = data.content;
+        
+        // Show success
+        let msg = '✅ Content imported';
+        if (data.title) {
+            msg += ` from "${data.title}"`;
+        }
+        if (data.truncated) {
+            msg += ' (truncated)';
+        }
+        btn.textContent = msg;
+        setTimeout(() => btn.textContent = 'Fetch Content', 3000);
+        
     } catch (error) {
-        alert('Could not fetch page. Please copy/paste content manually.');
+        alert('Could not fetch page: ' + (error.message || 'Unknown error'));
+        btn.textContent = 'Fetch Content';
     } finally {
         btn.disabled = false;
-        btn.textContent = 'Fetch Content';
     }
 }
 
