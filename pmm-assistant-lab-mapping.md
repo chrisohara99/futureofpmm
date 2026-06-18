@@ -81,38 +81,38 @@ These exist in Future of PMM but aren't explicitly mapped to the PMM Assistant p
 
 ---
 
-## GAPS TO BUILD (Priority Order)
+## GAPS STATUS
 
-### Priority 1: Enablement Bundler
-**Why first:** Highest field demand, compounds Wave 1 outputs, directly impacts pipeline
-- **Input:** Messaging, pricing, competitive intel, buyer journey stage
-- **Output:** Region/persona-tuned sales kit with talk tracks + collateral
-- **Build complexity:** Medium (aggregation + personalization)
-- **Estimated effort:** 2-3 days
+### ✅ BUILT: Enablement Bundler
+**Live:** https://futureofpmm.com/curriculum/labs/enablement-bundler.html
+- Region/persona-tuned sales kits
+- Talk tracks, proof points, objection handlers
+- Asset recommendations by deal stage
 
-### Priority 2: Customer Reference Matcher
-**Why second:** Field teams always asking "who can I reference?"
+### ✅ BUILT: Content Localization Agent
+**Live:** https://futureofpmm.com/curriculum/labs/content-localization.html
+- Multi-region adaptation (DACH, France, Japan, LATAM, etc.)
+- Tone and terminology localization
+- Compliance flags and back-translation
+
+### Still to Build:
+
+### Priority 1: Customer Reference Matcher
+**Why:** Field teams always asking "who can I reference?"
 - **Input:** Opportunity data (industry, use case, region, deal size)
 - **Output:** Matched references + draft case study content
 - **Build complexity:** Medium (needs reference database simulation)
 - **Estimated effort:** 2-3 days
 
-### Priority 3: Win/Loss Synthesizer
-**Why third:** Closes the feedback loop to positioning
+### Priority 2: Win/Loss Synthesizer
+**Why:** Closes the feedback loop to positioning
 - **Input:** Win/loss records, deal notes, competitive data
 - **Output:** Pattern reports, positioning shift recommendations
 - **Build complexity:** Medium-High (pattern analysis)
 - **Estimated effort:** 3-4 days
 
-### Priority 4: Content Localization Agent
-**Why fourth:** Extends reach, but depends on source content existing
-- **Input:** Approved source content, locale/region requirements
-- **Output:** Localized versions with brand guardrails
-- **Build complexity:** Medium (translation + brand rules)
-- **Estimated effort:** 2-3 days
-
-### Priority 5: Pipeline Influence Tracker
-**Why last:** Requires real data integration to be meaningful
+### Priority 3: Pipeline Influence Tracker
+**Why:** Requires real data integration to be meaningful
 - **Input:** Content engagement, pipeline/opportunity data
 - **Output:** Attribution reports, investment recommendations
 - **Build complexity:** High (analytics + attribution modeling)
