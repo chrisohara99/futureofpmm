@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiled Experience Survey | Future of PMM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #a1a1aa;
+            font-size: 0.95rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+        }
+        
+        .question:last-child {
+            margin-bottom: 0;
+        }
+        
+        .question label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #e5e5e5;
+        }
+        
+        .question .hint {
+            font-size: 0.85rem;
+            color: #71717a;
+            margin-bottom: 0.75rem;
+            font-weight: normal;
+        }
+        
+        .rating-scale {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .rating-scale input {
+            display: none;
+        }
+        
+        .rating-scale label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 60px;
+            font-weight: normal;
+        }
+        
+        .rating-scale label:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+        
+        .rating-scale input:checked + label {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-color: transparent;
+        }
+        
+        .rating-scale .num {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .rating-scale .desc {
+            font-size: 0.7rem;
+            color: #a1a1aa;
+            margin-top: 0.25rem;
+        }
+        
+        .rating-scale input:checked + label .desc {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #71717a;
+            margin-top: 0.5rem;
+            padding: 0 0.5rem;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: normal;
+        }
+        
+        .radio-group label:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+        
+        .radio-group input {
+            accent-color: #6366f1;
+            width: 18px;
+            height: 18px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        
+        textarea::placeholder {
+            color: #52525b;
+        }
+        
+        input[type="email"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+        
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .success {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .success h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #10b981;
+        }
+        
+        .success p {
+            color: #a1a1aa;
+        }
+        
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6366f1;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Tiled Experience Survey</h1>
+            <p>Help us decide if this format works better. Takes ~2 minutes.</p>
+        </div>
+        
+        <form id="survey-form">
+            <div class="card">
+                <div class="section-title">Comparing Formats</div>
+                
+                <div class="question">
+                    <label>1. Have you used the standard curriculum before?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="used_standard" value="yes" required> Yes, I've gone through it</label>
+                        <label><input type="radio" name="used_standard" value="some"> Partially — looked at some sections</label>
+                        <label><input type="radio" name="used_standard" value="no"> No, this is my first time</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <label>2. How easy was the Tiled format to navigate?</label>
+                    <div class="hint">1 = Very difficult, 5 = Very easy</div>
+                    <div class="rating-scale">
+                        <input type="radio" name="navigation" id="nav1" value="1" required>
+                        <label for="nav1"><span class="num">1</span></label>
+                        <input type="radio" name="navigation" id="nav2" value="2">
+                        <label for="nav2"><span class="num">2</span></label>
+                        <input type="radio" name="navigation" id="nav3" value="3">
+                        <label for="nav3"><span class="num">3</span></label>
+                        <input type="radio" name="navigation" id="nav4" value="4">
+                        <label for="nav4"><span class="num">4</span></label>
+                        <input type="radio" name="navigation" id="nav5" value="5">
+                        <label for="nav5"><span class="num">5</span></label>
+                    </div>
+                    <div class="scale-labels">
+                        <span>Confusing</span>
+                        <span>Intuitive</span>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <label>3. How engaging was the Tiled experience?</label>
+                    <div class="hint">1 = Not engaging, 5 = Very engaging</div>
+                    <div class="rating-scale">
+                        <input type="radio" name="engagement" id="eng1" value="1" required>
+                        <label for="eng1"><span class="num">1</span></label>
+                        <input type="radio" name="engagement" id="eng2" value="2">
+                        <label for="eng2"><span class="num">2</span></label>
+                        <input type="radio" name="engagement" id="eng3" value="3">
+                        <label for="eng3"><span class="num">3</span></label>
+                        <input type="radio" name="engagement" id="eng4" value="4">
+                        <label for="eng4"><span class="num">4</span></label>
+                        <input type="radio" name="engagement" id="eng5" value="5">
+                        <label for="eng5"><span class="num">5</span></label>
+                    </div>
+                    <div class="scale-labels">
+                        <span>Boring</span>
+                        <span>Engaging</span>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <label>4. How clear was the content presentation?</label>
+                    <div class="hint">1 = Hard to follow, 5 = Crystal clear</div>
+                    <div class="rating-scale">
+                        <input type="radio" name="clarity" id="clar1" value="1" required>
+                        <label for="clar1"><span class="num">1</span></label>
+                        <input type="radio" name="clarity" id="clar2" value="2">
+                        <label for="clar2"><span class="num">2</span></label>
+                        <input type="radio" name="clarity" id="clar3" value="3">
+                        <label for="clar3"><span class="num">3</span></label>
+                        <input type="radio" name="clarity" id="clar4" value="4">
+                        <label for="clar4"><span class="num">4</span></label>
+                        <input type="radio" name="clarity" id="clar5" value="5">
+                        <label for="clar5"><span class="num">5</span></label>
+                    </div>
+                    <div class="scale-labels">
+                        <span>Confusing</span>
+                        <span>Clear</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-title">Overall Preference</div>
+                
+                <div class="question">
+                    <label>5. Which format would you prefer for learning?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="preference" value="tiled" required> Tiled (interactive microapp)</label>
+                        <label><input type="radio" name="preference" value="standard"> Standard (web pages)</label>
+                        <label><input type="radio" name="preference" value="both"> Both have their place</label>
+                        <label><input type="radio" name="preference" value="neither"> Neither — I'd prefer something else</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <label>6. How likely are you to complete the full curriculum in Tiled format?</label>
+                    <div class="hint">1 = Very unlikely, 5 = Very likely</div>
+                    <div class="rating-scale">
+                        <input type="radio" name="completion" id="comp1" value="1" required>
+                        <label for="comp1"><span class="num">1</span></label>
+                        <input type="radio" name="completion" id="comp2" value="2">
+                        <label for="comp2"><span class="num">2</span></label>
+                        <input type="radio" name="completion" id="comp3" value="3">
+                        <label for="comp3"><span class="num">3</span></label>
+                        <input type="radio" name="completion" id="comp4" value="4">
+                        <label for="comp4"><span class="num">4</span></label>
+                        <input type="radio" name="completion" id="comp5" value="5">
+                        <label for="comp5"><span class="num">5</span></label>
+                    </div>
+                    <div class="scale-labels">
+                        <span>Unlikely</span>
+                        <span>Very likely</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-title">Open Feedback</div>
+                
+                <div class="question">
+                    <label>7. What did you like most about the Tiled experience?</label>
+                    <textarea name="liked" placeholder="What worked well..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <label>8. What would you improve?</label>
+                    <textarea name="improve" placeholder="Suggestions, issues, ideas..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <label>Your email (optional — for follow-up)</label>
+                    <input type="email" name="email" placeholder="you@sap.com">
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit Feedback</button>
+        </form>
+        
+        <div class="success card" id="success">
+            <h2>✅ Thanks for your feedback!</h2>
+            <p>Your input will help us decide the best format for the curriculum.</p>
+            <p style="margin-top: 1rem;"><a href="/curriculum/" style="color: #6366f1;">← Back to Curriculum</a></p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('survey-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const btn = form.querySelector('.submit-btn');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+            
+            const data = new FormData(form);
+            const response = {
+                survey_type: 'tiled_ab_test',
+                timestamp: new Date().toISOString(),
+                used_standard: data.get('used_standard'),
+                navigation: data.get('navigation'),
+                engagement: data.get('engagement'),
+                clarity: data.get('clarity'),
+                preference: data.get('preference'),
+                completion: data.get('completion'),
+                liked: data.get('liked'),
+                improve: data.get('improve'),
+                email: data.get('email')
+            };
+            
+            try {
+                await fetch('/.netlify/functions/save-survey', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(response)
+                });
+            } catch (err) {
+                console.log('Survey save error:', err);
+            }
+            
+            form.style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
