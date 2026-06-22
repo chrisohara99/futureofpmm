@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1 Assessment | Future of PMM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 480px;
+            text-align: center;
+        }
+        
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        p {
+            color: #a1a1aa;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .subtext {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #71717a;
+        }
+        
+        .subtext a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+        
+        .loading {
+            color: #a1a1aa;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div id="loading" class="loading">
+            <div class="icon">⏳</div>
+            <p>Checking your session...</p>
+        </div>
+        
+        <div id="login-prompt" class="hidden">
+            <div class="icon">📝</div>
+            <h1>Ready for the Assessment?</h1>
+            <p>Sign in with your SAP email to take the Unit 1 quiz and track your progress on the leaderboard.</p>
+            <a href="/curriculum/login.html?redirect=/curriculum/unit-01/quiz.html" class="btn">
+                Sign In to Continue →
+            </a>
+            <p class="subtext">
+                Don't have access? <a href="/curriculum/signup.html">Request access</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        (function() {
+            // Check if user is already logged in
+            let isLoggedIn = false;
+            
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (directUser) {
+                    const user = JSON.parse(directUser);
+                    if (user.email) {
+                        isLoggedIn = true;
+                    }
+                }
+            } catch (e) {}
+            
+            if (isLoggedIn) {
+                // Already logged in - go straight to quiz
+                window.location.replace('/curriculum/unit-01/quiz.html');
+            } else {
+                // Not logged in - show login prompt
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('login-prompt').classList.remove('hidden');
+            }
+        })();
+    </script>
+</body>
+</html>
