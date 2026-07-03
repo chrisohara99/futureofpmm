@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Office Hours — June 30, 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #f97316;
+            --accent2: #8b5cf6;
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --red: #ef4444;
+            --gold: #fbbf24;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .slide {
+            min-height: 100vh;
+            padding: 60px 80px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide.active { display: flex; }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+        
+        h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+        h1 span { color: var(--accent); }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 32px;
+        }
+        h2 span { color: var(--accent); }
+        
+        .subtitle {
+            font-size: 24px;
+            color: var(--muted);
+            font-weight: 400;
+            margin-bottom: 40px;
+        }
+        
+        .agenda-list {
+            list-style: none;
+            max-width: 800px;
+        }
+        .agenda-list li {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 24px;
+        }
+        .agenda-list li:last-child { border-bottom: none; }
+        .agenda-list .icon {
+            font-size: 32px;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            margin-bottom: 48px;
+        }
+        .stat-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .stat-card .label {
+            font-size: 16px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        .stat-card.green .number { color: var(--green); }
+        .stat-card.blue .number { color: var(--blue); }
+        .stat-card.gold .number { color: var(--gold); }
+        
+        .leaderboard {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 700px;
+        }
+        .leaderboard h3 {
+            font-size: 20px;
+            margin-bottom: 24px;
+            color: var(--muted);
+        }
+        .leader-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .leader-row:last-child { border-bottom: none; }
+        .rank {
+            font-size: 24px;
+            width: 40px;
+        }
+        .leader-name {
+            flex: 1;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .leader-stats {
+            text-align: right;
+        }
+        .leader-stats .pts {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .leader-stats .units {
+            font-size: 14px;
+            color: var(--muted);
+        }
+        .leader-row.highlight {
+            background: linear-gradient(90deg, rgba(249,115,22,0.2), transparent);
+            margin: 0 -16px;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        
+        .unit-hero {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 1100px;
+        }
+        .unit-badge {
+            display: inline-block;
+            background: var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .unit-title {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .unit-desc {
+            font-size: 20px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        
+        .prereq-box {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .prereq-box h3 {
+            font-size: 18px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .prereq-list {
+            list-style: none;
+        }
+        .prereq-list li {
+            font-size: 18px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .prereq-list li:last-child { border-bottom: none; }
+        .prereq-list .chapter {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            margin-top: 40px;
+        }
+        .concept-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 28px;
+            border-left: 4px solid var(--accent);
+        }
+        .concept-card h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .concept-card p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        
+        .copilot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1100px;
+        }
+        .copilot-section h3 {
+            font-size: 22px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wave-list {
+            list-style: none;
+        }
+        .wave-list li {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .wave-list .status {
+            font-size: 24px;
+        }
+        .wave-list .agent-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .wave-list .built { border-left: 3px solid var(--green); }
+        .wave-list .gap { border-left: 3px solid var(--red); opacity: 0.7; }
+        
+        .coverage-stat {
+            background: linear-gradient(135deg, var(--accent2), #7c3aed);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            margin-top: 24px;
+        }
+        .coverage-stat .big {
+            font-size: 72px;
+            font-weight: 800;
+        }
+        .coverage-stat .label {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+        
+        .tiled-showcase {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 1100px;
+        }
+        .tiled-features {
+            list-style: none;
+        }
+        .tiled-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .tiled-features li:last-child { border-bottom: none; }
+        .tiled-features .icon {
+            font-size: 28px;
+            width: 40px;
+        }
+        .tiled-features .content h4 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        .tiled-features .content p {
+            font-size: 16px;
+            color: var(--muted);
+        }
+        
+        .ab-test-box {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .ab-test-box h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        .ab-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .ab-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .ab-item .label {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        .ab-item .name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .ab-item .url {
+            font-size: 12px;
+            color: var(--blue);
+            margin-top: 8px;
+        }
+        
+        .qa-slide {
+            text-align: center;
+        }
+        .qa-slide h1 {
+            font-size: 80px;
+            margin-bottom: 32px;
+        }
+        .qa-slide p {
+            font-size: 28px;
+            color: var(--muted);
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            display: flex;
+            gap: 12px;
+        }
+        .controls button {
+            background: var(--card);
+            border: none;
+            color: var(--text);
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .controls button:hover {
+            background: var(--accent);
+        }
+        
+        @media (max-width: 900px) {
+            .slide { padding: 40px 24px; }
+            h1 { font-size: 36px; }
+            h2 { font-size: 28px; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .unit-hero, .copilot-grid, .tiled-showcase { grid-template-columns: 1fr; }
+            .concept-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<section class="slide active" data-slide="1">
+    <h1>Future of PMM<br><span>Office Hours</span></h1>
+    <p class="subtitle">June 30, 2026 — Week 8</p>
+</section>
+
+<!-- Slide 2: Agenda -->
+<section class="slide" data-slide="2">
+    <h2>Today's <span>Agenda</span></h2>
+    <ul class="agenda-list">
+        <li><span class="icon">📊</span> Team Progress — Where We Stand</li>
+        <li><span class="icon">📚</span> Unit 5 Launch — Sales Enablement & Pre-Reading</li>
+        <li><span class="icon">🤖</span> PMM Co-Pilot — Broader AI Adoption Vision</li>
+        <li><span class="icon">✨</span> Tiled Demo — Interactive Learning Experience</li>
+        <li><span class="icon">💬</span> Open Q&A</li>
+    </ul>
+</section>
+
+<!-- Slide 3: Team Progress -->
+<section class="slide" data-slide="3">
+    <h2>Team <span>Progress</span></h2>
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="number">36</div>
+            <div class="label">Active Learners</div>
+        </div>
+        <div class="stat-card green">
+            <div class="number">14</div>
+            <div class="label">Completed 3+ Units</div>
+        </div>
+        <div class="stat-card blue">
+            <div class="number">8</div>
+            <div class="label">Units Available</div>
+        </div>
+        <div class="stat-card gold">
+            <div class="number">4</div>
+            <div class="label">Units Due This Week</div>
+        </div>
+    </div>
+    <div class="leaderboard">
+        <h3>🏆 Leaderboard Top 5</h3>
+        <div class="leader-row highlight">
+            <span class="rank">🥇</span>
+            <span class="leader-name">Venkata G.</span>
+            <div class="leader-stats">
+                <div class="pts">619 pts</div>
+                <div class="units">4/8 units ⬆️ NEW #1</div>
+            </div>
+        </div>
+        <div class="leader-row">
+            <span class="rank">🥈</span>
+            <span class="leader-name">Cathy C.</span>
+            <div class="leader-stats">
+                <div class="pts">594 pts</div>
+                <div class="units">4/8 units</div>
+            </div>
+        </div>
+        <div class="leader-row">
+            <span class="rank">🥉</span>
+            <span class="leader-name">Axel S.</span>
+            <div class="leader-stats">
+                <div class="pts">593 pts</div>
+                <div class="units">4/8 units</div>
+            </div>
+        </div>
+        <div class="leader-row">
+            <span class="rank">4</span>
+            <span class="leader-name">Kelly A.</span>
+            <div class="leader-stats">
+                <div class="pts">545 pts</div>
+                <div class="units">4/8 units</div>
+            </div>
+        </div>
+        <div class="leader-row">
+            <span class="rank">5</span>
+            <span class="leader-name">Zach K.</span>
+            <div class="leader-stats">
+                <div class="pts">520 pts</div>
+                <div class="units">3/8 units</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 4: Unit 5 Launch -->
+<section class="slide" data-slide="4">
+    <h2>This Week: <span>Unit 5</span></h2>
+    <div class="unit-hero">
+        <div>
+            <span class="unit-badge">LAUNCHING NOW</span>
+            <h3 class="unit-title">Sales Enablement and the Death of the Static Battlecard</h3>
+            <p class="unit-desc">The artifact factory is dead. The intelligence layer is rising. Learn to build adaptive enablement systems powered by RAG and agentic workflows.</p>
+        </div>
+        <div class="prereq-box">
+            <h3>📖 Prep Resources</h3>
+            <ul class="prereq-list">
+                <li>
+                    <span>🎯</span>
+                    <div>
+                        <strong>BattleCoach Lab</strong>
+                        <span class="chapter">AI-powered competitive roleplay</span>
+                    </div>
+                </li>
+                <li>
+                    <span>📊</span>
+                    <div>
+                        <strong>CI Brief Generator Lab</strong>
+                        <span class="chapter">Build competitive intelligence briefs</span>
+                    </div>
+                </li>
+                <li>
+                    <span>📦</span>
+                    <div>
+                        <strong>Enablement Bundler Lab</strong>
+                        <span class="chapter">Create persona-tuned sales kits</span>
+                    </div>
+                </li>
+                <li>
+                    <span>✅</span>
+                    <div>
+                        <strong>Complete Units 1-4</strong>
+                        <span class="chapter">Foundation for Unit 5</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 5: Unit 5 Key Concepts -->
+<section class="slide" data-slide="5">
+    <h2>Unit 5: <span>Key Concepts</span></h2>
+    <p class="subtitle">What you'll master this week</p>
+    <div class="concept-grid">
+        <div class="concept-card">
+            <h4>The Enablement Paradox</h4>
+            <p>Why more content often means less seller confidence — and how AI solves the signal-to-noise problem.</p>
+        </div>
+        <div class="concept-card">
+            <h4>From Artifacts → Intelligence</h4>
+            <p>Static PDFs become living knowledge bases. Battlecards become real-time competitive coaching.</p>
+        </div>
+        <div class="concept-card">
+            <h4>RAG-Powered Enablement</h4>
+            <p>How retrieval-augmented generation creates personalized, contextual sales intelligence at scale.</p>
+        </div>
+        <div class="concept-card">
+            <h4>The Three Layers</h4>
+            <p>Knowledge Layer → Intelligence Layer → Delivery Layer. The stack that replaces the folder of PDFs.</p>
+        </div>
+        <div class="concept-card">
+            <h4>Dynamic Battlecards</h4>
+            <p>From quarterly updates to real-time competitive intelligence that surfaces when reps need it.</p>
+        </div>
+        <div class="concept-card">
+            <h4>Measuring What Matters</h4>
+            <p>From content downloads to influence on deals. New metrics for the intelligence era.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 6: PMM Assistant Overview -->
+<section class="slide" data-slide="6">
+    <h2>SAP <span>PMM Assistant</span></h2>
+    <p class="subtitle">10 agents · 3 waves · 6 months — AI-powered Product Marketing copilot</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1100px; margin-top: 20px;">
+        <div style="background: linear-gradient(135deg, #166534 0%, #15803d 100%); border-radius: 16px; padding: 28px;">
+            <div style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 8px;">Wave 1 · Months 1-2</div>
+            <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Productivity</div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">1. Messaging Drafter</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Storytelling & Messaging</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">2. Pricing Approval Agent</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Pricing & Packaging</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">3. Battlecard Refresh Agent</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Competitive & Market Intel</div>
+                </div>
+            </div>
+        </div>
+        <div style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); border-radius: 16px; padding: 28px;">
+            <div style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 8px;">Wave 2 · Months 3-4</div>
+            <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Workflow Scale</div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">4. Launch Readiness Agent</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Launch & Commercialization</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">5. Enablement Bundler</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Sales Plays & Enablement</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">6. Customer Reference Matcher</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Customer Insights & References</div>
+                </div>
+            </div>
+        </div>
+        <div style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); border-radius: 16px; padding: 28px;">
+            <div style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 8px;">Wave 3 · Months 5-6</div>
+            <div style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Pipeline Engine</div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">7. GEO Optimizer Agent</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Writing for GEO</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">8. Content Localization Agent</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Content Optimization</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">9. Win/Loss Synthesizer</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Competitive Intelligence</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.15); padding: 12px 16px; border-radius: 8px; font-size: 15px;">
+                    <div style="font-weight: 600;">10. Pipeline Influence Tracker</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Analytics & Pipeline</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 32px; text-align: center; color: var(--muted); font-size: 16px;">
+        <strong>Foundation:</strong> SAP PMM Knowledge Graph — product facts, messaging, competitive intel, launch data
+    </div>
+</section>
+
+<!-- Slide 7: Agent 1 - Messaging Drafter -->
+<section class="slide" data-slide="17">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--green); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 1 · MONTHS 1-2</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">1. <span>Messaging Drafter</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Draft value propositions, positioning, and narratives from product specs — in SAP-approved frameworks.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Generates first-draft value propositions, messaging frameworks, and persona-specific narratives. Refines tone and repurposes across formats.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">User-led, reactive — PMM-invoked on demand.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Messaging draft cycle time · % drafts reused without rework</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Messaging frameworks, value propositions, persona definitions, approved narratives, content library</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">SharePoint, Seismic/Highspot, DAM</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--green), #16a34a); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">Messaging Framework Lab</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">Creates value propositions, 3 messaging pillars, persona variants, elevator pitches, objection handlers</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 8: Agent 2 - Pricing Approval -->
+<section class="slide" data-slide="8">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--green); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 1 · MONTHS 1-2</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">2. <span>Pricing Approval Agent</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Assemble pricing rationale and value framing to accelerate approval cycles.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Builds pricing rationale, value framing, and scenario summaries for approval workflow. Flags missing inputs and inconsistencies.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">User-led, reactive — with system-led prompts when approval cycle opens.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Pricing approval cycle time · first-pass approval rate</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Pricing guidance, offer structures, approval criteria, competitive price points</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">CLP, SharePoint, CRM</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--green), #16a34a); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">Pricing Rationale Builder</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">Executive summary, value waterfall, ROI analysis, cost of inaction, negotiation talking points</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 9: Agent 3 - Battlecard Refresh -->
+<section class="slide" data-slide="9">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--green); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 1 · MONTHS 1-2</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">3. <span>Battlecard Refresh Agent</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Keep battlecards current automatically from competitive signals.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Monitors competitive and analyst signals, drafts and refreshes battlecards. Flags material positioning changes for PMM review.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">System-led, proactive — on competitive signal; user-led on demand.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Battlecard freshness (days since update) · competitor coverage %</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Competitive-intel repositories, analyst reports, win/loss data, market research</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Crayon, Analyst Portals, SharePoint, Seismic</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--green), #16a34a); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">BattleCoach</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">SAP vs. competition. Input deal briefing, get battle-ready artifacts via FUD Engine and proven frameworks.</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 10: Agent 4 - Launch Readiness -->
+<section class="slide" data-slide="10">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--blue); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 2 · MONTHS 3-4</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">4. <span>Launch Readiness Agent</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Track launch deliverables, flag gaps, and draft the artifacts that close them.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Tracks launch deliverables against readiness milestones and flags gaps in real time. Drafts standard launch artifacts to close open items.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">System-led, proactive — milestone-triggered; user-led on demand.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Launch readiness lead time · % deliverables on time</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Launch frameworks, commercialization checklists, readiness milestones</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">CLP, Project Management Tools, SharePoint</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--blue), #3b82f6); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">Launch Planner</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">From idea to launch day. Complete Bill of Materials with T-minus timeline and task tracking.</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 11: Agent 5 - Enablement Bundler -->
+<section class="slide" data-slide="11">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--blue); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 2 · MONTHS 3-4</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">5. <span>Enablement Bundler</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Assemble region- and persona-tuned sales enablement kits.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Bundles enablement assets into region- and persona-tuned kits with talk tracks and recommended collateral. Tailors to buyer journey stage.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">User-led, reactive — PMM- or field-invoked.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Enablement kit build time · field asset adoption rate</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Enablement assets, sales-play templates, buyer journeys, persona/region tags</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Seismic, Highspot, CRM, SharePoint</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--blue), #3b82f6); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">Enablement Lab</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">Executive summary, talk track, proof points, objection handlers, recommended assets, competitive positioning</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 12: Agent 6 - Customer Reference Matcher -->
+<section class="slide" data-slide="12">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--blue); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 2 · MONTHS 3-4</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">6. <span>Customer Reference Matcher</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Match opportunities to references and draft case-study content.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Matches open opportunities to relevant customer references by industry, use case, and region. Drafts case-study and proof-point content.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">System-led, proactive — on new opportunity; user-led on demand.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Reference match rate · time-to-reference</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Reference database, opportunity data, case studies, customer profiles</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">CRM, Reference Management, SharePoint</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: var(--card); border-radius: 16px; padding: 28px; text-align: center; border: 2px dashed rgba(255,255,255,0.3);">
+            <div style="font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px; color: var(--muted);">Reference Matcher</div>
+            <p style="font-size: 15px; color: var(--muted); margin-bottom: 20px;">Match opportunities to relevant references, draft case-study content</p>
+            <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700; color: var(--muted);">🔧 IN DEVELOPMENT</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 13: Agent 7 - GEO Optimizer -->
+<section class="slide" data-slide="13">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--accent2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 3 · MONTHS 5-6</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">7. <span>GEO Optimizer Agent</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Scan content for AI-discoverability and recommend optimizations.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Scans content for generative-engine discoverability and citation readiness. Recommends structure and language changes for AI systems.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">System-led, proactive — periodic scan; user-led on demand.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">AI-citation share · GEO score uplift</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Content corpus, AI-search/citation signals, GEO and SEO metrics</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Web analytics, content platforms, LLM evaluation</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--accent2), #a855f7); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">GEO Visibility Test</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">GEO score 1-10, specificity analysis, quick wins, rewrite examples, test queries</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 14: Agent 8 - Content Localization -->
+<section class="slide" data-slide="14">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--accent2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 3 · MONTHS 5-6</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">8. <span>Content Localization Agent</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Adapt approved content across regions and languages — brand-safe.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Adapts approved content across regions and languages with brand-safety and regulatory guardrails. Preserves messaging intent while localizing.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">User-led, reactive — PMM- or region-invoked.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Localization turnaround · brand-compliance rate</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Source content, brand guidelines, locale glossaries, regulatory rules</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">TMS, DAM, SharePoint</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: linear-gradient(135deg, var(--accent2), #a855f7); border-radius: 16px; padding: 28px; text-align: center;">
+            <div style="font-size: 14px; font-weight: 600; opacity: 0.9; margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px;">Content Localizer</div>
+            <p style="font-size: 15px; opacity: 0.9; margin-bottom: 20px;">Localized content, cultural context notes, terminology mapping, tone adjustments, compliance flags</p>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700;">✅ LIVE!</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 15: Agent 9 - Win/Loss Synthesizer -->
+<section class="slide" data-slide="15">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--accent2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 3 · MONTHS 5-6</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">9. <span>Win/Loss Synthesizer</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Surface win/loss patterns and recommend positioning shifts.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Synthesizes win/loss records and deal notes into pattern reports. Recommends positioning shifts and messaging adjustments grounded in outcomes.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">System-led, proactive — periodic synthesis.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Win-rate insight cycle · positioning actions taken</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Win/loss records, CRM outcomes, deal notes, competitive data</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">CRM, Win/Loss Systems, SharePoint</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: var(--card); border-radius: 16px; padding: 28px; text-align: center; border: 2px dashed rgba(255,255,255,0.3);">
+            <div style="font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px; color: var(--muted);">Win/Loss Analyzer</div>
+            <p style="font-size: 15px; color: var(--muted); margin-bottom: 20px;">Pattern reports, positioning recommendations, competitive insights</p>
+            <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700; color: var(--muted);">🔧 IN DEVELOPMENT</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 16: Agent 10 - Pipeline Influence Tracker -->
+<section class="slide" data-slide="16">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; max-width: 1150px;">
+        <div style="flex: 1.2;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <span style="background: var(--accent2); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">WAVE 3 · MONTHS 5-6</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 8px;">10. <span>Pipeline Influence Tracker</span></h2>
+            <p style="color: var(--muted); font-size: 16px; margin-bottom: 28px;">Attribute content engagement to pipeline influence.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">WHAT IT DOES</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Connects content engagement to pipeline and opportunity outcomes. Quantifies PMM influence on revenue to inform investment decisions.</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">TRIGGER</div>
+                    <p style="font-size: 14px; line-height: 1.5;">System-led, proactive — continuous.</p>
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin: 12px 0 8px;">TARGET KPI</div>
+                    <p style="font-size: 14px;">Content-influenced pipeline (€) · attribution coverage</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">DATA REQUIREMENTS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">Content engagement, pipeline/opportunity data, attribution models</p>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px;">
+                    <div style="color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 8px;">INTEGRATIONS</div>
+                    <p style="font-size: 14px; line-height: 1.5;">SAP Analytics Cloud, CRM, web analytics</p>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 0.7; background: var(--card); border-radius: 16px; padding: 28px; text-align: center; border: 2px dashed rgba(255,255,255,0.3);">
+            <div style="font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 12px;">🧪 LAB PROTOTYPE</div>
+            <div style="font-size: 28px; font-weight: 700; margin-bottom: 16px; color: var(--muted);">Pipeline Tracker</div>
+            <p style="font-size: 15px; color: var(--muted); margin-bottom: 20px;">Attribution reports, investment recommendations, ROI analysis</p>
+            <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; font-size: 18px; font-weight: 700; color: var(--muted);">🔧 IN DEVELOPMENT</div>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 17: Working Prototypes -->
+<section class="slide" data-slide="17">
+    <h2>Working <span>Prototypes</span></h2>
+    <p class="subtitle">7 of 10 proposed agents already have live prototypes at futureofpmm.com/curriculum/labs</p>
+    <div style="background: var(--card); border-radius: 16px; padding: 32px; max-width: 950px; margin-top: 20px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 16px;">
+            <thead>
+                <tr style="border-bottom: 2px solid rgba(255,255,255,0.2);">
+                    <th style="text-align: left; padding: 12px 16px; color: var(--accent); font-weight: 600;">Wave</th>
+                    <th style="text-align: left; padding: 12px 16px; color: var(--accent); font-weight: 600;">Proposed Agent</th>
+                    <th style="text-align: left; padding: 12px 16px; color: var(--accent); font-weight: 600;">Lab Prototype</th>
+                    <th style="text-align: center; padding: 12px 16px; color: var(--accent); font-weight: 600;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--green);">1</td>
+                    <td style="padding: 12px 16px;">Messaging Drafter</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">messaging.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--green);">1</td>
+                    <td style="padding: 12px 16px;">Pricing Approval Agent</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">pricing-rationale.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--green);">1</td>
+                    <td style="padding: 12px 16px;">Battlecard Refresh Agent</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">battlecoach.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--blue);">2</td>
+                    <td style="padding: 12px 16px;">Launch Readiness Agent</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">launch-planner.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--blue);">2</td>
+                    <td style="padding: 12px 16px;">Enablement Bundler</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">enablement-bundler.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--blue);">2</td>
+                    <td style="padding: 12px 16px;">Customer Reference Matcher</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">—</td>
+                    <td style="padding: 12px 16px; text-align: center; opacity: 0.5;">🔧</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--accent2);">3</td>
+                    <td style="padding: 12px 16px;">GEO Optimizer Agent</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">geo-visibility.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--accent2);">3</td>
+                    <td style="padding: 12px 16px;">Content Localization Agent</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">content-localization.html</td>
+                    <td style="padding: 12px 16px; text-align: center;">✅</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td style="padding: 12px 16px; color: var(--accent2);">3</td>
+                    <td style="padding: 12px 16px;">Win/Loss Synthesizer</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">—</td>
+                    <td style="padding: 12px 16px; text-align: center; opacity: 0.5;">🔧</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; color: var(--accent2);">3</td>
+                    <td style="padding: 12px 16px;">Pipeline Influence Tracker</td>
+                    <td style="padding: 12px 16px; color: var(--muted);">—</td>
+                    <td style="padding: 12px 16px; text-align: center; opacity: 0.5;">🔧</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top: 24px; display: flex; gap: 32px; font-size: 15px;">
+        <span>✅ <strong style="color: var(--green);">Built & Live (7)</strong></span>
+        <span style="opacity: 0.7;">🔧 <strong>In Development (3)</strong></span>
+        <span style="color: var(--muted);">Labs provide working proof-of-concept for each proposed agent capability. 40+ PMMs actively using.</span>
+    </div>
+</section>
+
+<!-- Slide 18: Timeline & Value -->
+<section class="slide" data-slide="18">
+    <h2>Timeline & <span>Strategic Value</span></h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1100px; margin-top: 20px;">
+        <div>
+            <h3 style="font-size: 22px; margin-bottom: 24px; color: var(--gold);">📅 Proposed Timeline</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="background: var(--card); border-radius: 12px; padding: 20px; border-left: 4px solid var(--green);">
+                    <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Q3 2026</div>
+                    <div style="font-weight: 600;">Development Begins</div>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px; border-left: 4px solid var(--blue);">
+                    <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Q4 2026</div>
+                    <div style="font-weight: 600;">MVP Launch — Waves 1-2 (~60%)</div>
+                </div>
+                <div style="background: var(--card); border-radius: 12px; padding: 20px; border-left: 4px solid var(--accent2);">
+                    <div style="font-size: 13px; color: var(--muted); margin-bottom: 4px;">Q2 2027</div>
+                    <div style="font-weight: 600;">Full Agent Library GA</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h3 style="font-size: 22px; margin-bottom: 24px; color: var(--gold);">💡 Value Proposition</h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px;">
+                <li style="background: var(--card); border-radius: 12px; padding: 20px; display: flex; gap: 16px; align-items: flex-start;">
+                    <span style="font-size: 24px;">⚡</span>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Increase PMM Productivity</div>
+                        <div style="font-size: 14px; color: var(--muted);">Automate repetitive tasks in messaging, pricing, competitive intel</div>
+                    </div>
+                </li>
+                <li style="background: var(--card); border-radius: 12px; padding: 20px; display: flex; gap: 16px; align-items: flex-start;">
+                    <span style="font-size: 24px;">🎯</span>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Improve Consistency</div>
+                        <div style="font-size: 14px; color: var(--muted);">Standardized, reusable PMM best practices across SAP</div>
+                    </div>
+                </li>
+                <li style="background: var(--card); border-radius: 12px; padding: 20px; display: flex; gap: 16px; align-items: flex-start;">
+                    <span style="font-size: 24px;">🌍</span>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">Scale Best Practices Globally</div>
+                        <div style="font-size: 14px; color: var(--muted);">AI-assisted workflows embedded into daily work</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div style="margin-top: 32px; background: linear-gradient(90deg, rgba(249,115,22,0.2), transparent); border-radius: 12px; padding: 24px; max-width: 900px;">
+        <p style="font-size: 20px; line-height: 1.5;">
+            <span style="color: var(--gold);">💡</span> Every lab you complete is a <strong>prototype</strong> for a production agent. Your feedback shapes the final PMM Assistant design.
+        </p>
+    </div>
+</section>
+
+<!-- Slide 19: Tiled Showcase -->
+<section class="slide" data-slide="19">
+    <h2>Meet <span>Tiled</span></h2>
+    <p class="subtitle">Vendor of the Week — Interactive microapps for learning</p>
+    <div class="tiled-showcase">
+        <ul class="tiled-features">
+            <li>
+                <span class="icon">📱</span>
+                <div class="content">
+                    <h4>Mobile-First Microapps</h4>
+                    <p>Swipe-based navigation. Works on any device. No PDFs, no slide decks.</p>
+                </div>
+            </li>
+            <li>
+                <span class="icon">📊</span>
+                <div class="content">
+                    <h4>Built-In Analytics</h4>
+                    <p>See where learners spend time. Identify friction. Optimize content.</p>
+                </div>
+            </li>
+            <li>
+                <span class="icon">🎨</span>
+                <div class="content">
+                    <h4>Design That Drives Engagement</h4>
+                    <p>When learning feels like browsing Instagram, completion rates soar.</p>
+                </div>
+            </li>
+            <li>
+                <span class="icon">🔗</span>
+                <div class="content">
+                    <h4>Embed Anywhere</h4>
+                    <p>Drop into any page. No login walls. Frictionless access.</p>
+                </div>
+            </li>
+        </ul>
+        <div class="ab-test-box">
+            <h3>🧪 We're A/B Testing</h3>
+            <div class="ab-compare">
+                <div class="ab-item">
+                    <div class="label">Control</div>
+                    <div class="name">Standard HTML</div>
+                    <div class="url">/curriculum/</div>
+                </div>
+                <div class="ab-item">
+                    <div class="label">Variant</div>
+                    <div class="name">Tiled Microapp</div>
+                    <div class="url">/curriculum/tiled/</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 16px; color: var(--muted);">
+                Same content. Different experience. Who completes more?
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Slide 20: Q&A -->
+<section class="slide qa-slide" data-slide="20">
+    <h1>💬 <span>Q&A</span></h1>
+    <p>What questions do you have?</p>
+    <div style="margin-top: 60px;">
+        <p style="font-size: 18px; color: var(--muted);">
+            📧 christopher.ohara@sap.com &nbsp;|&nbsp; 🌐 futureofpmm.com
+        </p>
+    </div>
+</section>
+
+<div class="slide-number">1 / 20</div>
+
+<div class="controls">
+    <button onclick="prevSlide()">←</button>
+    <button onclick="nextSlide()">→</button>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const slideNumber = document.querySelector('.slide-number');
+    let current = 0;
+    
+    function showSlide(n) {
+        slides[current].classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        slideNumber.textContent = `${current + 1} / ${slides.length}`;
+    }
+    
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
+    
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+    
+    // Touch support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+    document.addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+    });
+</script>
+
+</body>
+</html>
