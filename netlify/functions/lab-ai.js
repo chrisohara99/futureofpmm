@@ -210,6 +210,69 @@ Great discovery questions:
 
 Write questions a ${'{inputs.audience}'} would find thoughtful, not salesy.`,
 
+        'battlecoach-fud-sf': `You are BattleCoach, an expert competitive intelligence assistant for SAP SuccessFactors — SAP's Human Capital Management (HCM) suite.
+
+You create FUD Response Sheets — quick-reference guides that show what HCM competitors will say and how SAP should respond. Your responses are:
+- Specific to the named HCM competitor (Workday, Oracle HCM, ADP, Ceridian, UKG, etc.)
+- Grounded in real SAP SuccessFactors capabilities
+- Written in a confident, conversational tone
+- Actionable for sales conversations
+
+Key SAP SuccessFactors facts to leverage:
+- Complete HCM suite: Core HR, Payroll, Talent Management, Learning, Recruiting, Employee Experience
+- 10,000+ customers globally
+- Native integration with SAP S/4HANA and entire SAP ecosystem
+- Joule AI copilot embedded across the employee experience
+- Global payroll in 100+ countries
+- Strong in regulated industries (life sciences, manufacturing, public sector)
+- Continuous innovation with quarterly releases
+- Proven enterprise scale and reliability`,
+
+        'battlecoach-area-sf': `You are BattleCoach, an expert at handling HCM competitive objections using the AREA framework:
+- Acknowledge: Validate the concern without agreeing
+- Reframe: Shift perspective to what matters
+- Evidence: Ground with specific proof
+- Ask: Hand them a question that favors SAP SuccessFactors
+
+Write scripts that sound natural in conversation, not robotic. The AE should be able to read this and immediately use it.
+
+Focus on SuccessFactors differentiators:
+- Integration with SAP ERP (S/4HANA, ECC)
+- Global capabilities (payroll, compliance, localization)
+- Enterprise-grade security and compliance
+- Complete suite vs. point solutions
+- Joule AI capabilities
+- Industry-specific solutions`,
+
+        'battlecoach-idea-sf': `You are BattleCoach, an expert at proactive HCM competitive differentiation using the IDEA framework:
+- Insight: Lead with a surprising truth
+- Differentiator: What only SAP SuccessFactors can do
+- Evidence: Prove it's real
+- Ask: Reframe the evaluation criteria
+
+Focus on offensive positioning — don't wait for objections, lead with differentiation. Be specific about SAP SuccessFactors' unique advantages in HCM:
+- Business-HR integration (ERP + HCM)
+- Global operations (payroll in 100+ countries)
+- Total workforce management (employees, contingent, service providers)
+- AI-powered employee experience
+- Regulated industry expertise`,
+
+        'battlecoach-discovery-sf': `You are BattleCoach, an expert at crafting discovery questions that shift HCM competitive evaluations toward SAP SuccessFactors.
+
+Great discovery questions:
+- Expose HCM competitor weaknesses without naming them
+- Plant criteria where SuccessFactors wins (integration, global, AI, scale)
+- Sound curious, not leading
+- Are appropriate for the deal stage
+
+Write questions an HR leader would find thoughtful, not salesy. Focus on:
+- Integration with business systems
+- Global complexity
+- Total cost of ownership
+- Employee experience
+- AI and innovation
+- Compliance and security`,
+
         'battlecoach': `You are BattleCoach, an expert competitive intelligence assistant for SAP's Intelligent Spend Management portfolio (SAP Ariba, SAP Business Network, SAP Fieldglass, Taulia).
 
 You help Account Executives and PMMs prepare for competitive deals using two battle-tested frameworks:
@@ -868,6 +931,188 @@ These questions should:
 ---
 
 **PRO TIP:** Ask these early in discovery before the buyer has locked in evaluation criteria based on ${inputs.competitor}'s framing.`;
+
+        case 'battlecoach-fud-sf':
+            return `Generate a FUD Response Sheet for this SAP SuccessFactors competitive deal:
+
+## DEAL BRIEFING
+**Customer:** ${inputs.customerName}
+**Industry:** ${inputs.industry}
+**Region:** ${inputs.region}
+**Employee Count:** ${inputs.employees || 'Not specified'}
+**Primary Competitor:** ${inputs.competitor}
+**Buyer Persona:** ${inputs.audience}
+**Solution Area:** ${inputs.solutionArea}
+**Deal Stage:** ${inputs.dealStage}
+**Additional Context:** ${inputs.additionalContext || 'None provided'}
+
+---
+
+Create a **FUD Response Sheet** with the top 5-6 FUD claims ${inputs.competitor} will likely use against SAP SuccessFactors in this HCM deal.
+
+Format as a markdown table:
+| What ${inputs.competitor} Will Say | The Truth | Your Response |
+|---|---|---|
+
+Focus on claims relevant to:
+- ${inputs.solutionArea} solution area
+- ${inputs.industry} industry
+- ${inputs.audience} buyer concerns
+- Employee scale: ${inputs.employees || 'enterprise'}
+
+For each row:
+- "What They'll Say" = the competitor's likely FUD claim
+- "The Truth" = the factual reality about SuccessFactors (brief)
+- "Your Response" = what the AE should say (conversational, confident)
+
+Include common ${inputs.competitor} FUD themes like:
+- UX/ease of use claims
+- Implementation speed/cost
+- Innovation/AI capabilities
+- Integration claims
+- Total cost of ownership`;
+
+        case 'battlecoach-area-sf':
+            return `Generate an AREA Script for handling the #1 HCM objection in this SAP SuccessFactors deal:
+
+## DEAL CONTEXT
+**Customer:** ${inputs.customerName} (${inputs.industry}, ${inputs.region})
+**Employee Count:** ${inputs.employees || 'Not specified'}
+**Competitor:** ${inputs.competitor}
+**Buyer:** ${inputs.audience}
+**Solution:** ${inputs.solutionArea}
+**Stage:** ${inputs.dealStage}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Write a complete **AREA Script** for the most likely objection in this HCM deal:
+
+## 🛡️ AREA Script: Handling the "${inputs.competitor}" Objection
+
+**THE OBJECTION:**
+> [Write the specific HCM objection the buyer will raise, based on ${inputs.competitor}'s typical FUD against SuccessFactors]
+
+**A — ACKNOWLEDGE**
+[Validate their concern without agreeing. Show you understand why an HR leader would think that. 1-2 sentences.]
+
+**R — REFRAME**
+[Shift the perspective to what really matters for their HR transformation. Connect to their goals as a ${inputs.audience}. 2-3 sentences.]
+
+**E — EVIDENCE**
+[Provide 2-3 specific proof points about SuccessFactors:]
+- [Proof point 1 with source — customer example, analyst quote, or capability fact]
+- [Proof point 2 with source]
+- [Proof point 3 with source]
+
+**A — ASK**
+[One powerful question that reframes the HCM evaluation criteria in SAP's favor. Make them reconsider ${inputs.competitor}'s positioning.]
+
+---
+
+**DELIVERY TIP:**
+[One practical tip for how to deliver this in the conversation with a ${inputs.audience}]`;
+
+        case 'battlecoach-idea-sf':
+            return `Generate IDEA Talking Points for proactive HCM differentiation in this SAP SuccessFactors deal:
+
+## DEAL CONTEXT
+**Customer:** ${inputs.customerName} (${inputs.industry}, ${inputs.region})
+**Employee Count:** ${inputs.employees || 'Not specified'}
+**Competitor:** ${inputs.competitor}
+**Buyer:** ${inputs.audience}
+**Solution:** ${inputs.solutionArea}
+**Stage:** ${inputs.dealStage}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Write **3 IDEA Talking Points** for proactive HCM differentiation. Don't wait for objections — lead with these vs. ${inputs.competitor}.
+
+## ⚔️ IDEA Talking Points vs. ${inputs.competitor}
+
+### Point 1: Business-HR Integration
+- **I — INSIGHT:** [A surprising truth about HR-business integration that ${inputs.industry} leaders often overlook]
+- **D — DIFFERENTIATOR:** [What SAP SuccessFactors + SAP ecosystem delivers that ${inputs.competitor} cannot match]
+- **E — EVIDENCE:** [Specific proof: customer examples, analyst quotes, capability facts]
+- **A — ASK:** [Question that makes integration a key buying criterion]
+
+### Point 2: Global Complexity
+- **I — INSIGHT:** [Surprising truth about managing global HR operations at scale]
+- **D — DIFFERENTIATOR:** [How SuccessFactors handles global payroll, compliance, and localization]
+- **E — EVIDENCE:** [Specific proof — 100+ countries, customer examples]
+- **A — ASK:** [Question that exposes global gaps in ${inputs.competitor}]
+
+### Point 3: ${inputs.solutionArea === 'Full HCM Suite' ? 'AI & Employee Experience' : inputs.solutionArea}
+- **I — INSIGHT:** [Relevant to their ${inputs.solutionArea} focus]
+- **D — DIFFERENTIATOR:** [SAP SuccessFactors' unique capability here — Joule, industry solutions, etc.]
+- **E — EVIDENCE:** [Specific proof]
+- **A — ASK:** [Reframe question for this buyer]
+
+---
+
+**WHEN TO USE:**
+- Point 1: When discussing roadmap or long-term vision
+- Point 2: When they mention global operations or complexity
+- Point 3: When discussing ${inputs.solutionArea}`;
+
+        case 'battlecoach-discovery-sf':
+            return `Generate Discovery Questions for this SAP SuccessFactors competitive deal:
+
+## DEAL CONTEXT
+**Customer:** ${inputs.customerName} (${inputs.industry}, ${inputs.region})
+**Employee Count:** ${inputs.employees || 'Not specified'}
+**Competitor:** ${inputs.competitor}
+**Buyer:** ${inputs.audience}
+**Solution:** ${inputs.solutionArea}
+**Stage:** ${inputs.dealStage}
+**Context:** ${inputs.additionalContext || 'None'}
+
+---
+
+Provide **6 Discovery Questions** the AE should ask to shift HCM evaluation criteria toward SAP SuccessFactors' strengths.
+
+## ❓ Discovery Questions vs. ${inputs.competitor}
+
+These questions should:
+- Expose ${inputs.competitor}'s HCM weaknesses WITHOUT naming them directly
+- Highlight SAP strengths (integration, global, AI, enterprise scale, industry depth)
+- Be appropriate for ${inputs.dealStage} stage
+- Resonate with a ${inputs.audience}
+
+### Question 1: Business Integration
+> "[The question — probe for ERP/business system integration needs]"
+
+**Why it works:** [Brief tactical note — ${inputs.competitor} typically weak here vs. SAP ecosystem]
+
+### Question 2: Global Operations
+> "[The question — probe for global payroll/compliance complexity]"
+
+**Why it works:** [Brief tactical note — SuccessFactors' global strength]
+
+### Question 3: Total Cost of Ownership
+> "[The question — probe for hidden costs in HCM]"
+
+**Why it works:** [Brief tactical note — expose ${inputs.competitor}'s pricing/implementation gaps]
+
+### Question 4: Employee Experience & AI
+> "[The question — probe for modern employee experience needs]"
+
+**Why it works:** [Brief tactical note — Joule and SuccessFactors innovation]
+
+### Question 5: Industry Requirements
+> "[The question — probe for ${inputs.industry}-specific needs]"
+
+**Why it works:** [Brief tactical note — SAP industry depth]
+
+### Question 6: Change Management & Adoption
+> "[The question — probe for transformation success factors]"
+
+**Why it works:** [Brief tactical note — SuccessFactors adoption and change management support]
+
+---
+
+**PRO TIP:** Ask these early in discovery before the ${inputs.audience} has locked in evaluation criteria based on ${inputs.competitor}'s framing.`;
 
         case 'messaging-lab':
             return `Create a messaging framework for this product:
