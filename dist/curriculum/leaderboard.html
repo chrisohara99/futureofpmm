@@ -96,6 +96,13 @@
         footer { background: var(--pmm-dark); color: #fff; padding: 2rem; text-align: center; margin-top: 3rem; }
         footer p { opacity: 0.8; font-size: 0.9rem; }
         
+        /* View Toggle */
+        .view-toggle { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 1rem 0; }
+        .toggle-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: center; gap: 0.5rem; }
+        .toggle-btn { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 0.5rem 1.25rem; border-radius: 6px; font-size: 0.9rem; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.2s; }
+        .toggle-btn:hover { background: #e2e8f0; color: #1e293b; }
+        .toggle-btn.active { background: var(--pmm-dark); border-color: var(--pmm-dark); color: #fff; }
+        
         /* Mobile */
         @media (max-width: 768px) {
             .hero h1 { font-size: 1.75rem; }
@@ -121,8 +128,8 @@
     
     <div class="hero">
         <div class="hero-emoji">🏆</div>
-        <h1>Team Leaderboard</h1>
-        <p>10× PMM Curriculum Progress</p>
+        <h1 id="hero-title">Team Leaderboard</h1>
+        <p id="hero-subtitle">10× PMM Curriculum Progress</p>
     </div>
     
     <div class="stats-bar">
@@ -139,6 +146,14 @@
                 <div class="stat-value" id="stat-units">--</div>
                 <div class="stat-label">Units Completed</div>
             </div>
+        </div>
+    </div>
+    
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <div class="toggle-inner">
+            <button id="btn-team" class="toggle-btn active" onclick="switchView('team')">Dan Team</button>
+            <button id="btn-all" class="toggle-btn" onclick="switchView('all')">All Users</button>
         </div>
     </div>
     
@@ -170,9 +185,28 @@
     </footer>
     
     <script>
+    let currentView = 'team';
+    
+    function switchView(view) {
+        currentView = view;
+        document.getElementById('btn-team').classList.toggle('active', view === 'team');
+        document.getElementById('btn-all').classList.toggle('active', view === 'all');
+        document.getElementById('hero-title').textContent = view === 'all' ? 'All Users Leaderboard' : 'Team Leaderboard';
+        document.getElementById('hero-subtitle').textContent = view === 'all' ? 'Everyone enrolled in the 10× PMM Curriculum' : 'Dan\'s PMM Team Progress';
+        loadLeaderboard();
+    }
+    
     async function loadLeaderboard() {
+        // Show loading state
+        document.getElementById('content').innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading leaderboard...</p>
+            </div>
+        `;
+        
         try {
-            const response = await fetch('/.netlify/functions/team-leaderboard');
+            const response = await fetch('/.netlify/functions/team-leaderboard?view=' + currentView);
             if (!response.ok) throw new Error(`Server error: ${response.status}`);
             
             const { leaderboard, totalMembers, lastUpdated } = await response.json();

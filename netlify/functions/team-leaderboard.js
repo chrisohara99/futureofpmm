@@ -58,17 +58,35 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Get team members by email list
-    const emailList = TEAM_EMAILS.map(e => `"${e}"`).join(',');
-    const profilesRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/profiles?email=in.(${emailList})&select=id,first_name,last_name,email,created_at`,
-      {
-        headers: {
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+    // Check for view parameter: 'all' or 'team' (default: team)
+    const params = event.queryStringParameters || {};
+    const viewAll = params.view === 'all';
+    
+    let profilesRes;
+    if (viewAll) {
+      // Fetch ALL profiles
+      profilesRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/profiles?select=id,first_name,last_name,email,created_at&order=created_at.asc`,
+        {
+          headers: {
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+          }
         }
-      }
-    );
+      );
+    } else {
+      // Get team members by email list
+      const emailList = TEAM_EMAILS.map(e => `"${e}"`).join(',');
+      profilesRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/profiles?email=in.(${emailList})&select=id,first_name,last_name,email,created_at`,
+        {
+          headers: {
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
+          }
+        }
+      );
+    }
     
     let profiles = await profilesRes.json();
     
@@ -208,7 +226,8 @@ exports.handler = async (event) => {
       body: JSON.stringify({ 
         leaderboard,
         totalMembers: profiles.length,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
+        view: viewAll ? 'all' : 'team'
       })
     };
 
