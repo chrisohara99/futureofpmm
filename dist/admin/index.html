@@ -122,7 +122,11 @@
                 </div>
                 <div class="section" id="users-section">
                     <h2>👥 Leaderboard</h2>
-                    <div class="loading">Loading user data...</div>
+                    <div class="tabs" id="leaderboard-tabs">
+                        <button class="tab active" data-view="team" onclick="switchLeaderboardView('team')">Dan Team</button>
+                        <button class="tab" data-view="all" onclick="switchLeaderboardView('all')">All Users</button>
+                    </div>
+                    <div class="loading" id="leaderboard-content">Loading user data...</div>
                 </div>
                 
                 <div class="section" id="subscribers-section">
@@ -336,12 +340,25 @@
         document.body.appendChild(modal);
     }
     
+    let currentLeaderboardView = 'team';
+    
+    function switchLeaderboardView(view) {
+        currentLeaderboardView = view;
+        document.querySelectorAll('#leaderboard-tabs .tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.view === view);
+        });
+        loadUsers();
+    }
+    
     async function loadUsers() {
+        document.getElementById('leaderboard-content').innerHTML = '<div class="loading">Loading...</div>';
+        
         try {
-            const res = await fetch('/.netlify/functions/team-leaderboard');
-            const { leaderboard } = await res.json();
+            const res = await fetch('/.netlify/functions/team-leaderboard?view=' + currentLeaderboardView);
+            const { leaderboard, totalMembers, view } = await res.json();
             
-            let html = `<table>
+            let html = `<p style="margin-bottom: 1rem; font-size: 0.9rem; color: #64748b;">Showing ${leaderboard.length} users (${view === 'all' ? 'All Users' : 'Dan Team'})</p>`;
+            html += `<table>
                 <thead>
                     <tr>
                         <th>Rank</th>
@@ -368,9 +385,9 @@
             });
             
             html += '</tbody></table>';
-            document.querySelector('#users-section .loading').innerHTML = html;
+            document.getElementById('leaderboard-content').innerHTML = html;
         } catch (err) {
-            document.querySelector('#users-section .loading').innerHTML = `<div class="error">Error: ${err.message}</div>`;
+            document.getElementById('leaderboard-content').innerHTML = `<div class="error">Error: ${err.message}</div>`;
         }
         
         // Also load subscribers
