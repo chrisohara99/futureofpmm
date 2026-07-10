@@ -42,6 +42,10 @@ AI can't do this. Not yet, and maybe not ever—or at least not in the way that 
 
 This is what I call the narrative advantage, and I believe it's going to be one of the most important differentiators for PMMs in the agentic era. The PMM who has stories—real stories, from real customer conversations, real deal cycles, real product failures and recoveries—and who can tell those stories in a way that makes abstract capabilities feel concrete and human, has something that no AI agent can replicate. Not because the technology isn't good enough. Because the stories require having been somewhere and paid attention to what happened there.
 
+I had a conversation with Amanda Chen, a content director at an enterprise AI company, about how she thinks about story collection. "I keep a running document," she told me. "Every customer call, every deal review, every product demo where something interesting happens—I write down the specific moment that mattered. Not a summary. The actual words someone said, the question that shifted the conversation, the objection that revealed what they were really worried about. Most of those moments never make it into content. But the ones that do are the difference between content that gets shared and content that gets scrolled past."
+
+The discipline of noticing and recording is the prerequisite for narrative advantage. You can't tell specific stories if you haven't collected them. And collection requires attention—the kind of attention that most PMMs, drowning in deliverables, don't consistently practice.
+
 ## GEO and the Agent as Reader
 
 There's another dimension to the content transformation that most PMMs aren't thinking about yet, and it's going to matter as much as the thought leadership question. It's called generative engine optimization—GEO—and it's the discipline of optimizing your content to be surfaced and cited by AI systems rather than (or in addition to) traditional search engines.
@@ -122,16 +126,44 @@ The shift is toward influence metrics. Did the analyst cite our framework in the
 
 In a fifty-plus-person PMM organization, maybe five people produce genuinely differentiated signature content—content where the author's experience and voice are integral to the argument. Those five are disproportionately valuable, and agent-powered commodity production is the biggest lever for freeing them up. The organizational implication: identify your signature content producers and ruthlessly protect their time from commodity work.
 
-### KEY TAKEAWAYS
+## Voice as Moat
 
-- Content measurement should shift from volume metrics (posts per month) to influence metrics (analyst citations, sales deal impact).
-- The commodity/strategic/signature framework is also a resource allocation model: automate the bottom, invest at the top.
-- Signature content—where human voice and experience are integral—is the scarcest and highest-return content investment.
-- Agent-powered commodity production frees your best thinkers to do more of the strategic and signature work that moves markets.
-- GEO is the new SEO: optimize content for AI synthesis, not just human reading.
-- Customer stories are the highest-value content type—invest in agent-augmented production.
+There's a concept I've been developing that I think matters more in the agentic era than it did before: voice as moat.
 
----
+In a world where any reasonably competent writer could produce a good blog post about AI and product marketing, voice was a differentiator but not a necessity. You could succeed with solid content that didn't have a distinctive voice as long as the information was useful and the distribution was good.
 
-*Word count: ~3,200*
-*Target for Unit 9: ~3,000-3,500 words* ✓
+In a world where agents produce competent content at near-zero marginal cost, voice becomes essential—not just nice-to-have, but the only thing that can't be replicated. An agent can match your information. An agent can match your structure. What an agent can't match is the specific way you see the world, the stories you tell because you were there, the opinions you hold because of experiences you've had.
+
+David Raab, the independent analyst who runs the CDP Institute, has a distinctive voice in how he writes about customer data technology—skeptical but fair, technically rigorous but accessible, willing to say when vendors are overselling. You know a David Raab piece by how it reads, not just by what it says. That voice is his moat. It's why buyers read his work rather than generic CDP coverage.
+
+The PMMs who build voice—who develop a recognizable perspective that comes through in everything they write—will have career durability that content-producers-without-voice won't have. This isn't about being quirky or contrarian for its own sake. It's about having a point of view grounded in real experience and being willing to express it consistently.
+
+## The Distribution Question
+
+I've focused on content creation, but distribution matters as much as production in the agentic era—maybe more.
+
+The traditional content distribution playbook—publish on your blog, share on social, send to your email list, hope for organic reach—is becoming less effective. Organic reach on most social platforms has declined steadily for years. Email open rates are under pressure. There's so much content competing for attention that even great pieces get lost in the noise.
+
+But the GEO dynamic I described earlier creates a new distribution channel that most PMMs aren't thinking about: inclusion in AI-generated responses. When a buyer asks Claude about data platforms and your content gets cited, that's distribution—arguably more valuable than social shares because it's reaching someone actively researching a purchase decision.
+
+Michael Torres, a content strategist at an enterprise software company, described this shift: "We used to optimize for pageviews and social shares. Now we're tracking AI citations—how often does our content get surfaced when people ask AI systems about our category? It's a completely different optimization target, and it requires completely different content."
+
+The content that gets cited isn't the content optimized for human browsing—the listicles, the general overviews, the SEO-keyword pieces. It's the content that answers specific questions with specific evidence. "Best data platforms 2026" is generic and gets ignored. "How to integrate Snowflake with SAP for real-time supply chain analytics" is specific and gets cited.
+
+This is the distribution implication of the GEO shift: your content distribution strategy needs to include AI citation alongside traditional channels. And the content that performs well in AI distribution is different from the content that performs well in social distribution.
+
+## Building the Content Calendar
+
+Let me say a word about content calendars, because they're a PMM staple that needs rethinking in the agentic era.
+
+The traditional content calendar is production-oriented: what are we publishing when, across which channels, to support which campaigns? It's a scheduling tool that ensures consistent output.
+
+The problem with production-oriented calendars is that they optimize for consistency rather than impact. You hit your weekly blog post target, but nobody reads any of them. You maintain social posting frequency, but engagement is flat. The calendar measures activity, not outcomes.
+
+An impact-oriented content calendar looks different. Instead of "blog post due Tuesday," it's "what argument are we trying to advance this week, and what's the right format and channel to advance it?" Some weeks that might be a long-form essay. Some weeks it might be nothing—because there's nothing worth saying that week and publishing filler dilutes your brand.
+
+Sarah Kim, a content director I know, made this shift explicitly: "We went from 'four blog posts per month' to 'four strategic content initiatives per quarter.' Some quarters we published more than twelve pieces because we had that much to say. Some quarters we published six because quality mattered more than quantity. The output looked less consistent but the results were dramatically better."
+
+The agent-powered content model supports this shift. When commodity content can be produced on demand, you don't need to schedule it—you produce it when you need it. What needs calendaring is the strategic and signature content, which requires planning, research, and protected time for the humans who create it.
+
+Reframe your content calendar from "what are we publishing" to "what arguments are we advancing" and you'll produce less content that matters more.

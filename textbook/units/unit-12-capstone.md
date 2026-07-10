@@ -190,7 +190,7 @@ The path to 10x isn't about working harder. It's about working differently—lev
 
 This book was written with AI. The thinking was mine. The judgment was mine. The stories were mine. But the research, the synthesis, the first drafts, the format adaptations—all of that was agent-augmented. That's the workflow this book describes. That's the future of product marketing.
 
-The ground has shifted. The marketers who figure out how to work with that shift will build careers. The ones who wait for the shift to stabilize will find themselves competing against people and systems that move faster. You now have the map.
+The ground has shifted. The marketers who figure out how to work with that shift will build careers. The ones who wait for the shift to stabilize will find themselves competing against people and systems that move faster. You now have the map—the frameworks, the workflows, the strategic principles that define what it means to be a 10x PMM in the agentic era.
 
 What you do with it is up to you.
 
