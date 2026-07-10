@@ -8,6 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 // All subscribers (known-users + dan team merged)
 const ALL_SUBSCRIBERS = [
   'a.naji@sap.com', 'a.sirolli@sap.com', 'axel.schuller@sap.com', 'brian.raver@sap.com',
+  'markdonahue23@gmail.com',
   'cathy.citarelli@sap.com', 'chrisohara1968@gmail.com', 'christine.baratta@sap.com',
   'christopher.ohara@sap.com', 'corrie.birkeness@sap.com', 'dan.yu@sap.com',
   'daniel.dukes@sap.com', 'dee.houchen@sap.com', 'eemaan.ikhlaq@sap.com',
@@ -48,7 +49,7 @@ const SUPERUSERS = new Set([
   'christopher.ohara@sap.com', 'sean.thomson@sap.com', 'brian.raver@sap.com',
   'olivier.duvelleroy@sap.com', 'j.chen02@sap.com', 'kelly.amaroso@sap.com',
   'dahra.williams@sap.com', 'jasmine.churchill@sap.com', 'dante.ricci@sap.com',
-  'kasier.larsen@sap.com'
+  'kasier.larsen@sap.com', 'markdonahue23@gmail.com'
 ]);
 
 exports.handler = async (event) => {
