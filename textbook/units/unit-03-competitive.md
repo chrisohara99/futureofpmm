@@ -42,6 +42,11 @@ The architectural pattern is straightforward, and I want to lay it out because I
 
 **Output Layer:** The output layer delivers the intelligence to the right people in the right format—a Slack alert for urgent signals, a daily brief for the CI team, a weekly summary for leadership, and deal-specific intelligence that plugs into the sales enablement workflow.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/05-ci-architecture.svg" alt="Competitive Intelligence Architecture" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 3.1:</strong> The four-layer CI architecture — Ingestion, Processing, Synthesis, and Output</figcaption>
+</figure>
+
 Here's what I want you to notice about that architecture: none of the components are technically exotic. RSS feeds have been around since the early 2000s. Monitoring tools existed before AI. The difference is the synthesis layer. Before LLMs, you could gather all of those signals, but making sense of them—connecting a pricing change to a positioning shift to an analyst comment to a product announcement and understanding what the combined pattern means—required a human analyst with deep domain knowledge and a lot of time. Now an agent can produce the first-pass synthesis in minutes, and the human analyst's job shifts from "what happened?" to "what should we do about it?"
 
 ### The Speed Advantage
@@ -53,6 +58,11 @@ Under the old model, here's what would have happened: Someone on the sales team 
 Under the agent-powered model, here's what actually happened: The system flagged the announcement within an hour of publication. By noon, the synthesis layer had compared the new positioning against our established competitive framework and identified the three key claims that conflicted with our differentiation. By 2 PM, the deal-specific intelligence system had pushed relevant talking points to the twelve reps who had active opportunities against that competitor. The reps who had calls that afternoon went in knowing exactly how to respond.
 
 That's not a productivity improvement. That's a competitive advantage.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/06-speed-advantage.svg" alt="CI Speed Advantage Comparison" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 3.2:</strong> Traditional vs. agent-powered CI workflows — from hours to minutes</figcaption>
+</figure>
 
 ## Win/Loss Analysis: From Sample to Census
 

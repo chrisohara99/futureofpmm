@@ -16,6 +16,11 @@ This unit is about how demand generation is transforming in the agentic era—an
 
 ## The Self-Serve Buyer
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/21-buyer-journey.svg" alt="Self-Serve Buyer Journey" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 10.1:</strong> The self-serve buyer journey — traditional vs. modern paths</figcaption>
+</figure>
+
 Before we get into tools and workflows, we need to understand the fundamental change in buyer behavior that's driving everything else: buyers increasingly want to evaluate products themselves before talking to sales.
 
 The data is unambiguous. Gartner research shows that B2B buyers spend only 17% of their purchase journey meeting with vendors—and when multiple vendors are being considered, any single vendor might get only 5-6% of the total buying journey time. The rest is spent on independent research: peer reviews, analyst reports, community discussions, Reddit threads, and increasingly, self-serve product experiences that let buyers test-drive before committing to a sales conversation.
@@ -35,6 +40,11 @@ For product marketers, the self-serve shift has profound implications that go we
 **Content must enable self-serve evaluation.** Generic marketing content doesn't help a buyer evaluate fit. Specific, technical, use-case-oriented content that answers the questions a buyer would ask in a demo—that's what the self-serve buyer needs. They want to know whether your product works with their ERP system, whether it supports their specific workflow, whether customers like them have succeeded. If they can't find those answers independently, they'll find a competitor who makes the answers accessible.
 
 ## The Demo Landscape
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/22-demo-landscape.svg" alt="Demo Platform Landscape" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 10.2:</strong> The demo platform landscape — positioning by interactivity and production value</figcaption>
+</figure>
 
 I did a comprehensive evaluation of demo automation platforms for futureofpmm.com last year—the piece was called "The Demo Stack"—and the landscape is more mature and more varied than most PMMs realize. The tools cluster into a few categories, and understanding the categories matters because they serve different stages of the buyer journey and require different levels of PMM involvement.
 

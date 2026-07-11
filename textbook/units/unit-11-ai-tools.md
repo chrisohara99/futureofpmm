@@ -14,6 +14,11 @@ This unit is my attempt to cut through that noise. Not with a comprehensive mark
 
 ## The Core Stack
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/23-tech-stack.svg" alt="PMM Tech Stack Architecture" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 11.1:</strong> PMM tech stack architecture by team maturity level</figcaption>
+</figure>
+
 Every PMM needs a foundation layer, and that foundation is a general-purpose LLM assistant. Full stop. If you don't have a Claude, ChatGPT, or Gemini subscription—or if your company hasn't provisioned one for you—fix that before you read another word of this unit. The general-purpose LLM is the Swiss Army knife of the agentic PMM. It's your first-draft generator, your research synthesizer, your brainstorming partner, your copy editor, your data analyst, and your format converter. It's not the best tool for any single one of those tasks, but it's good enough at all of them that it covers 70% of what a PMM needs to get started.
 
 ### Choosing Your LLM
@@ -67,6 +72,11 @@ Beyond Perplexity, specialized research tools are useful for PMMs who do deep ma
 - **Statista** and similar platforms for market data (these aren't new, but they're increasingly AI-augmented)
 
 ## The Build-vs-Buy Decision
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/25-build-vs-buy.svg" alt="Build vs Buy Decision Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 11.2:</strong> The build vs. buy decision framework — when to build custom, when to buy platforms</figcaption>
+</figure>
 
 The most important decision in building your PMM tech stack isn't which tool to buy. It's whether to buy a specialized tool or build a custom workflow using the general-purpose LLM and agent platforms.
 
@@ -175,6 +185,11 @@ Jennifer Park, a PMM who manages AI tool adoption for her team, described her fr
 
 The mistake I see teams make is applying uniform oversight—either reviewing everything in detail (which destroys the efficiency gains) or reviewing nothing (which creates quality and risk problems). Match oversight to stakes, and you get efficiency where it's safe and quality control where it matters.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/29-oversight-matrix.svg" alt="Human-in-the-Loop Oversight Matrix" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 11.4:</strong> The human-in-the-loop oversight matrix — match review level to blast radius</figcaption>
+</figure>
+
 ## Prompting as a PMM Skill
 
 I'm increasingly convinced that prompting skill—the ability to get useful output from an LLM—is becoming a core PMM competency, and most PMMs dramatically underinvest in developing it.
@@ -236,3 +251,48 @@ The PMMs who get 10x leverage from their AI tools are the ones who've invested h
 Daniel Kim, a competitive PMM who's become the de facto AI expert on his team, estimates he spent about forty hours over three months "just playing with the tools." "Most of my colleagues ask me how to do things with Claude that the tool could have taught them if they'd experimented. The investment in learning pays off every single day."
 
 My recommendation: block four hours this week to experiment with your primary LLM. Not to produce anything—just to explore. Try edge cases. Test the limits. Build prompts for your specific workflows and iterate until they work well. That investment will compound for as long as you're using AI tools—which, at this point, means the rest of your career.
+
+## The Model Selection Question
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/24-model-selection.svg" alt="Model Selection Matrix" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 11.3:</strong> Model selection matrix — match model capability to task complexity</figcaption>
+</figure>
+
+One decision that trips up PMMs: when to use which model.
+
+The instinct is to default to the most capable model available—Claude Opus or GPT-4 for everything—because capability feels safe. But this is often the wrong choice. The most capable models are also the slowest and most expensive, and for many PMM tasks, the capability difference doesn't matter.
+
+I've developed a rough heuristic based on task complexity:
+
+**Tier 1 tasks (use the fastest, cheapest model):** Simple formatting, data extraction, translation, summarization of straightforward content. Claude Haiku or GPT-4o Mini handles these well at a fraction of the cost and latency of larger models.
+
+**Tier 2 tasks (use the standard model):** Most writing tasks, competitive analysis synthesis, content adaptation, research summarization, standard Q&A. Claude Sonnet or GPT-4o provides good balance of capability and speed.
+
+**Tier 3 tasks (use the most capable model):** Complex multi-step reasoning, subtle positioning work, analysis requiring deep domain nuance, anything where getting it slightly wrong has significant consequences. Claude Opus or GPT-4 for these—accept the cost and latency in exchange for quality.
+
+Sarah Chen, who manages the AI budget for a PMM team of twenty, told me about implementing this tiering system: "We were burning through our Claude Enterprise credits in two weeks because everyone defaulted to Opus for everything. Now we tier our tasks, and the same budget lasts the full month. The quality difference on Tier 1 tasks is imperceptible—you're paying premium rates for capability you don't need."
+
+The model landscape changes rapidly, and specific recommendations will be outdated by the time you read this. But the principle holds: match model capability to task complexity, and you'll get better throughput from your AI budget.
+
+## The Context Window Strategy
+
+Understanding context windows—how much information you can provide to an LLM in a single conversation—is surprisingly important for PMM work, and most PMMs don't think about it strategically.
+
+Modern LLMs have large context windows—Claude can process 200,000 tokens, roughly equivalent to a 400-page book. This creates opportunities that weren't possible with earlier, more limited models. You can load entire product documentation sets, multiple competitive battlecards, full customer transcripts, and extensive positioning frameworks into a single context, then query against all of it simultaneously.
+
+But context window size alone doesn't determine quality. The way you structure the context matters enormously. A context window stuffed with unorganized, redundant, or irrelevant information performs worse than a smaller, well-curated context—even when the smaller context contains less total information.
+
+Patrick Liu, a PMM who's become his team's context engineering expert, described his approach: "I think about context curation the way a lawyer thinks about evidence. What's the minimum I need to include to support the conclusion I want? What will distract or confuse if I include it? What should be in the main context versus available as reference? Structuring the context well can be the difference between a usable output and garbage."
+
+For practical PMM workflows, this means building modular context packages—pre-assembled collections of related documents that you can load together for specific task types. A competitive analysis package might include the latest battlecard, recent monitoring signals, and your positioning framework. A content creation package might include the messaging architecture, style guide, and relevant customer quotes. Having these packages ready to load means you're not building context from scratch every time—and the curation has already been done.
+
+## When to Walk Away
+
+A final thought on the tools question: sometimes the right answer is to not use AI at all.
+
+There are PMM tasks where AI doesn't help—or actively hurts. High-touch relationship work. Sensitive stakeholder conversations. Situations where authenticity matters more than efficiency. Tasks that require presence rather than production.
+
+The trap I see PMMs fall into is treating AI as a hammer and every task as a nail. They start running customer conversations through AI summarization tools even when the nuance matters more than the summary. They generate first drafts for communications that would have been better written from scratch, slowly. They optimize for speed when they should be optimizing for connection.
+
+The PMM who knows when to turn the tools off is often more effective than the PMM who uses them constantly. The tools are leverage, not replacement. And leverage applied inappropriately is worse than no leverage at all.

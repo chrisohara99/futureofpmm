@@ -24,6 +24,11 @@ But the real power comes from combining web-accessible research with proprietary
 
 ### The Research Synthesis Workflow
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/14-research-workflow.svg" alt="Research Synthesis Workflow" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 7.1:</strong> The research synthesis workflow — web sources, proprietary sources, agent synthesis, human insight</figcaption>
+</figure>
+
 Here's the workflow I've found most effective, refined over probably fifty research requests in the past year:
 
 **Define the research question precisely.** This sounds obvious but it's where most research efforts go sideways. Vague questions produce vague answers—the agent equivalent of "it depends." "How do mid-market manufacturing companies think about AI for supply chain?" is too broad. The agent will return a survey of everything anyone has ever said about AI in supply chain, most of it irrelevant to your actual decision. "What are the top three barriers to AI adoption in supply chain planning for manufacturers with $100M-$500M revenue?" is specific enough to drive useful synthesis. The constraint forces focus, both for the agent and for your own thinking about what you actually need to know.
@@ -41,6 +46,11 @@ The limitation is obvious but worth stating: agents can only synthesize what's b
 The skill is knowing when agent synthesis is sufficient and when primary research is required. As a rough heuristic: if the question is about established market dynamics, well-documented competitive positions, or historical patterns, agent synthesis is probably enough. If the question is about what's happening right now, what customers are actually thinking today, or how a competitive landscape is shifting—primary research is non-negotiable.
 
 ## Primary Research: Agent-Augmented, Not Agent-Replaced
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/15-research-matrix.svg" alt="Primary vs Secondary Research Matrix" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 7.2:</strong> Primary vs. Secondary Research — when to use each, and how agents augment them</figcaption>
+</figure>
 
 Primary research—customer interviews, surveys, focus groups, ethnographic observation—remains essential for insights that don't exist in the public record. What's changing is how agents augment every stage of the primary research process, from preparation through analysis.
 

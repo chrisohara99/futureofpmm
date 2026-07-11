@@ -50,6 +50,11 @@ The consumption-based pricing models that are increasingly common are disrupting
 
 ### The Continuous Launch Pipeline
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/13-launch-cadence.svg" alt="Launch Cadence Evolution" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 6.2:</strong> Launch cadence evolution — from big-bang events to always-on drumbeat</figcaption>
+</figure>
+
 This "always launching" cadence is impossible to execute manually at scale. A PMM who has to produce a launch brief, coordinate assets, brief sales, and update the website for every feature release would do nothing else—and still wouldn't keep up. But an agent-powered launch pipeline can handle the Tier 3 and Tier 4 launches—the incremental updates, the feature improvements, the integration additions—almost autonomously.
 
 The workflow looks like this:
@@ -66,6 +71,11 @@ The human PMM reviews the output, makes judgment calls about anything that needs
 James Chen, a PMM at a cloud infrastructure company, shared metrics from their shift to this model: "Last year we launched 180 features and improvements. Under the old model, maybe 40 of those got any marketing communication at all—the rest just shipped silently. Now all 180 get appropriate communication, scaled to their importance. The Tier 1 and Tier 2 launches are better because I have time to focus on them. And the Tier 3/4 releases that used to get nothing now get blog posts and sales notifications that actually drive adoption."
 
 The math is straightforward: if you can automate the 80% of launches that are operational and incremental, you free up massive capacity for the 20% that are strategic and career-making. That's the 10x move for launch management.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/12-launch-tiers.svg" alt="Launch Tier Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 6.1:</strong> The Launch Tier Framework — activities, channels, and effort level per tier</figcaption>
+</figure>
 
 ## Launch Tier Classification
 

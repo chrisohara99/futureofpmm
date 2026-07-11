@@ -18,6 +18,11 @@ I've spent a significant part of my last two years working on this exact problem
 
 In the agentic era, enterprise software pricing is converging on three models. Most companies will end up with some combination of all three, but understanding each in isolation is useful for thinking about where the market is heading.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/16-pricing-models.svg" alt="The Three Pricing Models" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 8.1:</strong> The three pricing models — Per-Seat, Consumption, and Outcome-based</figcaption>
+</figure>
+
 ### Per-Seat Pricing
 
 The first is the traditional per-seat model, which still works for products where the value is proportional to the number of human users and where AI augmentation hasn't fundamentally changed the work-per-user ratio. Collaboration tools, communication platforms, and certain workflow products still fit this model—though even there, the pressure is building as AI features reduce the number of humans needed to perform a given task.
@@ -148,6 +153,11 @@ Maria Santos, a pricing analyst I worked with on this project, summarized the dy
 
 The PMM's job is to bridge this gap—to translate the financial mechanics of the pricing model into a narrative that feels fair and understandable to buyers. This isn't just communication; it's design input. If you can't explain the pricing model in a way that customers accept as legitimate, the model needs to change.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/18-value-alignment.svg" alt="Pricing Value Alignment" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 8.2:</strong> Pricing value alignment — revenue captured vs. value delivered under each model</figcaption>
+</figure>
+
 ## Migration Paths
 
 For companies moving from per-seat to consumption or AI-credit pricing, the migration path matters as much as the destination. Customers who bought per-seat licenses have expectations—they've budgeted based on predictable costs, they've staffed based on assumed access, they've built workflows around the current model.
@@ -162,11 +172,38 @@ The migration patterns I've seen work:
 
 **Hybrid models:** Combining per-seat base pricing with consumption-based add-ons, allowing customers to maintain cost predictability on core usage while paying for incremental AI or premium features on a consumption basis.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/17-migration-paths.svg" alt="Pricing Migration Paths" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 8.3:</strong> Pricing migration paths — Grandfather, Opt-in, or Hybrid approaches</figcaption>
+</figure>
+
 Each approach has trade-offs. The PMM's role is to model those trade-offs from the customer's perspective—understanding which customers will benefit and which will be disadvantaged, and designing communication that addresses concerns proactively.
 
 Tom Mitchell, who led pricing transformation at an enterprise analytics company, described the migration challenge: "The spreadsheet said we should move everyone to consumption immediately—the revenue model was better. But when we talked to customers, we realized that forty percent of them would see significant cost increases. Forcing that transition would have cost us more in churn than we gained in pricing optimization. The migration path was as important as the destination."
 
 The lesson: pricing decisions made purely on financial modeling, without customer perspective, often fail in implementation. The PMM who brings customer psychology and migration risk into the pricing conversation adds value that the finance team can't provide alone.
+
+## The Competitive Pricing Intelligence Gap
+
+Here's something I've observed across dozens of pricing conversations: most companies have far less visibility into their competitors' actual pricing than they think they do.
+
+They know list prices—the numbers on the pricing page. But enterprise software is almost never sold at list price. What they don't know is the discount structures, the packaging flexibility, the negotiation playbooks, and the deal-specific concessions that competitors offer in actual sales cycles. The gap between list price intelligence and deal-level pricing intelligence is enormous, and it's where competitive pricing strategy is actually made.
+
+Christopher Reed, who led pricing strategy at a major CRM platform, described this blind spot: "We had beautiful competitive pricing matrices—list price comparisons, feature-tier mapping, price-per-seat analysis. All of it based on public information. And all of it was essentially fiction. The competitor's list price was $150 per seat, but our win/loss analysis showed they were consistently closing at $85 to $95 per seat with multi-year commits. We were pricing against a number that no customer was actually paying."
+
+The intelligence gap creates strategic risk. If you're pricing based on competitor list prices while they're consistently discounting 40%, you're either leaving money on the table (pricing too low against an inflated benchmark) or losing deals (pricing appropriately but appearing expensive against their actual street price).
+
+The fix requires triangulating multiple intelligence sources:
+
+**Win/loss analysis:** What prices did competitors actually quote in deals you won or lost? Sales reps often know—or can find out from champions inside the account—what the competing bid looked like.
+
+**Customer intelligence:** Existing customers who previously used a competitor can often share what they were paying, providing direct visibility into real pricing.
+
+**Partner and analyst networks:** Implementation partners and industry analysts often have visibility into pricing patterns that aren't publicly available.
+
+**Negotiation feedback:** Your own sales team knows how competitors respond to pressure—do they hold firm, offer token discounts, or cave dramatically? That behavior pattern is pricing intelligence.
+
+An agent-powered approach can systematize this triangulation—aggregating win/loss pricing data, synthesizing feedback from customer conversations, and flagging patterns that suggest competitive pricing shifts. But the intelligence has to be collected first. No amount of AI sophistication can synthesize data you don't have.
 
 ## The Freemium Question in the AI Era
 
@@ -187,6 +224,18 @@ I've watched companies navigate this in different ways:
 Rebecca Torres, who leads product marketing at a developer tools company, described their approach: "We started with AI in premium only. Conversion was strong among users who hit the upgrade trigger, but overall adoption was slower than competitors with AI in their free tiers. We moved to limited AI in free—five queries per day—and saw adoption accelerate significantly while conversion rates held. The limit was low enough to drive upgrades but high enough to demonstrate value."
 
 The right answer depends on your competitive context, cost structure, and strategic priorities. But the question is unavoidable: as AI capabilities become table stakes, where they sit in your pricing architecture matters more than ever.
+
+## The Value Quantification Challenge
+
+One dimension of AI pricing that deserves more attention: the difficulty of quantifying the value that AI features deliver.
+
+Traditional software pricing can lean on relatively straightforward value metrics. A CRM saves sales reps time on data entry—you can estimate hours saved and multiply by hourly cost. A marketing automation platform increases campaign velocity—you can measure campaigns launched and conversion improvements. The math isn't always clean, but the logic is tractable.
+
+AI features are harder. How do you quantify the value of "better insights"? What's the dollar value of a competitive analysis that's 30% more accurate? If your AI feature helps a PMM write positioning documents faster, is the value the time saved, the quality improvement, or the downstream revenue impact of better positioning—and how would you even measure that last one?
+
+Angela Martinez, a pricing consultant who specializes in AI products, described the challenge: "My clients want value-based pricing for their AI features, which is the right instinct. But when I ask them to quantify the value, they struggle. They'll say things like 'it makes users more productive' or 'it improves decision quality.' Those are true, but they're not numbers. And if you can't put a number on the value, you can't price based on value—you end up pricing based on cost or competition, which are weaker foundations."
+
+The solution—imperfect but workable—is to build the quantification case through customer evidence. Find customers who can articulate, in specific terms, what value your AI features delivered. "We reduced our competitive analysis time from twelve hours to two hours per month" is quantifiable. "Our sales team's competitive win rate improved from 34% to 41% after using the AI battlecard feature" is quantifiable. Collect enough of these specific data points and you can build a credible value case—one that supports premium pricing and answers the buyer's inevitable question: "Why does this cost more?"
 
 ## Pricing and Sales Compensation
 

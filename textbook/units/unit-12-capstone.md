@@ -18,6 +18,11 @@ So the real question isn't "Will I have a job?" It's "Which skills do I need to 
 
 ## The Four Surviving Skills
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/26-four-skills.svg" alt="Four Surviving PMM Skills" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 12.1:</strong> The four surviving PMM skills — what agents can't replace</figcaption>
+</figure>
+
 When I did the Pragmatic Framework analysis in Unit 1, the activities that scored highest on "elevation opportunity"—the ones that become more valuable as the routine work around them is automated—clustered around four capabilities. These aren't job titles or Pragmatic boxes. They're meta-skills that cut across multiple activities and that define what it means to be a senior, strategic product marketer in the agentic era.
 
 ### Strategic Judgment
@@ -138,6 +143,11 @@ PMMs who see their skills as transferable will have more options than those who 
 
 ## The PMM in 2030
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/27-pmm-evolution.svg" alt="PMM Role Evolution 2020-2030" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 12.2:</strong> PMM role evolution from 2020 to 2030 — from production to judgment</figcaption>
+</figure>
+
 Let me paint a picture of what a day in the life might look like.
 
 You wake up to an overnight intelligence brief: your CI system flagged that a competitor updated their pricing page (the agent already drafted analysis comparing the changes to your pricing), your content monitoring noticed that an analyst published a new report with a favorable mention of your category (the agent pulled the relevant excerpt and suggested three ways to leverage it), and your win/loss system identified a pattern in last week's lost deals that warrants investigation (three losses mentioned the same competitive feature that's not in your battlecards).
@@ -181,6 +191,11 @@ The career development implication: actively developing people's strategic skill
 ---
 
 ## Conclusion: The 10x PMM
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/30-agentic-pmm-overview.svg" alt="The Agentic PMM Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 12.3:</strong> The Agentic PMM Framework — the complete system for product marketing in the AI era</figcaption>
+</figure>
 
 We started this book with a proposition: that the output gap between a PMM who has internalized the agentic shift and one who hasn't is going to widen to a factor of ten—in quality, in speed, in strategic impact.
 

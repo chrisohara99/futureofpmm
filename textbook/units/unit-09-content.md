@@ -50,6 +50,11 @@ The discipline of noticing and recording is the prerequisite for narrative advan
 
 There's another dimension to the content transformation that most PMMs aren't thinking about yet, and it's going to matter as much as the thought leadership question. It's called generative engine optimization—GEO—and it's the discipline of optimizing your content to be surfaced and cited by AI systems rather than (or in addition to) traditional search engines.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/20-geo-vs-seo.svg" alt="GEO vs SEO Comparison" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 9.2:</strong> GEO vs. SEO — what each optimizes for and what content wins</figcaption>
+</figure>
+
 I profiled a company called Evertune on futureofpmm.com—they're building what I described as "the Bloomberg Terminal for AI search." The founders came from The Trade Desk, which means they understand how platforms get built and how measurement changes behavior. Their thesis is that GEO will become one of the most important channels for product marketing, and that most companies are completely blind to how they're showing up—or not showing up—in AI-generated answers.
 
 ### What This Means for Content Strategy
@@ -61,6 +66,11 @@ This connects directly to the positioning argument from Unit 2. The same princip
 ## The Content Operating Model
 
 So what does a content strategy actually look like in this environment? I think it has three layers, and the time allocation between them is roughly the inverse of what most PMM teams practice today.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/19-content-pyramid.svg" alt="Three-Layer Content Model" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 9.1:</strong> The three-layer content model — Commodity, Strategic, and Signature content</figcaption>
+</figure>
 
 ### Layer 1: Commodity Content (20% of time)
 
@@ -167,3 +177,40 @@ Sarah Kim, a content director I know, made this shift explicitly: "We went from 
 The agent-powered content model supports this shift. When commodity content can be produced on demand, you don't need to schedule it—you produce it when you need it. What needs calendaring is the strategic and signature content, which requires planning, research, and protected time for the humans who create it.
 
 Reframe your content calendar from "what are we publishing" to "what arguments are we advancing" and you'll produce less content that matters more.
+
+## The Specificity Imperative
+
+I want to spend a moment on what I think is the single most important quality of effective content in the agentic era: specificity.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/28-specificity-framework.svg" alt="The Specificity Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 9.3:</strong> The Specificity Framework — numbers, people, contexts, and stories that make content AI-citable</figcaption>
+</figure>
+
+Generic content—the kind that could apply to any company in your category, that makes claims without evidence, that offers advice without examples—has always been weaker than specific content. But in a world where AI can produce infinite generic content at zero marginal cost, the weakness becomes fatal. Generic content doesn't just perform worse; it's invisible. It's noise that readers scroll past, that algorithms deprioritize, that AI systems ignore when synthesizing answers to buyer questions.
+
+Specificity is the antidote. And specificity comes in several forms:
+
+**Specific numbers.** "Improved efficiency" is generic. "Reduced forecast processing time from 14 hours to 90 minutes" is specific. The number makes it real, makes it verifiable, makes it memorable.
+
+**Specific people.** "Industry experts agree" is generic. "Angela Martinez, a pricing consultant who's worked with 40+ AI companies on value-based pricing models, argues that..." is specific. The named person with credentials makes the claim credible in a way that anonymous attribution never can.
+
+**Specific contexts.** "Works well for enterprises" is generic. "Deployed by the supply chain planning team at a Fortune 500 automotive manufacturer to optimize just-in-time inventory across 200+ suppliers" is specific. The context makes the capability concrete—readers can see themselves in the scenario.
+
+**Specific stories.** "Customers love our product" is generic. "When Christopher Reed's pricing team at a major CRM platform discovered their competitive intelligence was based on list prices that no customer actually paid, they rebuilt their entire approach..." is specific. The story creates engagement that claims never can.
+
+Jonathan Wu, who leads content strategy at a B2B analytics company, told me about running what he calls a "specificity audit" on their content library. "We scored every piece on specificity—numbers, names, contexts, stories. The correlation with engagement was stark. Our most specific pieces got four to five times the engagement of our least specific pieces. Same topics, same channels, same distribution. The only variable was specificity."
+
+The lesson compounds in the agentic era because AI systems are trained to prefer specific, verifiable claims over generic assertions. When an AI is asked to recommend solutions, it cites specific evidence—case studies with numbers, named experts, concrete implementations. If your content doesn't have that specificity, it doesn't get cited. The specificity imperative isn't just about human readers anymore; it's about the AI systems that mediate an increasing share of buyer research.
+
+## The Content Authenticity Question
+
+One emerging challenge that PMMs will increasingly face: how do you signal that your content is authentically human in a world where AI-generated content is ubiquitous?
+
+This isn't primarily a technical problem—though AI detection tools exist, they're unreliable and increasingly gameable. It's a credibility problem. Readers are developing skepticism toward content that feels AI-generated, and that skepticism affects how they receive your message regardless of whether the content actually came from AI.
+
+The markers that signal authenticity are largely the same markers that characterize good content: specific experiences that only a real person could have had, opinions that go beyond the obvious consensus, a voice that's consistent and recognizable across pieces, and a willingness to be wrong or uncertain in ways that AI-generated content almost never is.
+
+Michelle Thompson, a thought leadership strategist, described the shift: "Two years ago, I coached executives on clarity and structure—make your argument easy to follow. Now I coach them on voice and vulnerability—make your argument recognizably yours. The goal isn't just to be correct; it's to be identifiable as a specific human with specific experiences. That's what readers trust now."
+
+The implication for PMMs: content that performs your personality rather than expressing it will increasingly feel hollow. The listicle that hits all the right points but could have been written by anyone—or anything—doesn't create the trust relationship that genuine thought leadership requires.

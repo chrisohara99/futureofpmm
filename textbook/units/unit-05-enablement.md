@@ -95,6 +95,11 @@ The PMM who owns and curates this knowledge base—who makes it their job to ens
 
 What should be in your enablement knowledge base? Here's a framework:
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/09-knowledge-base-components.svg" alt="Knowledge Base Components" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 5.1:</strong> The four quadrants of an enablement knowledge base</figcaption>
+</figure>
+
 ### Competitive Intelligence
 
 - Competitor positioning summaries (updated continuously via your monitoring system)
@@ -135,6 +140,11 @@ Each component should be tagged with metadata: recency (when was this last valid
 
 Most enablement systems are one-way: intelligence flows from PMM to sales. The best systems are two-way: intelligence flows from PMM to sales, and feedback flows from sales back to PMM.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/10-feedback-loop.svg" alt="Enablement Feedback Loop" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 5.2:</strong> The enablement feedback loop — a continuous learning system</figcaption>
+</figure>
+
 When Marcus uses the competitive brief you provided and wins the deal, what did he learn that should feed back into the system? When he loses, what went wrong? What objections came up that weren't covered? What competitor claims did he encounter that weren't in your intelligence base?
 
 ### Building the Feedback Loop
@@ -149,6 +159,41 @@ The feedback loop has three components:
 
 The feedback loop turns your enablement system from static (even if frequently updated) to learning. Over time, the system gets smarter because it's continuously incorporating what's actually happening in deals.
 
+## The Knowledge Refresh Cadence
+
+One question I get asked constantly by PMMs building enablement systems: how often should the knowledge base be refreshed? The answer depends on the type of intelligence, and getting this wrong creates either staleness or noise.
+
+I worked with Lisa Brennan, a competitive PMM at an enterprise security company, who developed what she calls the "half-life framework" for intelligence refresh. The concept is simple: different types of intelligence decay at different rates, and your refresh cadence should match the decay rate.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/11-half-life-framework.svg" alt="Intelligence Half-Life Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 5.3:</strong> The Intelligence Half-Life Framework — match refresh cadence to decay rate</figcaption>
+</figure>
+
+**Fast-decay intelligence (refresh weekly or more frequently):**
+- Competitor pricing and packaging changes
+- Recent product announcements and feature releases
+- Deal-specific competitive signals from the field
+- News coverage and analyst commentary
+
+**Medium-decay intelligence (refresh monthly):**
+- Competitive positioning and messaging
+- Win/loss patterns and themes
+- Customer proof points and reference availability
+- Market segment dynamics
+
+**Slow-decay intelligence (refresh quarterly):**
+- Competitor business model and strategic direction
+- Technical architecture comparisons
+- Buyer persona documentation
+- Industry-level trends and market sizing
+
+Lisa's team built their monitoring system around these cadences—automated alerts for fast-decay signals, monthly review cycles for medium-decay content, and quarterly deep-dives for slow-decay fundamentals. The result was a knowledge base that felt current without requiring constant manual maintenance.
+
+The anti-pattern I see most often is the opposite: teams treat all intelligence as if it has the same decay rate, refreshing everything on the same quarterly cycle. The fast-decay intelligence goes stale—that competitor pricing change from six weeks ago is still not reflected in the battlecard. Meanwhile, the slow-decay intelligence gets unnecessarily revisited, consuming time that could be spent on higher-value work.
+
+Match your refresh cadence to the half-life of the intelligence, and you'll maintain accuracy without exhausting your team.
+
 ## The Practitioner's Playbook: Rebuilding Sales Enablement
 
 If you're a PMM responsible for sales enablement, here's where I'd start.
@@ -162,6 +207,10 @@ If you're a PMM responsible for sales enablement, here's where I'd start.
 **Fourth, train sales on the new model.** The shift from "find the battlecard" to "ask the system" requires behavior change. Sales reps need to understand what they can ask, how to ask it effectively, and how to evaluate the responses. Build training around this—not a one-time session, but ongoing reinforcement as the system evolves.
 
 **Fifth, build the feedback loop from day one.** Don't treat feedback as a phase-two feature. Make it part of the initial workflow, even if it's just a simple mechanism. The feedback data you collect early will shape how you develop the system going forward.
+
+**Sixth, design for the 4 PM Friday question.** Every enablement system should be stress-tested against a specific scenario: it's 4 PM on Friday, a sales rep has a critical competitive call Monday morning, and they need intelligence that isn't in any existing battlecard. Can they get what they need in under ten minutes? If the answer is no—if they have to wait for a PMM to respond, or hunt through outdated documents, or piece together information from multiple sources—the system has failed its most important test. The 4 PM Friday question is the forcing function for enablement design: if you can serve that rep in that moment, you can serve anyone.
+
+Nathan Park, who runs competitive enablement at a cloud infrastructure company, told me about implementing what he calls "the Friday test" on every enablement initiative. "Before we launch anything, we simulate the Friday scenario. Someone on the team plays the rep, asks a question that isn't directly covered in our existing content, and times how long it takes to get a useful answer. If it's over five minutes, we redesign. That test has killed more features than it's approved, and every feature that passed the test has had strong adoption."
 
 ---
 

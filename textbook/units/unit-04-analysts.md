@@ -36,9 +36,19 @@ That tolerance is decreasing. When an analyst is using AI to synthesize twenty v
 
 The same specificity principles from Unit 2 apply here: capability layer, evidence layer, architecture layer. Your RFI responses should be optimized for extraction by AI systems, because that's increasingly how analysts are processing them. The analyst is still the decision-maker—they're still applying judgment about what the criteria mean and how to weight different factors—but the raw material they're working with is being pre-processed in ways that reward specificity and punish vagueness.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/08-rfi-optimization.svg" alt="RFI Optimization Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 4.1:</strong> RFI Optimization Framework — what AI agents extract vs. what analysts evaluate</figcaption>
+</figure>
+
 ## The Expanding Influence Landscape
 
 At the same time that traditional analyst work is evolving, new influence channels are emerging that require PMM attention. The traditional AR function focused on the big three. The modern influence function needs to think much more broadly.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/07-influence-landscape.svg" alt="Influence Landscape Map" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 4.2:</strong> The Influence Landscape Map — traditional analysts, independents, practitioners, and communities</figcaption>
+</figure>
 
 ### Independent Analysts and Practitioners
 

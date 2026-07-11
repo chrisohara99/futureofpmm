@@ -34,6 +34,11 @@ That assumption is no longer sufficient. Your positioning now needs to work for 
 
 The dual-audience problem creates a tension that most PMMs haven't grappled with yet. Traditional positioning advice says to lead with the business outcome: don't sell the drill, sell the hole. That's great advice for the human buyer. But the agent isn't evaluating whether you "sell the hole" effectively—it's evaluating whether your drill actually makes the hole. It wants specifications, integration capabilities, performance benchmarks, architectural details. It wants the receipt, not the promise.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/03-dual-audience-framework.svg" alt="The Dual-Audience Framework" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 2.1:</strong> The Dual-Audience Framework — positioning must work for both human buyers and AI agents</figcaption>
+</figure>
+
 ### The Filtering Function
 
 Here's what makes this particularly urgent: agents are increasingly acting as the first filter in the buying process. A human buying committee might evaluate five vendors in depth over three months. But before those five vendors made the list, an agent evaluated fifty—scanning websites, documentation, analyst reports, and review sites to narrow the field based on fit criteria that the human stakeholders defined.
@@ -69,6 +74,11 @@ The first statement tells you nothing an agent can evaluate. The second tells yo
 ## The Positioning Architecture
 
 So what does good positioning look like in an agent-mediated world? I think it has four layers, and the trick is that each layer serves a different function and a different audience.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/04-positioning-stack.svg" alt="Three-Layer Positioning Stack" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 2.2:</strong> The Three-Layer Positioning Stack — Capability, Evidence, and Architecture layers for agent-readable positioning</figcaption>
+</figure>
 
 ### Layer One: The Narrative Layer
 

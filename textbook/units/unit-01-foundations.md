@@ -29,6 +29,11 @@ This book is about the structural transformation of product marketing as a disci
 
 That's the "10x yourself" thesis of this book, and I want to be precise about what it means. It does not mean work ten times faster. It means that the output gap between a PMM who has internalized the agentic shift and one who hasn't is going to widen to a factor of ten—in quality, in speed, in strategic impact. The PMM who builds an always-on competitive intelligence system that monitors fifteen competitors in real time is not just "faster" than the PMM who updates battlecards quarterly. They are operating in a fundamentally different category.
 
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/01-pmm-automation-matrix.svg" alt="PMM Activity Automation Matrix" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 1.1:</strong> The PMM Activity Automation Matrix — mapping activities by automation potential and strategic value</figcaption>
+</figure>
+
 ---
 
 ### A Word About Who I Am and Why I Wrote This
@@ -83,6 +88,11 @@ In 1961, a Jesuit priest named Father Schmitt at a small college in Milwaukee wa
 I mention Father Schmitt because he's the beginning of a story that runs directly—though not always obviously—to the moment we're in right now. The idea that data could predict behavior, that you could model intent before it manifested as a purchase or a donation or a signed enrollment form, has been the central animating idea of marketing technology for sixty years. The tools changed. The ambition didn't.
 
 If you've read my previous books, you know I think of this history in eras defined by the data architecture that sat at the center of the marketing operation. Not the campaigns. Not the channels. Not the organizational chart. The architecture—because the architecture determines what's possible, and what's possible determines how you go to market.
+
+<figure style="margin: 2rem 0; text-align: center;">
+  <img src="/diagrams/02-martech-evolution-timeline.svg" alt="Marketing Technology Evolution Timeline" style="max-width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; color: #6b7280;"><strong>Figure 1.2:</strong> The evolution of marketing technology — from DMPs to CDPs to the Agentic Era</figcaption>
+</figure>
 
 ### Era One: The DMP and the Age of Audiences
 
