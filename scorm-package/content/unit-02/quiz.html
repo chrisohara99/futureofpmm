@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+<script src="../../assets/js/unit-gate.js"></script>
+
+
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2 Assessment | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 2rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .assessment-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .assessment-intro p { color: #666; margin-bottom: 0.5rem; }
+        .scoring-info {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+            flex-wrap: wrap;
+        }
+        .scoring-info div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .exercise {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .exercise-number {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--sap-blue);
+            font-weight: 600;
+        }
+        
+        .exercise-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin-top: 0.25rem;
+        }
+        
+        .exercise-points {
+            background: var(--light-gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .exercise-instructions {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        /* Click-to-place sorting */
+        .sort-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #fff;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            min-height: 60px;
+        }
+        
+        .sort-item {
+            background: var(--dark-slate);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            border: 3px solid transparent;
+        }
+        
+        .sort-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .sort-item.selected {
+            border-color: var(--sap-orange);
+            box-shadow: 0 0 0 3px rgba(237,125,49,0.3);
+        }
+        
+        .sort-item.placed {
+            opacity: 0.6;
+            cursor: default;
+        }
+        
+        .sort-item.correct { background: var(--green); }
+        .sort-item.incorrect { background: var(--red); }
+        
+        .sort-zones {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .sort-zones { grid-template-columns: 1fr; }
+        }
+        
+        .sort-zone {
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            min-height: 120px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sort-zone:hover {
+            border-color: var(--sap-blue);
+            background: #f0f4f8;
+        }
+        
+        .sort-zone.active {
+            border-color: var(--sap-orange);
+            background: #fff8f0;
+        }
+        
+        .sort-zone-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .sort-zone.seo .sort-zone-title { color: #888; }
+        .sort-zone.geo .sort-zone-title { color: var(--green); }
+        .sort-zone.quotable .sort-zone-title { color: var(--green); }
+        .sort-zone.weak .sort-zone-title { color: var(--red); }
+        
+        .sort-zone-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .three-col { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 768px) { .three-col { grid-template-columns: 1fr; } }
+        
+        .help-text {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        /* Scenario & Options */
+        .scenario-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .scenario-box h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--sap-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover { background: var(--light-gray); }
+        .option.selected { border-color: var(--sap-blue); background: #e3f2fd; }
+        .option.correct { border-color: var(--green); background: #e8f5e9; }
+        .option.incorrect { border-color: var(--red); background: #ffebee; }
+        
+        .option input { display: none; }
+        
+        .option-marker {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #888;
+            flex-shrink: 0;
+        }
+        
+        .option.selected .option-marker { border-color: var(--sap-blue); background: var(--sap-blue); color: white; }
+        .option.correct .option-marker { border-color: var(--green); background: var(--green); color: white; }
+        .option.incorrect .option-marker { border-color: var(--red); background: var(--red); color: white; }
+        
+        .option-text { flex: 1; font-size: 0.95rem; }
+        
+        /* Submit & Results */
+        .submit-section { text-align: center; margin-top: 2rem; }
+        
+        .submit-btn {
+            background: var(--sap-orange);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .results-container { display: none; margin-top: 2rem; }
+        .results-container.show { display: block; }
+        
+        .results-header {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .results-header.pass { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .results-header.fail { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
+        
+        .results-score { font-size: 3.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .results-header.pass .results-score { color: var(--green); }
+        .results-header.fail .results-score { color: var(--red); }
+        
+        .results-message { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .results-detail { color: #666; }
+        
+        .results-breakdown {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .results-breakdown h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
+        
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .breakdown-row:last-child { border-bottom: none; }
+        .breakdown-label { color: #666; }
+        .breakdown-score { font-weight: 600; }
+        .breakdown-score.full { color: var(--green); }
+        .breakdown-score.partial { color: var(--gold); }
+        .breakdown-score.zero { color: var(--red); }
+        
+        .next-steps {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .next-steps h3 { margin-bottom: 1rem; }
+        
+        .next-btn {
+            display: inline-block;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0.5rem;
+        }
+        .next-btn.primary { background: var(--green); color: white; }
+        .next-btn.secondary { background: transparent; color: var(--sap-blue); border: 2px solid var(--sap-blue); }
+        
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .feedback-box.show { display: block; }
+        .feedback-box.correct { background: #e8f5e9; border-left: 4px solid var(--green); }
+        .feedback-box.incorrect { background: #ffebee; border-left: 4px solid var(--red); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <img src="../../assets/images/logo-white.svg" alt="Future of PMM">
+            </a>
+            <nav class="nav">
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/about.html">About</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>Unit 2 Assessment</h1>
+        <p>AI Discoverability & GEO • 4 exercises • ~15 minutes</p>
+    </section>
+    
+    <main>
+        <div class="assessment-intro">
+            <p>Test your understanding of how AI agents discover vendors and how to optimize for visibility in the age of generative search.</p>
+            <div class="scoring-info">
+                <div><span>🎯</span> 100 points total</div>
+                <div><span>✅</span> 80+ to pass</div>
+                <div><span>🔓</span> Unlocks Unit 3</div>
+            </div>
+        </div>
+        
+        <!-- Exercise 1: SEO vs GEO -->
+        <div class="exercise" id="exercise1">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 1 of 4</div>
+                    <div class="exercise-title">SEO vs GEO Mindset</div>
+                </div>
+                <div class="exercise-points">24 points</div>
+            </div>
+            <p class="exercise-instructions">Sort these tactics into the correct optimization mindset. Remember: SEO is about search rankings, GEO is about AI citations.</p>
+            
+            <div class="sort-items" id="items1">
+                <div class="sort-item" data-answer="seo" data-id="1">Optimize for keywords</div>
+                <div class="sort-item" data-answer="seo" data-id="2">Build backlinks</div>
+                <div class="sort-item" data-answer="seo" data-id="3">Drive clicks to website</div>
+                <div class="sort-item" data-answer="seo" data-id="4">Compete for SERP position</div>
+                <div class="sort-item" data-answer="geo" data-id="5">Optimize for entity recognition</div>
+                <div class="sort-item" data-answer="geo" data-id="6">Build knowledge graph presence</div>
+                <div class="sort-item" data-answer="geo" data-id="7">Get cited in AI responses</div>
+                <div class="sort-item" data-answer="geo" data-id="8">Create quotable claims</div>
+            </div>
+            
+            <div class="sort-zones" id="zones1">
+                <div class="sort-zone seo" data-zone="seo">
+                    <div class="sort-zone-title">📊 SEO Mindset</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone geo" data-zone="geo">
+                    <div class="sort-zone-title">🤖 GEO Mindset</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+            </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
+            
+            <div class="feedback-box" id="feedback1"></div>
+        </div>
+        
+        <!-- Exercise 2: Discovery Layers -->
+        <div class="exercise" id="exercise2">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 2 of 4</div>
+                    <div class="exercise-title">Agent Discovery Layers</div>
+                </div>
+                <div class="exercise-points">24 points</div>
+            </div>
+            <p class="exercise-instructions">Match each content type to the discovery layer where it has the most impact.</p>
+            
+            <div class="sort-items" id="items2">
+                <div class="sort-item" data-answer="training" data-id="a">Wikipedia presence</div>
+                <div class="sort-item" data-answer="training" data-id="b">Academic citations</div>
+                <div class="sort-item" data-answer="realtime" data-id="c">Current website content</div>
+                <div class="sort-item" data-answer="realtime" data-id="d">Recent press releases</div>
+                <div class="sort-item" data-answer="realtime" data-id="e">Updated documentation</div>
+                <div class="sort-item" data-answer="entity" data-id="f">Customer logos & partnerships</div>
+                <div class="sort-item" data-answer="entity" data-id="g">Analyst report mentions</div>
+                <div class="sort-item" data-answer="entity" data-id="h">Wikidata entries</div>
+            </div>
+            
+            <div class="sort-zones three-col" id="zones2">
+                <div class="sort-zone" data-zone="training" style="border-top: 4px solid var(--sap-blue);">
+                    <div class="sort-zone-title" style="color: var(--sap-blue);">📚 Training Data</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone" data-zone="realtime" style="border-top: 4px solid var(--sap-orange);">
+                    <div class="sort-zone-title" style="color: var(--sap-orange);">🔍 Real-Time Retrieval</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone" data-zone="entity" style="border-top: 4px solid var(--green);">
+                    <div class="sort-zone-title" style="color: var(--green);">🔗 Entity Relationships</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+            </div>
+            <p class="help-text">Tap item → Tap layer to place</p>
+            
+            <div class="feedback-box" id="feedback2"></div>
+        </div>
+        
+        <!-- Exercise 3: Quotability Test -->
+        <div class="exercise" id="exercise3">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 3 of 4</div>
+                    <div class="exercise-title">The Quotability Test</div>
+                </div>
+                <div class="exercise-points">24 points</div>
+            </div>
+            <p class="exercise-instructions">Sort these statements: Which are quotable by AI agents, and which are too weak?</p>
+            
+            <div class="sort-items" id="items3">
+                <div class="sort-item" data-answer="quotable" data-id="q1">SAP processes $46 trillion in commerce annually</div>
+                <div class="sort-item" data-answer="weak" data-id="q2">We're the leading platform in our space</div>
+                <div class="sort-item" data-answer="quotable" data-id="q3">Connects to 150+ data sources</div>
+                <div class="sort-item" data-answer="weak" data-id="q4">Best-in-class enterprise capabilities</div>
+                <div class="sort-item" data-answer="quotable" data-id="q5">Used by 25,000 enterprise customers</div>
+                <div class="sort-item" data-answer="weak" data-id="q6">Innovative solutions for modern business</div>
+                <div class="sort-item" data-answer="quotable" data-id="q7">Reduces data integration time by 60%</div>
+                <div class="sort-item" data-answer="weak" data-id="q8">Trusted by industry leaders worldwide</div>
+            </div>
+            
+            <div class="sort-zones" id="zones3">
+                <div class="sort-zone quotable" data-zone="quotable">
+                    <div class="sort-zone-title">✅ Quotable (Specific, Verifiable)</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone weak" data-zone="weak">
+                    <div class="sort-zone-title">❌ Weak (Vague, Generic)</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+            </div>
+            <p class="help-text">Tap statement → Tap category</p>
+            
+            <div class="feedback-box" id="feedback3"></div>
+        </div>
+        
+        <!-- Exercise 4: Scenario -->
+        <div class="exercise" id="exercise4">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 4 of 4</div>
+                    <div class="exercise-title">Scenario: AI Visibility Audit</div>
+                </div>
+                <div class="exercise-points">28 points</div>
+            </div>
+            
+            <div class="scenario-box">
+                <h4>📋 Scenario</h4>
+                <p>You query ChatGPT with "What are the best enterprise data platforms?" Your company isn't mentioned, but three competitors are. Your CMO wants a plan to fix this.</p>
+                <p style="margin-top:0.75rem;"><strong>What's the MOST effective first step based on Unit 2?</strong></p>
+            </div>
+            
+            <div class="options" id="scenario1">
+                <label class="option">
+                    <input type="radio" name="scenario1" value="a">
+                    <span class="option-marker">A</span>
+                    <span class="option-text">Create more blog content with SEO-optimized keywords to increase web traffic.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario1" value="b">
+                    <span class="option-marker">B</span>
+                    <span class="option-text">Add Schema.org markup, establish Wikipedia/Wikidata presence, and create quotable claims with specific numbers.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario1" value="c">
+                    <span class="option-marker">C</span>
+                    <span class="option-text">Buy more ads on Google to increase brand visibility across channels.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario1" value="d">
+                    <span class="option-marker">D</span>
+                    <span class="option-text">Wait for the next model training cycle — there's nothing you can do about AI responses.</span>
+                </label>
+            </div>
+            
+            <div class="feedback-box" id="feedback4a"></div>
+            
+            <div class="scenario-box" style="margin-top: 2rem;">
+                <h4>📋 Scenario 2</h4>
+                <p>You're rewriting your product page. Which opening sentence follows GEO best practices?</p>
+            </div>
+            
+            <div class="options" id="scenario2">
+                <label class="option">
+                    <input type="radio" name="scenario2" value="a">
+                    <span class="option-marker">A</span>
+                    <span class="option-text">"Welcome to the future of data management. Our innovative platform delivers best-in-class capabilities for modern enterprises."</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario2" value="b">
+                    <span class="option-marker">B</span>
+                    <span class="option-text">"Explore how leading organizations are transforming their data strategies with cutting-edge technology."</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario2" value="c">
+                    <span class="option-marker">C</span>
+                    <span class="option-text">"SAP Datasphere is an enterprise data management platform that connects 150+ sources and processes 2 billion transactions daily for 25,000 customers."</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario2" value="d">
+                    <span class="option-marker">D</span>
+                    <span class="option-text">"Trusted by industry leaders, our award-winning platform sets the standard for enterprise data excellence."</span>
+                </label>
+            </div>
+            
+            <div class="feedback-box" id="feedback4b"></div>
+        </div>
+        
+        <!-- Submit -->
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn">Submit Assessment</button>
+        </div>
+        
+        <!-- Results -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-header" id="resultsHeader">
+                <div class="results-score" id="resultsScore">0%</div>
+                <div class="results-message" id="resultsMessage"></div>
+                <div class="results-detail" id="resultsDetail"></div>
+            </div>
+            
+            <div class="results-breakdown">
+                <h3>Score Breakdown</h3>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 1: SEO vs GEO (8 items)</span>
+                    <span class="breakdown-score" id="score1">0/24</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 2: Discovery Layers (8 items)</span>
+                    <span class="breakdown-score" id="score2">0/24</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 3: Quotability Test (8 items)</span>
+                    <span class="breakdown-score" id="score3">0/24</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 4: Scenarios (2 questions)</span>
+                    <span class="breakdown-score" id="score4">0/28</span>
+                </div>
+            </div>
+            
+            <div class="next-steps" id="nextSteps">
+                <h3 id="nextStepsTitle"></h3>
+                <p id="nextStepsText" style="color:#666; margin-bottom:1rem;"></p>
+                <div id="nextStepsButtons"></div>
+            </div>
+        </div>
+    </main>
+
+<script>
+// Click-to-place sorting
+let selectedItem = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Select items
+    document.querySelectorAll('.sort-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('placed')) return;
+            
+            const parent = this.closest('.exercise');
+            parent.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+            
+            this.classList.add('selected');
+            selectedItem = this;
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.add('active'));
+        });
+    });
+    
+    // Place in zones
+    document.querySelectorAll('.sort-zone').forEach(zone => {
+        zone.addEventListener('click', function() {
+            if (!selectedItem) return;
+            const parent = this.closest('.exercise');
+            if (!parent.contains(selectedItem)) return;
+            
+            const itemsContainer = this.querySelector('.sort-zone-items');
+            const clone = selectedItem.cloneNode(true);
+            clone.classList.remove('selected');
+            clone.classList.add('placed');
+            clone.dataset.placedZone = this.dataset.zone;
+            
+            clone.addEventListener('click', function() {
+                const original = parent.querySelector(`.sort-items .sort-item[data-id="${this.dataset.id}"]`);
+                if (original) {
+                    original.classList.remove('placed');
+                    original.style.display = '';
+                }
+                this.remove();
+            });
+            
+            itemsContainer.appendChild(clone);
+            selectedItem.classList.add('placed');
+            selectedItem.style.display = 'none';
+            selectedItem.classList.remove('selected');
+            selectedItem = null;
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+        });
+    });
+    
+    // Options
+    document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', function() {
+            this.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input').checked = true;
+        });
+    });
+    
+    document.getElementById('submitBtn').addEventListener('click', submitAssessment);
+});
+
+function submitAssessment() {
+    let totalScore = 0;
+    
+    // Exercise 1: SEO vs GEO (24 pts - 3 each × 8)
+    let ex1Score = 0;
+    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex1Score += 3;
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    totalScore += ex1Score;
+    updateScoreDisplay('score1', ex1Score, 24);
+    showFeedback('feedback1', ex1Score >= 21,
+        'Great! You understand the shift from SEO to GEO.',
+        `You got ${ex1Score}/24. Key: SEO = keywords, backlinks, clicks, rankings. GEO = entities, knowledge graphs, AI citations, quotable claims.`
+    );
+    
+    // Exercise 2: Discovery Layers (24 pts - 3 each × 8)
+    let ex2Score = 0;
+    document.querySelectorAll('#zones2 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex2Score += 3;
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    totalScore += ex2Score;
+    updateScoreDisplay('score2', ex2Score, 24);
+    showFeedback('feedback2', ex2Score >= 21,
+        'Excellent! You know how agents discover content across layers.',
+        `You got ${ex2Score}/24. Training = Wikipedia, academic. Real-time = current website, docs. Entity = partnerships, analysts, Wikidata.`
+    );
+    
+    // Exercise 3: Quotability (24 pts - 3 each × 8)
+    let ex3Score = 0;
+    document.querySelectorAll('#zones3 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex3Score += 3;
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    totalScore += ex3Score;
+    updateScoreDisplay('score3', ex3Score, 24);
+    showFeedback('feedback3', ex3Score >= 21,
+        'You can identify quotable vs weak claims!',
+        `You got ${ex3Score}/24. Quotable = specific numbers, verifiable facts. Weak = "leading," "best-in-class," "innovative."`
+    );
+    
+    // Exercise 4: Scenarios (28 pts - 14 each)
+    let ex4Score = 0;
+    
+    const s1 = document.querySelector('input[name="scenario1"]:checked');
+    document.querySelectorAll('#scenario1 .option').forEach(opt => {
+        const input = opt.querySelector('input');
+        if (input.value === 'b') opt.classList.add('correct');
+        else if (s1 && input.value === s1.value && input.value !== 'b') opt.classList.add('incorrect');
+    });
+    if (s1 && s1.value === 'b') ex4Score += 14;
+    showFeedback('feedback4a', s1 && s1.value === 'b',
+        'Correct! Schema.org, entity presence, and quotable claims are the GEO playbook.',
+        'Answer: B. GEO tactics (structured data, entity establishment, quotable claims) directly impact AI visibility.'
+    );
+    
+    const s2 = document.querySelector('input[name="scenario2"]:checked');
+    document.querySelectorAll('#scenario2 .option').forEach(opt => {
+        const input = opt.querySelector('input');
+        if (input.value === 'c') opt.classList.add('correct');
+        else if (s2 && input.value === s2.value && input.value !== 'c') opt.classList.add('incorrect');
+    });
+    if (s2 && s2.value === 'c') ex4Score += 14;
+    showFeedback('feedback4b', s2 && s2.value === 'c',
+        'Correct! Lead with the conclusion, use specific numbers, make it quotable.',
+        'Answer: C. It leads with what the product IS, includes specific numbers (150+, 2B, 25K), and is quotable out of context.'
+    );
+    
+    totalScore += ex4Score;
+    updateScoreDisplay('score4', ex4Score, 28);
+    
+    // Results
+    const percentage = totalScore;
+    const passed = percentage >= 80;
+    
+    document.querySelector('.submit-section').style.display = 'none';
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.classList.add('show');
+    document.getElementById('resultsHeader').classList.add(passed ? 'pass' : 'fail');
+    document.getElementById('resultsScore').textContent = `${percentage}%`;
+    document.getElementById('resultsMessage').textContent = passed ? '🎉 Excellent Work!' : '📚 Keep Learning!';
+    document.getElementById('resultsDetail').textContent = passed
+        ? `You scored ${totalScore}/100 and mastered AI discoverability concepts.`
+        : `You scored ${totalScore}/100. You need 80% to proceed.`;
+    
+    const nextTitle = document.getElementById('nextStepsTitle');
+    const nextText = document.getElementById('nextStepsText');
+    const nextBtns = document.getElementById('nextStepsButtons');
+    
+    if (passed) {
+        nextTitle.textContent = '🔓 Unit 3 Unlocked!';
+        nextText.textContent = 'Continue to learn about positioning that survives AI summarization.';
+        nextBtns.innerHTML = `
+            <a href="/curriculum/unit-03/" class="next-btn primary">Continue to Unit 3 →</a>
+            <a href="/curriculum/unit-02/" class="next-btn secondary">Review Unit 2</a>
+        `;
+    } else {
+        nextTitle.textContent = 'Almost There!';
+        nextText.textContent = 'Review the unit, then try again.';
+        nextBtns.innerHTML = `
+            <a href="/curriculum/unit-02/" class="next-btn secondary">Review Unit 2</a>
+            <a href="javascript:location.reload()" class="next-btn primary">Try Again</a>
+        `;
+    }
+    
+    // Add survey redirect notice
+    const surveyNotice = document.createElement('div');
+    surveyNotice.style.cssText = 'background: #dbeafe; border: 1px solid #3b82f6; color: #1e40af; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;';
+    surveyNotice.innerHTML = '📋 <strong>Quick feedback survey loading in 3 seconds...</strong><br><span style="font-size: 0.9rem;">Help us improve the curriculum!</span>';
+    document.querySelector('.results-section')?.appendChild(surveyNotice);
+    
+    resultsContainer.scrollIntoView({ behavior: 'smooth' });
+    // Report to SCORM LMS
+    if (typeof SCORM !== "undefined") {
+        SCORM.complete(percentage);
+        console.log("SCORM: Reported score " + percentage + "%");
+    }
+    
+    // Original save (may fail in LMS context - that is OK)
+    // saveQuizScore(totalScore, 100, percentage);
+}
+
+function updateScoreDisplay(id, score, max) {
+    const el = document.getElementById(id);
+    el.textContent = `${score}/${max}`;
+    el.classList.add(score === max ? 'full' : score > 0 ? 'partial' : 'zero');
+}
+
+function showFeedback(id, correct, goodMsg, badMsg) {
+    const el = document.getElementById(id);
+    el.classList.add('show', correct ? 'correct' : 'incorrect');
+    el.innerHTML = `<strong>${correct ? '✓' : '✗'}</strong> ${correct ? goodMsg : badMsg}`;
+}
+
+async function saveQuizScore(score, total, percentage) {
+    try {
+        // Get user email from localStorage
+        let email = null;
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                email = JSON.parse(directUser).email;
+            }
+        } catch (e) {}
+        
+        if (!email) {
+            console.log('No user email - cannot save score');
+            return;
+        }
+        
+        console.log('Saving quiz score for unit-02...');
+        
+        // Use serverless function to bypass corporate proxy
+        const res = await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'quiz_score',
+                email: email,
+                data: {
+                    chapter: 'unit-02',
+                    score,
+                    total,
+                    percentage
+                }
+            })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            console.error('Quiz score save error:', result.error);
+            showSaveError('Error saving progress: ' + result.error);
+        } else {
+            console.log('Quiz score saved successfully');
+            // Redirect to survey after short delay
+            setTimeout(() => {
+                
+            }, 3000);
+        }
+    } catch (err) {
+        console.error('Save error:', err);
+        showSaveError('Error saving progress: ' + err.message);
+    }
+}
+
+function showSaveError(msg) {
+    const existing = document.getElementById('save-error-msg');
+    if (existing) existing.remove();
+    const div = document.createElement('div');
+    div.id = 'save-error-msg';
+    div.style.cssText = 'background:#fee2e2;border:1px solid #ef4444;color:#991b1b;padding:1rem;border-radius:8px;margin:1rem 0;text-align:center;';
+    div.innerHTML = '<strong>⚠️ ' + msg + '</strong>';
+    document.querySelector('.results-section')?.appendChild(div);
+}
+</script>
+
+<script src="../../assets/js/user-menu.js"></script>
+<footer style="background:#f1f5f9;border-top:1px solid #e2e8f0;padding:1.5rem;margin-top:3rem;text-align:center;font-size:0.85rem;color:#64748b;">
+    <p style="margin:0;">This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+    <p style="margin:0.5rem 0 0 0;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+</footer>
+</body>
+</html>

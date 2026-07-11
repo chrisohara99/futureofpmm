@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+
+
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1 Assessment | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 2rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .assessment-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .assessment-intro p { color: #666; margin-bottom: 0.5rem; }
+        .scoring-info {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+            flex-wrap: wrap;
+        }
+        .scoring-info div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .exercise {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .exercise-number {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--sap-blue);
+            font-weight: 600;
+        }
+        
+        .exercise-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin-top: 0.25rem;
+        }
+        
+        .exercise-points {
+            background: var(--light-gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .exercise-instructions {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        /* Click-to-place sorting */
+        .sort-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #fff;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            min-height: 60px;
+        }
+        
+        .sort-item {
+            background: var(--dark-slate);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            border: 3px solid transparent;
+        }
+        
+        .sort-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .sort-item.selected {
+            border-color: var(--sap-orange);
+            box-shadow: 0 0 0 3px rgba(237,125,49,0.3);
+        }
+        
+        .sort-item.placed {
+            opacity: 0.6;
+            cursor: default;
+        }
+        
+        .sort-item.correct { background: var(--green); }
+        .sort-item.incorrect { background: var(--red); }
+        
+        .sort-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .sort-zones { grid-template-columns: 1fr; }
+        }
+        
+        .sort-zone {
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            min-height: 150px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sort-zone:hover {
+            border-color: var(--sap-blue);
+            background: #f0f4f8;
+        }
+        
+        .sort-zone.active {
+            border-color: var(--sap-orange);
+            background: #fff8f0;
+        }
+        
+        .sort-zone-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .sort-zone.high .sort-zone-title { color: var(--red); }
+        .sort-zone.moderate .sort-zone-title { color: #b8860b; }
+        .sort-zone.human .sort-zone-title { color: var(--green); }
+        .sort-zone.production .sort-zone-title { color: var(--sap-blue); }
+        .sort-zone.strategic .sort-zone-title { color: var(--sap-orange); }
+        
+        .sort-zone-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .two-col-zones {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        @media (max-width: 600px) {
+            .two-col-zones { grid-template-columns: 1fr; }
+        }
+        
+        .help-text {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        /* Scenario & Options */
+        .scenario-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .scenario-box h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--sap-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover { background: var(--light-gray); }
+        .option.selected { border-color: var(--sap-blue); background: #e3f2fd; }
+        .option.correct { border-color: var(--green); background: #e8f5e9; }
+        .option.incorrect { border-color: var(--red); background: #ffebee; }
+        
+        .option input { display: none; }
+        
+        .option-marker {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #888;
+            flex-shrink: 0;
+        }
+        
+        .option.selected .option-marker { border-color: var(--sap-blue); background: var(--sap-blue); color: white; }
+        .option.correct .option-marker { border-color: var(--green); background: var(--green); color: white; }
+        .option.incorrect .option-marker { border-color: var(--red); background: var(--red); color: white; }
+        
+        .option-text { flex: 1; font-size: 0.95rem; }
+        
+        /* Matching */
+        .match-container { display: flex; flex-direction: column; gap: 1rem; }
+        
+        .match-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        @media (max-width: 600px) {
+            .match-row { grid-template-columns: 1fr; gap: 0.5rem; }
+            .match-arrow { display: none; }
+        }
+        
+        .match-activity {
+            background: var(--dark-slate);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* Funnel Diagram */
+        .funnel-container {
+            margin-top: 1.5rem;
+        }
+        
+        .funnel-stages {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .funnel-stage {
+            flex: 1;
+            min-width: 120px;
+            background: linear-gradient(180deg, #f0f4f8 0%, #e4e8ec 100%);
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .funnel-stage::after {
+            content: '▶';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ccc;
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+        
+        .funnel-stage:last-child::after { display: none; }
+        
+        .funnel-stage:hover {
+            border-color: var(--sap-blue);
+            background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+        
+        .funnel-stage.active {
+            border-color: var(--sap-orange);
+            background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%);
+        }
+        
+        .funnel-stage-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+        }
+        
+        .funnel-stage-num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+            opacity: 0.3;
+            margin-bottom: 0.5rem;
+        }
+        
+        .funnel-stage-items {
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .funnel-stage-items .sort-item {
+            font-size: 0.75rem;
+            padding: 0.35rem 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .funnel-stages {
+                flex-direction: column;
+            }
+            .funnel-stage {
+                min-width: auto;
+            }
+            .funnel-stage::after {
+                content: '▼';
+                right: 50%;
+                top: auto;
+                bottom: -12px;
+                transform: translateX(50%);
+            }
+        }
+        
+        /* Submit & Results */
+        .submit-section { text-align: center; margin-top: 2rem; }
+        
+        .submit-btn {
+            background: var(--sap-orange);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .results-container { display: none; margin-top: 2rem; }
+        .results-container.show { display: block; }
+        
+        .results-header {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .results-header.pass { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .results-header.fail { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
+        
+        .results-score { font-size: 3.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .results-header.pass .results-score { color: var(--green); }
+        .results-header.fail .results-score { color: var(--red); }
+        
+        .results-message { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .results-detail { color: #666; }
+        
+        .results-breakdown {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .results-breakdown h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
+        
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .breakdown-row:last-child { border-bottom: none; }
+        .breakdown-label { color: #666; }
+        .breakdown-score { font-weight: 600; }
+        .breakdown-score.full { color: var(--green); }
+        .breakdown-score.partial { color: var(--gold); }
+        .breakdown-score.zero { color: var(--red); }
+        
+        .next-steps {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .next-steps h3 { margin-bottom: 1rem; }
+        
+        .next-btn {
+            display: inline-block;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0.5rem;
+        }
+        .next-btn.primary { background: var(--green); color: white; }
+        .next-btn.secondary { background: transparent; color: var(--sap-blue); border: 2px solid var(--sap-blue); }
+        
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .feedback-box.show { display: block; }
+        .feedback-box.correct { background: #e8f5e9; border-left: 4px solid var(--green); }
+        .feedback-box.incorrect { background: #ffebee; border-left: 4px solid var(--red); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <img src="../../assets/images/logo-white.svg" alt="Future of PMM">
+            </a>
+            <nav class="nav">
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/about.html">About</a>
+                <div id="user-menu"></div>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>Unit 1 Assessment</h1>
+        <p>Apply what you've learned • 4 exercises • ~15 minutes</p>
+    </section>
+    
+    <main>
+        <div class="assessment-intro">
+            <p>This assessment tests your ability to <strong>apply</strong> Unit 1 concepts. Tap an item to select it, then tap a zone to place it.</p>
+            <div class="scoring-info">
+                <div><span>🎯</span> 100 points total</div>
+                <div><span>✅</span> 80+ to pass</div>
+                <div><span>🔓</span> Unlocks Unit 2</div>
+            </div>
+        </div>
+        
+        <!-- Exercise 1: AI Impact Sorting -->
+        <div class="exercise" id="exercise1">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 1 of 4</div>
+                    <div class="exercise-title">AI Impact Sorting</div>
+                </div>
+                <div class="exercise-points">30 points</div>
+            </div>
+            <p class="exercise-instructions">Tap an activity, then tap the correct AI impact tier to place it.</p>
+            
+            <div class="sort-items" id="items1">
+                <div class="sort-item" data-answer="high" data-id="1">First-draft blog posts</div>
+                <div class="sort-item" data-answer="high" data-id="2">Standard RFP responses</div>
+                <div class="sort-item" data-answer="high" data-id="3">Market sizing / TAM</div>
+                <div class="sort-item" data-answer="moderate" data-id="4">Analyst briefing prep</div>
+                <div class="sort-item" data-answer="moderate" data-id="5">Win/loss synthesis</div>
+                <div class="sort-item" data-answer="moderate" data-id="6">Demo scripting</div>
+                <div class="sort-item" data-answer="moderate" data-id="7">Sales training content</div>
+                <div class="sort-item" data-answer="human" data-id="8">Executive communication</div>
+                <div class="sort-item" data-answer="human" data-id="9">Category creation</div>
+                <div class="sort-item" data-answer="human" data-id="10">Competitive positioning strategy</div>
+            </div>
+            
+            <div class="sort-zones" id="zones1">
+                <div class="sort-zone high" data-zone="high">
+                    <div class="sort-zone-title">🔴 High Impact (80%+)</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone moderate" data-zone="moderate">
+                    <div class="sort-zone-title">🟡 Moderate (50-79%)</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone human" data-zone="human">
+                    <div class="sort-zone-title">🟢 Human-Led (<30%)</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+            </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
+            
+            <div class="feedback-box" id="feedback1"></div>
+        </div>
+        
+        <!-- Exercise 2: Production vs Strategic -->
+        <div class="exercise" id="exercise2">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 2 of 4</div>
+                    <div class="exercise-title">Production vs Strategic Work</div>
+                </div>
+                <div class="exercise-points">18 points</div>
+            </div>
+            <p class="exercise-instructions">Sort these into the correct mode. Production = AI-accelerated; Strategic = human-led, AI-augmented.</p>
+            
+            <div class="sort-items" id="items2">
+                <div class="sort-item" data-answer="production" data-id="a">Writing blog post first drafts</div>
+                <div class="sort-item" data-answer="production" data-id="b">Generating RFP boilerplate</div>
+                <div class="sort-item" data-answer="production" data-id="c">Localizing content for regions</div>
+                <div class="sort-item" data-answer="strategic" data-id="d">Defining market positioning</div>
+                <div class="sort-item" data-answer="strategic" data-id="e">Influencing C-suite decisions</div>
+                <div class="sort-item" data-answer="strategic" data-id="f">Naming a new market category</div>
+            </div>
+            
+            <div class="sort-zones two-col-zones" id="zones2">
+                <div class="sort-zone production" data-zone="production">
+                    <div class="sort-zone-title">⚡ Production Work</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+                <div class="sort-zone strategic" data-zone="strategic">
+                    <div class="sort-zone-title">🧠 Strategic Work</div>
+                    <div class="sort-zone-items"></div>
+                </div>
+            </div>
+            <p class="help-text">Tap item → Tap zone to place</p>
+            
+            <div class="feedback-box" id="feedback2"></div>
+        </div>
+        
+        <!-- Exercise 3: Scenario -->
+        <div class="exercise" id="exercise3">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 3 of 4</div>
+                    <div class="exercise-title">Scenarios: Apply the 10x Model</div>
+                </div>
+                <div class="exercise-points">26 points</div>
+            </div>
+            
+            <div class="scenario-box">
+                <h4>📋 Scenario</h4>
+                <p>Your sales director messages you at 2pm: "We're going head-to-head with Competitor X tomorrow morning. Can you get me a battlecard by end of day?"</p>
+                <p style="margin-top:0.75rem;">In the past, this would take 6-8 hours. You have 4 hours. <strong>Using the 10x PMM approach, what's your best workflow?</strong></p>
+            </div>
+            
+            <div class="options" id="scenario1">
+                <label class="option">
+                    <input type="radio" name="scenario1" value="a">
+                    <span class="option-marker">A</span>
+                    <span class="option-text">Tell sales you can't do it in 4 hours — quality matters more than speed.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario1" value="b">
+                    <span class="option-marker">B</span>
+                    <span class="option-text">Use AI to research and draft, then add your strategic insights and "why we win" narrative.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario1" value="c">
+                    <span class="option-marker">C</span>
+                    <span class="option-text">Have AI generate the entire battlecard and send it directly to sales.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario1" value="d">
+                    <span class="option-marker">D</span>
+                    <span class="option-text">Skip AI entirely — battlecards are strategic and AI can't handle them.</span>
+                </label>
+            </div>
+            
+            <div class="feedback-box" id="feedback3a"></div>
+            
+            <!-- Scenario 2 -->
+            <div class="scenario-box" style="margin-top: 2rem;">
+                <h4>📋 Scenario 2</h4>
+                <p>Your CEO asks you to "create a new category" for your product — she wants to own the narrative before competitors catch up. You have 2 weeks.</p>
+                <p style="margin-top:0.75rem;"><strong>Based on the AI Impact Matrix, how should you approach this?</strong></p>
+            </div>
+            
+            <div class="options" id="scenario2">
+                <label class="option">
+                    <input type="radio" name="scenario2" value="a">
+                    <span class="option-marker">A</span>
+                    <span class="option-text">Use AI to generate category names and positioning frameworks, then present the best options to leadership.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario2" value="b">
+                    <span class="option-marker">B</span>
+                    <span class="option-text">This is human-led work (12% AI impact). Lead the strategic thinking yourself, but use AI to research market precedents and stress-test your framing.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario2" value="c">
+                    <span class="option-marker">C</span>
+                    <span class="option-text">Category creation is too important for AI. Do all the research and naming manually to ensure quality.</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="scenario2" value="d">
+                    <span class="option-marker">D</span>
+                    <span class="option-text">Hire an outside agency — category creation requires specialized expertise AI can't match.</span>
+                </label>
+            </div>
+            
+            <div class="feedback-box" id="feedback3b"></div>
+        </div>
+        
+        <!-- Exercise 4: Funnel Mapping -->
+        <div class="exercise" id="exercise4">
+            <div class="exercise-header">
+                <div>
+                    <div class="exercise-number">Exercise 4 of 4</div>
+                    <div class="exercise-title">Map Activities to the Funnel</div>
+                </div>
+                <div class="exercise-points">26 points</div>
+            </div>
+            <p class="exercise-instructions">Place each PMM activity into its PRIMARY funnel stage. Tap an activity, then tap the stage where it belongs.</p>
+            
+            <div class="sort-items" id="items4">
+                <div class="sort-item" data-answer="awareness" data-id="f1">Thought Leadership</div>
+                <div class="sort-item" data-answer="awareness" data-id="f2">Content Strategy</div>
+                <div class="sort-item" data-answer="consideration" data-id="f3">Competitive Differentiation</div>
+                <div class="sort-item" data-answer="consideration" data-id="f4">Analyst Relations</div>
+                <div class="sort-item" data-answer="evaluation" data-id="f5">Technical Validation</div>
+                <div class="sort-item" data-answer="evaluation" data-id="f6">Sales Enablement</div>
+                <div class="sort-item" data-answer="commercial" data-id="f7">Pricing Strategy</div>
+                <div class="sort-item" data-answer="decision" data-id="f8">Executive Engagement</div>
+                <div class="sort-item" data-answer="adoption" data-id="f9">Customer Marketing</div>
+            </div>
+            
+            <div class="funnel-container" id="zones4">
+                <div class="funnel-stages">
+                    <div class="funnel-stage sort-zone" data-zone="awareness">
+                        <div class="funnel-stage-num">1</div>
+                        <div class="funnel-stage-name">Awareness</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="consideration">
+                        <div class="funnel-stage-num">2</div>
+                        <div class="funnel-stage-name">Consideration</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="evaluation">
+                        <div class="funnel-stage-num">3</div>
+                        <div class="funnel-stage-name">Evaluation</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="commercial">
+                        <div class="funnel-stage-num">4</div>
+                        <div class="funnel-stage-name">Commercial</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="decision">
+                        <div class="funnel-stage-num">5</div>
+                        <div class="funnel-stage-name">Decision</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                    <div class="funnel-stage sort-zone" data-zone="adoption">
+                        <div class="funnel-stage-num">6</div>
+                        <div class="funnel-stage-name">Adoption</div>
+                        <div class="funnel-stage-items sort-zone-items"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="help-text">Tap activity → Tap funnel stage to place</p>
+            
+            <div class="feedback-box" id="feedback4"></div>
+        </div>
+        
+        <!-- Submit -->
+        <div class="submit-section">
+            <button class="submit-btn" id="submitBtn">Submit Assessment</button>
+        </div>
+        
+        <!-- Results -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-header" id="resultsHeader">
+                <div class="results-score" id="resultsScore">0%</div>
+                <div class="results-message" id="resultsMessage"></div>
+                <div class="results-detail" id="resultsDetail"></div>
+            </div>
+            
+            <div class="results-breakdown">
+                <h3>Score Breakdown</h3>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 1: AI Impact Sorting (10 items)</span>
+                    <span class="breakdown-score" id="score1">0/30</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 2: Production vs Strategic (6 items)</span>
+                    <span class="breakdown-score" id="score2">0/18</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 3: Scenario Analysis (2 scenarios)</span>
+                    <span class="breakdown-score" id="score3">0/26</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-label">Exercise 4: Funnel Mapping (9 activities)</span>
+                    <span class="breakdown-score" id="score4">0/26</span>
+                </div>
+            </div>
+            
+            <div class="next-steps" id="nextSteps">
+                <h3 id="nextStepsTitle"></h3>
+                <p id="nextStepsText" style="color:#666; margin-bottom:1rem;"></p>
+                <div id="nextStepsButtons"></div>
+            </div>
+        </div>
+    </main>
+
+<script>
+// Click-to-place sorting functionality
+let selectedItem = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Exercise 1 & 2: Click to select items
+    document.querySelectorAll('.sort-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (this.classList.contains('placed')) return;
+            
+            // Deselect others in same group
+            const parent = this.closest('.exercise');
+            parent.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+            
+            // Select this one
+            this.classList.add('selected');
+            selectedItem = this;
+            
+            // Highlight available zones
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.add('active'));
+        });
+    });
+    
+    // Click zones to place
+    document.querySelectorAll('.sort-zone').forEach(zone => {
+        zone.addEventListener('click', function() {
+            if (!selectedItem) return;
+            
+            const parent = this.closest('.exercise');
+            
+            // Check if this item belongs to this exercise
+            if (!parent.contains(selectedItem)) return;
+            
+            // Move item to zone
+            const itemsContainer = this.querySelector('.sort-zone-items');
+            const clone = selectedItem.cloneNode(true);
+            clone.classList.remove('selected');
+            clone.classList.add('placed');
+            clone.dataset.placedZone = this.dataset.zone;
+            
+            // Allow removing by clicking placed item
+            clone.addEventListener('click', function() {
+                const original = parent.querySelector(`.sort-items .sort-item[data-id="${this.dataset.id}"]`);
+                if (original) {
+                    original.classList.remove('placed');
+                    original.style.display = '';
+                }
+                this.remove();
+            });
+            
+            itemsContainer.appendChild(clone);
+            
+            // Hide original
+            selectedItem.classList.add('placed');
+            selectedItem.style.display = 'none';
+            selectedItem.classList.remove('selected');
+            selectedItem = null;
+            
+            // Remove active state
+            parent.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('active'));
+        });
+    });
+    
+    // Option click handlers (Exercise 3)
+    document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', function() {
+            const siblings = this.parentElement.querySelectorAll('.option');
+            siblings.forEach(sib => sib.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input').checked = true;
+        });
+    });
+    
+    // Submit handler
+    document.getElementById('submitBtn').addEventListener('click', submitAssessment);
+});
+
+function submitAssessment() {
+    let totalScore = 0;
+    
+    // Exercise 1: AI Impact Sorting (30 points - 3 each × 10)
+    let ex1Score = 0;
+    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex1Score += 3;
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    totalScore += ex1Score;
+    updateScoreDisplay('score1', ex1Score, 30);
+    showFeedback('feedback1', ex1Score >= 27,
+        'Excellent! You understand the AI impact spectrum.',
+        `You got ${ex1Score}/30. Tricky ones: Demo scripting is MODERATE (54%), Competitive positioning strategy is HUMAN-LED (28%).`
+    );
+    
+    // Exercise 2: Production vs Strategic (18 points - 3 each × 6)
+    let ex2Score = 0;
+    document.querySelectorAll('#zones2 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex2Score += 3;
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    totalScore += ex2Score;
+    updateScoreDisplay('score2', ex2Score, 18);
+    showFeedback('feedback2', ex2Score >= 15,
+        'Well done! You can distinguish AI-accelerated from human-led work.',
+        `You got ${ex2Score}/18. Localization = Production (AI handles bulk of it). Category naming = Strategic (human judgment).`
+    );
+    
+    // Exercise 3: Two Scenarios (26 points - 13 each)
+    let ex3Score = 0;
+    
+    // Scenario 1
+    const scenario1 = document.querySelector('input[name="scenario1"]:checked');
+    document.querySelectorAll('#scenario1 .option').forEach(opt => {
+        const input = opt.querySelector('input');
+        if (input.value === 'b') {
+            opt.classList.add('correct');
+        } else if (scenario1 && input.value === scenario1.value && input.value !== 'b') {
+            opt.classList.add('incorrect');
+        }
+    });
+    if (scenario1 && scenario1.value === 'b') ex3Score += 13;
+    showFeedback('feedback3a', scenario1 && scenario1.value === 'b',
+        'Correct! AI accelerates research & drafting; you add strategic value.',
+        'Answer: B. The 10x PMM uses AI for production, then adds human insight.'
+    );
+    
+    // Scenario 2
+    const scenario2 = document.querySelector('input[name="scenario2"]:checked');
+    document.querySelectorAll('#scenario2 .option').forEach(opt => {
+        const input = opt.querySelector('input');
+        if (input.value === 'b') {
+            opt.classList.add('correct');
+        } else if (scenario2 && input.value === scenario2.value && input.value !== 'b') {
+            opt.classList.add('incorrect');
+        }
+    });
+    if (scenario2 && scenario2.value === 'b') ex3Score += 13;
+    showFeedback('feedback3b', scenario2 && scenario2.value === 'b',
+        'Correct! Category creation is human-led (12% AI), but AI can still augment research.',
+        'Answer: B. Category creation is HUMAN-LED but AI-augmented — you lead strategy, AI helps validate.'
+    );
+    
+    totalScore += ex3Score;
+    updateScoreDisplay('score3', ex3Score, 26);
+    
+    // Exercise 4: Funnel Mapping (26 points - ~3 each × 9)
+    let ex4Score = 0;
+    document.querySelectorAll('#zones4 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) {
+            item.classList.add('correct');
+            ex4Score += 3;
+        } else {
+            item.classList.add('incorrect');
+        }
+    });
+    // Adjust to 26 max (9 items × 3 = 27, cap at 26)
+    ex4Score = Math.min(ex4Score, 26);
+    totalScore += ex4Score;
+    updateScoreDisplay('score4', ex4Score, 26);
+    showFeedback('feedback4', ex4Score >= 24,
+        'Excellent funnel mapping!',
+        `You got ${ex4Score}/26. Note: Analyst Relations is CONSIDERATION (they shape discovery). Executive Engagement is DECISION stage.`
+    );
+    
+    // Calculate and show results
+    const percentage = totalScore;
+    const passed = percentage >= 80;
+    
+    document.querySelector('.submit-section').style.display = 'none';
+    
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.classList.add('show');
+    document.getElementById('resultsHeader').classList.add(passed ? 'pass' : 'fail');
+    document.getElementById('resultsScore').textContent = `${percentage}%`;
+    document.getElementById('resultsMessage').textContent = passed ? '🎉 Excellent Work!' : '📚 Keep Learning!';
+    document.getElementById('resultsDetail').textContent = passed
+        ? `You scored ${totalScore}/100 and demonstrated strong understanding.`
+        : `You scored ${totalScore}/100. You need 80% to proceed.`;
+    
+    const nextStepsTitle = document.getElementById('nextStepsTitle');
+    const nextStepsText = document.getElementById('nextStepsText');
+    const nextStepsButtons = document.getElementById('nextStepsButtons');
+    
+    if (passed) {
+        nextStepsTitle.textContent = '🔓 Unit 2 Unlocked!';
+        nextStepsText.textContent = 'Continue to learn about AI Discoverability.';
+        nextStepsButtons.innerHTML = `
+            <a href="/curriculum/unit-02/" class="next-btn primary">Continue to Unit 2 →</a>
+            <a href="/curriculum/unit-01/" class="next-btn secondary">Review Unit 1</a>
+        `;
+    } else {
+        nextStepsTitle.textContent = 'Almost There!';
+        nextStepsText.textContent = 'Review the unit, then try again.';
+        nextStepsButtons.innerHTML = `
+            <a href="/curriculum/unit-01/" class="next-btn secondary">Review Unit 1</a>
+            <a href="javascript:location.reload()" class="next-btn primary">Try Again</a>
+        `;
+    }
+    
+    // Add survey redirect notice
+    const surveyNotice = document.createElement('div');
+    surveyNotice.style.cssText = 'background: #dbeafe; border: 1px solid #3b82f6; color: #1e40af; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;';
+    surveyNotice.innerHTML = '📋 <strong>Quick feedback survey loading in 3 seconds...</strong><br><span style="font-size: 0.9rem;">Help us improve the curriculum!</span>';
+    document.querySelector('.results-section')?.appendChild(surveyNotice);
+    
+    resultsContainer.scrollIntoView({ behavior: 'smooth' });
+    // Report to SCORM LMS
+    if (typeof SCORM !== "undefined") {
+        SCORM.complete(percentage);
+        console.log("SCORM: Reported score " + percentage + "%");
+    }
+    
+    // Original save (may fail in LMS context - that is OK)
+    // saveQuizScore(totalScore, 100, percentage);
+}
+
+function updateScoreDisplay(id, score, max) {
+    const el = document.getElementById(id);
+    el.textContent = `${score}/${max}`;
+    el.classList.add(score === max ? 'full' : score > 0 ? 'partial' : 'zero');
+}
+
+function showFeedback(id, correct, goodMsg, badMsg) {
+    const el = document.getElementById(id);
+    el.classList.add('show', correct ? 'correct' : 'incorrect');
+    el.innerHTML = `<strong>${correct ? '✓' : '✗'}</strong> ${correct ? goodMsg : badMsg}`;
+}
+
+async function saveQuizScore(score, total, percentage) {
+    try {
+        // Get user email from localStorage
+        let email = null;
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                email = JSON.parse(directUser).email;
+            }
+        } catch (e) {}
+        
+        if (!email) {
+            console.log('No user email - cannot save score');
+            return;
+        }
+        
+        console.log('Saving quiz score for unit-01...');
+        
+        // Use serverless function to bypass corporate proxy
+        const res = await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'quiz_score',
+                email: email,
+                data: {
+                    chapter: 'unit-01',
+                    score,
+                    total,
+                    percentage
+                }
+            })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            console.error('Quiz score save error:', result.error);
+            showSaveError('Error saving progress: ' + result.error);
+        } else {
+            console.log('Quiz score saved successfully');
+            // Redirect to survey after short delay to show results
+            setTimeout(() => {
+                
+            }, 3000);
+        }
+    } catch (err) {
+        console.error('Save error:', err);
+        showSaveError('Error saving progress: ' + err.message);
+    }
+}
+
+function showSaveError(msg) {
+    const existing = document.getElementById('save-error-msg');
+    if (existing) existing.remove();
+    const div = document.createElement('div');
+    div.id = 'save-error-msg';
+    div.style.cssText = 'background:#fee2e2;border:1px solid #ef4444;color:#991b1b;padding:1rem;border-radius:8px;margin:1rem 0;text-align:center;';
+    div.innerHTML = '<strong>⚠️ ' + msg + '</strong>';
+    document.querySelector('.results-section')?.appendChild(div);
+}
+</script>
+
+<script src="../../assets/js/user-menu.js"></script>
+<footer style="background:#f1f5f9;border-top:1px solid #e2e8f0;padding:1.5rem;margin-top:3rem;text-align:center;font-size:0.85rem;color:#64748b;">
+    <p style="margin:0;">This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+    <p style="margin:0.5rem 0 0 0;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+</footer>
+</body>
+</html>

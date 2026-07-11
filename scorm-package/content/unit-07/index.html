@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+<script src="../../assets/js/unit-gate.js"></script>
+
+
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 7: The Demo Stack — Product Storytelling Reimagined | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--sap-orange); height: 100%; width: 100%; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
+        .final-badge { display: inline-block; background: var(--gold); color: var(--dark-slate); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; font-weight: 600; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--sap-blue); font-size: 1.1rem; }
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        .key-concept h4 { color: var(--sap-orange); font-size: 1rem; margin-bottom: 0.5rem; }
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        .case-study h4 { color: #F57C00; font-size: 1rem; margin-bottom: 0.75rem; }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        @media (max-width: 600px) { .tool-grid { grid-template-columns: 1fr; } }
+        
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tool-card h4 { 
+            font-size: 0.95rem; 
+            margin-bottom: 0.75rem; 
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        .tool-card:nth-child(1) h4 { color: var(--sap-blue); }
+        .tool-card:nth-child(2) h4 { color: var(--sap-orange); }
+        .tool-card:nth-child(3) h4 { color: var(--green); }
+        .tool-card:nth-child(4) h4 { color: #9C27B0; }
+        .tool-card p { font-size: 0.9rem; color: #555; margin-bottom: 0.5rem; }
+        .tool-card .examples { font-size: 0.85rem; color: #888; font-style: italic; }
+        
+        .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        @media (max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .comparison-card.old { border-top: 4px solid var(--red); }
+        .comparison-card.new { border-top: 4px solid var(--green); }
+        .comparison-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .comparison-card.old h4 { color: var(--red); }
+        .comparison-card.new h4 { color: var(--green); }
+        .comparison-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.95rem; }
+        
+        .highlight-box {
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .narrative-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 1.5rem 0;
+        }
+        .narrative-step {
+            background: white;
+            padding: 1.25rem;
+            position: relative;
+            border-left: 3px solid var(--sap-blue);
+        }
+        .narrative-step:first-child { border-radius: 10px 10px 0 0; }
+        .narrative-step:last-child { border-radius: 0 0 10px 10px; }
+        .narrative-step::after {
+            content: '↓';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            color: var(--sap-blue);
+            z-index: 1;
+        }
+        .narrative-step:last-child::after { display: none; }
+        .narrative-step h4 { font-size: 0.9rem; color: var(--sap-blue); margin-bottom: 0.5rem; }
+        .narrative-step p { font-size: 0.95rem; margin: 0; color: #555; }
+        .narrative-step p em { color: var(--text); font-style: italic; }
+        
+        .tactic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .tactic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tactic-card h4 { color: var(--sap-blue); font-size: 1rem; margin-bottom: 0.5rem; }
+        .tactic-card p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .chapter-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        .chapter-actions h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .action-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .action-card .label { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .action-card .sublabel { font-size: 0.8rem; color: #888; }
+        .action-card.primary { background: var(--sap-orange); color: white; }
+        .action-card.primary .sublabel { color: rgba(255,255,255,0.8); }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-btn.prev { background: var(--light-gray); color: var(--text); }
+        .nav-btn.complete { background: var(--green); color: white; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="../../assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="../../">Curriculum</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <p class="unit-label">Unit 7 <span class="funnel-badge">Decision Stage</span> <span class="final-badge">🎓 Final Unit</span></p>
+        <h1>The Demo Stack: Product Storytelling Reimagined</h1>
+        <p class="time">⏱️ 45 minutes</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand the four categories of demo automation tools</li>
+            <li>Distinguish proof of capability (agent's job) from proof of experience (demo's job)</li>
+            <li>Structure demos as transformation narratives, not feature tours</li>
+            <li>Scale personalized demos with agent augmentation</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The Demo Problem</h2>
+        
+        <p>Have you ever delivered a product demo? Stood in front of a Zoom screen, mid-sentence, the prospect leaning forward, and silently prayed to whatever deity governs staging environments?</p>
+        
+        <div class="key-concept">
+            <h4>Demos: High Stakes, Primitive Infrastructure</h4>
+            <p>A great demo closes deals. A broken demo can kill months of pipeline development in ninety seconds. And yet most enterprise companies run demos on shared staging environments that are one bad deployment away from embarrassment. The "demo script" is usually a Google Doc that gets updated when someone remembers.</p>
+        </div>
+        
+        <p>The agentic era is accelerating the transformation from <strong>demos-as-live-performance</strong> to <strong>demos-as-interactive-experience</strong> — and that changes the PMM's role entirely.</p>
+    </section>
+    
+    <section>
+        <h2>The Demo Landscape: Four Categories</h2>
+        
+        <div class="tool-grid">
+            <div class="tool-card">
+                <h4>1. Demo Environment Platforms</h4>
+                <p>Sandboxed, customizable versions of your actual product. Functional replicas with realistic data you control, decoupled from production.</p>
+                <p class="examples">Examples: Demostack, Reprise</p>
+            </div>
+            <div class="tool-card">
+                <h4>2. Interactive Demo Builders</h4>
+                <p>Guided, self-serve product tours. Clickable walkthroughs with annotations, tooltips, branching paths. Lighter-weight than full environments.</p>
+                <p class="examples">Examples: Navattic, Supademo, Arcade</p>
+            </div>
+            <div class="tool-card">
+                <h4>3. Demo Overlay Tools</h4>
+                <p>Overlay customized data and narratives onto your actual product interface. Control what data appears without building a separate environment.</p>
+                <p class="examples">Examples: Saleo, Walnut</p>
+            </div>
+            <div class="tool-card">
+                <h4>4. Asynchronous Demo Platforms</h4>
+                <p>Personalized video demos buyers watch on their own. Track engagement at individual level — which features they spend time on, who else watched.</p>
+                <p class="examples">Examples: Consensus</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>What Is the Demo For?</h2>
+        
+        <p>If an AI agent can evaluate your product's technical capabilities from documentation, API specs, and architecture diagrams — <strong>what is the demo actually for?</strong></p>
+        
+        <div class="comparison-box">
+            <div class="comparison-card old">
+                <h4>Proof of Capability</h4>
+                <ul>
+                    <li>Does the product do what marketing claims?</li>
+                    <li>Technical verification of features</li>
+                    <li>Integration compatibility</li>
+                    <li><strong>Being absorbed by agents</strong></li>
+                </ul>
+            </div>
+            <div class="comparison-card new">
+                <h4>Proof of Experience</h4>
+                <ul>
+                    <li>What does it <em>feel like</em> to use this?</li>
+                    <li>Emotional connection to the transformation</li>
+                    <li>Storytelling, not specification</li>
+                    <li><strong>The demo's primary job now</strong></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>The Agent Knows Before You Demo</h4>
+            <p>The prospect's agent already knows whether your product supports real-time data synchronization with SAP S/4HANA before the sales call starts. It read your API docs. What the agent <em>can't</em> do is make the prospect <em>want</em> the product. That's the demo's job — and that's a storytelling problem, not a technical problem.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Demo as Narrative</h2>
+        
+        <p>The best demo we've ever watched wasn't a feature walkthrough. It was a transformation story:</p>
+        
+        <div class="narrative-flow">
+            <div class="narrative-step">
+                <h4>Step 1: Current State Pain</h4>
+                <p><em>"Right now, your supply chain team gets a forecast update every Monday morning. They download a spreadsheet, manually reconcile it against the ERP data, and by Wednesday they have a planning view that's already two days stale."</em></p>
+            </div>
+            <div class="narrative-step">
+                <h4>Step 2: Transformation Moment</h4>
+                <p><em>"Here's what Monday morning looks like with our platform..."</em></p>
+            </div>
+            <div class="narrative-step">
+                <h4>Step 3: Future State Resolution</h4>
+                <p><em>"The forecast is live. The reconciliation is automatic. And your supply chain team spends Wednesday on strategy instead of spreadsheets."</em></p>
+            </div>
+        </div>
+        
+        <div class="highlight-box">
+            The prospect didn't just see what the product did. They felt what their life would be like using it.
+        </div>
+        
+        <p>That's the demo that matters in the agentic era — the one that creates an emotional and experiential connection that <strong>no agent evaluation can replicate.</strong></p>
+    </section>
+    
+    <section>
+        <h2>Personalizing Demos at Scale</h2>
+        
+        <p>The challenge with "demo as narrative" is that personalization doesn't scale in a traditional workflow. Building a customized narrative for every prospect — their industry, pain points, tech stack, organizational context — would consume a PMM's entire week.</p>
+        
+        <div class="case-study">
+            <h4>💡 Agent Augmentation for Demo Prep</h4>
+            <p>The same intelligence infrastructure that powers competitive enablement can power demo personalization:</p>
+            <ul style="margin: 0.75rem 0 0 1.5rem; font-size: 0.95rem;">
+                <li>Agent pulls prospect company data (industry, size, tech stack, recent news)</li>
+                <li>Combines with your use case library to generate customized demo script</li>
+                <li>PMM/SE reviews and adjusts — adds the specific anecdote, adjusts emphasis</li>
+                <li>Demo environment pre-configured with relevant data</li>
+            </ul>
+            <p style="margin-top: 0.75rem;"><strong>Result:</strong> Personalized, narrative-driven demos prepared in hours instead of days.</p>
+        </div>
+        
+        <p>The sales engineer's job shifts from <em>building the demo</em> to <em>performing it</em> — and performing it well is the part that actually wins deals.</p>
+    </section>
+    
+    <section>
+        <h2>The Practitioner's Playbook</h2>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>1. Separate Capability from Experience</h4>
+                <p>Make docs, API specs, and product pages detailed enough that an agent can evaluate technical capabilities without needing a live demo. This filters tire-kickers and saves everyone's time.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>2. Invest in Demo Automation</h4>
+                <p><strong>Top-of-funnel:</strong> Interactive tour builders (Navattic, Supademo) — inexpensive, PMM can build.<br><strong>Enterprise deals:</strong> Environment platforms (Demostack, Reprise) — eliminates staging crashes, enables deep personalization.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>3. Build a Demo Narrative Library</h4>
+                <p>Document 5-7 transformation stories that resonate. Before/after narratives with characters, tension, resolution. Agents can customize each for specific prospects; SEs have a foundation to build on.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li><strong>Demo ROI is measured by absence:</strong> lost deals, wasted SE hours, broken staging environments</li>
+            <li><strong>Proof of capability</strong> is being absorbed by agents — demos must focus on <strong>proof of experience</strong></li>
+            <li><strong>Demo as narrative:</strong> transformation stories, not feature tours</li>
+            <li><strong>Four tool categories:</strong> Environment platforms, interactive builders, overlay tools, async platforms</li>
+            <li><strong>Agent augmentation</strong> enables personalized demos at scale</li>
+            <li><strong>Build a narrative library:</strong> 5-7 transformation stories agents can customize per prospect</li>
+        </ul>
+    </section>
+    
+    <div class="chapter-actions">
+        <h2>🎓 Complete the Curriculum</h2>
+        <div class="action-grid">
+            <a href="quiz.html" class="action-card primary">
+                <span class="icon">📝</span>
+                <span class="label">Take the Final Assessment</span>
+                <span class="sublabel">Interactive • 15 min</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav class="chapter-nav">
+        <a href="../../unit-06/" class="nav-btn prev">← Unit 6</a>
+        <a href="../../" class="nav-btn complete">🎓 Complete Curriculum</a>
+    </nav>
+    
+</main>
+
+<script src="../../assets/js/user-menu.js"></script>
+<div id="scorm-complete-section" style="text-align:center;padding:2rem;margin-top:2rem;background:#f0f9ff;border-top:2px solid #0ea5e9;">
+    <p style="margin-bottom:1rem;color:#0369a1;">Finished reading this unit?</p>
+    <button onclick="if(typeof SCORM!=='undefined'){SCORM.setStatus('completed');alert('Unit marked as complete!');}else{alert('Progress saved locally.');}" style="background:#0ea5e9;color:white;border:none;padding:1rem 2rem;border-radius:8px;font-size:1rem;cursor:pointer;">Mark Unit Complete</button>
+</div>
+<footer style="background:#f1f5f9;border-top:1px solid #e2e8f0;padding:1.5rem;margin-top:3rem;text-align:center;font-size:0.85rem;color:#64748b;">
+    <p style="margin:0;">This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+    <p style="margin:0.5rem 0 0 0;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+</footer>
+</body>
+</html>

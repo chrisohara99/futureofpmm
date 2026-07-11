@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+<script src="../../assets/js/unit-gate.js"></script>
+
+
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 4: Winning Satisfiers — Agents &amp; Analysts | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --purple: #7030A0;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--sap-orange); height: 100%; width: 57%; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--sap-blue); font-size: 1.1rem; }
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-orange);
+        }
+        .key-concept h4 { color: var(--sap-orange); font-size: 1rem; margin-bottom: 0.5rem; }
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        .case-study h4 { color: #F57C00; font-size: 1rem; margin-bottom: 0.75rem; }
+        
+        .parallel-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        @media (max-width: 600px) { .parallel-box { grid-template-columns: 1fr; } }
+        
+        .parallel-card {
+            padding: 1.25rem;
+            background: white;
+        }
+        .parallel-card.agent { border-top: 4px solid var(--sap-blue); }
+        .parallel-card.analyst { border-top: 4px solid var(--purple); }
+        .parallel-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .parallel-card.agent h4 { color: var(--sap-blue); }
+        .parallel-card.analyst h4 { color: var(--purple); }
+        .parallel-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.95rem; }
+        
+        .comparison-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        @media (max-width: 600px) { .comparison-box { grid-template-columns: 1fr; } }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .comparison-card.win { border-top: 4px solid var(--green); }
+        .comparison-card.lose { border-top: 4px solid var(--red); }
+        .comparison-card h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .comparison-card.win h4 { color: var(--green); }
+        .comparison-card.lose h4 { color: var(--red); }
+        .comparison-card ul { margin: 0; padding-left: 1.25rem; font-size: 0.95rem; }
+        
+        .battlecard {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 2px solid var(--dark-slate);
+        }
+        .battlecard-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .battlecard-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: var(--dark-slate);
+            color: white;
+        }
+        .battlecard-title { font-weight: 700; color: var(--dark-slate); }
+        .battlecard-subtitle { font-size: 0.85rem; color: #666; }
+        .battlecard-section { margin-bottom: 1rem; }
+        .battlecard-section:last-child { margin-bottom: 0; }
+        .battlecard-section h5 { font-size: 0.85rem; color: var(--sap-orange); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .battlecard-section p { font-size: 0.95rem; margin: 0; }
+        .battlecard-section ul { margin: 0.5rem 0 0 1.25rem; font-size: 0.9rem; }
+        
+        .dual-example {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        @media (max-width: 600px) { .dual-example { grid-template-columns: 1fr; } }
+        .dual-example-item { font-size: 0.9rem; }
+        .dual-example-item strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .dual-example-item.agent strong { color: var(--sap-blue); }
+        .dual-example-item.analyst strong { color: var(--purple); }
+        
+        .layer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .layer-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+        
+        .layer-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+        .layer-card:nth-child(1) .layer-num { background: var(--sap-orange); }
+        .layer-card:nth-child(2) .layer-num { background: var(--sap-blue); }
+        .layer-card:nth-child(3) .layer-num { background: var(--green); }
+        .layer-card:nth-child(4) .layer-num { background: var(--purple); }
+        
+        .layer-content h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--dark-slate); }
+        .layer-content p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .highlight-box {
+            background: var(--gold);
+            color: var(--dark-slate);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .tactic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .tactic-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .tactic-card h4 { color: var(--sap-blue); font-size: 1rem; margin-bottom: 0.5rem; }
+        .tactic-card p { font-size: 0.9rem; color: #555; margin: 0; }
+        
+        .chapter-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+        }
+        .chapter-actions h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .action-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .action-card .label { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .action-card .sublabel { font-size: 0.8rem; color: #888; }
+        .action-card.primary { background: var(--sap-orange); color: white; }
+        .action-card.primary .sublabel { color: rgba(255,255,255,0.8); }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-gray);
+        }
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-btn.prev { background: var(--light-gray); color: var(--text); }
+        .nav-btn.next { background: var(--sap-blue); color: white; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="../../assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="../../">Curriculum</a>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <p class="unit-label">Unit 4 <span class="funnel-badge">Evaluation Stage</span></p>
+        <h1>Winning Evaluators: Agents &amp; Analysts</h1>
+        <p class="time">⏱️ 50 minutes</p>
+    </div>
+</section>
+
+<main>
+    
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Recognize the parallel between AI agents and industry analysts as "satisfiers" who pre-filter vendor options</li>
+            <li>Understand how both evaluators compare vendors and generate recommendations</li>
+            <li>Adapt battlecard and objection-handling strategies for agent AND analyst scenarios</li>
+            <li>Position for the "final summary" — whether it's an agent recommendation or a Magic Quadrant</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>The Satisfier Layer</h2>
+        
+        <p>Between you and the buyer sits a layer of evaluators whose job is to <em>satisfy</em> the buyer's need to feel confident in their decision. These aren't the decision-makers — they're the people (and systems) the decision-maker trusts to pre-filter, compare, and recommend.</p>
+        
+        <p>For decades, industry analysts played this role. Gartner's Magic Quadrant, Forrester's Wave, IDC's MarketScape — these frameworks exist because enterprise buyers don't have time to evaluate 47 vendors themselves. They want someone credible to say "here are the three you should talk to."</p>
+        
+        <p>Now AI agents are joining that layer. When a procurement team asks an agent to "compare enterprise data platforms for our requirements," the agent does exactly what an analyst does: gather information, map capabilities to requirements, identify gaps, and produce a recommendation.</p>
+        
+        <div class="parallel-box">
+            <div class="parallel-card agent">
+                <h4>🤖 AI Agents</h4>
+                <ul>
+                    <li>Compare vendors systematically</li>
+                    <li>Weight evidence over claims</li>
+                    <li>Produce recommendations buyers trust</li>
+                    <li>Surface gaps and weaknesses</li>
+                    <li>Pre-filter before human sees options</li>
+                </ul>
+            </div>
+            <div class="parallel-card analyst">
+                <h4>📊 Industry Analysts</h4>
+                <ul>
+                    <li>Compare vendors systematically</li>
+                    <li>Weight evidence over claims</li>
+                    <li>Produce Magic Quadrants/Waves buyers trust</li>
+                    <li>Surface gaps in briefings and reports</li>
+                    <li>Pre-filter before shortlist created</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>The Strategic Insight</h4>
+            <p>The skills that win analyst evaluations are the same skills that win agent evaluations. Evidence over narrative. Specificity over vision. Consistency across all touchpoints. If you're good at AR, you have a head start on agent-era positioning — and vice versa.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>How Evaluators Compare Vendors</h2>
+        
+        <p>Whether it's Claude comparing three CRM platforms or a Gartner analyst building the Magic Quadrant, the evaluation process follows a remarkably similar pattern:</p>
+        
+        <div class="layer-grid">
+            <div class="layer-card">
+                <div class="layer-num">1</div>
+                <div class="layer-content">
+                    <h4>Requirements Mapping</h4>
+                    <p>The evaluator takes buyer requirements (explicit criteria or market expectations) and checks each vendor's capability to address them. Systematic, not narrative.</p>
+                    <div class="dual-example">
+                        <div class="dual-example-item agent"><strong>🤖 Agent</strong>"Does Vendor A support real-time data sync? Does Vendor B?"</div>
+                        <div class="dual-example-item analyst"><strong>📊 Analyst</strong>"Please walk me through your real-time sync architecture and customer deployments."</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">2</div>
+                <div class="layer-content">
+                    <h4>Evidence Weighting</h4>
+                    <p>Claims without evidence get discounted. Both agents and analysts reward verifiable proof: named customers, quantified outcomes, third-party validation.</p>
+                    <div class="dual-example">
+                        <div class="dual-example-item agent"><strong>🤖 Agent</strong>"Vendor A claims 99.9% uptime but provides no SLA documentation."</div>
+                        <div class="dual-example-item analyst"><strong>📊 Analyst</strong>"Can you provide three reference customers we can interview?"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">3</div>
+                <div class="layer-content">
+                    <h4>Gap Identification</h4>
+                    <p>Evaluators don't hide your weaknesses — they name them. Both will surface what you can't do or do poorly, whether in an agent summary or a "Cautions" section.</p>
+                    <div class="dual-example">
+                        <div class="dual-example-item agent"><strong>🤖 Agent</strong>"Vendor A lacks native Workday integration; would require middleware."</div>
+                        <div class="dual-example-item analyst"><strong>📊 Analyst</strong>"Caution: Limited partner ecosystem outside North America."</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layer-card">
+                <div class="layer-num">4</div>
+                <div class="layer-content">
+                    <h4>Summary & Recommendation</h4>
+                    <p>The moment that matters: synthesizing everything into a recommendation the buyer will actually read and likely trust.</p>
+                    <div class="dual-example">
+                        <div class="dual-example-item agent"><strong>🤖 Agent</strong>"Based on requirements, Vendor B appears strongest fit..."</div>
+                        <div class="dual-example-item analyst"><strong>📊 Analyst</strong>Leaders Quadrant placement with "strong execution" narrative</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="highlight-box">
+            Your competitive positioning must anticipate each of these steps — for both audiences.
+        </div>
+    </section>
+    
+    <section>
+        <h2>Battlecards for the Evaluator Layer</h2>
+        
+        <p>Traditional battlecards train sales reps on what to say in conversations. Evaluator-era battlecards must ensure the right information exists <em>where evaluators will find it</em> — whether that's an agent crawling your documentation or an analyst preparing for a briefing.</p>
+        
+        <h3>The Evaluator-Era Battlecard Framework</h3>
+        
+        <div class="battlecard">
+            <div class="battlecard-header">
+                <div class="battlecard-icon">⚔️</div>
+                <div>
+                    <div class="battlecard-title">Competitor X: "We're the Native Cloud Leader"</div>
+                    <div class="battlecard-subtitle">Common claim in both agent comparisons and analyst briefings</div>
+                </div>
+            </div>
+            <div class="battlecard-section">
+                <h5>Their Claim</h5>
+                <p>"Purpose-built for the cloud from day one — no legacy baggage, no migration complexity."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>The Reality</h5>
+                <p>Founded 2018, but architecture documentation shows core data layer forked from open-source project originally built 2012. "Cloud-native" branding applied to containerized monolith. Migration wizard still requires manual intervention for complex schemas.</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Where Evaluators Find This</h5>
+                <ul>
+                    <li><strong>Agents:</strong> GitHub commit history, Stack Overflow threads, G2/Gartner Peer Insights reviews</li>
+                    <li><strong>Analysts:</strong> Technical deep-dive questions in briefings, customer reference calls, competitive inquiry requests</li>
+                </ul>
+            </div>
+            <div class="battlecard-section">
+                <h5>Our Counter-Position</h5>
+                <p>"15 years of enterprise deployments means 15 years of solving edge cases. Our hybrid architecture lets you start in the cloud and extend on-prem, or vice versa — without re-platforming. 340+ customers have migrated from [Competitor X] in the past 18 months."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Evidence to Surface</h5>
+                <ul>
+                    <li>Migration case study with named customer and timeline (for both audiences)</li>
+                    <li>Architecture whitepaper showing hybrid deployment model</li>
+                    <li>Third-party benchmark comparing migration complexity</li>
+                    <li>Prepare AR team to proactively address in Gartner/Forrester briefings</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>The New Battlecard Question</h4>
+            <p>Don't just ask "what should our rep say?" Ask: <strong>"If an evaluator — agent or analyst — investigates this competitor claim, what will they find from us?"</strong> If the answer is "nothing," you've already lost that argument in both channels.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Handling Evaluator Objections</h2>
+        
+        <p>Both agents and analysts surface concerns. Here's how to prepare for the most common patterns — and note how the response strategy works for both audiences:</p>
+        
+        <div class="battlecard" style="border-color: var(--sap-blue);">
+            <div class="battlecard-header">
+                <div class="battlecard-icon" style="background: var(--sap-blue);">💬</div>
+                <div>
+                    <div class="battlecard-title">"Implementation appears complex"</div>
+                    <div class="battlecard-subtitle">Surfaces in agent summaries and analyst "Cautions"</div>
+                </div>
+            </div>
+            <div class="battlecard-section">
+                <h5>Agent Version</h5>
+                <p>"Multiple case studies mention 6-12 month deployments. Vendor appears to require significant implementation services."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Analyst Version</h5>
+                <p>"Reference customers cited implementation complexity. Time-to-value concerns for mid-market buyers."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Response Strategy (Both)</h5>
+                <ul>
+                    <li>Publish quick-start guides and self-service deployment documentation</li>
+                    <li>Create case studies with varied timelines, including rapid deployments</li>
+                    <li>Include explicit "time to value" metrics: "First dashboard live in 14 days for standard deployment"</li>
+                    <li>In analyst briefings, lead with a fast-deployment customer story</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="battlecard" style="border-color: var(--purple);">
+            <div class="battlecard-header">
+                <div class="battlecard-icon" style="background: var(--purple);">💬</div>
+                <div>
+                    <div class="battlecard-title">"Pricing transparency concerns"</div>
+                    <div class="battlecard-subtitle">Agents discount opaque vendors; analysts note it in evaluations</div>
+                </div>
+            </div>
+            <div class="battlecard-section">
+                <h5>Agent Version</h5>
+                <p>"Pricing information not publicly available — unable to assess total cost of ownership."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Analyst Version</h5>
+                <p>"Pricing model complexity cited as barrier. Customers report difficulty predicting costs."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Response Strategy (Both)</h5>
+                <ul>
+                    <li>Consider publishing pricing tiers or at minimum a pricing philosophy document</li>
+                    <li>Create a TCO calculator or "typical deployment costs" range</li>
+                    <li>Prepare clear pricing narratives for analyst briefings</li>
+                    <li>Arm references to speak confidently about value-to-cost ratio</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="battlecard" style="border-color: var(--gold);">
+            <div class="battlecard-header">
+                <div class="battlecard-icon" style="background: var(--gold); color: var(--dark-slate);">💬</div>
+                <div>
+                    <div class="battlecard-title">"Strategic uncertainty"</div>
+                    <div class="battlecard-subtitle">Leadership changes, layoffs, or acquisition rumors</div>
+                </div>
+            </div>
+            <div class="battlecard-section">
+                <h5>Agent Version</h5>
+                <p>"Recent leadership changes and workforce reduction may indicate strategic uncertainty."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Analyst Version</h5>
+                <p>"Caution: Recent executive turnover and workforce reductions raise execution concerns."</p>
+            </div>
+            <div class="battlecard-section">
+                <h5>Response Strategy (Both)</h5>
+                <ul>
+                    <li>Proactively publish forward-looking content: roadmap commitments, investment announcements</li>
+                    <li>Highlight customer retention metrics and recent wins</li>
+                    <li>In analyst briefings, address directly with specific counter-evidence</li>
+                    <li>Ensure press releases about positive news are findable by agents</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Winning the Summary</h2>
+        
+        <p>The evaluator's final output — whether an agent's recommendation or an analyst's quadrant placement — is what the buyer actually reads. Here's what wins in both contexts:</p>
+        
+        <div class="comparison-box">
+            <div class="comparison-card win">
+                <h4>✅ Positioning That Wins</h4>
+                <ul>
+                    <li>Specific capabilities mapped to common requirements</li>
+                    <li>Named customer evidence in relevant industries</li>
+                    <li>Compliance certifications prominently documented</li>
+                    <li>Integration specifics (not just "seamless integration")</li>
+                    <li>Clear pricing model or TCO guidance</li>
+                    <li>Consistent story across docs, marketing, and briefings</li>
+                </ul>
+            </div>
+            <div class="comparison-card lose">
+                <h4>❌ Positioning That Loses</h4>
+                <ul>
+                    <li>Vision-heavy messaging with few specifics</li>
+                    <li>"Contact sales" for basic capability questions</li>
+                    <li>Compliance buried in legal fine print</li>
+                    <li>Generic "we integrate with everything" claims</li>
+                    <li>No pricing transparency or TCO guidance</li>
+                    <li>Marketing claims that contradict documentation</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="case-study">
+            <h4>💡 The Analyst Briefing ↔ Agent Simulation Connection</h4>
+            <p>Here's a powerful practice: Before your next analyst briefing, run an agent simulation. Ask Claude or ChatGPT to compare you against your top two competitors for a specific use case. The gaps the agent identifies are likely the same questions the analyst will ask. Prepare for both simultaneously.</p>
+        </div>
+    </section>
+    
+    <section>
+        <h2>The Practitioner's Playbook</h2>
+        
+        <div class="tactic-grid">
+            <div class="tactic-card">
+                <h4>1. Run Dual Simulations</h4>
+                <p>Before analyst briefings, test your positioning with agent simulations. "Compare [you] vs [competitor] for [use case]." The gaps agents find are the gaps analysts will probe.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>2. Seed the Ecosystem</h4>
+                <p>Counter-arguments need to exist where both audiences look: your docs (agents), analyst reports you've influenced (analysts), review sites (both), and your own content (both).</p>
+            </div>
+            <div class="tactic-card">
+                <h4>3. Claim Your Disqualifiers</h4>
+                <p>SOC 2, FedRAMP, HIPAA certifications eliminate competitors before evaluation starts. Make them impossible to miss — for agents crawling your site AND analysts building their criteria.</p>
+            </div>
+            <div class="tactic-card">
+                <h4>4. Align AR and Competitive Intel</h4>
+                <p>Your AR team and competitive intel should share battlecards. The objections analysts raise and the gaps agents surface are increasingly the same. One preparation serves both.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li><strong>Agents and analysts are parallel evaluators:</strong> Both pre-filter, compare, and recommend — the skills to win one help win the other</li>
+            <li><strong>Evidence beats narrative for both:</strong> Specific, verifiable proof points win summaries and quadrant placements alike</li>
+            <li><strong>Gaps get surfaced:</strong> Neither evaluator hides your weaknesses — address them proactively</li>
+            <li><strong>Consistency is non-negotiable:</strong> Marketing claims must match documentation — agents and analysts both check</li>
+            <li><strong>Battlecards serve both channels:</strong> The same counter-arguments and evidence work for agent comparisons and analyst briefings</li>
+            <li><strong>Simulation is preparation:</strong> Agent testing before analyst briefings reveals the questions you'll face</li>
+        </ul>
+    </section>
+    
+    <div class="chapter-actions">
+        <h2>✓ Complete This Unit</h2>
+        <div class="action-grid">
+            <a href="quiz.html" class="action-card primary">
+                <span class="icon">📝</span>
+                <span class="label">Take the Assessment</span>
+                <span class="sublabel">Interactive • 15 min</span>
+            </a>
+            <a href="../../labs/analyst-briefing.html" class="action-card">
+                <span class="icon">📊</span>
+                <span class="label">Analyst Briefing Simulator</span>
+                <span class="sublabel">AI Lab • Hands-on</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav class="chapter-nav">
+        <a href="../../unit-03/" class="nav-btn prev">← Unit 3</a>
+        <a href="../../unit-05/" class="nav-btn next">Unit 5 →</a>
+    </nav>
+    
+</main>
+
+<script src="../../assets/js/user-menu.js"></script>
+<div id="scorm-complete-section" style="text-align:center;padding:2rem;margin-top:2rem;background:#f0f9ff;border-top:2px solid #0ea5e9;">
+    <p style="margin-bottom:1rem;color:#0369a1;">Finished reading this unit?</p>
+    <button onclick="if(typeof SCORM!=='undefined'){SCORM.setStatus('completed');alert('Unit marked as complete!');}else{alert('Progress saved locally.');}" style="background:#0ea5e9;color:white;border:none;padding:1rem 2rem;border-radius:8px;font-size:1rem;cursor:pointer;">Mark Unit Complete</button>
+</div>
+<footer style="background:#f1f5f9;border-top:1px solid #e2e8f0;padding:1.5rem;margin-top:3rem;text-align:center;font-size:0.85rem;color:#64748b;">
+    <p style="margin:0;">This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+    <p style="margin:0.5rem 0 0 0;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+</footer>
+</body>
+</html>
