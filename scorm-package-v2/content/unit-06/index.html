@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 6: Content, Thought Leadership, and the Narrative Advantage | SAP Future of PMM Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        
+        .nav a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 1.5rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero .unit-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            color: var(--sap-blue);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        h4 {
+            font-size: 1rem;
+            color: var(--dark-slate);
+            margin: 1rem 0 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        blockquote {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight-box.key-insight {
+            background: linear-gradient(135deg, #fff8e6 0%, #fff3d4 100%);
+            border-left-color: var(--gold);
+        }
+        
+        .highlight-box h4 {
+            margin-top: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background: var(--light-gray);
+            font-weight: 600;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--light-gray);
+            margin: 2rem 0;
+        }
+        
+        strong {
+            color: var(--dark-slate);
+        }
+        
+        em {
+            color: #64748b;
+        }
+        
+        .exercise {
+            background: #fffbeb;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn.primary {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        .nav-btn.secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        
+        .complete-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            background: #f0f9ff;
+            border-top: 2px solid #0ea5e9;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .complete-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .complete-btn:hover {
+            background: #0284c7;
+        }
+        
+        footer {
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.5rem; }
+            main { padding: 1rem; }
+            .section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="../index.html" class="logo">SAP Future of PMM Training</a>
+            <nav class="nav">
+                <a href="../index.html">All Units</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="unit-label">Unit 6</div>
+        <h1>Content, Thought Leadership, and the Narrative Advantage</h1>
+    </section>
+    
+    <main>
+        <p># Unit 6: Content, Thought Leadership, and the Narrative Advantage
+<div class="section">
+<h2>SAP Internal Training Curriculum</h2></p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Opening Scenario: The Category Moment</h2>
+
+<p>In 2018, SAP published a point of view on the "Intelligent Enterprise." It wasn't a product announcement. It wasn't a feature comparison. It was a narrative—a way of describing where enterprise software was heading and SAP's role in that future.</p>
+
+<p>That narrative shaped analyst conversations, informed sales positioning, and gave customers a framework for thinking about their digital transformation. It didn't win deals directly. It won the right to be in deals.</p>
+
+<p>This is what narrative advantage looks like. Not content that generates leads. Content that shapes how the market thinks.</p>
+
+<strong>The question for today:</strong> In an age where AI can generate infinite content, where does thought leadership actually come from? What makes a narrative stick?
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Content Collapse</h2>
+
+<p>Let's be honest about what's happened to content marketing.</p>
+
+<h3>The Old Model (2015-2022)</h3>
+
+<ul>
+<li>Create gated content (eBooks, whitepapers, webinars)</li>
+<li>Gate it behind forms</li>
+<li>Generate leads</li>
+<li>Nurture leads via email</li>
+<li>Hand off to sales</li>
+</ul>
+This model worked when content was scarce and discovery happened through search and social. Gated content was valuable because it was hard to produce.
+
+<h3>What Broke</h3>
+
+<strong>1. AI made content infinite</strong>
+Anyone can generate a "10 Trends in Enterprise Data" whitepaper in minutes. Content volume exploded. Differentiation collapsed.
+
+<strong>2. Buyers stopped downloading</strong>
+Forms feel like spam traps. AI assistants summarize content without forms. The "gated content → lead" model is dying.
+
+<strong>3. Attention fragmented</strong>
+Social feeds, newsletters, podcasts, AI assistants—attention is split across more channels than ever.
+
+<strong>4. Quality floor rose</strong>
+When AI handles good-enough content, merely competent work is invisible. Only exceptional work stands out.
+
+<h3>The Result</h3>
+
+<p>The middle has collapsed. Content is either:
+<ul>
+<li><strong>Commodity:</strong> AI-generatable, interchangeable, forgettable</li>
+<li><strong>Distinctive:</strong> Point of view, proprietary insight, genuine expertise</li>
+</ul>
+There's no market for "pretty good" content anymore.</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Workshop Exercise 1: The Commodity Test</h2>
+
+<p>Pick three pieces of content your team produced in the last six months.</p>
+
+<p>For each, ask:
+<ol>
+<li>Could AI have generated something equivalent in 30 minutes?</li>
+<li>What, specifically, makes this distinctively SAP?</li>
+<li>Would a prospect remember this a week later?</li>
+<li>Does this say something competitors couldn't/wouldn't say?</li>
+</ol>
+<strong>Score:</strong> 
+<ul>
+<li>4 "no" answers = commodity</li>
+<li>2-3 "no" answers = at risk</li>
+<li>0-1 "no" answers = distinctive</li>
+</ul>
+<strong>Discussion:</strong> What makes content escape the commodity trap?</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Narrative Framework</h2>
+
+<p>Narrative isn't just messaging. It's the story that makes your messaging make sense.</p>
+
+<h3>Layer 1: The World View</h3>
+<em>What's changing in the world that matters?</em>
+
+<p>This is your perspective on trends—not features. It's why the market should care.</p>
+
+<strong>Example:</strong> "Enterprise data is fragmenting across clouds, warehouses, and applications. The companies that figure out how to unify it without moving it will win."
+
+<h3>Layer 2: The Implication</h3>
+<em>What does this change mean for our audience?</em>
+
+<p>Connect the trend to their reality. Make it personal.</p>
+
+<strong>Example:</strong> "For data leaders, this means the old approach—copy everything to a warehouse and query it there—won't scale. You need data where it lives, accessible when you need it."
+
+<h3>Layer 3: The Path</h3>
+<em>What should they do about it?</em>
+
+<p>Your point of view on the solution—at a strategic level, not product level.</p>
+
+<strong>Example:</strong> "The answer isn't more consolidation. It's federation: a semantic layer that makes disparate data accessible as if it were unified, without the cost and delay of physical consolidation."
+
+<h3>Layer 4: The Proof</h3>
+<em>Why should they believe you?</em>
+
+<p>Evidence that your path works. Customer results, technical validation, analyst endorsement.</p>
+
+<strong>Example:</strong> "Companies like [X] have reduced time-to-insight by 60% using this approach. Gartner now recognizes 'data fabric' as a critical architecture pattern."
+
+<h3>Layer 5: The Role</h3>
+<em>Why you, specifically?</em>
+
+<p>Where your product fits—earned by the narrative, not asserted up front.</p>
+
+<strong>Example:</strong> "SAP Datasphere was built for exactly this challenge. Federation-first architecture, semantic modeling, and connectivity to 200+ data sources."
+
+<strong>The key:</strong> The product (Layer 5) comes last. If you start there, you're just pitching. If you earn the right to introduce it, you're leading.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Three Content Tiers</h2>
+
+<p>Not all content serves the same purpose. Match effort to impact.</p>
+
+<h3>Tier 1: Narrative Content</h3>
+<em>Shape how the market thinks</em>
+
+<ul>
+<li>Big ideas and points of view</li>
+<li>Category definition</li>
+<li>Strategic frameworks</li>
+<li>Long-form thought leadership</li>
+</ul>
+<strong>Characteristics:</strong>
+<ul>
+<li>Hard to produce (requires genuine insight)</li>
+<li>Long shelf life (evergreen themes)</li>
+<li>Can't be AI-generated (requires judgment, experience, perspective)</li>
+<li>Low volume, high impact</li>
+</ul>
+<strong>Examples:</strong> Intelligent Enterprise POV, major keynotes, landmark blog series
+
+<h3>Tier 2: Proof Content</h3>
+<em>Validate claims and build credibility</em>
+
+<ul>
+<li>Customer case studies</li>
+<li>Technical deep dives</li>
+<li>Analyst positioning</li>
+<li>Benchmark results</li>
+</ul>
+<strong>Characteristics:</strong>
+<ul>
+<li>Requires real evidence</li>
+<li>Moderate shelf life (refresh with new proof)</li>
+<li>AI-assistable (structuring, drafting)</li>
+<li>Medium volume, medium impact</li>
+</ul>
+<strong>Examples:</strong> Named customer references, technical architecture guides, Forrester TEI studies
+
+<h3>Tier 3: Distribution Content</h3>
+<em>Reach audiences across channels</em>
+
+<ul>
+<li>Social posts</li>
+<li>Newsletter content</li>
+<li>Event promotions</li>
+<li>Campaign assets</li>
+</ul>
+<strong>Characteristics:</strong>
+<ul>
+<li>Can be AI-generated (with guardrails)</li>
+<li>Short shelf life</li>
+<li>Volume game</li>
+<li>Platform-specific formatting</li>
+</ul>
+<strong>Examples:</strong> LinkedIn posts, email campaigns, webinar promos
+
+<h3>The Resourcing Reality</h3>
+
+<p>Most teams over-invest in Tier 3 and under-invest in Tier 1.</p>
+
+<strong>The trap:</strong> Tier 3 is easy to measure (engagement, reach) and easy to produce (AI assists). It feels productive. But it doesn't build strategic advantage.
+
+<strong>The shift:</strong> Allocate 40%+ of content energy to Tier 1 and 2. Use AI to handle Tier 3 volume.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Workshop Exercise 2: Content Portfolio Analysis</h2>
+
+<p>Categorize your last quarter's content output:</p>
+
+<table>
+<thead>
+<tr><th>Content Piece</th><th>Tier (1/2/3)</th><th>Human Hours</th><th>Could AI Have Done It?</th></tr>
+</thead>
+<tbody>
+<tr><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+<strong>Calculate:</strong>
+<ul>
+<li>% of effort spent on Tier 1 vs. Tier 2 vs. Tier 3</li>
+<li>% of content that could have been AI-generated</li>
+</ul>
+<strong>Discussion:</strong> What would you shift if you could reallocate 30% of Tier 3 effort?
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Building Thought Leadership</h2>
+
+<p>Real thought leadership requires:</p>
+
+<h3>1. Proprietary Insight</h3>
+Information or perspective that competitors don't have. Sources:
+<ul>
+<li>Customer conversations at scale</li>
+<li>Unique data from your platform</li>
+<li>Executive network and relationships</li>
+<li>Deep domain expertise</li>
+</ul>
+<h3>2. Point of View</h3>
+Willingness to take positions. Not "balanced perspectives on industry trends"—actual opinions.
+
+<strong>Weak:</strong> "AI is transforming enterprise marketing in various ways."
+<strong>Strong:</strong> "The PMMs who build AI co-working relationships will run circles around those who use AI as a fancy autocomplete. The gap is already visible."
+
+<h3>3. Consistency</h3>
+A narrative that builds over time. Connected ideas, not random content.
+
+<h3>4. Executive Voice</h3>
+Thought leadership often requires senior executive sponsorship. They have the credibility. PMMs have the skills. Partnership matters.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Key Principles (Summary)</h2>
+
+<ol>
+<li><strong>The middle collapsed.</strong> Content is either commodity (AI-generatable) or distinctive (genuine insight). No market for "pretty good."</li>
+</ol>
+<ol>
+<li><strong>Narrative earns product.</strong> World view → implication → path → proof → role. Product comes last.</li>
+</ol>
+<ol>
+<li><strong>Three tiers, different rules.</strong> Narrative content shapes markets. Proof content builds credibility. Distribution content reaches audiences. Don't confuse them.</li>
+</ol>
+<ol>
+<li><strong>Invest in Tier 1.</strong> Most teams over-produce Tier 3. Strategic advantage comes from the ideas that shape how markets think.</li>
+</ol>
+<ol>
+<li><strong>Thought leadership is built.</strong> Proprietary insight + point of view + consistency + executive voice. Not content volume.</li>
+</ol>
+<hr>
+
+</div>
+<div class="section">
+<h2>Before Unit 7</h2>
+
+<strong>Assignment:</strong> Draft a one-page narrative following the five-layer framework (World View → Implication → Path → Proof → Role) for your product area.
+
+<p>Bring to Unit 7 for peer review.</p>
+
+<hr>
+
+<em>This training is a derivative work based on "The Future of Product Marketing: The Practitioner's Guide to the Agentic Era" © 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</em>
+</div>
+        
+        <div class="complete-section">
+            <p style="margin-bottom: 1rem; color: #0369a1;">Finished reading this unit?</p>
+            <button class="complete-btn" onclick="markComplete()">Mark Unit Complete</button>
+        </div>
+    </main>
+    
+    <footer>
+        <p>This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+        <p style="margin-top: 0.5rem;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+    </footer>
+    
+    <script>
+    function markComplete() {
+        if (typeof SCORM !== 'undefined') {
+            SCORM.setStatus('completed');
+            alert('Unit marked as complete!');
+        } else {
+            alert('Progress saved locally.');
+        }
+    }
+    </script>
+</body>
+</html>

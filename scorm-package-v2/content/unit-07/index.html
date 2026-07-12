@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 7: The Demo Stack — Product Storytelling Reimagined | SAP Future of PMM Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        
+        .nav a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 1.5rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero .unit-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            color: var(--sap-blue);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        h4 {
+            font-size: 1rem;
+            color: var(--dark-slate);
+            margin: 1rem 0 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        blockquote {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight-box.key-insight {
+            background: linear-gradient(135deg, #fff8e6 0%, #fff3d4 100%);
+            border-left-color: var(--gold);
+        }
+        
+        .highlight-box h4 {
+            margin-top: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background: var(--light-gray);
+            font-weight: 600;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--light-gray);
+            margin: 2rem 0;
+        }
+        
+        strong {
+            color: var(--dark-slate);
+        }
+        
+        em {
+            color: #64748b;
+        }
+        
+        .exercise {
+            background: #fffbeb;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn.primary {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        .nav-btn.secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        
+        .complete-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            background: #f0f9ff;
+            border-top: 2px solid #0ea5e9;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .complete-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .complete-btn:hover {
+            background: #0284c7;
+        }
+        
+        footer {
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.5rem; }
+            main { padding: 1rem; }
+            .section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="../index.html" class="logo">SAP Future of PMM Training</a>
+            <nav class="nav">
+                <a href="../index.html">All Units</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="unit-label">Unit 7</div>
+        <h1>The Demo Stack — Product Storytelling Reimagined</h1>
+    </section>
+    
+    <main>
+        <p># Unit 7: The Demo Stack — Product Storytelling Reimagined
+<div class="section">
+<h2>SAP Internal Training Curriculum</h2></p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Opening Scenario: The Demo That Won</h2>
+
+<p>Last year, one of our teams competed for a $12M deal against Snowflake and Databricks. The technical evaluators had run bake-offs. The scorecards were tied. The decision was coming down to the executive presentation.</p>
+
+<p>The Snowflake team showed a polished product demo—60 minutes of features, capabilities, and a competitive comparison. Standard fare.</p>
+
+<p>Our team did something different. They started with the customer's problem—a specific scenario the CIO had described in an earlier meeting. They showed how that scenario played out today (painful). Then they showed how it would work with SAP (seamless). They brought a customer reference who had faced the same challenge. The product demo was maybe 15 minutes. The rest was story.</p>
+
+<p>We won the deal.</p>
+
+<p>"It was the only presentation that felt like it was about us," the CIO said later. "Everyone else was showing their product. You showed our problem."</p>
+
+<p>This is the demo stack redefined: not product demonstration, but <strong>problem storytelling with product proof</strong>.</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Demo Maturity Model</h2>
+
+<h3>Level 1: Feature Tour</h3>
+<em>"Let me show you what our product does."</em>
+
+<p>The default mode. Walk through features in sequence. Click here, click there. Comprehensive but undifferentiated.</p>
+
+<strong>Problems:</strong>
+<ul>
+<li>Every vendor does this</li>
+<li>Overwhelming detail, no narrative</li>
+<li>Doesn't connect to customer's actual situation</li>
+<li>Easy to tune out</li>
+</ul>
+<h3>Level 2: Use Case Demo</h3>
+<em>"Let me show you how you'd solve [common scenario]."</em>
+
+<p>Better. Organized around typical workflows rather than product navigation.</p>
+
+<strong>Problems:</strong>
+<ul>
+<li>Still generic—not this customer's scenario</li>
+<li>Assumes buyer knows their use case</li>
+<li>Doesn't differentiate story, just execution</li>
+</ul>
+<h3>Level 3: Customer Story Demo</h3>
+<em>"Let me show you how [named customer] solved [specific problem]."</em>
+
+<p>Now we're telling a story. Real customer, real problem, real outcome.</p>
+
+<strong>Problems:</strong>
+<ul>
+<li>Customer story may not match prospect's context</li>
+<li>Limited inventory of stories</li>
+<li>Still one-directional—presenter talking at audience</li>
+</ul>
+<h3>Level 4: Co-Created Discovery</h3>
+<em>"Let's explore your problem together and see what's possible."</em>
+
+<p>Interactive. Collaborative. The demo adapts to what the prospect cares about.</p>
+
+<strong>Advantages:</strong>
+<ul>
+<li>Prospect feels heard</li>
+<li>Demo covers what actually matters to them</li>
+<li>Builds relationship, not just information transfer</li>
+<li>Differentiates on engagement, not just product</li>
+</ul>
+<strong>The target:</strong> Most demo interactions should be Level 3 or 4. Level 1 should be rare.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Workshop Exercise 1: Demo Audit</h2>
+
+<p>Think about the last three demos you participated in (gave or observed).</p>
+
+<p>For each:
+<ol>
+<li>What level was it? (1/2/3/4)</li>
+<li>How much time was spent on features vs. story?</li>
+<li>How much did the prospect speak vs. listen?</li>
+<li>What question did you wish you'd asked earlier?</li>
+</ol>
+<strong>Discussion:</strong> What would it take to move your team's default demo up one level?</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Demo Architecture</h2>
+
+<p>Effective demos have structure—even when they feel spontaneous.</p>
+
+<h3>The Opening (5-10 minutes)</h3>
+<strong>Goal:</strong> Establish that you understand their problem
+
+<ul>
+<li>Recap what you've heard about their situation</li>
+<li>Ask confirming questions</li>
+<li>Signal that the demo is for them, not a canned pitch</li>
+</ul>
+<strong>AI assist:</strong> Pre-meeting, AI can synthesize prior call notes, CRM data, and industry context into a situation brief.
+
+<h3>The Problem Exploration (10-15 minutes)</h3>
+<strong>Goal:</strong> Make the pain vivid before showing the solution
+
+<ul>
+<li>Walk through their current state (with their confirmation)</li>
+<li>Highlight friction, risk, or missed opportunity</li>
+<li>Quantify if possible ("You mentioned this takes three days currently")</li>
+</ul>
+<strong>Why this matters:</strong> If they don't feel the problem, the solution isn't compelling.
+
+<h3>The Vision (5-10 minutes)</h3>
+<strong>Goal:</strong> Paint the picture of life after
+
+<ul>
+<li>What would better look like?</li>
+<li>Connect to their stated objectives</li>
+<li>Keep it about outcomes, not features yet</li>
+</ul>
+<h3>The Proof (15-20 minutes)</h3>
+<strong>Goal:</strong> Show that it actually works
+
+<ul>
+<li>Product demonstration connected to their scenario</li>
+<li>Customer reference with similar context</li>
+<li>Technical validation if needed</li>
+</ul>
+<strong>The balance:</strong> Enough detail to be credible, not so much that they're lost.
+
+<h3>The Bridge (5-10 minutes)</h3>
+<strong>Goal:</strong> Connect to next steps
+
+<ul>
+<li>What questions remain?</li>
+<li>What would they need to see to move forward?</li>
+<li>Who else needs to be involved?</li>
+</ul>
+<hr>
+
+</div>
+<div class="section">
+<h2>The Customer Reference Strategy</h2>
+
+<p>The most powerful demo element isn't your product. It's proof that someone else solved the same problem.</p>
+
+<h3>Building Reference Inventory</h3>
+
+<strong>Map coverage:</strong>
+<ul>
+<li>By industry vertical</li>
+<li>By use case</li>
+<li>By buyer persona</li>
+<li>By company size/complexity</li>
+<li>By competitor displaced</li>
+</ul>
+<strong>Identify gaps:</strong> Where don't you have proof? Those are your risk zones.
+
+<h3>Reference Engagement Models</h3>
+
+<strong>1. Case study reference</strong>
+Named customer, published story. Can be shared without coordination.
+
+<strong>2. Call reference</strong>
+Customer willing to take calls with prospects. High-touch but high-impact.
+
+<strong>3. Site visit reference</strong>
+Prospect visits customer. Highest commitment, highest conversion.
+
+<strong>4. Panel reference</strong>
+Customer speaks at events or roundtables. Scalable social proof.
+
+<h3>The Reference Ask</h3>
+
+<p>Customers who agree to be references respond to:
+<ul>
+<li>Personal relationship (CSM or exec)</li>
+<li>Pride in what they've built</li>
+<li>Industry recognition</li>
+<li>Networking with peers</li>
+<li>Reciprocity (you've done something for them)</li>
+</ul>
+<strong>Not:</strong> Transactional requests with nothing in it for them.</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Workshop Exercise 2: Reference Gap Analysis</h2>
+
+<p>For your product area, map your reference coverage:</p>
+
+<table>
+<thead>
+<tr><th>Segment</th><th>Use Cases</th><th>References Available</th><th>Gap Level</th></tr>
+</thead>
+<tbody>
+<tr><td>Manufacturing</td><td>Real-time analytics</td><td>2 named</td><td>Low</td></tr>
+<tr><td>Financial Services</td><td>Regulatory reporting</td><td>0</td><td>High</td></tr>
+<tr><td>Retail</td><td>Customer 360</td><td>1 named</td><td>Medium</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+</tbody>
+</table>
+<strong>Identify:</strong> Your highest-risk gap. What would it take to close it?
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Interactive & Self-Service Demos</h2>
+
+<p>Not every prospect wants a synchronous demo. The demo stack needs asynchronous options.</p>
+
+<h3>Interactive Product Tours</h3>
+Guided walkthroughs that prospects can experience alone.
+<ul>
+<li>Good for: Early-stage discovery, technical evaluation</li>
+<li>Tools: Navattic, Storylane, Walnut</li>
+</ul>
+<h3>Demo Videos</h3>
+Pre-recorded demonstrations by use case.
+<ul>
+<li>Good for: Sharing with decision-makers who won't attend live demos</li>
+<li>Key: Short (under 5 minutes), specific to scenario</li>
+</ul>
+<h3>Sandbox Environments</h3>
+Actual product access for hands-on exploration.
+<ul>
+<li>Good for: Technical buyers who want to validate</li>
+<li>Risk: Unsupervised experience can confuse if not well designed</li>
+</ul>
+<h3>AI-Guided Demo</h3>
+Interactive Q&A where AI walks through the product based on questions.
+<ul>
+<li>Emerging: Some vendors experimenting with chat-guided tours</li>
+<li>Good for: Personalized exploration at scale</li>
+</ul>
+<h3>The Portfolio Approach</h3>
+
+<p>Different prospects need different modalities:
+<ul>
+<li><strong>Self-serve early:</strong> Interactive tours for discovery</li>
+<li><strong>High-touch middle:</strong> Live demos for serious evaluation</li>
+<li><strong>Self-serve validation:</strong> Sandboxes for technical confirmation</li>
+</ul>
+<hr></p>
+
+</div>
+<div class="section">
+<h2>Demo Enablement</h2>
+
+<p>Sales teams need support to deliver Level 3+ demos consistently.</p>
+
+<h3>The Demo Kit</h3>
+
+<p>For each major use case / vertical, provide:
+<ul>
+<li><strong>Scenario brief:</strong> The problem, typical pain points, common objections</li>
+<li><strong>Demo script:</strong> Flexible talking points, not rigid script</li>
+<li><strong>Click path:</strong> Recommended flow through the product</li>
+<li><strong>Proof points:</strong> Reference customers, metrics, quotes</li>
+<li><strong>Objection handlers:</strong> What they'll ask, how to respond</li>
+</ul>
+<h3>Demo Environments</h3></p>
+
+<p>Persistent demo environments with realistic data are critical.
+<ul>
+<li>Production environments work poorly (too messy)</li>
+<li>Generic demo data doesn't feel real</li>
+<li>Industry-specific demo instances are ideal</li>
+</ul>
+<h3>Skills Development</h3></p>
+
+<p>Demo skills can be trained:
+<ul>
+<li>Storytelling techniques</li>
+<li>Discovery questioning</li>
+<li>Objection handling in real-time</li>
+<li>Reading the room</li>
+</ul>
+<strong>The gap:</strong> Most demo training focuses on product knowledge. Story skills often assumed.</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Key Principles (Summary)</h2>
+
+<ol>
+<li><strong>Demo maturity matters.</strong> Feature tours are commodity. Co-created discovery differentiates.</li>
+</ol>
+<ol>
+<li><strong>Structure enables spontaneity.</strong> Opening → Problem → Vision → Proof → Bridge. Know the shape; adapt the details.</li>
+</ol>
+<ol>
+<li><strong>References are the killer feature.</strong> Proof that someone else solved the same problem outweighs any feature comparison.</li>
+</ol>
+<ol>
+<li><strong>Async options expand reach.</strong> Interactive tours, videos, sandboxes, AI-guided experiences.</li>
+</ol>
+<ol>
+<li><strong>Story skills are trainable.</strong> Demo excellence isn't just product expertise. It's communication craft.</li>
+</ol>
+<hr>
+
+</div>
+<div class="section">
+<h2>Before Unit 8</h2>
+
+<strong>Assignment:</strong> Draft a demo script for one key use case following the five-part architecture. Include the specific questions you'd ask in each phase.
+
+<hr>
+
+<em>This training is a derivative work based on "The Future of Product Marketing: The Practitioner's Guide to the Agentic Era" © 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</em>
+</div>
+        
+        <div class="complete-section">
+            <p style="margin-bottom: 1rem; color: #0369a1;">Finished reading this unit?</p>
+            <button class="complete-btn" onclick="markComplete()">Mark Unit Complete</button>
+        </div>
+    </main>
+    
+    <footer>
+        <p>This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+        <p style="margin-top: 0.5rem;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+    </footer>
+    
+    <script>
+    function markComplete() {
+        if (typeof SCORM !== 'undefined') {
+            SCORM.setStatus('completed');
+            alert('Unit marked as complete!');
+        } else {
+            alert('Progress saved locally.');
+        }
+    }
+    </script>
+</body>
+</html>

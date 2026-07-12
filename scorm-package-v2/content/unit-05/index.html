@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5: Sales Enablement and the Death of the Static Battlecard | SAP Future of PMM Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        
+        .nav a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 1.5rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero .unit-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            color: var(--sap-blue);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        h4 {
+            font-size: 1rem;
+            color: var(--dark-slate);
+            margin: 1rem 0 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        blockquote {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight-box.key-insight {
+            background: linear-gradient(135deg, #fff8e6 0%, #fff3d4 100%);
+            border-left-color: var(--gold);
+        }
+        
+        .highlight-box h4 {
+            margin-top: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background: var(--light-gray);
+            font-weight: 600;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--light-gray);
+            margin: 2rem 0;
+        }
+        
+        strong {
+            color: var(--dark-slate);
+        }
+        
+        em {
+            color: #64748b;
+        }
+        
+        .exercise {
+            background: #fffbeb;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn.primary {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        .nav-btn.secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        
+        .complete-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            background: #f0f9ff;
+            border-top: 2px solid #0ea5e9;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .complete-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .complete-btn:hover {
+            background: #0284c7;
+        }
+        
+        footer {
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.5rem; }
+            main { padding: 1rem; }
+            .section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="../index.html" class="logo">SAP Future of PMM Training</a>
+            <nav class="nav">
+                <a href="../index.html">All Units</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="unit-label">Unit 5</div>
+        <h1>Sales Enablement and the Death of the Static Battlecard</h1>
+    </section>
+    
+    <main>
+        <p># Unit 5: Sales Enablement and the Death of the Static Battlecard
+<div class="section">
+<h2>SAP Internal Training Curriculum</h2></p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Opening Scenario: The 2 AM Slack</h2>
+
+<p>It's 2:14 AM in Singapore. An SAP sales rep is preparing for a 7 AM meeting with a prospect who just told him—yesterday afternoon—that Microsoft Fabric is also in the evaluation. He needs competitive positioning. Now.</p>
+
+<p>He checks the enablement portal. The Fabric battlecard was last updated four months ago. It doesn't address the new Fabric features announced at Ignite. It doesn't cover the pricing changes. It doesn't mention the partnership with Databricks that the prospect specifically asked about.</p>
+
+<p>He does what reps increasingly do: He opens Claude, pastes in the prospect's concerns, and asks for help.</p>
+
+<p>Claude gives him a serviceable response—but it's generic. It doesn't know SAP's current positioning, our latest customer wins, or the specific objection handlers that have worked in competitive situations.</p>
+
+<p>The rep goes into the meeting with half-current information and a prayer.</p>
+
+<strong>This scenario plays out dozens of times daily across SAP's sales organization.</strong> The question isn't whether we create enablement content. We create plenty. The question is whether it's available, current, and useful in the moment of need.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Enablement Gap Analysis</h2>
+
+<p>We surveyed 150 SAP sales reps across regions. The findings:</p>
+
+<table>
+<thead>
+<tr><th>Question</th><th>Response</th></tr>
+</thead>
+<tbody>
+<tr><td>"I can find what I need in the portal within 5 minutes"</td><td>23% agree</td></tr>
+<tr><td>"Competitive content is current enough to use confidently"</td><td>31% agree</td></tr>
+<tr><td>"I've used AI to help me instead of internal resources"</td><td>67% yes</td></tr>
+<tr><td>"The content matches the questions I actually get"</td><td>28% agree</td></tr>
+</tbody>
+</table>
+<strong>The diagnosis:</strong> We're producing content. It's just not reaching sellers in useful form.
+
+<h3>Where Enablement Breaks Down</h3>
+
+<strong>Discovery failure:</strong> Rep can't find the asset. Search doesn't work. Navigation is confusing. Content exists but is invisible.
+
+<strong>Currency failure:</strong> Rep finds the asset but doesn't trust it. Last updated date is months ago. Missing recent developments.
+
+<strong>Context failure:</strong> Rep finds current content but it's wrong for their situation. Generic when they need specific. High-level when they need technical.
+
+<strong>Format failure:</strong> Content exists but in wrong format. They need a talk track; they get a PDF. They need a data point; they get a 40-slide deck.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Workshop Exercise 1: The Rep Shadow</h2>
+
+<strong>Assignment:</strong> Shadow a sales rep for a half-day (or review their recent Gong calls). Document:
+
+<ol>
+<li>What questions did they face?</li>
+<li>What content did they try to find?</li>
+<li>Did they find it? How long did it take?</li>
+<li>Was it useful? If not, why?</li>
+<li>What did they do instead?</li>
+</ol>
+<strong>Bring to discussion:</strong> One specific moment where enablement failed and what would have fixed it.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Knowledge Architecture</h2>
+
+<p>Static artifacts (battlecards, pitch decks, one-pagers) assume we can anticipate every situation. We can't.</p>
+
+<p>The alternative: <strong>modular knowledge architecture</strong>—building blocks that can be assembled for context.</p>
+
+<h3>The Building Blocks</h3>
+
+<strong>1. Positioning modules</strong>
+Core messaging, differentiation, value propositions—in reusable chunks.
+
+<strong>2. Proof points</strong>
+Customer wins, metrics, quotes—tagged by industry, use case, region.
+
+<strong>3. Objection handlers</strong>
+Specific objections with tested responses—rated by effectiveness.
+
+<strong>4. Competitive intelligence</strong>
+Per-competitor: positioning, weaknesses, talk tracks—continuously updated.
+
+<strong>5. Technical depth</strong>
+Integration details, architecture, requirements—for technical buyers.
+
+<strong>6. Commercial guidance</strong>
+Pricing, packaging, negotiation—with guardrails.
+
+<h3>How It Assembles</h3>
+
+<strong>Scenario:</strong> Rep is meeting with a German manufacturer evaluating SAP Datasphere vs. Snowflake for real-time analytics.
+
+<strong>Old model:</strong> Rep searches portal for "Datasphere battlecard" and "Snowflake competitive." Finds two PDFs. Neither addresses manufacturing specifically. Neither mentions real-time use cases.
+
+<strong>New model:</strong> Rep queries the knowledge system: "Datasphere vs. Snowflake, German manufacturer, real-time analytics"
+
+<p>System returns:
+<ul>
+<li>Relevant positioning modules</li>
+<li>Manufacturing customer proof points</li>
+<li>Snowflake-specific objection handlers (ranked by win rate)</li>
+<li>Recent competitive intelligence on Snowflake's real-time gaps</li>
+<li>Technical architecture for real-time scenarios</li>
+</ul>
+Assembled on demand. Specific to context.</p>
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The AI Enablement Layer</h2>
+
+<p>AI doesn't replace knowledge architecture—it makes it accessible.</p>
+
+<h3>Pattern 1: The Intelligent Search</h3>
+Instead of keyword search, natural language queries against the knowledge base.
+
+<strong>Rep asks:</strong> "How do we respond when customers say Snowflake is cheaper?"
+
+<strong>System returns:</strong> Top 3 objection handlers, ranked by effectiveness + supporting proof points + pricing comparison guidance.
+
+<h3>Pattern 2: The Deal Brief</h3>
+AI generates custom enablement for specific deals.
+
+<strong>Input:</strong> CRM opportunity data (industry, competitors, stage, notes)
+
+<strong>Output:</strong> Deal-specific brief with relevant positioning, proof points, competitive intelligence, and recommended talk tracks.
+
+<h3>Pattern 3: The Call Prep</h3>
+Before customer meetings, AI synthesizes relevant information.
+
+<strong>Input:</strong> Meeting invite, past call transcripts, CRM data
+
+<strong>Output:</strong> Context summary, likely questions, suggested talking points, relevant proof points.
+
+<h3>Pattern 4: The Real-Time Coach</h3>
+During calls (or immediately after), AI surfaces relevant information.
+
+<strong>Integration with Gong/Chorus:</strong> When competitor is mentioned, relevant competitive intelligence appears. When objection is raised, proven handlers surface.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Workshop Exercise 2: The Knowledge Audit</h2>
+
+<p>For your product area, evaluate the current state of each building block:</p>
+
+<table>
+<thead>
+<tr><th>Building Block</th><th>Exists?</th><th>Current?</th><th>Findable?</th><th>Right Format?</th></tr>
+</thead>
+<tbody>
+<tr><td>Positioning modules</td><td>Y/N</td><td>Y/N</td><td>Y/N</td><td>Y/N</td></tr>
+<tr><td>Proof points (by segment)</td><td>Y/N</td><td>Y/N</td><td>Y/N</td><td>Y/N</td></tr>
+<tr><td>Objection handlers</td><td>Y/N</td><td>Y/N</td><td>Y/N</td><td>Y/N</td></tr>
+<tr><td>Competitive intel</td><td>Y/N</td><td>Y/N</td><td>Y/N</td><td>Y/N</td></tr>
+<tr><td>Technical depth</td><td>Y/N</td><td>Y/N</td><td>Y/N</td><td>Y/N</td></tr>
+<tr><td>Commercial guidance</td><td>Y/N</td><td>Y/N</td><td>Y/N</td><td>Y/N</td></tr>
+</tbody>
+</table>
+<strong>Identify:</strong> Your biggest gap. What would it take to close it?
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Feedback Loop</h2>
+
+<p>Enablement that doesn't learn is enablement that decays.</p>
+
+<h3>What to Measure</h3>
+
+<strong>Usage metrics:</strong>
+<ul>
+<li>What content is accessed? What isn't?</li>
+<li>Search queries that return no results (signals gaps)</li>
+<li>Time to find information</li>
+</ul>
+<strong>Effectiveness metrics:</strong>
+<ul>
+<li>Win rate by content usage</li>
+<li>Objection handler success rates (from call analysis)</li>
+<li>Rep confidence scores</li>
+</ul>
+<strong>Currency metrics:</strong>
+<ul>
+<li>Content age by category</li>
+<li>Update frequency</li>
+<li>Competitive intelligence freshness</li>
+</ul>
+<h3>The Update Cycle</h3>
+
+<strong>Real-time:</strong> Competitive intelligence flows continuously
+<strong>Weekly:</strong> Win/loss insights integrated, top objection handlers updated
+<strong>Monthly:</strong> Proof points refreshed, positioning validated against field feedback
+<strong>Quarterly:</strong> Full audit, archive outdated content, major refresh
+
+<hr>
+
+</div>
+<div class="section">
+<h2>The Sales-PMM Partnership</h2>
+
+<p>Enablement works when PMMs and sales are partners, not just producer and consumer.</p>
+
+<h3>Sales Contributions</h3>
+
+<ul>
+<li>Field feedback on what works (and what doesn't)</li>
+<li>Competitive intelligence from deal front lines</li>
+<li>Customer quotes and proof points</li>
+<li>Real objections heard (not assumed ones)</li>
+</ul>
+<h3>PMM Contributions</h3>
+
+<ul>
+<li>Synthesized positioning and messaging</li>
+<li>Evidence collection and organization</li>
+<li>Competitive research and analysis</li>
+<li>Content creation and maintenance</li>
+</ul>
+<h3>Structural Options</h3>
+
+<strong>Embedded model:</strong> PMMs aligned to specific sales segments/regions
+<strong>Center of excellence:</strong> Central PMM team with regular sales touchpoints
+<strong>Hybrid:</strong> Central strategy + embedded execution
+
+<strong>The key:</strong> Regardless of structure, feedback loops must be explicit. Scheduled touchpoints, shared OKRs, joint accountability.
+
+<hr>
+
+</div>
+<div class="section">
+<h2>Key Principles (Summary)</h2>
+
+<ol>
+<li><strong>Static artifacts fail.</strong> PDFs and battlecards decay immediately. Knowledge architecture scales.</li>
+</ol>
+<ol>
+<li><strong>Six building blocks.</strong> Positioning, proof points, objection handlers, competitive intel, technical depth, commercial guidance—modular and tagged.</li>
+</ol>
+<ol>
+<li><strong>AI is the interface.</strong> Natural language queries, deal briefs, call prep, real-time coaching—AI makes knowledge accessible.</li>
+</ol>
+<ol>
+<li><strong>Feedback loops are essential.</strong> Measure usage and effectiveness. Update continuously.</li>
+</ol>
+<ol>
+<li><strong>Partnership, not production.</strong> PMMs and sales share responsibility for enablement success.</li>
+</ol>
+<hr>
+
+</div>
+<div class="section">
+<h2>Before Unit 6</h2>
+
+<strong>Assignment:</strong> Interview one sales rep. Ask them to describe the last time they needed competitive information urgently. What happened? What would have helped?
+
+<p>Document the story and bring to Unit 6 discussion.</p>
+
+<hr>
+
+<em>This training is a derivative work based on "The Future of Product Marketing: The Practitioner's Guide to the Agentic Era" © 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</em>
+</div>
+        
+        <div class="complete-section">
+            <p style="margin-bottom: 1rem; color: #0369a1;">Finished reading this unit?</p>
+            <button class="complete-btn" onclick="markComplete()">Mark Unit Complete</button>
+        </div>
+    </main>
+    
+    <footer>
+        <p>This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+        <p style="margin-top: 0.5rem;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+    </footer>
+    
+    <script>
+    function markComplete() {
+        if (typeof SCORM !== 'undefined') {
+            SCORM.setStatus('completed');
+            alert('Unit marked as complete!');
+        } else {
+            alert('Progress saved locally.');
+        }
+    }
+    </script>
+</body>
+</html>
