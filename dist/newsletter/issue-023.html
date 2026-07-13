@@ -1,452 +1,232 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Newsletter #23: The Demo Stack | Future of PMM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.7;
-        }
-        .email-container {
-            max-width: 640px;
-            margin: 0 auto;
-            background: #fff;
-        }
-        .header {
-            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
-            padding: 2.5rem;
-            text-align: center;
-            color: white;
-        }
-        .header h1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-        .header p {
-            opacity: 0.9;
-            font-size: 0.95rem;
-        }
-        .content {
-            padding: 2rem;
-        }
-        h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 2rem 0 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        h2:first-child { margin-top: 0; }
-        h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #3b82f6;
-            margin: 1.5rem 0 0.75rem;
-        }
-        p { margin-bottom: 1rem; color: #475569; }
-        blockquote {
-            background: #f0f9ff;
-            border-left: 4px solid #3b82f6;
-            padding: 1rem 1.25rem;
-            margin: 1.5rem 0;
-            font-style: italic;
-            color: #1e40af;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-        }
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        th {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #64748b;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .stat-card {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .stat-card .value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #3b82f6;
-        }
-        .stat-card .label {
-            font-size: 0.75rem;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-        .highlight-box {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border-left: 4px solid #f59e0b;
-            padding: 1rem 1.25rem;
-            border-radius: 0 8px 8px 0;
-            margin: 1.5rem 0;
-        }
-        .highlight-box h4 {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            color: #92400e;
-            margin-bottom: 0.5rem;
-        }
-        .chart-container {
-            background: #1e293b;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            color: white;
-        }
-        .chart-container h4 {
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            color: #94a3b8;
-        }
-        .chart-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        .chart-label {
-            width: 140px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-        }
-        .chart-fill {
-            height: 20px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            border-radius: 4px;
-            margin-right: 0.5rem;
-        }
-        .chart-value {
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        .news-item {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .news-item h4 {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-        .news-item p {
-            font-size: 0.9rem;
-            margin-bottom: 0;
-        }
-        .cta-box {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            margin: 2rem 0;
-        }
-        .cta-box h3 {
-            color: white;
-            margin: 0 0 0.5rem;
-        }
-        .cta-box p {
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 1rem;
-        }
-        .cta-box a {
-            display: inline-block;
-            background: white;
-            color: #3b82f6;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .leaderboard {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 1.25rem;
-        }
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .leaderboard-item:last-child { border-bottom: none; }
-        .leaderboard-rank {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-        }
-        .leaderboard-name {
-            flex: 1;
-            font-weight: 600;
-        }
-        .leaderboard-score {
-            color: #3b82f6;
-            font-weight: 700;
-        }
-        .footer {
-            background: #1e293b;
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-        .footer p {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.85rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <div class="header">
-            <h1>THE FUTURE OF PMM</h1>
-            <p>Issue #23 — July 2026</p>
-        </div>
-        
-        <div class="content">
-            <h2>🎬 This Week: Unit 7 Unlocks — The Demo Stack</h2>
-            
-            <p>Last year, one of our teams competed for a $12M deal against Snowflake and Databricks. The technical evaluators had run bake-offs. The scorecards were tied. The decision came down to the executive presentation.</p>
-            
-            <p>Snowflake showed a polished product demo—60 minutes of features, capabilities, competitive comparisons. Standard fare.</p>
-            
-            <p>Our team did something different. They started with the customer's problem—a specific scenario the CIO had described in an earlier meeting. They showed how that scenario played out today (painful). Then they showed how it would work with SAP (seamless). They brought a customer reference who had faced the same challenge.</p>
-            
-            <p>The product demo was maybe 15 minutes. The rest was story.</p>
-            
-            <p><strong>We won the deal.</strong></p>
-            
-            <blockquote>"It was the only presentation that felt like it was about us. Everyone else was showing their product. You showed our problem."<br>— The CIO, afterward</blockquote>
-            
-            <p>This is what Unit 7 is about: <strong>the demo stack redefined—not product demonstration, but problem storytelling with product proof.</strong></p>
-            
-            <h2>📊 Survey Results: Where We Are</h2>
-            
-            <p>Thank you to everyone who completed the mid-program survey. Here's what we're seeing:</p>
-            
-            <h3>Confidence Gains</h3>
-            <table>
-                <tr>
-                    <th>Skill Area</th>
-                    <th>Start</th>
-                    <th>Now</th>
-                    <th>Change</th>
-                </tr>
-                <tr>
-                    <td>Understanding AI's impact on PMM</td>
-                    <td>3.2</td>
-                    <td>4.1</td>
-                    <td style="color: #22c55e; font-weight: 700;">+28%</td>
-                </tr>
-                <tr>
-                    <td>Using AI tools daily</td>
-                    <td>2.8</td>
-                    <td>3.9</td>
-                    <td style="color: #22c55e; font-weight: 700;">+39%</td>
-                </tr>
-                <tr>
-                    <td>Explaining agentic AI to stakeholders</td>
-                    <td>2.5</td>
-                    <td>3.7</td>
-                    <td style="color: #22c55e; font-weight: 700;">+48%</td>
-                </tr>
-            </table>
-            
-            <div class="highlight-box">
-                <h4>📈 What's Working</h4>
-                <p style="color: #78350f; margin-bottom: 0;">Workshop exercises are the highest-rated content type. Frameworks (Maturity Ladder, Visibility Stack) are being used in actual work. Discussion prompts are generating real team conversations.</p>
-            </div>
-            
-            <h2>📚 Unit 7 Preview: The Demo Maturity Model</h2>
-            
-            <p>The core framework you'll learn this week:</p>
-            
-            <table>
-                <tr>
-                    <th>Level</th>
-                    <th>Name</th>
-                    <th>The Approach</th>
-                </tr>
-                <tr>
-                    <td><strong>1</strong></td>
-                    <td>Feature Tour</td>
-                    <td>"Let me show you what our product does"</td>
-                </tr>
-                <tr>
-                    <td><strong>2</strong></td>
-                    <td>Use Case Demo</td>
-                    <td>"Let me show you how you'd solve [scenario]"</td>
-                </tr>
-                <tr>
-                    <td><strong>3</strong></td>
-                    <td>Customer Story</td>
-                    <td>"Let me show you how [customer] solved [problem]"</td>
-                </tr>
-                <tr>
-                    <td><strong>4</strong></td>
-                    <td>Co-Created Discovery</td>
-                    <td>"Let's explore your problem together"</td>
-                </tr>
-            </table>
-            
-            <p><strong>The target:</strong> Most demos should be Level 3-4. Level 1 should be rare.</p>
-            
-            <div class="cta-box">
-                <h3>🎯 Start Unit 7</h3>
-                <p>Workshop: Audit your last three demos. What level were they?</p>
-                <a href="/curriculum/unit-07">Begin Unit →</a>
-            </div>
-            
-            <h2>🤝 Vendor Update: Demo Resources</h2>
-            
-            <table>
-                <tr>
-                    <th>Tool</th>
-                    <th>Status</th>
-                    <th>What It Does</th>
-                </tr>
-                <tr>
-                    <td><strong>Consensus</strong></td>
-                    <td>✅ Active</td>
-                    <td>Interactive demos, now with CRM integration</td>
-                </tr>
-                <tr>
-                    <td><strong>Demostack</strong></td>
-                    <td>🔄 Pilot</td>
-                    <td>Clone environments for custom scenarios</td>
-                </tr>
-                <tr>
-                    <td><strong>Storylane</strong></td>
-                    <td>📋 Evaluating</td>
-                    <td>No-code demo builder</td>
-                </tr>
-            </table>
-            
-            <p><strong>New this month:</strong> Consensus demos now auto-personalize based on account data in Salesforce. Usage tracking is live.</p>
-            
-            <h2>🏆 Leaderboard Snapshot</h2>
-            
-            <div class="leaderboard">
-                <div class="leaderboard-item">
-                    <span class="leaderboard-rank">🥇</span>
-                    <span class="leaderboard-name">Top performers completing Units 1-6</span>
-                    <span class="leaderboard-score">100%</span>
-                </div>
-                <div class="leaderboard-item">
-                    <span class="leaderboard-rank">⚡</span>
-                    <span class="leaderboard-name">Speed Runner badges earned this week</span>
-                    <span class="leaderboard-score">12</span>
-                </div>
-                <div class="leaderboard-item">
-                    <span class="leaderboard-rank">💬</span>
-                    <span class="leaderboard-name">Discussion contributions</span>
-                    <span class="leaderboard-score">47</span>
-                </div>
-            </div>
-            
-            <p style="text-align: center; margin-top: 1rem;"><a href="/curriculum/leaderboard">View Full Leaderboard →</a></p>
-            
-            <h2>📈 Chart of the Week</h2>
-            
-            <div class="chart-container">
-                <h4>Where B2B Buyers Start Research in 2026</h4>
-                <div class="chart-bar">
-                    <span class="chart-label">AI Search</span>
-                    <div class="chart-fill" style="width: 42%;"></div>
-                    <span class="chart-value">42%</span>
-                </div>
-                <div class="chart-bar">
-                    <span class="chart-label">Google Search</span>
-                    <div class="chart-fill" style="width: 35%; background: #64748b;"></div>
-                    <span class="chart-value">35%</span>
-                </div>
-                <div class="chart-bar">
-                    <span class="chart-label">Vendor Sites</span>
-                    <div class="chart-fill" style="width: 14%; background: #64748b;"></div>
-                    <span class="chart-value">14%</span>
-                </div>
-                <div class="chart-bar">
-                    <span class="chart-label">Peer Referrals</span>
-                    <div class="chart-fill" style="width: 9%; background: #64748b;"></div>
-                    <span class="chart-value">9%</span>
-                </div>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 1rem; margin-bottom: 0;">Source: Gartner Digital Buying Survey, Q2 2026</p>
-            </div>
-            
-            <p><strong>The takeaway:</strong> If AI agents can't find and accurately describe your product, you're invisible to nearly half of enterprise buyers before they ever visit your website.</p>
-            
-            <h2>📰 News Worth Knowing</h2>
-            
-            <div class="news-item">
-                <h4>1. Jasper's State of AI Marketing 2026</h4>
-                <p>Only 41% of marketers can measure ROI on AI investments—not because AI delivers less value, but because productivity gains alone aren't enough. Leadership now expects business outcomes, not just efficiency. Teams that adapted measurement see 2-3× returns.</p>
-            </div>
-            
-            <div class="news-item">
-                <h4>2. Gartner: 15% of Work Decisions Will Be Made by AI by 2028</h4>
-                <p>Agentic AI is moving from content generation to autonomous decision-making. For PMMs, this means workflows that adapt in real-time, assets that self-enrich, and reviews that happen proactively.</p>
-            </div>
-            
-            <div class="news-item">
-                <h4>3. AI Agents Now Mediate B2B Purchasing</h4>
-                <p>AI agents are increasingly comparing vendors, interpreting product data, and filtering recommendations before humans see them. Your positioning isn't just for human buyers anymore—it's for their AI assistants.</p>
-            </div>
-            
-            <h2>📝 Featured: Top 10 AI Headlines This Summer</h2>
-            
-            <p>We published a deep-dive on the ten AI developments actually shaping product marketing right now. From agentic procurement to the content authenticity shift to new pricing models.</p>
-            
-            <p><a href="/top-10-ai-pmm-summer-2026.html"><strong>Read the full article →</strong></a></p>
-            
-            <h2>🗓️ Coming Up</h2>
-            
-            <table>
-                <tr>
-                    <td><strong>This Week</strong></td>
-                    <td>Unit 7 — The Demo Stack</td>
-                </tr>
-                <tr>
-                    <td><strong>Next Week</strong></td>
-                    <td>Unit 8 — Pricing & Packaging</td>
-                </tr>
-                <tr>
-                    <td><strong>Office Hours</strong></td>
-                    <td>Demo deep dive + Q&A</td>
-                </tr>
-            </table>
-            
-            <p style="margin-top: 2rem;">Until next time,<br><strong>Chris</strong></p>
-        </div>
-        
-        <div class="footer">
-            <p>You're receiving this because you're enrolled in the SAP PMM training program.</p>
-            <p style="margin-top: 1rem;"><a href="#" style="color: rgba(255,255,255,0.5);">View in browser</a> • <a href="#" style="color: rgba(255,255,255,0.5);">Feedback</a></p>
-        </div>
+<div style="font-family: Georgia, 'Times New Roman', serif; background: #e8e6e1; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background: #faf9f7; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    
+    <!-- HEADER -->
+    <div style="background: #1a1a2e; color: #fff; padding: 40px 30px 30px;">
+      <div style="font-family: monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">The Friday Note</div>
+      <h1 style="margin: 0; font-size: 32px; font-weight: bold;">The Future of <span style="color: #c84b31;">PMM</span></h1>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 10px;">Issue #23 · July 2026</div>
     </div>
-</body>
-</html>
+    
+    <!-- FRIDAY NOTE -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">Friday Note</div>
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">This week we unlock <strong style="color: #1a1a2e;">Unit 7: The Demo Stack</strong> — and I want to start with a story.</p>
+      
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">Last year, one of our teams competed for a $12M deal against Snowflake and Databricks. Scorecards were tied. The decision came down to the executive presentation.</p>
+      
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">Snowflake showed 60 minutes of features. Standard fare.</p>
+      
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">Our team started with the customer's problem. They made the pain vivid. Then they showed how it would work with SAP. The actual product demo? Maybe 15 minutes. The rest was story.</p>
+      
+      <div style="background: #f8e8e3; padding: 15px; border-left: 3px solid #c84b31; margin: 15px 0;">
+        <em style="color: #1a1a2e;">"It was the only presentation that felt like it was about us. Everyone else was showing their product. You showed our problem."</em><br>
+        <span style="font-size: 13px; color: #6b7280;">— The CIO, afterward</span>
+      </div>
+      
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">We won.</p>
+      
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">That's what Unit 7 is about: <strong style="color: #1a1a2e;">the demo stack redefined — not product demonstration, but problem storytelling with product proof.</strong></p>
+      
+      <p style="margin: 0; font-style: italic; color: #6b7280;">—Chris</p>
+    </div>
+    
+    <!-- UNIT 7 PREVIEW -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">📚 Now Unlocked</div>
+      <h2 style="margin: 0 0 15px; font-size: 22px; color: #1a1a2e;">Unit 7: The Demo Maturity Model</h2>
+      
+      <table width="100%" cellpadding="10" cellspacing="0" style="margin: 15px 0; font-size: 14px;">
+        <tr style="background: #f3f1ed;">
+          <td style="border-radius: 8px 0 0 0; font-weight: bold; color: #1a1a2e;">Level</td>
+          <td style="font-weight: bold; color: #1a1a2e;">Name</td>
+          <td style="border-radius: 0 8px 0 0; font-weight: bold; color: #1a1a2e;">The Approach</td>
+        </tr>
+        <tr>
+          <td style="color: #6b7280;">1</td>
+          <td style="color: #374151;">Feature Tour</td>
+          <td style="color: #374151; font-style: italic;">"Let me show you what our product does"</td>
+        </tr>
+        <tr style="background: #faf9f7;">
+          <td style="color: #6b7280;">2</td>
+          <td style="color: #374151;">Use Case Demo</td>
+          <td style="color: #374151; font-style: italic;">"Let me show you how you'd solve X"</td>
+        </tr>
+        <tr>
+          <td style="color: #22c55e; font-weight: bold;">3</td>
+          <td style="color: #22c55e; font-weight: bold;">Customer Story</td>
+          <td style="color: #374151; font-style: italic;">"Let me show you how [customer] solved Y"</td>
+        </tr>
+        <tr style="background: #ecfdf5;">
+          <td style="color: #22c55e; font-weight: bold;">4</td>
+          <td style="color: #22c55e; font-weight: bold;">Co-Created Discovery</td>
+          <td style="color: #374151; font-style: italic;">"Let's explore your problem together"</td>
+        </tr>
+      </table>
+      
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151;"><strong>Target:</strong> Most demos should be Level 3-4. Level 1 should be rare.</p>
+      
+      <a href="https://futureofpmm.com/curriculum/unit-07" style="display: inline-block; background: #c84b31; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">Start Unit 7 →</a>
+    </div>
+    
+    <!-- SURVEY RESULTS -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">📊 Survey Results</div>
+      <h2 style="margin: 0 0 15px; font-size: 22px; color: #1a1a2e;">Confidence Gains So Far</h2>
+      
+      <table width="100%" cellpadding="8" cellspacing="5" style="margin: 15px 0;">
+        <tr>
+          <td style="background: #fff; border: 1px solid #e5e2dd; border-radius: 8px; text-align: center; padding: 15px;">
+            <div style="font-size: 28px; font-weight: bold; color: #22c55e;">+28%</div>
+            <div style="font-size: 11px; color: #6b7280;">Understanding AI's impact</div>
+          </td>
+          <td style="background: #fff; border: 1px solid #e5e2dd; border-radius: 8px; text-align: center; padding: 15px;">
+            <div style="font-size: 28px; font-weight: bold; color: #22c55e;">+39%</div>
+            <div style="font-size: 11px; color: #6b7280;">Using AI tools daily</div>
+          </td>
+          <td style="background: #fff; border: 1px solid #e5e2dd; border-radius: 8px; text-align: center; padding: 15px;">
+            <div style="font-size: 28px; font-weight: bold; color: #22c55e;">+48%</div>
+            <div style="font-size: 11px; color: #6b7280;">Explaining agentic AI</div>
+          </td>
+        </tr>
+      </table>
+      
+      <div style="background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 8px; padding: 15px; margin: 15px 0;">
+        <span style="font-size: 20px;">🎯</span> <strong style="color: #1a1a2e;">What's Working</strong><br>
+        <span style="font-size: 13px; color: #374151;">Workshop exercises highest-rated. Frameworks being used in real work.</span>
+      </div>
+    </div>
+    
+    <!-- VENDOR STATUS -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">🤝 Vendor Update</div>
+      <h2 style="margin: 0 0 15px; font-size: 22px; color: #1a1a2e;">Demo Resources</h2>
+      
+      <table width="100%" cellpadding="10" cellspacing="0" style="margin: 15px 0; font-size: 14px;">
+        <tr>
+          <td style="border-bottom: 1px solid #e5e2dd;"><strong style="color: #1a1a2e;">Consensus</strong></td>
+          <td style="border-bottom: 1px solid #e5e2dd;"><span style="background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 4px; font-size: 12px;">✅ Active</span></td>
+          <td style="border-bottom: 1px solid #e5e2dd; color: #6b7280;">Now with CRM integration</td>
+        </tr>
+        <tr>
+          <td style="border-bottom: 1px solid #e5e2dd;"><strong style="color: #1a1a2e;">Demostack</strong></td>
+          <td style="border-bottom: 1px solid #e5e2dd;"><span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 4px; font-size: 12px;">🔄 Pilot</span></td>
+          <td style="border-bottom: 1px solid #e5e2dd; color: #6b7280;">15 PMMs testing</td>
+        </tr>
+        <tr>
+          <td><strong style="color: #1a1a2e;">Storylane</strong></td>
+          <td><span style="background: #e0e7ff; color: #4338ca; padding: 3px 8px; border-radius: 4px; font-size: 12px;">📋 Evaluating</span></td>
+          <td style="color: #6b7280;">Q3 decision</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- CHART OF THE WEEK -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">📈 Chart of the Week</div>
+      <h2 style="margin: 0 0 5px; font-size: 22px; color: #1a1a2e;">Where B2B Buyers Start Research</h2>
+      <h3 style="margin: 0 0 15px; font-size: 16px; color: #374151; font-weight: normal;">2026 vs Previous Years</h3>
+      
+      <div style="background: #1a1a2e; border-radius: 10px; padding: 20px; color: #fff;">
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+            <span>AI Search (ChatGPT, Claude, Perplexity)</span>
+            <span style="font-weight: bold; color: #c84b31;">42%</span>
+          </div>
+          <div style="background: #374151; border-radius: 4px; height: 8px;">
+            <div style="background: linear-gradient(90deg, #c84b31, #f59e0b); width: 42%; height: 100%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+            <span>Google Search</span>
+            <span style="font-weight: bold;">35%</span>
+          </div>
+          <div style="background: #374151; border-radius: 4px; height: 8px;">
+            <div style="background: #64748b; width: 35%; height: 100%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+            <span>Vendor Websites Direct</span>
+            <span style="font-weight: bold;">14%</span>
+          </div>
+          <div style="background: #374151; border-radius: 4px; height: 8px;">
+            <div style="background: #64748b; width: 14%; height: 100%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+            <span>Peer Recommendations</span>
+            <span style="font-weight: bold;">9%</span>
+          </div>
+          <div style="background: #374151; border-radius: 4px; height: 8px;">
+            <div style="background: #64748b; width: 9%; height: 100%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div style="margin-top: 15px; font-size: 11px; color: #94a3b8;">Source: Gartner Digital Buying Survey, Q2 2026</div>
+      </div>
+      
+      <p style="margin: 15px 0 0; font-size: 14px; color: #374151;"><strong>The takeaway:</strong> If AI agents can't find your product, you're invisible to 42% of buyers before they ever visit your website.</p>
+    </div>
+    
+    <!-- NEWS -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">📰 News Roundup</div>
+      <h2 style="margin: 0 0 15px; font-size: 22px; color: #1a1a2e;">This Week in AI + PMM</h2>
+      
+      <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f3f1ed;">
+        <h3 style="margin: 0 0 5px; font-size: 16px; color: #1a1a2e;">Jasper: Only 41% Can Measure AI ROI</h3>
+        <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.6;">Not because AI delivers less value—but because productivity gains alone aren't enough. Teams that adapted measurement see 2-3× returns.</p>
+      </div>
+      
+      <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f3f1ed;">
+        <h3 style="margin: 0 0 5px; font-size: 16px; color: #1a1a2e;">Gartner: 15% of Work Decisions by AI by 2028</h3>
+        <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.6;">Agentic AI moving from content generation to autonomous decision-making. Workflows that adapt in real-time are coming.</p>
+      </div>
+      
+      <div style="margin-bottom: 0;">
+        <h3 style="margin: 0 0 5px; font-size: 16px; color: #1a1a2e;">AI Agents Now Mediate B2B Purchasing</h3>
+        <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.6;">Comparing vendors, interpreting product data, filtering recommendations—before humans see them. Your positioning is for AI assistants now too.</p>
+      </div>
+    </div>
+    
+    <!-- FEATURED ARTICLE -->
+    <div style="padding: 30px; background: linear-gradient(135deg, #fdf6f3 0%, #fef3c7 100%); border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">⭐ Featured</div>
+      <h2 style="margin: 0 0 5px; font-size: 22px; color: #1a1a2e;">Top 10 AI Headlines Shaping PMM This Summer</h2>
+      <p style="margin: 0 0 15px; font-size: 15px; color: #374151; line-height: 1.7;">From agentic procurement to the content authenticity shift to new pricing models — the 10 developments actually mattering for product marketers right now.</p>
+      <a href="https://futureofpmm.com/top-10-ai-pmm-summer-2026.html" style="display: inline-block; background: #c84b31; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">Read the Full Article →</a>
+    </div>
+    
+    <!-- COMING UP -->
+    <div style="padding: 30px; border-bottom: 1px solid #e5e2dd;">
+      <div style="font-family: monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c84b31; margin-bottom: 10px;">🗓️ Coming Up</div>
+      <table width="100%" cellpadding="8" cellspacing="0" style="font-size: 14px;">
+        <tr>
+          <td style="color: #6b7280; width: 120px;">This Week</td>
+          <td style="color: #1a1a2e;"><strong>Unit 7 — The Demo Stack</strong></td>
+        </tr>
+        <tr>
+          <td style="color: #6b7280;">Next Week</td>
+          <td style="color: #1a1a2e;"><strong>Unit 8 — Pricing & Packaging</strong></td>
+        </tr>
+        <tr>
+          <td style="color: #6b7280;">Office Hours</td>
+          <td style="color: #1a1a2e;">Demo deep dive + Q&A</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- FOOTER -->
+    <div style="padding: 30px; background: #1a1a2e; color: #fff; text-align: center;">
+      <p style="margin: 0 0 15px; font-size: 14px; opacity: 0.8;">Produced by SAP PMMs for SAP PMMs</p>
+      <p style="margin: 0; font-size: 12px; opacity: 0.5;">
+        <a href="https://futureofpmm.com" style="color: #c84b31; text-decoration: none;">Website</a> · 
+        <a href="https://futureofpmm.com/curriculum" style="color: #c84b31; text-decoration: none;">Curriculum</a> · 
+        <a href="https://futureofpmm.com/curriculum/leaderboard" style="color: #c84b31; text-decoration: none;">Leaderboard</a>
+      </p>
+    </div>
+    
+  </div>
+</div>
