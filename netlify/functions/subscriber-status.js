@@ -109,8 +109,14 @@ exports.handler = async (event) => {
       assessMap[a.user_id].push(a);
     });
 
-    // Build subscriber status list
-    const subscribers = ALL_SUBSCRIBERS.map(email => {
+    // Build subscriber status list from ALL profiles in database
+    // Plus any in ALL_SUBSCRIBERS who haven't registered yet
+    const allEmails = new Set([
+      ...ALL_SUBSCRIBERS.map(e => e.toLowerCase()),
+      ...profiles.map(p => p.email.toLowerCase())
+    ]);
+
+    const subscribers = Array.from(allEmails).map(email => {
       const profile = profileMap[email.toLowerCase()];
       const isDanTeam = DAN_TEAM.has(email);
       const isSuperuser = SUPERUSERS.has(email);
