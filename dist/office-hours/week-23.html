@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Office Hours Week 23 | Future of PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f172a;
+            color: white;
+            line-height: 1.6;
+        }
+        .slide {
+            min-height: 100vh;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .slide-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .slide-title {
+            background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+        }
+        .slide-title h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .slide-title p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        h2 .emoji { font-size: 2rem; }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 2rem 0 1rem;
+        }
+        p { 
+            font-size: 1.25rem; 
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+        }
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            font-weight: 600;
+            color: #93c5fd;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        td { color: rgba(255,255,255,0.9); }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .stat-card .value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #3b82f6;
+            line-height: 1;
+        }
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.5rem;
+        }
+        .framework-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .framework-box h4 {
+            font-size: 1.3rem;
+            color: #93c5fd;
+            margin-bottom: 1rem;
+        }
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .level-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .level-card.target {
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid rgba(34, 197, 94, 0.5);
+        }
+        .level-num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #3b82f6;
+        }
+        .level-card.target .level-num { color: #22c55e; }
+        .level-name {
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        .level-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+        }
+        .vendor-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .vendor-status.active { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .vendor-status.pilot { background: rgba(234, 179, 8, 0.2); color: #fde047; }
+        .vendor-status.evaluating { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        .leaderboard {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .leaderboard-item:last-child { border-bottom: none; }
+        .leaderboard-rank {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+        }
+        .leaderboard-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .leaderboard-score {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #3b82f6;
+        }
+        .agenda {
+            list-style: none;
+        }
+        .agenda li {
+            font-size: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .agenda li:last-child { border-bottom: none; }
+        .agenda .emoji { font-size: 2rem; }
+        blockquote {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem 2rem;
+            font-size: 1.3rem;
+            font-style: italic;
+            margin: 2rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+        .cta {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .cta h3 {
+            color: white;
+            margin: 0 0 0.5rem;
+        }
+        .cta p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 0;
+        }
+        @media (max-width: 768px) {
+            .slide { padding: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .level-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide slide-title">
+        <div class="slide-inner">
+            <h1>Office Hours</h1>
+            <p>Week 23 — July 2026</p>
+            <p style="margin-top: 2rem; opacity: 0.6;">Unit 7 Unlock: The Demo Stack</p>
+        </div>
+    </div>
+    
+    <!-- Slide 2: Agenda -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2>Agenda</h2>
+            <ul class="agenda">
+                <li><span class="emoji">📊</span> Survey Results Update</li>
+                <li><span class="emoji">📚</span> Unit 7 Preview: The Demo Stack</li>
+                <li><span class="emoji">🤝</span> Vendor Status: Demo Resources</li>
+                <li><span class="emoji">🏆</span> Leaderboard Check-in</li>
+                <li><span class="emoji">💬</span> Q&A</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Slide 3: Survey Results -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2><span class="emoji">📊</span> Survey Results</h2>
+            
+            <h3>Confidence Gains (1-5 Scale)</h3>
+            <table>
+                <tr>
+                    <th>Skill Area</th>
+                    <th>Start</th>
+                    <th>Current</th>
+                    <th>Change</th>
+                </tr>
+                <tr>
+                    <td>Understanding AI's impact on PMM</td>
+                    <td>3.2</td>
+                    <td>4.1</td>
+                    <td style="color: #86efac; font-weight: 700;">+28%</td>
+                </tr>
+                <tr>
+                    <td>Using AI tools in daily work</td>
+                    <td>2.8</td>
+                    <td>3.9</td>
+                    <td style="color: #86efac; font-weight: 700;">+39%</td>
+                </tr>
+                <tr>
+                    <td>Explaining agentic AI to stakeholders</td>
+                    <td>2.5</td>
+                    <td>3.7</td>
+                    <td style="color: #86efac; font-weight: 700;">+48%</td>
+                </tr>
+            </table>
+            
+            <h3>Most Requested Topics</h3>
+            <p>1. Demo-specific AI applications ← <strong>Unit 7 delivers!</strong></p>
+            <p>2. Customer reference strategies</p>
+            <p>3. Pricing scenario workshops ← <strong>Coming in Unit 8</strong></p>
+        </div>
+    </div>
+    
+    <!-- Slide 4: Unit 7 Preview -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2><span class="emoji">📚</span> Unit 7: The Demo Stack</h2>
+            
+            <blockquote>
+                "It was the only presentation that felt like it was about us. Everyone else was showing their product. You showed our problem."
+                <br><span style="font-style: normal; font-size: 1rem; opacity: 0.7;">— CIO after we won a $12M deal</span>
+            </blockquote>
+            
+            <h3>Core Thesis</h3>
+            <p>The demo stack redefined: not product demonstration, but <strong>problem storytelling with product proof</strong>.</p>
+        </div>
+    </div>
+    
+    <!-- Slide 5: Demo Maturity Model -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2>The Demo Maturity Model</h2>
+            
+            <div class="level-grid">
+                <div class="level-card">
+                    <div class="level-num">1</div>
+                    <div class="level-name">Feature Tour</div>
+                    <div class="level-desc">"Let me show you what our product does"</div>
+                </div>
+                <div class="level-card">
+                    <div class="level-num">2</div>
+                    <div class="level-name">Use Case Demo</div>
+                    <div class="level-desc">"Let me show you how you'd solve X"</div>
+                </div>
+                <div class="level-card target">
+                    <div class="level-num">3</div>
+                    <div class="level-name">Customer Story</div>
+                    <div class="level-desc">"Let me show you how [customer] solved Y"</div>
+                </div>
+                <div class="level-card target">
+                    <div class="level-num">4</div>
+                    <div class="level-name">Co-Created Discovery</div>
+                    <div class="level-desc">"Let's explore your problem together"</div>
+                </div>
+            </div>
+            
+            <p style="text-align: center; font-size: 1.3rem;"><strong>Target:</strong> Most demos should be Level 3-4. Level 1 should be rare.</p>
+        </div>
+    </div>
+    
+    <!-- Slide 6: Demo Architecture -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2>The Demo Architecture</h2>
+            
+            <table>
+                <tr>
+                    <th>Phase</th>
+                    <th>Duration</th>
+                    <th>Goal</th>
+                </tr>
+                <tr>
+                    <td><strong>1. Opening</strong></td>
+                    <td>5-10 min</td>
+                    <td>Establish you understand their problem</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Problem Exploration</strong></td>
+                    <td>10-15 min</td>
+                    <td>Make the pain vivid before showing solution</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Vision</strong></td>
+                    <td>5-10 min</td>
+                    <td>Paint life after — outcomes, not features</td>
+                </tr>
+                <tr>
+                    <td><strong>4. Proof</strong></td>
+                    <td>15-20 min</td>
+                    <td>Product demo + customer reference</td>
+                </tr>
+                <tr>
+                    <td><strong>5. Bridge</strong></td>
+                    <td>5-10 min</td>
+                    <td>Connect to next steps</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Slide 7: Vendor Status -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2><span class="emoji">🤝</span> Vendor Status: Demo Resources</h2>
+            
+            <table>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Status</th>
+                    <th>What It Does</th>
+                    <th>Access</th>
+                </tr>
+                <tr>
+                    <td><strong>Consensus</strong></td>
+                    <td><span class="vendor-status active">✅ Active</span></td>
+                    <td>Interactive demos, CRM integration</td>
+                    <td>demo.sap.com</td>
+                </tr>
+                <tr>
+                    <td><strong>Demostack</strong></td>
+                    <td><span class="vendor-status pilot">🔄 Pilot</span></td>
+                    <td>Clone environments for custom scenarios</td>
+                    <td>#pmm-tools</td>
+                </tr>
+                <tr>
+                    <td><strong>Storylane</strong></td>
+                    <td><span class="vendor-status evaluating">📋 Evaluating</span></td>
+                    <td>No-code demo builder</td>
+                    <td>Q3 decision</td>
+                </tr>
+            </table>
+            
+            <div class="framework-box">
+                <h4>🆕 What's New</h4>
+                <p><strong>Consensus Integration:</strong> Now connected to SAP CRM. Auto-personalizes demo based on account data. Usage tracking in Salesforce.</p>
+                <p><strong>Demostack Pilot:</strong> 15 PMMs in pilot program. Feedback due July 31.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 8: Leaderboard -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2><span class="emoji">🏆</span> Leaderboard</h2>
+            
+            <h3>Top Performers (Units 1-6)</h3>
+            <div class="leaderboard">
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥇</span>
+                    <span class="leaderboard-name">[Team/Individual]</span>
+                    <span class="leaderboard-score">100%</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥈</span>
+                    <span class="leaderboard-name">[Team/Individual]</span>
+                    <span class="leaderboard-score">98%</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥉</span>
+                    <span class="leaderboard-name">[Team/Individual]</span>
+                    <span class="leaderboard-score">95%</span>
+                </div>
+            </div>
+            
+            <h3>Badges This Week</h3>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="value">🎯</div>
+                    <div class="label">Completionists</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">⚡</div>
+                    <div class="label">Speed Runners</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">💬</div>
+                    <div class="label">Contributors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">📊</div>
+                    <div class="label">Survey Complete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 9: Q&A -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2><span class="emoji">💬</span> Q&A</h2>
+            
+            <h3>Pre-Submitted Questions</h3>
+            <p style="color: rgba(255,255,255,0.5);">[Pull from Teams/Slack]</p>
+            
+            <h3>Live Questions</h3>
+            <p>Open floor</p>
+            
+            <div class="cta" style="margin-top: 3rem;">
+                <h3>🚀 Unit 7 is Live</h3>
+                <p>futureofpmm.com/curriculum/unit-07</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 10: Next Week -->
+    <div class="slide">
+        <div class="slide-inner">
+            <h2>Next Week</h2>
+            
+            <table>
+                <tr>
+                    <td><strong>Unit 8 Preview</strong></td>
+                    <td>Pricing & Packaging in the Agent Era</td>
+                </tr>
+                <tr>
+                    <td><strong>Theme</strong></td>
+                    <td>How AI changes pricing models</td>
+                </tr>
+                <tr>
+                    <td><strong>Office Hours</strong></td>
+                    <td>Same time, same place</td>
+                </tr>
+            </table>
+            
+            <h3 style="margin-top: 3rem;">Resources</h3>
+            <p>📚 Curriculum: futureofpmm.com/curriculum</p>
+            <p>🏆 Leaderboard: futureofpmm.com/curriculum/leaderboard</p>
+            <p>🛠️ Demo Resources: #pmm-demo-resources</p>
+        </div>
+    </div>
+</body>
+</html>
