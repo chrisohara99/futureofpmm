@@ -9,6 +9,7 @@ const ACTIVE_UNITS = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'un
 const TEAM_EMAILS = [
   "a.naji@sap.com",
   "axel.schuller@sap.com",
+  "brenda.bown@sap.com",
   // "brian.raver@sap.com",  // Removed - new interim leader
   "cathy.citarelli@sap.com",
   "corrie.birkeness@sap.com",
