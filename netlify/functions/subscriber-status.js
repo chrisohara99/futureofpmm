@@ -49,7 +49,7 @@ const SUPERUSERS = new Set([
   'christopher.ohara@sap.com', 'sean.thomson@sap.com', 'brian.raver@sap.com',
   'olivier.duvelleroy@sap.com', 'j.chen02@sap.com', 'kelly.amaroso@sap.com',
   'dahra.williams@sap.com', 'jasmine.churchill@sap.com', 'dante.ricci@sap.com',
-  'kasier.larsen@sap.com', 'markdonahue23@gmail.com'
+  'kasier.larsen@sap.com', 'markdonahue23@gmail.com', 'brenda.bown@sap.com'
 ]);
 
 exports.handler = async (event) => {
