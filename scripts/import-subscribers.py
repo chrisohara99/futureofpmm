@@ -20,7 +20,7 @@ from pathlib import Path
 # Configuration
 SUPABASE_URL = "https://yyqzkczutlidhgyiyawc.supabase.co"
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY")  # Need service role key
-RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "re_RieSzpSV_EVieiVyPjC1GN8A9rTxr7dPN")
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "re_LXmPEnqh_KxmZ4kFBV6muGRftEWRma5Ga")
 
 DRY_RUN = "--dry-run" in sys.argv
 

@@ -11,7 +11,7 @@ import hmac
 from urllib.parse import quote
 
 # Resend API key
-API_KEY = "re_LvV69RZD_2WcRC3Dw67bb1bD1DMPiXjrU"
+API_KEY = "re_LXmPEnqh_KxmZ4kFBV6muGRftEWRma5Ga"
 
 # Unsubscribe config (must match netlify function)
 UNSUBSCRIBE_SECRET = "pmm-unsub-2026"

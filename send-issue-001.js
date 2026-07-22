@@ -1,6 +1,6 @@
 const https = require('https');
 
-const RESEND_API_KEY = 're_RE7HFCMz_JvBxdtA732inrjX1jaRTageG';
+const RESEND_API_KEY = 're_LXmPEnqh_KxmZ4kFBV6muGRftEWRma5Ga';
 const FROM_EMAIL = 'The Future of PMM <chris@chrisohara.com>';
 const SUBJECT = 'The Future of PMM — Issue #1';
 

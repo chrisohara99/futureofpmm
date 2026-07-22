@@ -5,11 +5,11 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 // CONFIG: Only count these units (update weekly as new units release)
 const ACTIVE_UNITS = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'unit-06', 'unit-07', 'unit-08'];  // All 8 units active
 
-// Dan's team - 37 members (excluding Dan, Chris, and Kaiser - interim leader)
+// Brian R's team - 36 members (excluding Chris, Dan, Kaiser, and Brian R - interim leader)
 const TEAM_EMAILS = [
   "a.naji@sap.com",
   "axel.schuller@sap.com",
-  "brian.raver@sap.com",
+  // "brian.raver@sap.com",  // Removed - new interim leader
   "cathy.citarelli@sap.com",
   "corrie.birkeness@sap.com",
   "daniel.dukes@sap.com",
