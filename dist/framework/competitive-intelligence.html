@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Intelligence | PMM Framework</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #dbeafe;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --green: #10b981;
+            --yellow: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .back-link { display: flex; align-items: center; gap: 0.5rem; color: var(--text-light); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .back-link:hover { color: var(--primary); }
+        .logo { font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .hero { background: linear-gradient(135deg, var(--primary), #3b82f6); color: white; padding: 4rem 2rem; }
+        .hero-inner { max-width: 1200px; margin: 0 auto; }
+        .phase-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 700px; }
+        .hero-meta { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; opacity: 0.9; }
+        .main { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+        .content-grid { display: grid; grid-template-columns: 1fr 320px; gap: 3rem; }
+        @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
+        .asset-section { margin-bottom: 2rem; }
+        .asset-section h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .asset-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; transition: all 0.2s; }
+        .asset-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .asset-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .asset-card p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem; }
+        .asset-card .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: white; padding: 0.6rem 1.25rem; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: background 0.2s; }
+        .asset-card .btn:hover { background: #1e3a8a; }
+        .asset-card .btn.secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+        .asset-card .btn.secondary:hover { background: var(--primary-light); border-color: var(--primary); }
+        .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .progress-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; position: sticky; top: 100px; }
+        .progress-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+        .progress-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .progress-item:last-child { border-bottom: none; }
+        .progress-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+        .progress-icon.complete { background: var(--green); color: white; }
+        .progress-icon.pending { background: var(--border); color: var(--text-light); }
+        .progress-text { flex: 1; }
+        .progress-text span { font-size: 0.85rem; font-weight: 500; }
+        .progress-text small { display: block; font-size: 0.75rem; color: var(--text-light); }
+        .articles-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .article-link { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; background: white; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text); transition: all 0.2s; }
+        .article-link:hover { border-color: var(--primary); background: var(--primary-light); }
+        .article-link .icon { font-size: 1.25rem; flex-shrink: 0; }
+        .article-link h4 { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
+        .article-link small { font-size: 0.75rem; color: var(--text-light); }
+        .leave-behind { background: linear-gradient(135deg, #fef3c7, #fde68a); border: none; }
+        .leave-behind h3 { color: #92400e; }
+        .leave-behind p { color: #a16207; }
+        .leave-behind .btn { background: #f59e0b; }
+        .leave-behind .btn:hover { background: #d97706; }
+        .footer { text-align: center; padding: 3rem 2rem; color: var(--text-light); font-size: 0.85rem; border-top: 1px solid var(--border); }
+        .footer a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/framework/" class="back-link">← Back to Framework</a>
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="phase-badge">Discover Phase</span>
+            <h1>🔍 Competitive Intelligence</h1>
+            <p>Master the art of competitive analysis, battlecards, and win/loss insights to outmaneuver the competition. Build systematic processes that keep your team one step ahead.</p>
+            <div class="hero-meta">
+                <div class="meta-item">📚 Unit 3</div>
+                <div class="meta-item">⏱️ ~50 min</div>
+                <div class="meta-item">✅ Quiz included</div>
+                <div class="meta-item">🔬 Hands-on Lab</div>
+            </div>
+        </div>
+    </section>
+
+    <main class="main">
+        <div class="content-grid">
+            <div class="content-main">
+                <section class="asset-section">
+                    <h2>🎯 Mini Assessment</h2>
+                    <div class="asset-card">
+                        <h3>Competitive Intelligence Self-Assessment</h3>
+                        <p>Evaluate your CI capabilities across competitive monitoring, battlecard creation, win/loss analysis, and market positioning. Identify gaps and opportunities for improvement.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/assessments/competitive-intelligence.html" class="btn">Start Assessment</a>
+                            <a href="#" class="btn secondary">View My Results</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="asset-section">
+                    <h2>📚 Training Module</h2>
+                    <div class="asset-card">
+                        <h3>Competitive Intelligence Mastery</h3>
+                        <p>Learn to build a competitive intelligence engine: from setting up monitoring systems and creating effective battlecards, to conducting win/loss analysis and arming sales teams.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/unit-03/" class="btn">Start Training</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="asset-section">
+                    <h2>✅ Knowledge Check</h2>
+                    <div class="asset-card">
+                        <h3>Unit 3 Quiz</h3>
+                        <p>Test your competitive intelligence knowledge. Covers competitive frameworks, battlecard best practices, and strategic analysis techniques. Score 80% or higher to pass.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/unit-03/quiz.html" class="btn">Take Quiz</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="asset-section">
+                    <h2>🔬 Hands-on Lab</h2>
+                    <div class="asset-card">
+                        <h3>Build a Competitive Battlecard</h3>
+                        <p>Create a sales-ready battlecard for a key competitor. Use our AI-assisted template to structure competitive positioning, objection handling, and trap-setting questions.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/labs/battlecard-builder.html" class="btn">Start Lab</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="asset-section">
+                    <h2>📄 Leave Behind</h2>
+                    <div class="asset-card leave-behind">
+                        <h3>Competitive Intelligence Toolkit</h3>
+                        <p>Battlecard templates, competitor tracking spreadsheet, win/loss interview guide, and competitive positioning framework. Everything you need for day-to-day CI work.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/toolkits/competitive-intelligence-toolkit.pdf" class="btn">Download Toolkit (.pdf)</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="asset-section">
+                    <h2>📰 Related Reading</h2>
+                    <div class="articles-list">
+                        <a href="https://thefullstack.chrisohara.com/articles/chatgpt-vs-claude-battlecard.html" class="article-link" target="_blank">
+                            <span class="icon">📰</span>
+                            <div>
+                                <h4>ChatGPT vs Claude: Building a Competitive Battlecard</h4>
+                                <small>The Full Stack · February 2026</small>
+                            </div>
+                        </a>
+                        <a href="https://thefullstack.chrisohara.com/articles/bcg-agentic-headwinds.html" class="article-link" target="_blank">
+                            <span class="icon">📰</span>
+                            <div>
+                                <h4>Six Headwinds, One Architecture: SAP's Positioning for the Agentic Era</h4>
+                                <small>The Full Stack · April 2026</small>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+            <aside>
+                <div class="progress-card">
+                    <h3>Your Progress</h3>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">1</div>
+                        <div class="progress-text"><span>Assessment</span><small>Not started</small></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">2</div>
+                        <div class="progress-text"><span>Training</span><small>Not started</small></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">3</div>
+                        <div class="progress-text"><span>Quiz</span><small>80% to pass</small></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">4</div>
+                        <div class="progress-text"><span>Lab</span><small>Optional</small></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p><a href="/framework/">← Back to PMM Framework</a> · Part of the <a href="/">Future of Product Marketing Academy</a></p>
+    </footer>
+</body>
+</html>

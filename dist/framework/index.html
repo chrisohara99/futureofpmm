@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMM Framework | Future of Product Marketing Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --discover: #1e40af;
+            --discover-light: #dbeafe;
+            --strategize: #0369a1;
+            --strategize-light: #e0f2fe;
+            --define: #0891b2;
+            --define-light: #cffafe;
+            --getset: #0d9488;
+            --getset-light: #ccfbf1;
+            --grow: #be185d;
+            --grow-light: #fce7f3;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--discover);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--discover), var(--grow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Framework Grid */
+        .framework-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: 120px repeat(5, 1fr);
+            gap: 2px;
+            background: var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            min-width: 1000px;
+        }
+
+        /* Phase Headers */
+        .phase-header {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: white;
+            position: relative;
+        }
+
+        .phase-header::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 10px solid transparent;
+            border-left-color: inherit;
+            z-index: 1;
+        }
+
+        .phase-header.discover { background: var(--discover); border-left-color: var(--discover); }
+        .phase-header.strategize { background: var(--strategize); border-left-color: var(--strategize); }
+        .phase-header.define { background: var(--define); border-left-color: var(--define); }
+        .phase-header.getset { background: var(--getset); border-left-color: var(--getset); }
+        .phase-header.grow { background: var(--grow); border-left-color: var(--grow); }
+        .phase-header.grow::after { display: none; }
+
+        .row-label {
+            background: #f1f5f9;
+            padding: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+        }
+
+        .corner {
+            background: #f1f5f9;
+            padding: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        /* Description Row */
+        .desc-cell {
+            background: white;
+            padding: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Activity Cells */
+        .activity-cell {
+            background: white;
+            padding: 0;
+            position: relative;
+            min-height: 70px;
+        }
+
+        .activity-box {
+            padding: 1rem;
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .activity-box:hover {
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .activity-box.discover:hover { border-color: var(--discover); background: var(--discover-light); }
+        .activity-box.strategize:hover { border-color: var(--strategize); background: var(--strategize-light); }
+        .activity-box.define:hover { border-color: var(--define); background: var(--define-light); }
+        .activity-box.getset:hover { border-color: var(--getset); background: var(--getset-light); }
+        .activity-box.grow:hover { border-color: var(--grow); background: var(--grow-light); }
+
+        .activity-box h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-box .unit-tag {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        .activity-box.has-content .unit-tag {
+            color: var(--discover);
+        }
+
+        .activity-box.coming-soon {
+            opacity: 0.5;
+        }
+
+        .activity-box.coming-soon h3 {
+            color: var(--text-light);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: var(--text);
+        }
+
+        .activity-box:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tooltip h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip p {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .tooltip .assets {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .tooltip .asset-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+
+        /* Empty cells */
+        .empty-cell {
+            background: white;
+        }
+
+        /* Opportunity highlight */
+        .opportunity-note {
+            background: var(--grow-light);
+            color: var(--grow);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-align: center;
+            grid-column: 6;
+        }
+
+        /* Legend */
+        .legend {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.active { background: var(--discover); }
+        .legend-dot.coming { background: #cbd5e1; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--discover);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.75rem; }
+            .framework-container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+            <nav class="nav-links">
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/framework/" style="color: var(--discover);">Framework</a>
+                <a href="/admin/">Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>PMM Roles & Functions</h1>
+        <p>An interactive map of the product marketing discipline. Click any function to access training, assessments, labs, and resources.</p>
+    </section>
+
+    <div class="framework-container">
+        <div class="framework-grid">
+            <!-- Header Row -->
+            <div class="corner">Phase</div>
+            <div class="phase-header discover">Discover</div>
+            <div class="phase-header strategize">Strategize</div>
+            <div class="phase-header define">Define</div>
+            <div class="phase-header getset">Get Set</div>
+            <div class="phase-header grow">Grow</div>
+
+            <!-- Description Row -->
+            <div class="row-label">Description</div>
+            <div class="desc-cell">Gather market info and insights. Turn assumptions into an educated hypothesis.</div>
+            <div class="desc-cell">Set the strategy.</div>
+            <div class="desc-cell">Identify persona's and take insights from the discovery stage to shape the customer journey and communications.</div>
+            <div class="desc-cell">Equip teams to run successful GTM programs.</div>
+            <div class="desc-cell">Post-launch process. Ensure the product continues to flourish and grow.</div>
+
+            <!-- Row 1 -->
+            <div class="row-label">Product Marketing's Role</div>
+            
+            <div class="activity-cell">
+                <a href="market-intelligence.html" class="activity-box discover has-content">
+                    <h3>Market Intelligence</h3>
+                    <span class="unit-tag">Unit 2</span>
+                    <div class="tooltip">
+                        <h4>📊 Market Intelligence</h4>
+                        <p>Learn to gather, analyze, and synthesize market data to inform product strategy and positioning decisions.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box strategize coming-soon">
+                    <h3>GTM Plan</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🚀 GTM Plan</h4>
+                        <p>Comprehensive go-to-market planning framework. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-cell">
+                <a href="messaging.html" class="activity-box define has-content">
+                    <h3>Messaging</h3>
+                    <span class="unit-tag">Unit 4</span>
+                    <div class="tooltip">
+                        <h4>💬 Messaging</h4>
+                        <p>Craft compelling product narratives that resonate with target audiences and differentiate from competitors.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <a href="sales-enablement.html" class="activity-box getset has-content">
+                    <h3>Sales Enablement</h3>
+                    <span class="unit-tag">Unit 6</span>
+                    <div class="tooltip">
+                        <h4>🎯 Sales Enablement</h4>
+                        <p>Equip sales teams with the tools, content, and knowledge to effectively communicate value and close deals.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box grow coming-soon">
+                    <h3>Customer Feedback</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>💡 Customer Feedback</h4>
+                        <p>Build systematic approaches to gathering and acting on customer insights. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row-label"></div>
+            
+            <div class="activity-cell">
+                <a href="competitive-intelligence.html" class="activity-box discover has-content">
+                    <h3>Competitive Intelligence</h3>
+                    <span class="unit-tag">Unit 3</span>
+                    <div class="tooltip">
+                        <h4>🔍 Competitive Intelligence</h4>
+                        <p>Master the art of competitive analysis, battlecards, and win/loss insights to outmaneuver the competition.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box strategize coming-soon">
+                    <h3>Market Requirements</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>📋 Market Requirements</h4>
+                        <p>Translate market needs into actionable product requirements. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-cell">
+                <a href="value-propositions.html" class="activity-box define has-content">
+                    <h3>Value Propositions</h3>
+                    <span class="unit-tag">Unit 4</span>
+                    <div class="tooltip">
+                        <h4>💎 Value Propositions</h4>
+                        <p>Develop clear, compelling value propositions that articulate the unique benefits your product delivers.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <a href="demand-generation.html" class="activity-box getset has-content">
+                    <h3>Demand Generation</h3>
+                    <span class="unit-tag">Unit 7</span>
+                    <div class="tooltip">
+                        <h4>📈 Demand Generation</h4>
+                        <p>Drive awareness and pipeline through integrated demand generation strategies and campaign execution.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box grow coming-soon">
+                    <h3>Influencer & Analyst Marketing</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🎤 Influencer & Analyst Marketing</h4>
+                        <p>Build relationships with industry analysts and influencers. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="row-label"></div>
+            
+            <div class="activity-cell">
+                <div class="activity-box discover coming-soon">
+                    <h3>Business Opportunity Definition</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🎯 Business Opportunity Definition</h4>
+                        <p>Identify and size market opportunities. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box strategize coming-soon">
+                    <h3>Segmentation & Sizing</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>📊 Segmentation & Sizing</h4>
+                        <p>Define target segments and size the addressable market. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-cell">
+                <a href="positioning.html" class="activity-box define has-content">
+                    <h3>Positioning</h3>
+                    <span class="unit-tag">Unit 4</span>
+                    <div class="tooltip">
+                        <h4>🎯 Positioning</h4>
+                        <p>Define how your product occupies a distinct place in the minds of your target customers relative to competitors.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="empty-cell"></div>
+            
+            <div class="activity-cell">
+                <div class="activity-box grow coming-soon">
+                    <h3>Adoption / Customer Marketing</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🚀 Adoption / Customer Marketing</h4>
+                        <p>Drive product adoption and customer expansion. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="row-label"></div>
+            
+            <div class="activity-cell">
+                <div class="activity-box discover coming-soon">
+                    <h3>Customer & Analyst Listening</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>👂 Customer & Analyst Listening</h4>
+                        <p>Systematic approaches to gathering customer and analyst insights. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box strategize coming-soon">
+                    <h3>Relative Targeting</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🎯 Relative Targeting</h4>
+                        <p>Prioritize target accounts and segments. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-cell">
+                <a href="content-strategy.html" class="activity-box define has-content">
+                    <h3>Content Strategy & Execution</h3>
+                    <span class="unit-tag">Unit 5</span>
+                    <div class="tooltip">
+                        <h4>📝 Content Strategy & Execution</h4>
+                        <p>Plan and execute content programs that educate, engage, and convert your target audience.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="empty-cell"></div>
+            <div class="empty-cell"></div>
+
+            <!-- Row 5 -->
+            <div class="row-label"></div>
+            <div class="empty-cell"></div>
+            
+            <div class="activity-cell">
+                <a href="pricing.html" class="activity-box strategize has-content">
+                    <h3>Commercialization</h3>
+                    <span class="unit-tag">Unit 8</span>
+                    <div class="tooltip">
+                        <h4>💰 Commercialization (Pricing & Packaging)</h4>
+                        <p>Master pricing strategies, packaging decisions, and commercial models that maximize value capture.</p>
+                        <div class="assets">
+                            <span class="asset-tag">🎯 Assessment</span>
+                            <span class="asset-tag">📚 Training</span>
+                            <span class="asset-tag">✅ Quiz</span>
+                            <span class="asset-tag">🔬 Lab</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="activity-cell">
+                <div class="activity-box define coming-soon">
+                    <h3>Buyer Persona & Journey Mapping</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🗺️ Buyer Persona & Journey Mapping</h4>
+                        <p>Create detailed buyer personas and map their purchase journey. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="empty-cell"></div>
+            <div class="empty-cell"></div>
+
+            <!-- Row 6 -->
+            <div class="row-label"></div>
+            <div class="empty-cell"></div>
+            <div class="empty-cell"></div>
+            
+            <div class="activity-cell">
+                <div class="activity-box define coming-soon">
+                    <h3>Launch Plan</h3>
+                    <span class="unit-tag">Coming Soon</span>
+                    <div class="tooltip">
+                        <h4>🚀 Launch Plan</h4>
+                        <p>Plan and execute successful product launches. Coming in a future unit.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="empty-cell"></div>
+            <div class="empty-cell"></div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot active"></div>
+            <span>Training Available — Click to explore</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot coming"></div>
+            <span>Coming Soon</span>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Part of the <a href="/">Future of Product Marketing Academy</a> · Built for SAP PMMs</p>
+    </footer>
+
+    <script>
+        // Add hover sound/haptic feedback if desired
+        document.querySelectorAll('.activity-box.has-content').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                box.style.transform = 'scale(1.02)';
+            });
+            box.addEventListener('mouseleave', () => {
+                box.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
