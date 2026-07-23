@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Intelligence Assessment | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #1e40af; --primary-light: #dbeafe; --text: #1e293b; --text-light: #64748b; --bg: #f8fafc; --border: #e2e8f0; --green: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 2rem; }
+        .header-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--text-light); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: var(--primary); }
+        .logo { font-weight: 700; color: var(--text); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .hero { background: linear-gradient(135deg, var(--primary), #3b82f6); color: white; padding: 3rem 2rem; text-align: center; }
+        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+        .intro-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .intro-card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+        .intro-card p { color: var(--text-light); font-size: 0.95rem; }
+        .intro-card ul { margin: 1rem 0 0 1.25rem; color: var(--text-light); font-size: 0.9rem; }
+        .intro-card li { margin-bottom: 0.25rem; }
+        .start-btn { display: block; width: 100%; background: var(--primary); color: white; padding: 1rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 1.5rem; }
+        .start-btn:hover { background: #1e3a8a; }
+        .question-view { display: none; }
+        .question-view.active { display: block; }
+        .progress-bar { background: var(--border); height: 6px; border-radius: 3px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s ease; }
+        .question-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); }
+        .question-num { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .option-num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .option.selected .option-num { background: var(--primary); color: white; }
+        .option-text { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .nav-btn { flex: 1; padding: 0.875rem; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .nav-btn.secondary { background: white; border: 1px solid var(--border); color: var(--text); }
+        .nav-btn.primary { background: var(--primary); border: none; color: white; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .results-view { display: none; }
+        .results-view.active { display: block; }
+        .score-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); text-align: center; margin-bottom: 2rem; }
+        .score-big { font-size: 4rem; font-weight: 700; color: var(--primary); }
+        .score-label { color: var(--text-light); margin-bottom: 1rem; }
+        .grade-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
+        .grade-badge.excellent { background: #dcfce7; color: #166534; }
+        .grade-badge.good { background: #dbeafe; color: #1e40af; }
+        .grade-badge.developing { background: #fef3c7; color: #92400e; }
+        .grade-badge.emerging { background: #fee2e2; color: #991b1b; }
+        .breakdown { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .breakdown h3 { font-size: 1rem; margin-bottom: 1rem; }
+        .breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item span:first-child { font-size: 0.9rem; color: var(--text-light); }
+        .breakdown-item span:last-child { font-weight: 600; }
+        .next-steps { background: linear-gradient(135deg, var(--primary-light), #e0f2fe); border-radius: 12px; padding: 1.5rem; }
+        .next-steps h3 { font-size: 1rem; margin-bottom: 0.75rem; color: var(--primary); }
+        .next-steps p { font-size: 0.9rem; color: var(--text); margin-bottom: 1rem; }
+        .next-steps .btn { display: inline-block; background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/framework/competitive-intelligence.html" class="back-link">← Back to Competitive Intelligence</a>
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+        </div>
+    </header>
+    <section class="hero">
+        <h1>🔍 Competitive Intelligence Assessment</h1>
+        <p>Evaluate your competitive intelligence capabilities across 10 key dimensions</p>
+    </section>
+    <main>
+        <div id="intro" class="intro-card">
+            <h2>About This Assessment</h2>
+            <p>This 10-question self-assessment evaluates your competitive intelligence program maturity. Select the level that best describes your current state.</p>
+            <ul>
+                <li><strong>Level 1:</strong> Ad-hoc / Reactive</li>
+                <li><strong>Level 2:</strong> Emerging / Inconsistent</li>
+                <li><strong>Level 3:</strong> Established / Systematic</li>
+                <li><strong>Level 4:</strong> Advanced / AI-Augmented</li>
+            </ul>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">⏱️ Takes about 5 minutes</p>
+            <button class="start-btn" onclick="startAssessment()">Start Assessment</button>
+        </div>
+        <div id="questions" class="question-view">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="question-card">
+                <div class="question-num" id="qNum"></div>
+                <div class="question-text" id="qText"></div>
+                <div class="options" id="options"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" onclick="prevQuestion()" id="prevBtn">← Back</button>
+                <button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn" disabled>Next →</button>
+            </div>
+        </div>
+        <div id="results" class="results-view">
+            <div class="score-card">
+                <div class="score-label">Your Competitive Intelligence Score</div>
+                <div class="score-big" id="scoreNum">0</div>
+                <div class="score-label">out of 40</div>
+                <div class="grade-badge" id="gradeBadge"></div>
+            </div>
+            <div class="breakdown"><h3>Breakdown by Dimension</h3><div id="breakdownList"></div></div>
+            <div class="next-steps">
+                <h3>📚 Recommended Next Step</h3>
+                <p id="recommendation"></p>
+                <a href="/curriculum/unit-03/" class="btn">Start Unit 3: Competitive Intelligence →</a>
+            </div>
+        </div>
+    </main>
+    <script>
+    const questions = [
+        { dimension: "Competitor Identification", question: "How systematically do you identify and prioritize competitors?",
+          options: ["React to competitors when sales mentions them", "Informal list of 3-5 known competitors", "Tiered competitor framework with primary, secondary, and emerging threats", "Dynamic competitor tracking with AI-monitored market entrants and adjacencies"] },
+        { dimension: "Signal Monitoring", question: "How do you monitor competitor activities and signals?",
+          options: ["Google alerts and occasional website checks", "Manual tracking of major announcements and releases", "Structured monitoring program across pricing, product, hiring, and messaging", "AI-powered signal detection across earnings, patents, job posts, social, and news"] },
+        { dimension: "Battlecard Creation", question: "How do you create and maintain competitive battlecards?",
+          options: ["No battlecards; sales handles objections ad-hoc", "Basic battlecards exist but rarely updated", "Structured battlecards with regular refresh cycles and sales input", "Dynamic battlecards with real-time updates, win/loss integration, and AI-suggested talking points"] },
+        { dimension: "Win/Loss Analysis", question: "How rigorously do you conduct win/loss analysis?",
+          options: ["Anecdotal feedback from sales; no formal process", "Occasional post-mortems on big deals", "Systematic win/loss interviews with documented insights and trend analysis", "Comprehensive program with third-party interviews, CRM integration, and predictive loss indicators"] },
+        { dimension: "Competitive Positioning", question: "How well-defined is your competitive positioning?",
+          options: ["React to competitor claims; no proactive positioning", "General differentiators identified but not consistently communicated", "Clear positioning framework with proof points per competitor", "Dynamic positioning that adapts based on deal context, segment, and competitive set"] },
+        { dimension: "Sales Enablement", question: "How effectively do you enable sales on competitive situations?",
+          options: ["Sales figures it out themselves", "Occasional competitive training sessions", "Regular enablement with battlecards, objection handling, and trap-setting questions", "Just-in-time competitive intelligence surfaced in CRM with deal-specific guidance"] },
+        { dimension: "Product Influence", question: "How does CI inform product strategy and roadmap?",
+          options: ["CI rarely shared with product team", "Occasional competitive features shared reactively", "Regular competitive input to product planning with gap analysis", "Systematic competitive intelligence integrated into product prioritization frameworks"] },
+        { dimension: "Pricing Intelligence", question: "How well do you understand and track competitor pricing?",
+          options: ["Limited visibility into competitor pricing", "Anecdotal pricing info from deals and public sources", "Structured pricing intelligence with regular market scans", "Real-time pricing monitoring with deal-level discount intelligence"] },
+        { dimension: "Analyst & Market Perception", question: "How do you track and influence competitive perception?",
+          options: ["Don't systematically track third-party perception", "Review analyst reports when published", "Proactive analyst engagement with competitive narrative", "Orchestrated perception management across analysts, reviews, and social proof"] },
+        { dimension: "CI Program Maturity", question: "How mature is your overall competitive intelligence program?",
+          options: ["No dedicated CI function; ad-hoc efforts", "Part-time CI responsibility; basic processes", "Dedicated CI role/team with established processes and tools", "CI center of excellence with advanced analytics, automation, and cross-functional integration"] }
+    ];
+    let currentQ = 0, answers = new Array(10).fill(0);
+    function startAssessment() { document.getElementById('intro').style.display = 'none'; document.getElementById('questions').classList.add('active'); renderQuestion(); }
+    function renderQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('qNum').textContent = `Question ${currentQ + 1} of 10 — ${q.dimension}`;
+        document.getElementById('qText').textContent = q.question;
+        document.getElementById('progress').style.width = `${(currentQ / 10) * 100}%`;
+        document.getElementById('options').innerHTML = q.options.map((opt, i) => `<div class="option ${answers[currentQ] === i + 1 ? 'selected' : ''}" onclick="selectOption(${i + 1})"><div class="option-num">${i + 1}</div><div class="option-text">${opt}</div></div>`).join('');
+        document.getElementById('prevBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').disabled = answers[currentQ] === 0;
+        document.getElementById('nextBtn').textContent = currentQ === 9 ? 'See Results →' : 'Next →';
+    }
+    function selectOption(num) { answers[currentQ] = num; renderQuestion(); }
+    function prevQuestion() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
+    function nextQuestion() { if (answers[currentQ] === 0) return; if (currentQ < 9) { currentQ++; renderQuestion(); } else { showResults(); } }
+    function showResults() {
+        document.getElementById('questions').classList.remove('active');
+        document.getElementById('results').classList.add('active');
+        const total = answers.reduce((a, b) => a + b, 0);
+        document.getElementById('scoreNum').textContent = total;
+        let grade, gradeClass, rec;
+        if (total >= 35) { grade = 'Advanced'; gradeClass = 'excellent'; rec = 'Your CI program is sophisticated. Focus on the BattleCoach lab to sharpen real-time competitive responses.'; }
+        else if (total >= 27) { grade = 'Established'; gradeClass = 'good'; rec = 'Solid foundation! Unit 3 will help you level up to AI-augmented CI practices.'; }
+        else if (total >= 18) { grade = 'Developing'; gradeClass = 'developing'; rec = 'Good progress. Complete Unit 3 to build more systematic CI approaches.'; }
+        else { grade = 'Emerging'; gradeClass = 'emerging'; rec = 'Start with Unit 3 fundamentals to transform your competitive intelligence practice.'; }
+        document.getElementById('gradeBadge').textContent = grade;
+        document.getElementById('gradeBadge').className = `grade-badge ${gradeClass}`;
+        document.getElementById('recommendation').textContent = rec;
+        document.getElementById('breakdownList').innerHTML = questions.map((q, i) => `<div class="breakdown-item"><span>${q.dimension}</span><span>${answers[i]} / 4</span></div>`).join('');
+    }
+    </script>
+</body>
+</html>

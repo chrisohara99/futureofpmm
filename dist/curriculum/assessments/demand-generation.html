@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demand Generation Assessment | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #059669; --primary-light: #d1fae5; --text: #1e293b; --text-light: #64748b; --bg: #f8fafc; --border: #e2e8f0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 2rem; }
+        .header-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--text-light); text-decoration: none; }
+        .logo { font-weight: 700; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--primary); }
+        .hero { background: linear-gradient(135deg, var(--primary), #10b981); color: white; padding: 3rem 2rem; text-align: center; }
+        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+        .intro-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .intro-card h2 { margin-bottom: 0.75rem; }
+        .intro-card p { color: var(--text-light); }
+        .intro-card ul { margin: 1rem 0 0 1.25rem; color: var(--text-light); font-size: 0.9rem; }
+        .start-btn { display: block; width: 100%; background: var(--primary); color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 1.5rem; }
+        .question-view { display: none; }
+        .question-view.active { display: block; }
+        .progress-bar { background: var(--border); height: 6px; border-radius: 3px; margin-bottom: 2rem; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
+        .question-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); }
+        .question-num { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; }
+        .option:hover, .option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .option-num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; }
+        .option.selected .option-num { background: var(--primary); color: white; }
+        .option-text { font-size: 0.9rem; line-height: 1.5; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .nav-btn { flex: 1; padding: 0.875rem; border-radius: 8px; font-weight: 500; cursor: pointer; }
+        .nav-btn.secondary { background: white; border: 1px solid var(--border); }
+        .nav-btn.primary { background: var(--primary); border: none; color: white; }
+        .nav-btn:disabled { opacity: 0.5; }
+        .results-view { display: none; }
+        .results-view.active { display: block; }
+        .score-card { background: white; border-radius: 12px; padding: 2rem; text-align: center; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .score-big { font-size: 4rem; font-weight: 700; color: var(--primary); }
+        .score-label { color: var(--text-light); margin-bottom: 1rem; }
+        .grade-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
+        .grade-badge.excellent { background: #dcfce7; color: #166534; }
+        .grade-badge.good { background: #dbeafe; color: #1e40af; }
+        .grade-badge.developing { background: #fef3c7; color: #92400e; }
+        .grade-badge.emerging { background: #fee2e2; color: #991b1b; }
+        .breakdown { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .breakdown h3 { margin-bottom: 1rem; }
+        .breakdown-item { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item span:first-child { color: var(--text-light); }
+        .breakdown-item span:last-child { font-weight: 600; }
+        .next-steps { background: linear-gradient(135deg, var(--primary-light), #a7f3d0); border-radius: 12px; padding: 1.5rem; }
+        .next-steps h3 { color: var(--primary); margin-bottom: 0.75rem; }
+        .next-steps p { font-size: 0.9rem; margin-bottom: 1rem; }
+        .next-steps .btn { display: inline-block; background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <header class="header"><div class="header-inner"><a href="/framework/" class="back-link">← Back</a><a href="/" class="logo">Future of <span>PMM</span></a></div></header>
+    <section class="hero"><h1>📈 Demand Generation Assessment</h1><p>Evaluate your demand gen capabilities</p></section>
+    <main>
+        <div id="intro" class="intro-card">
+            <h2>About This Assessment</h2>
+            <p>Evaluate campaign planning, execution, and optimization across 10 dimensions.</p>
+            <ul><li><strong>Level 1:</strong> Ad-hoc</li><li><strong>Level 2:</strong> Emerging</li><li><strong>Level 3:</strong> Established</li><li><strong>Level 4:</strong> Advanced</li></ul>
+            <button class="start-btn" onclick="startAssessment()">Start Assessment</button>
+        </div>
+        <div id="questions" class="question-view">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="question-card"><div class="question-num" id="qNum"></div><div class="question-text" id="qText"></div><div class="options" id="options"></div></div>
+            <div class="nav-buttons"><button class="nav-btn secondary" onclick="prevQuestion()" id="prevBtn">← Back</button><button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn" disabled>Next →</button></div>
+        </div>
+        <div id="results" class="results-view">
+            <div class="score-card"><div class="score-label">Your Demand Gen Score</div><div class="score-big" id="scoreNum">0</div><div class="score-label">out of 40</div><div class="grade-badge" id="gradeBadge"></div></div>
+            <div class="breakdown"><h3>Breakdown</h3><div id="breakdownList"></div></div>
+            <div class="next-steps"><h3>📚 Next Step</h3><p id="recommendation"></p><a href="/curriculum/unit-07/" class="btn">Start Unit 7: Demand Generation →</a></div>
+        </div>
+    </main>
+    <script>
+    const questions = [
+        { dimension: "Campaign Planning", question: "How do you plan demand gen campaigns?",
+          options: ["React to requests; no forward planning", "Quarterly campaign calendar", "Integrated campaign planning tied to pipeline goals", "AI-optimized planning with predictive pipeline modeling"] },
+        { dimension: "Audience Targeting", question: "How sophisticated is your audience targeting?",
+          options: ["Broad targeting; spray and pray", "Basic segmentation by industry or size", "Multi-dimensional targeting with intent signals", "AI-driven micro-targeting with propensity scoring"] },
+        { dimension: "Channel Mix", question: "How strategic is your channel selection?",
+          options: ["Focus on 1-2 familiar channels", "Use multiple channels without clear strategy", "Optimized channel mix based on audience and stage", "Dynamic channel allocation with real-time optimization"] },
+        { dimension: "Content Integration", question: "How well is content integrated into campaigns?",
+          options: ["Same content across all campaigns", "Some content variation by campaign", "Tailored content paths by segment and stage", "Personalized content journeys with dynamic assembly"] },
+        { dimension: "Lead Quality", question: "How do you ensure lead quality?",
+          options: ["Focus on volume; quality varies", "Basic qualification criteria", "Lead scoring with behavioral and fit signals", "Predictive lead quality with conversion probability"] },
+        { dimension: "Sales Alignment", question: "How aligned are marketing and sales on demand gen?",
+          options: ["Throw leads over the wall", "Periodic alignment on lead definitions", "Joint planning with SLAs and feedback loops", "Unified revenue team with shared metrics and processes"] },
+        { dimension: "Attribution", question: "How do you attribute pipeline to marketing efforts?",
+          options: ["Can't connect marketing to revenue", "First or last touch attribution", "Multi-touch attribution model", "AI-powered attribution with incrementality testing"] },
+        { dimension: "Optimization", question: "How do you optimize campaign performance?",
+          options: ["Set and forget", "Monthly performance reviews", "Continuous optimization with A/B testing", "Real-time AI optimization across creative, audience, and channel"] },
+        { dimension: "ABM Capability", question: "How mature is your account-based marketing?",
+          options: ["No ABM; same approach for all accounts", "Basic ABM for named accounts", "Tiered ABM with personalized plays by account segment", "Orchestrated ABM with AI-driven account insights and signals"] },
+        { dimension: "Technology Stack", question: "How well-integrated is your demand gen tech stack?",
+          options: ["Disconnected tools; manual processes", "Some integration but data silos remain", "Integrated stack with unified data and automation", "AI-native platform with predictive insights across the funnel"] }
+    ];
+    let currentQ = 0, answers = new Array(10).fill(0);
+    function startAssessment() { document.getElementById('intro').style.display = 'none'; document.getElementById('questions').classList.add('active'); renderQuestion(); }
+    function renderQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('qNum').textContent = `Question ${currentQ + 1} of 10 — ${q.dimension}`;
+        document.getElementById('qText').textContent = q.question;
+        document.getElementById('progress').style.width = `${(currentQ / 10) * 100}%`;
+        document.getElementById('options').innerHTML = q.options.map((opt, i) => `<div class="option ${answers[currentQ] === i + 1 ? 'selected' : ''}" onclick="selectOption(${i + 1})"><div class="option-num">${i + 1}</div><div class="option-text">${opt}</div></div>`).join('');
+        document.getElementById('prevBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').disabled = answers[currentQ] === 0;
+        document.getElementById('nextBtn').textContent = currentQ === 9 ? 'See Results →' : 'Next →';
+    }
+    function selectOption(num) { answers[currentQ] = num; renderQuestion(); }
+    function prevQuestion() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
+    function nextQuestion() { if (answers[currentQ] === 0) return; if (currentQ < 9) { currentQ++; renderQuestion(); } else { showResults(); } }
+    function showResults() {
+        document.getElementById('questions').classList.remove('active'); document.getElementById('results').classList.add('active');
+        const total = answers.reduce((a, b) => a + b, 0);
+        document.getElementById('scoreNum').textContent = total;
+        let grade, gradeClass, rec;
+        if (total >= 35) { grade = 'Advanced'; gradeClass = 'excellent'; rec = 'Strong demand gen capabilities. Use labs for advanced optimization.'; }
+        else if (total >= 27) { grade = 'Established'; gradeClass = 'good'; rec = 'Solid foundation! Unit 7 will help optimize your demand engine.'; }
+        else if (total >= 18) { grade = 'Developing'; gradeClass = 'developing'; rec = 'Good progress. Complete Unit 7 for systematic approaches.'; }
+        else { grade = 'Emerging'; gradeClass = 'emerging'; rec = 'Start with Unit 7 to build your demand gen foundation.'; }
+        document.getElementById('gradeBadge').textContent = grade; document.getElementById('gradeBadge').className = `grade-badge ${gradeClass}`;
+        document.getElementById('recommendation').textContent = rec;
+        document.getElementById('breakdownList').innerHTML = questions.map((q, i) => `<div class="breakdown-item"><span>${q.dimension}</span><span>${answers[i]} / 4</span></div>`).join('');
+    }
+    </script>
+</body>
+</html>
