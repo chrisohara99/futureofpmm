@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer & Analyst Marketing Assessment | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #be185d;
+            --primary-light: #fce7f3;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
+        .header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 2rem; }
+        .header-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--text-light); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: var(--primary); }
+        .logo { font-weight: 700; color: var(--text); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        
+        .hero { background: linear-gradient(135deg, var(--primary), #ec4899); color: white; padding: 3rem 2rem; text-align: center; }
+        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        
+        main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+        
+        .intro-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .intro-card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+        .intro-card p { color: var(--text-light); font-size: 0.95rem; }
+        .intro-card ul { margin: 1rem 0 0 1.25rem; color: var(--text-light); font-size: 0.9rem; }
+        .intro-card li { margin-bottom: 0.25rem; }
+        
+        .start-btn { display: block; width: 100%; background: var(--primary); color: white; padding: 1rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .start-btn:hover { background: #9d174d; }
+        
+        .question-view { display: none; }
+        .question-view.active { display: block; }
+        
+        .progress-bar { background: var(--border); height: 6px; border-radius: 3px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s ease; }
+        
+        .question-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); }
+        .question-num { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.5; }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .option-num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .option.selected .option-num { background: var(--primary); color: white; }
+        .option-text { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+        
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .nav-btn { flex: 1; padding: 0.875rem; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .nav-btn.secondary { background: white; border: 1px solid var(--border); color: var(--text); }
+        .nav-btn.secondary:hover { border-color: var(--primary); }
+        .nav-btn.primary { background: var(--primary); border: none; color: white; }
+        .nav-btn.primary:hover { background: #9d174d; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .results-view { display: none; }
+        .results-view.active { display: block; }
+        
+        .score-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); text-align: center; margin-bottom: 2rem; }
+        .score-big { font-size: 4rem; font-weight: 700; color: var(--primary); }
+        .score-label { color: var(--text-light); margin-bottom: 1rem; }
+        .grade-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
+        .grade-badge.excellent { background: #dcfce7; color: #166534; }
+        .grade-badge.good { background: #dbeafe; color: #1e40af; }
+        .grade-badge.developing { background: #fef3c7; color: #92400e; }
+        .grade-badge.emerging { background: #fee2e2; color: #991b1b; }
+        
+        .breakdown { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .breakdown h3 { font-size: 1rem; margin-bottom: 1rem; }
+        .breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item span:first-child { font-size: 0.9rem; color: var(--text-light); }
+        .breakdown-item span:last-child { font-weight: 600; }
+        
+        .next-steps { background: linear-gradient(135deg, var(--primary-light), #fbcfe8); border-radius: 12px; padding: 1.5rem; }
+        .next-steps h3 { font-size: 1rem; margin-bottom: 0.75rem; color: var(--primary); }
+        .next-steps p { font-size: 0.9rem; color: var(--text); margin-bottom: 1rem; }
+        .next-steps .btn { display: inline-block; background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.9rem; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .next-steps .btn:hover { background: #9d174d; }
+        .next-steps .btn.secondary { background: white; color: var(--primary); border: 1px solid var(--primary); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/framework/" class="back-link">← Back to Framework</a>
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>🎤 Influencer & Analyst Marketing Assessment</h1>
+        <p>Evaluate your analyst relations and influencer marketing capabilities</p>
+    </section>
+    
+    <main>
+        <div id="intro" class="intro-card">
+            <h2>About This Assessment</h2>
+            <p>This 10-question assessment evaluates your capabilities in analyst relations, influencer engagement, and third-party credibility building. Select the level that best describes your current state.</p>
+            <ul>
+                <li><strong>Level 1:</strong> Ad-hoc / Reactive</li>
+                <li><strong>Level 2:</strong> Emerging / Inconsistent</li>
+                <li><strong>Level 3:</strong> Established / Systematic</li>
+                <li><strong>Level 4:</strong> Advanced / Strategic</li>
+            </ul>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">⏱️ Takes about 5 minutes to complete</p>
+            <button class="start-btn" onclick="startAssessment()" style="margin-top: 1.5rem;">Start Assessment</button>
+        </div>
+        
+        <div id="questions" class="question-view">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="question-card">
+                <div class="question-num" id="qNum">Question 1 of 10</div>
+                <div class="question-text" id="qText"></div>
+                <div class="options" id="options"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" onclick="prevQuestion()" id="prevBtn">← Back</button>
+                <button class="nav-btn primary" onclick="nextQuestion()" id="nextBtn" disabled>Next →</button>
+            </div>
+        </div>
+        
+        <div id="results" class="results-view">
+            <div class="score-card">
+                <div class="score-label">Your Influencer & Analyst Score</div>
+                <div class="score-big" id="scoreNum">0</div>
+                <div class="score-label">out of 40</div>
+                <div class="grade-badge" id="gradeBadge">Emerging</div>
+            </div>
+            
+            <div class="breakdown">
+                <h3>Breakdown by Dimension</h3>
+                <div id="breakdownList"></div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>📚 Recommended Next Steps</h3>
+                <p id="recommendation">Based on your score, we recommend the Analyst Briefing Simulator lab to practice your AR skills.</p>
+                <a href="/curriculum/unit-04/" class="btn">Unit 4: Messaging & Positioning →</a>
+                <a href="/curriculum/labs/analyst-briefing.html" class="btn secondary">🔬 Analyst Briefing Lab →</a>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+    const questions = [
+        {
+            dimension: "Analyst Mapping",
+            question: "How well do you understand the analyst landscape covering your market?",
+            options: [
+                "Know a few analyst names; no systematic mapping of firms or individuals",
+                "Basic list of relevant analysts; limited understanding of their focus areas",
+                "Comprehensive analyst map with tier ranking, coverage areas, and relationship owners",
+                "Dynamic analyst database with influence scoring, content tracking, and sentiment analysis"
+            ]
+        },
+        {
+            dimension: "Briefing Preparation",
+            question: "How thoroughly do you prepare for analyst briefings?",
+            options: [
+                "Minimal prep; wing it based on general product knowledge",
+                "Basic slide deck; limited research on analyst's recent work",
+                "Structured prep process: analyst research, tailored narrative, anticipated questions",
+                "AI-assisted prep: analyst content analysis, competitive context, customized demo flow"
+            ]
+        },
+        {
+            dimension: "Inquiry Strategy",
+            question: "How strategically do you use analyst inquiry calls?",
+            options: [
+                "Rarely use inquiries; don't track available inquiry time",
+                "Occasional inquiries when urgent questions arise; no planning",
+                "Quarterly inquiry plan aligned with strategic questions; documented insights",
+                "Inquiry calendar mapped to product milestones; insights fed into planning systems"
+            ]
+        },
+        {
+            dimension: "Research Engagement",
+            question: "How do you engage with analyst research and evaluation processes?",
+            options: [
+                "Passively wait for RFIs; scramble to respond to Magic Quadrant requests",
+                "Track major report cycles; respond to requests with moderate effort",
+                "Proactive research engagement: influence criteria, provide comprehensive input, debrief results",
+                "Strategic partnership: co-develop research, early involvement in methodology, thought leadership contributions"
+            ]
+        },
+        {
+            dimension: "Influencer Identification",
+            question: "How do you identify and prioritize industry influencers beyond analysts?",
+            options: [
+                "No systematic influencer tracking; engage opportunistically",
+                "Informal list of known voices; occasional LinkedIn engagement",
+                "Tiered influencer map: practitioners, media, thought leaders with engagement strategy per tier",
+                "AI-monitored influencer landscape: emerging voices, topic authority, network mapping"
+            ]
+        },
+        {
+            dimension: "Relationship Building",
+            question: "How do you build ongoing relationships with analysts and influencers?",
+            options: [
+                "Transactional: only engage when we need something",
+                "Periodic outreach; relationships depend on individual PMM effort",
+                "Programmatic relationship nurturing: regular touchpoints, value-add sharing, customer connections",
+                "Strategic partnerships: advisory relationships, co-creation opportunities, mutual value exchange"
+            ]
+        },
+        {
+            dimension: "Content Amplification",
+            question: "How do you leverage third-party voices to amplify your message?",
+            options: [
+                "Rarely use third-party content; rely on owned channels",
+                "Occasionally share favorable analyst quotes; no systematic approach",
+                "Structured third-party content program: quote library, citation tracking, amplification playbook",
+                "Orchestrated influence campaigns: coordinated timing, multi-voice narratives, attribution tracking"
+            ]
+        },
+        {
+            dimension: "Customer Reference Integration",
+            question: "How do you connect analysts and influencers with customer proof points?",
+            options: [
+                "Struggle to provide customer references when requested",
+                "Ad-hoc customer connections; rely on same few references",
+                "Reference database mapped to use cases and analyst interests; proactive connection program",
+                "Strategic reference orchestration: analyst-customer communities, joint research, case study co-creation"
+            ]
+        },
+        {
+            dimension: "Competitive Positioning",
+            question: "How do you influence analyst perception of your competitive position?",
+            options: [
+                "Reactive: address competitive concerns only when raised",
+                "Defensive: counter competitor claims but don't shape the narrative",
+                "Proactive positioning: regular competitive briefings, differentiation messaging, proof point delivery",
+                "Market leadership: shape evaluation criteria, define categories, establish thought leadership"
+            ]
+        },
+        {
+            dimension: "Impact Measurement",
+            question: "How do you measure the impact of analyst and influencer programs?",
+            options: [
+                "No measurement; hope it helps somehow",
+                "Track basic metrics: report mentions, quote usage",
+                "Comprehensive measurement: sentiment tracking, sales influence, pipeline attribution",
+                "Full ROI model: influence scoring, deal acceleration, brand impact quantification"
+            ]
+        }
+    ];
+    
+    let currentQ = 0;
+    let answers = new Array(10).fill(0);
+    
+    function startAssessment() {
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('questions').classList.add('active');
+        renderQuestion();
+    }
+    
+    function renderQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('qNum').textContent = `Question ${currentQ + 1} of 10 — ${q.dimension}`;
+        document.getElementById('qText').textContent = q.question;
+        document.getElementById('progress').style.width = `${(currentQ / 10) * 100}%`;
+        
+        const optionsHtml = q.options.map((opt, i) => `
+            <div class="option ${answers[currentQ] === i + 1 ? 'selected' : ''}" onclick="selectOption(${i + 1})">
+                <div class="option-num">${i + 1}</div>
+                <div class="option-text">${opt}</div>
+            </div>
+        `).join('');
+        document.getElementById('options').innerHTML = optionsHtml;
+        
+        document.getElementById('prevBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').disabled = answers[currentQ] === 0;
+        document.getElementById('nextBtn').textContent = currentQ === 9 ? 'See Results →' : 'Next →';
+    }
+    
+    function selectOption(num) {
+        answers[currentQ] = num;
+        renderQuestion();
+    }
+    
+    function prevQuestion() {
+        if (currentQ > 0) {
+            currentQ--;
+            renderQuestion();
+        }
+    }
+    
+    function nextQuestion() {
+        if (answers[currentQ] === 0) return;
+        if (currentQ < 9) {
+            currentQ++;
+            renderQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function showResults() {
+        document.getElementById('questions').classList.remove('active');
+        document.getElementById('results').classList.add('active');
+        
+        const total = answers.reduce((a, b) => a + b, 0);
+        document.getElementById('scoreNum').textContent = total;
+        
+        let grade, gradeClass, recommendation;
+        if (total >= 35) {
+            grade = 'Advanced'; gradeClass = 'excellent';
+            recommendation = 'Your analyst and influencer programs are sophisticated. Use the Analyst Briefing Simulator to sharpen advanced techniques and mentor others on your team.';
+        } else if (total >= 27) {
+            grade = 'Established'; gradeClass = 'good';
+            recommendation = 'Solid foundation! The Analyst Briefing Simulator will help you practice more strategic conversations. Unit 4 covers positioning frameworks that strengthen analyst narratives.';
+        } else if (total >= 18) {
+            grade = 'Developing'; gradeClass = 'developing';
+            recommendation = 'Good progress on building AR/IR capabilities. Start with Unit 4 to strengthen your positioning, then practice with the Analyst Briefing Simulator.';
+        } else {
+            grade = 'Emerging'; gradeClass = 'emerging';
+            recommendation = 'Begin with Unit 4 to build foundational positioning and messaging skills, then use the Analyst Briefing Simulator to practice applying them.';
+        }
+        
+        document.getElementById('gradeBadge').textContent = grade;
+        document.getElementById('gradeBadge').className = `grade-badge ${gradeClass}`;
+        document.getElementById('recommendation').textContent = recommendation;
+        
+        const breakdownHtml = questions.map((q, i) => `
+            <div class="breakdown-item">
+                <span>${q.dimension}</span>
+                <span>${answers[i]} / 4</span>
+            </div>
+        `).join('');
+        document.getElementById('breakdownList').innerHTML = breakdownHtml;
+    }
+    </script>
+</body>
+</html>
