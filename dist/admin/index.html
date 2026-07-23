@@ -412,8 +412,8 @@
                 let count = 0;
                 switch(filter) {
                     case 'all': count = allSubscribers.length; break;
-                    case 'active': count = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3).length; break;
-                    case 'notstarted': count = allSubscribers.filter(s => !s.unit1 && !s.unit2 && !s.unit3).length; break;
+                    case 'active': count = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3 || s.unit4 || s.unit5 || s.unit6 || s.unit7 || s.unit8).length; break;
+                    case 'notstarted': count = allSubscribers.filter(s => !s.unit1 && !s.unit2 && !s.unit3 && !s.unit4 && !s.unit5 && !s.unit6 && !s.unit7 && !s.unit8).length; break;
                     case 'danteam': count = allSubscribers.filter(s => s.danTeam).length; break;
                     case 'superuser': count = allSubscribers.filter(s => s.superuser).length; break;
                 }
@@ -439,20 +439,25 @@
         let filtered = allSubscribers;
         
         switch(filter) {
-            case 'active': filtered = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3); break;
-            case 'notstarted': filtered = allSubscribers.filter(s => !s.unit1 && !s.unit2 && !s.unit3); break;
+            case 'active': filtered = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3 || s.unit4 || s.unit5 || s.unit6 || s.unit7 || s.unit8); break;
+            case 'notstarted': filtered = allSubscribers.filter(s => !s.unit1 && !s.unit2 && !s.unit3 && !s.unit4 && !s.unit5 && !s.unit6 && !s.unit7 && !s.unit8); break;
             case 'danteam': filtered = allSubscribers.filter(s => s.danTeam); break;
             case 'superuser': filtered = allSubscribers.filter(s => s.superuser); break;
         }
         
         // Stats bar
-        const activeCount = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3).length;
-        let html = `<div style="display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; font-size: 0.9rem;">
+        const activeCount = allSubscribers.filter(s => s.unit1 || s.unit2 || s.unit3 || s.unit4 || s.unit5 || s.unit6 || s.unit7 || s.unit8).length;
+        let html = `<div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; font-size: 0.85rem;">
             <div>👥 <strong>Total:</strong> ${allSubscribers.length}</div>
             <div>✅ <strong>Active:</strong> ${activeCount} (${Math.round(activeCount/allSubscribers.length*100)}%)</div>
-            <div>📊 <strong>U1:</strong> ${subscriberStats.unit1Passed || 0}</div>
-            <div>📊 <strong>U2:</strong> ${subscriberStats.unit2Passed || 0}</div>
-            <div>📊 <strong>U3:</strong> ${subscriberStats.unit3Passed || 0}</div>
+            <div>📊 U1: ${subscriberStats.unit1Passed || 0}</div>
+            <div>📊 U2: ${subscriberStats.unit2Passed || 0}</div>
+            <div>📊 U3: ${subscriberStats.unit3Passed || 0}</div>
+            <div>📊 U4: ${subscriberStats.unit4Passed || 0}</div>
+            <div>📊 U5: ${subscriberStats.unit5Passed || 0}</div>
+            <div>📊 U6: ${subscriberStats.unit6Passed || 0}</div>
+            <div>📊 U7: ${subscriberStats.unit7Passed || 0}</div>
+            <div>📊 U8: ${subscriberStats.unit8Passed || 0}</div>
         </div>
         <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;">Last updated: ${new Date().toLocaleString()}</p>`;
         
@@ -474,7 +479,7 @@
             if (s.superuser) teamBadges.push('<span class="badge yellow">🔑 Super</span>');
             
             // Count units passed
-            const unitsPassed = [s.unit1, s.unit2, s.unit3].filter(Boolean).length;
+            const unitsPassed = [s.unit1, s.unit2, s.unit3, s.unit4, s.unit5, s.unit6, s.unit7, s.unit8].filter(Boolean).length;
             const unitsDisplay = unitsPassed > 0 
                 ? `<span class="badge green">${unitsPassed}/8</span>` 
                 : '<span style="color:#cbd5e1;">0/8</span>';

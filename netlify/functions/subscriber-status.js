@@ -146,11 +146,19 @@ exports.handler = async (event) => {
       const unit1 = userQuizzes.some(r => r.chapter === 'unit-01' && r.percentage >= 80);
       const unit2 = userQuizzes.some(r => r.chapter === 'unit-02' && r.percentage >= 80);
       const unit3 = userQuizzes.some(r => r.chapter === 'unit-03' && r.percentage >= 80);
+      const unit4 = userQuizzes.some(r => r.chapter === 'unit-04' && r.percentage >= 80);
+      const unit5 = userQuizzes.some(r => r.chapter === 'unit-05' && r.percentage >= 80);
+      const unit6 = userQuizzes.some(r => r.chapter === 'unit-06' && r.percentage >= 80);
+      const unit7 = userQuizzes.some(r => r.chapter === 'unit-07' && r.percentage >= 80);
+      const unit8 = userQuizzes.some(r => r.chapter === 'unit-08' && r.percentage >= 80);
       const scorecard = userAssessments.some(a => a.assessment_type === '10x-scorecard');
       const cognitive = userAssessments.some(a => a.assessment_type === 'cognitive');
 
-      // Last activity = registration date (quiz/assessment tables don't have timestamps)
-      const lastActivity = profile.created_at;
+      // Last activity = most recent quiz or registration date
+      const quizDates = userQuizzes.map(q => new Date(q.completed_at)).filter(d => !isNaN(d));
+      const lastActivity = quizDates.length > 0 
+        ? new Date(Math.max(...quizDates)).toISOString()
+        : profile.created_at;
 
       return {
         email,
@@ -161,6 +169,11 @@ exports.handler = async (event) => {
         unit1,
         unit2,
         unit3,
+        unit4,
+        unit5,
+        unit6,
+        unit7,
+        unit8,
         scorecard,
         cognitive,
         lastActivity,
@@ -184,7 +197,11 @@ exports.handler = async (event) => {
       unit1Passed: subscribers.filter(s => s.unit1).length,
       unit2Passed: subscribers.filter(s => s.unit2).length,
       unit3Passed: subscribers.filter(s => s.unit3).length,
-      bothUnitsPassed: subscribers.filter(s => s.unit1 && s.unit2).length,
+      unit4Passed: subscribers.filter(s => s.unit4).length,
+      unit5Passed: subscribers.filter(s => s.unit5).length,
+      unit6Passed: subscribers.filter(s => s.unit6).length,
+      unit7Passed: subscribers.filter(s => s.unit7).length,
+      unit8Passed: subscribers.filter(s => s.unit8).length,
       scorecardDone: subscribers.filter(s => s.scorecard).length,
       cognitiveDone: subscribers.filter(s => s.cognitive).length,
       danTeamCount: subscribers.filter(s => s.danTeam).length,
