@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segmentation & Sizing Assessment | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0369a1;
+            --primary-light: #e0f2fe;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
+        .header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 2rem; }
+        .header-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--text-light); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: var(--primary); }
+        .logo { font-weight: 700; color: var(--text); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        
+        .hero { background: linear-gradient(135deg, var(--primary), #0ea5e9); color: white; padding: 3rem 2rem; text-align: center; }
+        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        
+        main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+        
+        .intro-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .intro-card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+        .intro-card p { color: var(--text-light); font-size: 0.95rem; }
+        .intro-card ul { margin: 1rem 0 0 1.25rem; color: var(--text-light); font-size: 0.9rem; }
+        .intro-card li { margin-bottom: 0.25rem; }
+        
+        .start-btn { display: block; width: 100%; background: var(--primary); color: white; padding: 1rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .start-btn:hover { background: #0284c7; }
+        
+        .question-view { display: none; }
+        .question-view.active { display: block; }
+        
+        .progress-bar { background: var(--border); height: 6px; border-radius: 3px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s ease; }
+        
+        .question-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); }
+        .question-num { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.5; }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .option-num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .option.selected .option-num { background: var(--primary); color: white; }
+        .option-text { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+        
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .nav-btn { flex: 1; padding: 0.875rem; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .nav-btn.secondary { background: white; border: 1px solid var(--border); color: var(--text); }
+        .nav-btn.secondary:hover { border-color: var(--primary); }
+        .nav-btn.primary { background: var(--primary); border: none; color: white; }
+        .nav-btn.primary:hover { background: #0284c7; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .results-view { display: none; }
+        .results-view.active { display: block; }
+        
+        .score-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); text-align: center; margin-bottom: 2rem; }
+        .score-big { font-size: 4rem; font-weight: 700; color: var(--primary); }
+        .score-label { color: var(--text-light); margin-bottom: 1rem; }
+        .grade-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
+        .grade-badge.excellent { background: #dcfce7; color: #166534; }
+        .grade-badge.good { background: #dbeafe; color: #1e40af; }
+        .grade-badge.developing { background: #fef3c7; color: #92400e; }
+        .grade-badge.emerging { background: #fee2e2; color: #991b1b; }
+        
+        .breakdown { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .breakdown h3 { font-size: 1rem; margin-bottom: 1rem; }
+        .breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item span:first-child { font-size: 0.9rem; color: var(--text-light); }
+        .breakdown-item span:last-child { font-weight: 600; }
+        
+        .next-steps { background: linear-gradient(135deg, var(--primary-light), #cffafe); border-radius: 12px; padding: 1.5rem; }
+        .next-steps h3 { font-size: 1rem; margin-bottom: 0.75rem; color: var(--primary); }
+        .next-steps p { font-size: 0.9rem; color: var(--text); margin-bottom: 1rem; }
+        .next-steps .btn { display: inline-block; background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .next-steps .btn:hover { background: #0284c7; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/framework/segmentation.html" class="back-link">← Back to Segmentation & Sizing</a>
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>📊 Segmentation & Sizing Assessment</h1>
+        <p>Evaluate your market and customer segmentation capabilities across 10 key dimensions</p>
+    </section>
+    
+    <main>
+        <!-- Intro -->
+        <div id="intro" class="intro-card">
+            <h2>About This Assessment</h2>
+            <p>This 10-question self-assessment evaluates your current segmentation and market sizing capabilities. For each question, select the level that best describes your current state.</p>
+            <ul>
+                <li><strong>Level 1:</strong> Ad-hoc — Informal, reactive approaches</li>
+                <li><strong>Level 2:</strong> Emerging — Some structure, inconsistent execution</li>
+                <li><strong>Level 3:</strong> Established — Systematic processes, documented practices</li>
+                <li><strong>Level 4:</strong> Advanced — AI-augmented, data-driven, integrated</li>
+            </ul>
+            <button class="start-btn" onclick="startAssessment()">Start Assessment →</button>
+        </div>
+        
+        <!-- Questions -->
+        <div id="questions" class="question-view">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-num" id="qNum">Question 1 of 10</div>
+                <div class="question-text" id="qText"></div>
+                <div class="options" id="options"></div>
+                <div class="nav-buttons">
+                    <button class="nav-btn secondary" id="prevBtn" onclick="prevQuestion()">← Back</button>
+                    <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div id="results" class="results-view">
+            <div class="score-card">
+                <div class="score-big"><span id="scoreNum">0</span><span style="font-size: 1.5rem; color: var(--text-light)">/40</span></div>
+                <div class="score-label">Total Score</div>
+                <div class="grade-badge" id="gradeBadge">Emerging</div>
+            </div>
+            
+            <div class="breakdown">
+                <h3>Score Breakdown</h3>
+                <div id="breakdownItems"></div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>Recommended Next Step</h3>
+                <p id="recommendation"></p>
+                <a href="/curriculum/unit-09/" class="btn">Start Training →</a>
+            </div>
+        </div>
+    </main>
+    
+<script>
+    const questions = [
+        {
+            dimension: "Market Segmentation",
+            question: "How sophisticated is your approach to segmenting the total market?",
+            options: [
+                "Basic firmographics only (industry, geography); no competitive mapping",
+                "Segments defined by size and industry but not mapped to competition or growth",
+                "Category-competition matrix in place; segments mapped by growth potential and competitive position",
+                "Dynamic segmentation with AI-monitored signals; real-time category and competitive intelligence"
+            ]
+        },
+        {
+            dimension: "TAM Analysis",
+            question: "How do you approach Total Addressable Market (TAM) sizing?",
+            options: [
+                "Rely on analyst reports; no internal TAM models",
+                "Top-down estimates only; use generic market numbers without validation",
+                "Both top-down and bottom-up TAM; documented assumptions; regular refresh cycles",
+                "AI-assisted TAM building with multiple data sources; scenario modeling; continuously validated"
+            ]
+        },
+        {
+            dimension: "SAM/SOM Definition",
+            question: "How clearly do you define your Serviceable and Obtainable markets?",
+            options: [
+                "No distinction between TAM and SAM; chase any deal that fits loosely",
+                "SAM defined on paper but not enforced in territory planning",
+                "Clear SAM criteria (geo, tech fit, segment); SOM targets drive resource allocation",
+                "SAM/SOM integrated with CRM scoring; AI-recommended account prioritization"
+            ]
+        },
+        {
+            dimension: "Buyer Tier Strategy",
+            question: "How differentiated is your approach across buyer tiers (SMB, Mid-Market, Enterprise)?",
+            options: [
+                "Same messaging and motion for all buyer sizes",
+                "Recognize tiers exist but inconsistent execution; sales adapts on the fly",
+                "Distinct value props, content, and sales motions per tier; documented playbooks",
+                "Tier-specific AI personalization; automated routing; tier-optimized pricing and packaging"
+            ]
+        },
+        {
+            dimension: "Buying Committee Mapping",
+            question: "How well do you understand and map buying committees in target accounts?",
+            options: [
+                "Single-thread deals; focus on one champion",
+                "Aware of multiple stakeholders but no systematic mapping",
+                "Documented buying committee personas; role-specific content and enablement",
+                "AI-assisted committee identification; automated multi-thread nurture; buyer power scoring"
+            ]
+        },
+        {
+            dimension: "Funnel Stage Segmentation",
+            question: "How well do you segment customers by buying journey stage?",
+            options: [
+                "No stage-based segmentation; same approach for all prospects",
+                "Stages defined in CRM but content not differentiated by stage",
+                "Stage-specific content strategy; nurture paths aligned to buyer needs at each stage",
+                "Intent signals drive real-time stage classification; AI-triggered content recommendations"
+            ]
+        },
+        {
+            dimension: "Competitive Positioning by Segment",
+            question: "How tailored is your competitive positioning to different segments?",
+            options: [
+                "One-size-fits-all competitive messaging",
+                "General battlecards exist but not segment-specific",
+                "Segment-specific competitive positioning; different win themes per segment",
+                "Dynamic competitive intelligence by segment; AI-generated situational battle guidance"
+            ]
+        },
+        {
+            dimension: "Segment Prioritization",
+            question: "How do you prioritize which segments to invest in?",
+            options: [
+                "Go after everything; no formal prioritization framework",
+                "Prioritization discussed annually but not enforced in planning",
+                "Scoring model for segment attractiveness; resource allocation tied to segment potential",
+                "Portfolio approach with continuous optimization; AI-recommended rebalancing based on market signals"
+            ]
+        },
+        {
+            dimension: "Data Sources & Integration",
+            question: "How robust are your data sources for segmentation decisions?",
+            options: [
+                "Limited to CRM data; manual updates; significant gaps",
+                "Some external data (LinkedIn, ZoomInfo) but not integrated with planning",
+                "Multiple data sources integrated; regular enrichment; segment dashboards",
+                "Unified data fabric across intent, firmographic, technographic, and behavioral signals"
+            ]
+        },
+        {
+            dimension: "AI & Automation",
+            question: "How much do you leverage AI in segmentation and sizing activities?",
+            options: [
+                "No AI usage; all manual analysis",
+                "Occasional ChatGPT prompts; not systematic or documented",
+                "Documented AI workflows for TAM, competitor analysis, and segment research",
+                "AI embedded in segmentation processes; predictive segment models; automated insight generation"
+            ]
+        }
+    ];
+    
+    let currentQ = 0;
+    let answers = new Array(10).fill(0);
+    
+    function startAssessment() {
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('questions').classList.add('active');
+        renderQuestion();
+    }
+    
+    function renderQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('qNum').textContent = `Question ${currentQ + 1} of 10 — ${q.dimension}`;
+        document.getElementById('qText').textContent = q.question;
+        document.getElementById('progress').style.width = `${(currentQ / 10) * 100}%`;
+        
+        const optionsHtml = q.options.map((opt, i) => `
+            <div class="option ${answers[currentQ] === i + 1 ? 'selected' : ''}" onclick="selectOption(${i + 1})">
+                <div class="option-num">${i + 1}</div>
+                <div class="option-text">${opt}</div>
+            </div>
+        `).join('');
+        document.getElementById('options').innerHTML = optionsHtml;
+        
+        document.getElementById('prevBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').disabled = answers[currentQ] === 0;
+        document.getElementById('nextBtn').textContent = currentQ === 9 ? 'See Results →' : 'Next →';
+    }
+    
+    function selectOption(num) {
+        answers[currentQ] = num;
+        renderQuestion();
+    }
+    
+    function prevQuestion() {
+        if (currentQ > 0) {
+            currentQ--;
+            renderQuestion();
+        }
+    }
+    
+    function nextQuestion() {
+        if (answers[currentQ] === 0) return;
+        if (currentQ < 9) {
+            currentQ++;
+            renderQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function showResults() {
+        document.getElementById('questions').classList.remove('active');
+        document.getElementById('results').classList.add('active');
+        
+        const total = answers.reduce((a, b) => a + b, 0);
+        document.getElementById('scoreNum').textContent = total;
+        
+        let grade, gradeClass, recommendation;
+        if (total >= 35) {
+            grade = 'Advanced'; gradeClass = 'excellent';
+            recommendation = 'Your segmentation capabilities are mature. Focus on the Segment Builder Lab to apply AI-assisted techniques and optimize your current approach.';
+        } else if (total >= 27) {
+            grade = 'Established'; gradeClass = 'good';
+            recommendation = 'Solid foundations in place. The training module will help you level up to AI-augmented sizing and more sophisticated buying committee mapping.';
+        } else if (total >= 18) {
+            grade = 'Developing'; gradeClass = 'developing';
+            recommendation = 'Good progress! Complete the training module to build systematic TAM analysis and segment-specific strategies.';
+        } else {
+            grade = 'Emerging'; gradeClass = 'emerging';
+            recommendation = 'Start with the fundamentals. The training module will introduce structured approaches to market and customer segmentation.';
+        }
+        
+        document.getElementById('gradeBadge').textContent = grade;
+        document.getElementById('gradeBadge').className = `grade-badge ${gradeClass}`;
+        document.getElementById('recommendation').textContent = recommendation;
+        
+        const breakdownHtml = questions.map((q, i) => `
+            <div class="breakdown-item">
+                <span>${q.dimension}</span>
+                <span>Level ${answers[i]}</span>
+            </div>
+        `).join('');
+        document.getElementById('breakdownItems').innerHTML = breakdownHtml;
+    }
+</script>
+</body>
+</html>

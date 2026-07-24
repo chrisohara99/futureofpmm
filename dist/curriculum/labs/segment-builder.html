@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment Builder Lab | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0369a1;
+            --primary-light: #e0f2fe;
+            --dark-slate: #44546A;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --green: #10b981;
+            --yellow: #f59e0b;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 80px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero { background: linear-gradient(135deg, var(--primary), #0ea5e9); color: white; padding: 2rem; text-align: center; }
+        .hero h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        
+        main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-grid { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; }
+        @media (max-width: 900px) { .lab-grid { grid-template-columns: 1fr; } }
+        
+        .input-panel { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); height: fit-content; position: sticky; top: 1rem; }
+        .input-panel h2 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group .hint { font-size: 0.8rem; color: var(--text-light); margin-top: 0.35rem; }
+        
+        .generate-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .generate-btn:hover { background: #0284c7; }
+        .generate-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .generate-btn .spinner { display: none; width: 18px; height: 18px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .generate-btn.loading .spinner { display: block; }
+        .generate-btn.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .output-panel { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        .output-header { background: var(--dark-slate); color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .output-header h2 { font-size: 1rem; }
+        .output-actions { display: flex; gap: 0.5rem; }
+        .output-actions button {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .output-actions button:hover { background: rgba(255,255,255,0.25); }
+        
+        .output-content { padding: 1.5rem; min-height: 500px; }
+        .output-placeholder { color: var(--text-light); text-align: center; padding: 4rem 2rem; }
+        .output-placeholder .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+        
+        /* Report Sections */
+        .report-section { margin-bottom: 2rem; }
+        .report-section h3 { font-size: 1.1rem; color: var(--dark-slate); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+        .report-section h4 { font-size: 0.95rem; color: var(--primary); margin: 1rem 0 0.5rem; }
+        .report-section p { font-size: 0.95rem; margin-bottom: 0.75rem; }
+        .report-section ul { margin: 0.5rem 0 1rem 1.25rem; font-size: 0.95rem; }
+        .report-section li { margin-bottom: 0.35rem; }
+        
+        .data-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        .data-table th, .data-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+        .data-table th { background: var(--bg); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-light); }
+        .data-table tr:hover { background: var(--primary-light); }
+        
+        .metric-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+        .metric-card { background: var(--bg); border-radius: 8px; padding: 1rem; text-align: center; }
+        .metric-card .value { font-size: 1.75rem; font-weight: 700; color: var(--primary); }
+        .metric-card .label { font-size: 0.8rem; color: var(--text-light); }
+        @media (max-width: 600px) { .metric-cards { grid-template-columns: 1fr; } }
+        
+        .segment-box { background: var(--bg); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); }
+        .segment-box.high { border-color: var(--green); }
+        .segment-box.medium { border-color: var(--yellow); }
+        .segment-box.low { border-color: #94a3b8; }
+        .segment-box h4 { margin: 0 0 0.5rem; font-size: 1rem; }
+        .segment-box p { margin: 0; font-size: 0.9rem; color: var(--text-light); }
+        
+        .footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem; }
+        .footer a { color: var(--primary); text-decoration: none; }
+        
+        .disclaimer { background: #fef3c7; border-radius: 8px; padding: 1rem; margin-top: 1.5rem; font-size: 0.85rem; color: #92400e; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/future-pmm-logo.png" alt="Future of PMM">
+        </a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/unit-09/">Unit 9</a>
+            <a href="/framework/segmentation.html">Framework</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>📊 Segment Builder Lab</h1>
+    <p>Enter your product details and let AI help you identify market segments, size your TAM, and map the competitive landscape.</p>
+</section>
+
+<main>
+    <div class="lab-grid">
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <h2>🎯 Product & Market Details</h2>
+            
+            <div class="form-group">
+                <label>Product/Solution Name</label>
+                <input type="text" id="productName" placeholder="e.g., SAP Datasphere">
+            </div>
+            
+            <div class="form-group">
+                <label>Product Description</label>
+                <textarea id="productDesc" placeholder="Describe what your product does and the core value proposition..."></textarea>
+                <div class="hint">2-3 sentences about the product's purpose and key capabilities</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Target Industry / Vertical</label>
+                <input type="text" id="industry" placeholder="e.g., Enterprise software, Financial services">
+            </div>
+            
+            <div class="form-group">
+                <label>Primary Geography</label>
+                <select id="geography">
+                    <option value="global">Global</option>
+                    <option value="north-america">North America</option>
+                    <option value="emea">EMEA</option>
+                    <option value="apac">APAC</option>
+                    <option value="latam">LATAM</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Known Competitors (comma-separated)</label>
+                <input type="text" id="competitors" placeholder="e.g., Snowflake, Databricks, Google BigQuery">
+                <div class="hint">List 2-5 main competitors you typically face</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Current Target Buyers</label>
+                <textarea id="buyers" placeholder="e.g., CDOs, VP Data Engineering, BI Directors at companies with $500M+ revenue"></textarea>
+                <div class="hint">Who do you sell to today? Include titles and company profiles.</div>
+            </div>
+            
+            <button class="generate-btn" id="generateBtn" onclick="generateReport()">
+                <span class="btn-text">Generate Segmentation Report</span>
+                <div class="spinner"></div>
+            </button>
+            
+            <div class="disclaimer">
+                <strong>⚠️ AI-Generated Content</strong><br>
+                This report uses AI to synthesize market insights. Always validate sizing estimates with primary research and analyst data.
+            </div>
+        </div>
+        
+        <!-- Output Panel -->
+        <div class="output-panel">
+            <div class="output-header">
+                <h2>📋 Segmentation Report</h2>
+                <div class="output-actions">
+                    <button onclick="copyReport()">📋 Copy</button>
+                    <button onclick="downloadReport()">⬇️ Download</button>
+                </div>
+            </div>
+            <div class="output-content" id="outputContent">
+                <div class="output-placeholder">
+                    <div class="icon">📊</div>
+                    <p>Enter your product details and click "Generate" to create a segmentation report.</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">The report will include market sizing, competitive landscape, buyer tiers, and segment recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <p><a href="/curriculum/labs/">← All Labs</a> · <a href="/curriculum/unit-09/">Unit 9: Segmentation & Sizing</a> · <a href="/framework/segmentation.html">Framework</a></p>
+</footer>
+
+<script>
+const OPENAI_ENDPOINT = '/.netlify/functions/openai-proxy';
+
+async function generateReport() {
+    const btn = document.getElementById('generateBtn');
+    const output = document.getElementById('outputContent');
+    
+    const productName = document.getElementById('productName').value.trim();
+    const productDesc = document.getElementById('productDesc').value.trim();
+    const industry = document.getElementById('industry').value.trim();
+    const geography = document.getElementById('geography').value;
+    const competitors = document.getElementById('competitors').value.trim();
+    const buyers = document.getElementById('buyers').value.trim();
+    
+    if (!productName || !productDesc) {
+        alert('Please enter at least a product name and description.');
+        return;
+    }
+    
+    btn.classList.add('loading');
+    btn.disabled = true;
+    output.innerHTML = '<div class="output-placeholder"><div class="spinner" style="display:block;margin:0 auto 1rem;width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--primary);"></div><p>Analyzing market and generating segmentation report...</p><p style="font-size:0.85rem;color:var(--text-light);margin-top:0.5rem;">This may take 30-60 seconds.</p></div>';
+    
+    const prompt = `You are a senior B2B market analyst. Generate a comprehensive market segmentation report for the following product:
+
+**Product:** ${productName}
+**Description:** ${productDesc}
+**Industry:** ${industry || 'Not specified'}
+**Primary Geography:** ${geography}
+**Known Competitors:** ${competitors || 'Not specified'}
+**Current Target Buyers:** ${buyers || 'Not specified'}
+
+Generate a structured report with these sections:
+
+## 1. Executive Summary
+Brief overview of the market opportunity and key findings.
+
+## 2. Market Sizing (TAM/SAM/SOM)
+Estimate the Total Addressable Market, Serviceable Addressable Market, and Serviceable Obtainable Market with methodology notes. Use realistic enterprise software market data. Show your assumptions.
+
+## 3. Competitive Landscape
+Map the competitive positioning. Include a brief competitive matrix showing 3-4 key competitors with their positioning (strengths/weaknesses vs. this product).
+
+## 4. Buyer Tier Analysis
+Break down the opportunity by SMB (<$50M), Mid-Market ($50M-$1B), and Enterprise (>$1B). Include:
+- Estimated market size per tier
+- Typical deal size per tier
+- Sales motion required
+
+## 5. Customer Segmentation
+Identify 3-4 distinct customer segments with:
+- Segment name and profile
+- Key buying triggers
+- Primary decision makers (buying committee)
+- Recommended messaging angle
+
+## 6. Priority Segments (Recommendation)
+Rank the segments by attractiveness (market size × fit × competition) and recommend where to focus.
+
+Use specific numbers where possible (even if estimates). Format the output with clear headers and bullet points.`;
+
+    try {
+        const response = await fetch(OPENAI_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'gpt-4o',
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 3000,
+                temperature: 0.7
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('API request failed');
+        }
+        
+        const data = await response.json();
+        const reportText = data.choices[0].message.content;
+        
+        // Convert markdown to HTML
+        output.innerHTML = formatReport(reportText, productName);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        output.innerHTML = `<div class="output-placeholder" style="color:#dc2626;"><div class="icon">⚠️</div><p>Error generating report. Please try again.</p><p style="font-size:0.85rem;">${error.message}</p></div>`;
+    } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+
+function formatReport(text, productName) {
+    // Simple markdown to HTML conversion
+    let html = text
+        .replace(/^## (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^### (.*$)/gm, '<h4>$1</h4>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^\- (.*$)/gm, '<li>$1</li>')
+        .replace(/^\* (.*$)/gm, '<li>$1</li>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/<\/li>\n<li>/g, '</li><li>');
+    
+    // Wrap lists
+    html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
+    
+    // Wrap in report section
+    html = `
+        <div class="report-section">
+            <h3>📊 Segmentation Report: ${productName}</h3>
+            <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem;">Generated ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+        </div>
+        <div class="report-section">
+            ${html}
+        </div>
+    `;
+    
+    return html;
+}
+
+function copyReport() {
+    const content = document.getElementById('outputContent').innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        alert('Report copied to clipboard!');
+    });
+}
+
+function downloadReport() {
+    const content = document.getElementById('outputContent').innerText;
+    const productName = document.getElementById('productName').value.trim() || 'Segmentation';
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${productName.replace(/\s+/g, '-')}-Segmentation-Report.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
