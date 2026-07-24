@@ -238,7 +238,7 @@
 </footer>
 
 <script>
-const OPENAI_ENDPOINT = '/.netlify/functions/openai-proxy';
+const OPENAI_ENDPOINT = '/.netlify/functions/lab-ai';
 
 async function generateReport() {
     const btn = document.getElementById('generateBtn');
@@ -259,63 +259,31 @@ async function generateReport() {
     btn.classList.add('loading');
     btn.disabled = true;
     output.innerHTML = '<div class="output-placeholder"><div class="spinner" style="display:block;margin:0 auto 1rem;width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--primary);"></div><p>Analyzing market and generating segmentation report...</p><p style="font-size:0.85rem;color:var(--text-light);margin-top:0.5rem;">This may take 30-60 seconds.</p></div>';
-    
-    const prompt = `You are a senior B2B market analyst. Generate a comprehensive market segmentation report for the following product:
-
-**Product:** ${productName}
-**Description:** ${productDesc}
-**Industry:** ${industry || 'Not specified'}
-**Primary Geography:** ${geography}
-**Known Competitors:** ${competitors || 'Not specified'}
-**Current Target Buyers:** ${buyers || 'Not specified'}
-
-Generate a structured report with these sections:
-
-## 1. Executive Summary
-Brief overview of the market opportunity and key findings.
-
-## 2. Market Sizing (TAM/SAM/SOM)
-Estimate the Total Addressable Market, Serviceable Addressable Market, and Serviceable Obtainable Market with methodology notes. Use realistic enterprise software market data. Show your assumptions.
-
-## 3. Competitive Landscape
-Map the competitive positioning. Include a brief competitive matrix showing 3-4 key competitors with their positioning (strengths/weaknesses vs. this product).
-
-## 4. Buyer Tier Analysis
-Break down the opportunity by SMB (<$50M), Mid-Market ($50M-$1B), and Enterprise (>$1B). Include:
-- Estimated market size per tier
-- Typical deal size per tier
-- Sales motion required
-
-## 5. Customer Segmentation
-Identify 3-4 distinct customer segments with:
-- Segment name and profile
-- Key buying triggers
-- Primary decision makers (buying committee)
-- Recommended messaging angle
-
-## 6. Priority Segments (Recommendation)
-Rank the segments by attractiveness (market size × fit × competition) and recommend where to focus.
-
-Use specific numbers where possible (even if estimates). Format the output with clear headers and bullet points.`;
 
     try {
         const response = await fetch(OPENAI_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-4o',
-                messages: [{ role: 'user', content: prompt }],
-                max_tokens: 3000,
-                temperature: 0.7
+                labType: 'segment-builder',
+                inputs: {
+                    productName,
+                    productDesc,
+                    industry,
+                    geography,
+                    competitors,
+                    buyers
+                }
             })
         });
         
         if (!response.ok) {
-            throw new Error('API request failed');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'API request failed');
         }
         
         const data = await response.json();
-        const reportText = data.choices[0].message.content;
+        const reportText = data.result;
         
         // Convert markdown to HTML
         output.innerHTML = formatReport(reportText, productName);

@@ -2212,6 +2212,45 @@ Highlight the highest priority risks that need active monitoring.
 ## Contingency Plans
 For top risks, provide specific backup plans.`;
 
+        case 'segment-builder':
+            return `You are a senior B2B market analyst. Generate a comprehensive market segmentation report for the following product:
+
+**Product:** ${inputs.productName || 'Not specified'}
+**Description:** ${inputs.productDesc || 'Not specified'}
+**Industry:** ${inputs.industry || 'Not specified'}
+**Primary Geography:** ${inputs.geography || 'Global'}
+**Known Competitors:** ${inputs.competitors || 'Not specified'}
+**Current Target Buyers:** ${inputs.buyers || 'Not specified'}
+
+Generate a structured report with these sections:
+
+## 1. Executive Summary
+Brief overview of the market opportunity and key findings.
+
+## 2. Market Sizing (TAM/SAM/SOM)
+Estimate the Total Addressable Market, Serviceable Addressable Market, and Serviceable Obtainable Market with methodology notes. Use realistic enterprise software market data. Show your assumptions.
+
+## 3. Competitive Landscape
+Map the competitive positioning. Include a brief competitive matrix showing 3-4 key competitors with their positioning (strengths/weaknesses vs. this product).
+
+## 4. Buyer Tier Analysis
+Break down the opportunity by SMB (<$50M), Mid-Market ($50M-$1B), and Enterprise (>$1B). Include:
+- Estimated market size per tier
+- Typical deal size per tier
+- Sales motion required
+
+## 5. Customer Segmentation
+Identify 3-4 distinct customer segments with:
+- Segment name and profile
+- Key buying triggers
+- Primary decision makers (buying committee)
+- Recommended messaging angle
+
+## 6. Priority Segments (Recommendation)
+Rank the segments by attractiveness (market size × fit × competition) and recommend where to focus.
+
+Use specific numbers where possible (even if estimates). Format the output with clear headers and bullet points.`;
+
         default:
             return inputs.prompt || 'Please provide analysis.';
     }
