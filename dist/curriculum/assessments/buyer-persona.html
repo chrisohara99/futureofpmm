@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Personas Assessment | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0891b2;
+            --primary-light: #cffafe;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
+        .header { background: white; border-bottom: 1px solid var(--border); padding: 1rem 2rem; }
+        .header-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--text-light); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: var(--primary); }
+        .logo { font-weight: 700; color: var(--text); text-decoration: none; }
+        .logo span { color: var(--primary); }
+        
+        .hero { background: linear-gradient(135deg, var(--primary), #06b6d4); color: white; padding: 3rem 2rem; text-align: center; }
+        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        
+        main { max-width: 700px; margin: 0 auto; padding: 2rem; }
+        
+        .intro-card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); }
+        .intro-card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+        .intro-card p { color: var(--text-light); font-size: 0.95rem; }
+        .intro-card ul { margin: 1rem 0 0 1.25rem; color: var(--text-light); font-size: 0.9rem; }
+        .intro-card li { margin-bottom: 0.25rem; }
+        
+        .start-btn { display: block; width: 100%; background: var(--primary); color: white; padding: 1rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .start-btn:hover { background: #0e7490; }
+        
+        .question-view { display: none; }
+        .question-view.active { display: block; }
+        
+        .progress-bar { background: var(--border); height: 6px; border-radius: 3px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s ease; }
+        
+        .question-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); }
+        .question-num { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .question-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.5; }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .option-num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .option.selected .option-num { background: var(--primary); color: white; }
+        .option-text { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+        
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .nav-btn { flex: 1; padding: 0.875rem; border-radius: 8px; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .nav-btn.secondary { background: white; border: 1px solid var(--border); color: var(--text); }
+        .nav-btn.secondary:hover { border-color: var(--primary); }
+        .nav-btn.primary { background: var(--primary); border: none; color: white; }
+        .nav-btn.primary:hover { background: #0e7490; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .results-view { display: none; }
+        .results-view.active { display: block; }
+        
+        .score-card { background: white; border-radius: 12px; padding: 2rem; border: 1px solid var(--border); text-align: center; margin-bottom: 2rem; }
+        .score-big { font-size: 4rem; font-weight: 700; color: var(--primary); }
+        .score-label { color: var(--text-light); margin-bottom: 1rem; }
+        .grade-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
+        .grade-badge.excellent { background: #dcfce7; color: #166534; }
+        .grade-badge.good { background: #dbeafe; color: #1e40af; }
+        .grade-badge.developing { background: #fef3c7; color: #92400e; }
+        .grade-badge.emerging { background: #fee2e2; color: #991b1b; }
+        
+        .breakdown { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .breakdown h3 { font-size: 1rem; margin-bottom: 1rem; }
+        .breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item span:first-child { font-size: 0.9rem; color: var(--text-light); }
+        .breakdown-item span:last-child { font-weight: 600; }
+        
+        .next-steps { background: linear-gradient(135deg, var(--primary-light), #a5f3fc); border-radius: 12px; padding: 1.5rem; }
+        .next-steps h3 { font-size: 1rem; margin-bottom: 0.75rem; color: var(--primary); }
+        .next-steps p { font-size: 0.9rem; color: var(--text); margin-bottom: 1rem; }
+        .next-steps .btn { display: inline-block; background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .next-steps .btn:hover { background: #0e7490; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/framework/buyer-persona.html" class="back-link">← Back to Buyer Personas</a>
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>🗺️ Buyer Personas Assessment</h1>
+        <p>Evaluate your buyer persona and journey mapping capabilities across 10 key dimensions</p>
+    </section>
+    
+    <main>
+        <!-- Intro -->
+        <div id="intro" class="intro-card">
+            <h2>About This Assessment</h2>
+            <p>This 10-question self-assessment evaluates your current buyer persona and journey mapping capabilities. For each question, select the level that best describes your current state.</p>
+            <ul>
+                <li><strong>Level 1:</strong> Ad-hoc — No formal personas; generic approaches</li>
+                <li><strong>Level 2:</strong> Emerging — Basic personas exist but inconsistent use</li>
+                <li><strong>Level 3:</strong> Established — Detailed personas; systematic journey mapping</li>
+                <li><strong>Level 4:</strong> Advanced — AI-augmented personas; dynamic journey orchestration</li>
+            </ul>
+            <button class="start-btn" onclick="startAssessment()">Start Assessment →</button>
+        </div>
+        
+        <!-- Questions -->
+        <div id="questions" class="question-view">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-num" id="qNum">Question 1 of 10</div>
+                <div class="question-text" id="qText"></div>
+                <div class="options" id="options"></div>
+                <div class="nav-buttons">
+                    <button class="nav-btn secondary" id="prevBtn" onclick="prevQuestion()">← Back</button>
+                    <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div id="results" class="results-view">
+            <div class="score-card">
+                <div class="score-big"><span id="scoreNum">0</span><span style="font-size: 1.5rem; color: var(--text-light)">/40</span></div>
+                <div class="score-label">Total Score</div>
+                <div class="grade-badge" id="gradeBadge">Emerging</div>
+            </div>
+            
+            <div class="breakdown">
+                <h3>Score Breakdown</h3>
+                <div id="breakdownItems"></div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>Recommended Next Step</h3>
+                <p id="recommendation"></p>
+                <a href="/curriculum/unit-10/" class="btn">Start Training →</a>
+            </div>
+        </div>
+    </main>
+    
+<script>
+    const questions = [
+        {
+            dimension: "Persona Documentation",
+            question: "How well documented are your buyer personas?",
+            options: [
+                "No formal personas; rely on tribal knowledge and assumptions",
+                "Basic persona profiles exist (title, responsibilities) but lack depth or regular use",
+                "Detailed persona documents with priorities, pain points, objections, and buying role for each key persona",
+                "Living persona library with real quotes, behavioral data, win/loss insights; continuously updated and validated"
+            ]
+        },
+        {
+            dimension: "C-Suite Coverage",
+            question: "How well do you understand the C-suite personas relevant to your products?",
+            options: [
+                "Focus on one or two personas; ignore others in the buying committee",
+                "Aware of multiple C-suite roles but messaging is generic across all",
+                "Distinct value props and content for each relevant C-suite persona (CFO, CIO, CDO, etc.)",
+                "Deep persona research per C-suite role; industry-specific variations; AI-generated persona insights"
+            ]
+        },
+        {
+            dimension: "Buying Committee Mapping",
+            question: "How systematically do you map buying committees in target accounts?",
+            options: [
+                "Single-thread deals; focus only on one champion",
+                "Aware of multiple stakeholders but no systematic approach to identify or engage them",
+                "Formal buying committee mapping; identify economic, technical, and user buyers per opportunity",
+                "AI-assisted stakeholder identification; automated relationship mapping; buyer power scoring in CRM"
+            ]
+        },
+        {
+            dimension: "Journey Stage Alignment",
+            question: "How well do you align content and engagement to buyer journey stages?",
+            options: [
+                "Same content and approach regardless of where the buyer is in their journey",
+                "Journey stages defined but content not differentiated; sales adapts on the fly",
+                "Stage-specific content mapped to buyer needs; nurture paths aligned to journey progression",
+                "Intent signals drive real-time stage identification; AI-triggered content recommendations per stage"
+            ]
+        },
+        {
+            dimension: "Persona-Content Mapping",
+            question: "How well does your content library map to specific personas?",
+            options: [
+                "Generic content; no persona tagging or targeting",
+                "Some content labeled by persona but not systematic; gaps in coverage",
+                "Content matrix mapping assets to personas and journey stages; gap analysis drives content planning",
+                "AI-powered content recommendations per persona; dynamic personalization at scale"
+            ]
+        },
+        {
+            dimension: "Research & Validation",
+            question: "How do you research and validate your buyer personas?",
+            options: [
+                "Personas based on assumptions; no research or validation",
+                "Occasional customer interviews; personas rarely updated",
+                "Systematic win/loss interviews, sales debrief, and customer success data inform personas; quarterly reviews",
+                "Continuous research; AI analysis of call transcripts, intent data, and market signals; real-time persona updates"
+            ]
+        },
+        {
+            dimension: "Multi-Threading Enablement",
+            question: "How well do you enable sales to multi-thread across buying committees?",
+            options: [
+                "No specific enablement; sales figures it out alone",
+                "General advice to 'talk to more people' but no structured approach",
+                "Persona-specific content, role-based objection handling, and stakeholder mapping templates provided",
+                "AI-recommended contacts to engage; automated nurture for each committee member; relationship health scoring"
+            ]
+        },
+        {
+            dimension: "Journey Orchestration",
+            question: "How sophisticated is your buyer journey orchestration?",
+            options: [
+                "No formal journey mapping; reactive engagement",
+                "Journey stages defined on paper but not operationalized in marketing/sales systems",
+                "Journey-based campaigns; lead scoring aligned to stages; handoff triggers between stages",
+                "AI-orchestrated journeys; predictive next-best-action; cross-channel personalization by persona and stage"
+            ]
+        },
+        {
+            dimension: "Champion Enablement",
+            question: "How well do you equip internal champions to sell on your behalf?",
+            options: [
+                "No specific champion enablement; hope they figure it out",
+                "Provide standard collateral but nothing designed for internal advocacy",
+                "Champion-specific assets: executive summaries, shareable business cases, competitive ammunition",
+                "Champion portal with personalized content; AI-generated internal pitch decks; success story generators"
+            ]
+        },
+        {
+            dimension: "Organizational Adoption",
+            question: "How widely are personas used across your organization?",
+            options: [
+                "Personas exist in a document somewhere but rarely referenced",
+                "Marketing uses personas; sales and product awareness is limited",
+                "Personas embedded in sales onboarding, content briefs, campaign planning, and product feedback",
+                "Company-wide persona fluency; personas integrated into CRM, analytics dashboards, and executive reviews"
+            ]
+        }
+    ];
+    
+    let currentQ = 0;
+    let answers = new Array(10).fill(0);
+    
+    function startAssessment() {
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('questions').classList.add('active');
+        renderQuestion();
+    }
+    
+    function renderQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('qNum').textContent = `Question ${currentQ + 1} of 10 — ${q.dimension}`;
+        document.getElementById('qText').textContent = q.question;
+        document.getElementById('progress').style.width = `${(currentQ / 10) * 100}%`;
+        
+        const optionsHtml = q.options.map((opt, i) => `
+            <div class="option ${answers[currentQ] === i + 1 ? 'selected' : ''}" onclick="selectOption(${i + 1})">
+                <div class="option-num">${i + 1}</div>
+                <div class="option-text">${opt}</div>
+            </div>
+        `).join('');
+        document.getElementById('options').innerHTML = optionsHtml;
+        
+        document.getElementById('prevBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').disabled = answers[currentQ] === 0;
+        document.getElementById('nextBtn').textContent = currentQ === 9 ? 'See Results →' : 'Next →';
+    }
+    
+    function selectOption(num) {
+        answers[currentQ] = num;
+        renderQuestion();
+    }
+    
+    function prevQuestion() {
+        if (currentQ > 0) {
+            currentQ--;
+            renderQuestion();
+        }
+    }
+    
+    function nextQuestion() {
+        if (answers[currentQ] === 0) return;
+        if (currentQ < 9) {
+            currentQ++;
+            renderQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function showResults() {
+        document.getElementById('questions').classList.remove('active');
+        document.getElementById('results').classList.add('active');
+        
+        const total = answers.reduce((a, b) => a + b, 0);
+        document.getElementById('scoreNum').textContent = total;
+        
+        let grade, gradeClass, recommendation;
+        if (total >= 35) {
+            grade = 'Advanced'; gradeClass = 'excellent';
+            recommendation = 'Your persona capabilities are mature. Focus on the Persona Builder Lab to create AI-enhanced profiles and optimize your journey orchestration.';
+        } else if (total >= 27) {
+            grade = 'Established'; gradeClass = 'good';
+            recommendation = 'Solid foundations in place. The training module will help you level up to AI-augmented persona research and more sophisticated multi-threading.';
+        } else if (total >= 18) {
+            grade = 'Developing'; gradeClass = 'developing';
+            recommendation = 'Good progress! Complete the training module to build systematic persona documentation and buying committee mapping skills.';
+        } else {
+            grade = 'Emerging'; gradeClass = 'emerging';
+            recommendation = 'Start with the fundamentals. The training module will introduce structured approaches to buyer persona development and journey mapping.';
+        }
+        
+        document.getElementById('gradeBadge').textContent = grade;
+        document.getElementById('gradeBadge').className = `grade-badge ${gradeClass}`;
+        document.getElementById('recommendation').textContent = recommendation;
+        
+        const breakdownHtml = questions.map((q, i) => `
+            <div class="breakdown-item">
+                <span>${q.dimension}</span>
+                <span>Level ${answers[i]}</span>
+            </div>
+        `).join('');
+        document.getElementById('breakdownItems').innerHTML = breakdownHtml;
+    }
+</script>
+</body>
+</html>
