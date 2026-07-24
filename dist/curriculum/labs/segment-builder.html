@@ -298,18 +298,94 @@ async function generateReport() {
 }
 
 function formatReport(text, productName) {
-    // Simple markdown to HTML conversion
-    let html = text
-        .replace(/^## (.*$)/gm, '<h3>$1</h3>')
+    // Convert markdown tables to HTML tables
+    function convertTables(md) {
+        const lines = md.split('\n');
+        let result = [];
+        let inTable = false;
+        let tableRows = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            // Check if this is a table row (starts and ends with |)
+            if (line.startsWith('|') && line.endsWith('|')) {
+                // Skip separator rows (|---|---|)
+                if (line.match(/^\|[\s\-:]+\|$/)) {
+                    continue;
+                }
+                
+                if (!inTable) {
+                    inTable = true;
+                    tableRows = [];
+                }
+                
+                // Parse cells
+                const cells = line.slice(1, -1).split('|').map(c => c.trim());
+                tableRows.push(cells);
+            } else {
+                // End of table
+                if (inTable && tableRows.length > 0) {
+                    let tableHtml = '<div style="overflow-x:auto;margin:1rem 0;"><table class="data-table">';
+                    tableRows.forEach((row, idx) => {
+                        if (idx === 0) {
+                            tableHtml += '<thead><tr>' + row.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+                        } else {
+                            tableHtml += '<tr>' + row.map(c => `<td>${c}</td>`).join('') + '</tr>';
+                        }
+                    });
+                    tableHtml += '</tbody></table></div>';
+                    result.push(tableHtml);
+                    tableRows = [];
+                    inTable = false;
+                }
+                result.push(line);
+            }
+        }
+        
+        // Handle table at end of content
+        if (inTable && tableRows.length > 0) {
+            let tableHtml = '<div style="overflow-x:auto;margin:1rem 0;"><table class="data-table">';
+            tableRows.forEach((row, idx) => {
+                if (idx === 0) {
+                    tableHtml += '<thead><tr>' + row.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+                } else {
+                    tableHtml += '<tr>' + row.map(c => `<td>${c}</td>`).join('') + '</tr>';
+                }
+            });
+            tableHtml += '</tbody></table></div>';
+            result.push(tableHtml);
+        }
+        
+        return result.join('\n');
+    }
+    
+    // First convert tables
+    let html = convertTables(text);
+    
+    // Then convert other markdown
+    html = html
+        .replace(/^## (.*$)/gm, '</div><div class="report-section"><h3>$1</h3>')
         .replace(/^### (.*$)/gm, '<h4>$1</h4>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/^\- (.*$)/gm, '<li>$1</li>')
-        .replace(/^\* (.*$)/gm, '<li>$1</li>')
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/<\/li>\n<li>/g, '</li><li>');
+        .replace(/^\* (.*$)/gm, '<li>$1</li>');
     
-    // Wrap lists
-    html = html.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
+    // Wrap consecutive list items in <ul>
+    html = html.replace(/(<li>.*?<\/li>\n?)+/g, '<ul>$&</ul>');
+    
+    // Clean up empty paragraphs and convert line breaks
+    html = html
+        .replace(/\n\n+/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/<p><\/p>/g, '')
+        .replace(/<br><h/g, '<h')
+        .replace(/<\/h3><br>/g, '</h3>')
+        .replace(/<\/h4><br>/g, '</h4>')
+        .replace(/<br><ul>/g, '<ul>')
+        .replace(/<\/ul><br>/g, '</ul>')
+        .replace(/<br><div/g, '<div')
+        .replace(/<\/div><br>/g, '</div>');
     
     // Wrap in report section
     html = `
@@ -318,7 +394,7 @@ function formatReport(text, productName) {
             <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem;">Generated ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
         </div>
         <div class="report-section">
-            ${html}
+            <p>${html}</p>
         </div>
     `;
     
