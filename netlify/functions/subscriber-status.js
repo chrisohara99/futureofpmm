@@ -132,6 +132,13 @@ exports.handler = async (event) => {
           unit1: false,
           unit2: false,
           unit3: false,
+          unit4: false,
+          unit5: false,
+          unit6: false,
+          unit7: false,
+          unit8: false,
+          unit9: false,
+          unit10: false,
           scorecard: false,
           cognitive: false,
           lastActivity: null,
@@ -151,6 +158,8 @@ exports.handler = async (event) => {
       const unit6 = userQuizzes.some(r => r.chapter === 'unit-06' && r.percentage >= 80);
       const unit7 = userQuizzes.some(r => r.chapter === 'unit-07' && r.percentage >= 80);
       const unit8 = userQuizzes.some(r => r.chapter === 'unit-08' && r.percentage >= 80);
+      const unit9 = userQuizzes.some(r => r.chapter === 'unit-09' && r.percentage >= 80);
+      const unit10 = userQuizzes.some(r => r.chapter === 'unit-10' && r.percentage >= 80);
       const scorecard = userAssessments.some(a => a.assessment_type === '10x-scorecard');
       const cognitive = userAssessments.some(a => a.assessment_type === 'cognitive');
 
@@ -174,6 +183,8 @@ exports.handler = async (event) => {
         unit6,
         unit7,
         unit8,
+        unit9,
+        unit10,
         scorecard,
         cognitive,
         lastActivity,
@@ -202,6 +213,8 @@ exports.handler = async (event) => {
       unit6Passed: subscribers.filter(s => s.unit6).length,
       unit7Passed: subscribers.filter(s => s.unit7).length,
       unit8Passed: subscribers.filter(s => s.unit8).length,
+      unit9Passed: subscribers.filter(s => s.unit9).length,
+      unit10Passed: subscribers.filter(s => s.unit10).length,
       scorecardDone: subscribers.filter(s => s.scorecard).length,
       cognitiveDone: subscribers.filter(s => s.cognitive).length,
       danTeamCount: subscribers.filter(s => s.danTeam).length,
