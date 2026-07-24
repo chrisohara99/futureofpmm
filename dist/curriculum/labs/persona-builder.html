@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Persona Builder | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #0070F2;
+            --navy: #1B365D;
+            --teal: #0891b2;
+            --purple: #7c3aed;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--teal) 0%, #06b6d4 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .framework-box {
+            background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
+            border-left: 4px solid var(--teal);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .framework-box h4 { color: var(--teal); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .framework-box ul { font-size: 0.85rem; margin: 0 0 0 1.25rem; color: #444; }
+        .framework-box li { margin-bottom: 0.25rem; }
+        
+        .lab-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .lab-card h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .sample-btns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .sample-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sample-btn:hover {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+        
+        /* Persona checkboxes */
+        .persona-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .persona-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: #f8fafc;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .persona-checkbox:hover {
+            border-color: var(--teal);
+            background: #f0fdfa;
+        }
+        .persona-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--teal);
+        }
+        .persona-checkbox.checked {
+            border-color: var(--teal);
+            background: #f0fdfa;
+        }
+        .persona-checkbox label {
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .run-btn {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .run-btn:hover { background: #0e7490; transform: translateY(-1px); }
+        .run-btn:disabled { background: #a5b4c3; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .run-btn.loading .spinner { display: block; }
+        .run-btn.loading span { display: none; }
+        
+        .results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        .results-section.visible { display: block; }
+        
+        .results-header {
+            background: linear-gradient(135deg, var(--teal) 0%, #06b6d4 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+        }
+        .results-header h2 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+        .results-header p { opacity: 0.9; font-size: 0.9rem; }
+        
+        .results-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+            border-top: none;
+        }
+        .results-content h2 { font-size: 1.3rem; color: var(--teal); margin: 1.5rem 0 0.75rem; }
+        .results-content h2:first-child { margin-top: 0; }
+        .results-content h3 { font-size: 1.1rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.5rem; }
+        .results-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        .results-content th, .results-content td { padding: 0.75rem; border: 1px solid #e5e7eb; text-align: left; }
+        .results-content th { background: #f8fafc; font-weight: 600; }
+        .results-content blockquote { 
+            background: #f8fafc; 
+            border-left: 4px solid var(--teal); 
+            padding: 1rem 1.25rem; 
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        .results-content strong { color: var(--dark-slate); }
+        
+        .copy-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            float: right;
+            margin-top: -0.5rem;
+        }
+        .copy-btn:hover { background: #e5e7eb; }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.visible { display: block; }
+        
+        @media (max-width: 600px) {
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.6rem; }
+            main { padding: 1rem; }
+            .lab-card { padding: 1.5rem; }
+            .persona-checkboxes { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/curriculum/" class="logo">
+                <img src="/assets/images/logo-white.svg" alt="Future of PMM">
+            </a>
+            <nav class="nav">
+                <a href="/curriculum/">Dashboard</a>
+                <a href="/curriculum/labs/">All Labs</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="lab-badge">🧪 AI Lab</span>
+            <h1>Persona Builder</h1>
+            <p>Build detailed enterprise buyer personas with AI assistance. Generate profiles, journey maps, and content recommendations for your target C-suite.</p>
+        </div>
+    </section>
+
+    <main>
+        <div class="lab-intro">
+            <h2>How This Lab Works</h2>
+            <p>Input your product details and select the personas you need. The AI will generate comprehensive buyer profiles including:</p>
+            <div class="framework-box">
+                <h4>🗺️ What You'll Get</h4>
+                <ul>
+                    <li><strong>Role Overview</strong> — Responsibilities, reporting, KPIs</li>
+                    <li><strong>Priorities & Pain Points</strong> — What keeps them up at night</li>
+                    <li><strong>Buying Role</strong> — Economic, technical, user, champion, or gatekeeper</li>
+                    <li><strong>Journey Engagement</strong> — When/how they engage at each stage</li>
+                    <li><strong>Messaging Hooks</strong> — What resonates with this persona</li>
+                    <li><strong>Buying Committee Summary</strong> — How personas interact in deals</li>
+                </ul>
+            </div>
+        </div>
+
+        <form id="personaForm">
+            <div class="lab-card">
+                <h3>📦 Product Information</h3>
+                
+                <div class="sample-btns">
+                    <span style="font-size: 0.85rem; color: #666; margin-right: 0.5rem;">Try a sample:</span>
+                    <button type="button" class="sample-btn" onclick="loadSample('datasphere')">SAP Datasphere</button>
+                    <button type="button" class="sample-btn" onclick="loadSample('successfactors')">SAP SuccessFactors</button>
+                    <button type="button" class="sample-btn" onclick="loadSample('ariba')">SAP Ariba</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product">Product/Solution Name</label>
+                    <input type="text" id="product" placeholder="e.g., SAP Datasphere, SAP Business AI" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Product Category</label>
+                    <input type="text" id="category" placeholder="e.g., Enterprise Data Platform, Human Capital Management">
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Industry Focus (optional)</label>
+                    <input type="text" id="industry" placeholder="e.g., Manufacturing, Retail, Cross-industry">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companySize">Target Company Size</label>
+                    <select id="companySize">
+                        <option value="Enterprise (5000+ employees)">Enterprise (5000+ employees)</option>
+                        <option value="Large Enterprise (1000-5000 employees)">Large Enterprise (1000-5000 employees)</option>
+                        <option value="Mid-Market (200-1000 employees)">Mid-Market (200-1000 employees)</option>
+                        <option value="SMB (50-200 employees)">SMB (50-200 employees)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="lab-card">
+                <h3>💡 Solution Context</h3>
+                
+                <div class="form-group">
+                    <label for="solutionOverview">Solution Overview</label>
+                    <p class="hint">What does the product do? 2-3 sentences.</p>
+                    <textarea id="solutionOverview" placeholder="e.g., SAP Datasphere is an enterprise data platform that unifies business data across SAP and non-SAP sources, providing a single semantic layer for analytics and AI." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="valueProps">Key Value Propositions</label>
+                    <p class="hint">List 3-5 main value propositions.</p>
+                    <textarea id="valueProps" placeholder="e.g.,
+- Unified data semantics across all enterprise systems
+- Pre-built data products for common use cases
+- AI-ready data foundations
+- Real-time federation without ETL" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="problemsSolved">Primary Problems Solved</label>
+                    <p class="hint">What pain points does this product address?</p>
+                    <textarea id="problemsSolved" placeholder="e.g.,
+- Siloed data across dozens of systems
+- Months to integrate new data sources
+- Can't trust data quality for AI initiatives
+- No single source of truth for business metrics"></textarea>
+                </div>
+            </div>
+            
+            <div class="lab-card">
+                <h3>👥 Select Personas to Build</h3>
+                <p class="hint">Check all personas relevant to your buying committee. At least one required.</p>
+                
+                <div class="persona-checkboxes" id="personaCheckboxes">
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-cdo" value="Chief Data Officer (CDO)">
+                        <label for="persona-cdo">📊 Chief Data Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-cfo" value="Chief Financial Officer (CFO)">
+                        <label for="persona-cfo">💰 Chief Financial Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-chro" value="Chief Human Resources Officer (CHRO)">
+                        <label for="persona-chro">👥 Chief HR Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-cio" value="Chief Information Officer (CIO)">
+                        <label for="persona-cio">🖥️ Chief Information Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-cpo" value="Chief Procurement Officer (CPO)">
+                        <label for="persona-cpo">📋 Chief Procurement Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-cro" value="Chief Revenue Officer (CRO) / Chief Sales Officer">
+                        <label for="persona-cro">📈 CRO / Chief Sales Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-csco" value="Chief Supply Chain Officer (CSCO)">
+                        <label for="persona-csco">🚚 Chief Supply Chain Officer</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-vpit" value="VP of IT / Enterprise Architecture">
+                        <label for="persona-vpit">🔧 VP IT / Enterprise Arch</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-vpdata" value="VP of Data / Head of Analytics">
+                        <label for="persona-vpdata">📉 VP Data / Analytics</label>
+                    </div>
+                    <div class="persona-checkbox" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" id="persona-vpops" value="VP of Operations">
+                        <label for="persona-vpops">⚙️ VP Operations</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="run-btn" id="runBtn">
+                <div class="spinner"></div>
+                <span>🗺️ Build Personas</span>
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>🗺️ Buyer Personas: <span id="resultProduct"></span></h2>
+                <p>Generated personas for your buying committee</p>
+            </div>
+            <div class="results-content">
+                <button class="copy-btn" onclick="copyResults()">📋 Copy All</button>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/js/user-menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const sampleData = {
+            datasphere: {
+                product: "SAP Datasphere",
+                category: "Enterprise Data Platform / Data Fabric",
+                industry: "Cross-industry",
+                companySize: "Enterprise (5000+ employees)",
+                solutionOverview: "SAP Datasphere is an enterprise data platform that unifies business data across SAP and non-SAP sources. It provides a single semantic layer for analytics, reporting, and AI initiatives, eliminating data silos without complex ETL pipelines.",
+                valueProps: `- Unified business data semantics across all enterprise systems
+- Pre-built data products for common use cases (finance, supply chain, HR)
+- AI-ready data foundations with built-in governance
+- Real-time data federation without ETL
+- Native integration with SAP S/4HANA and BW`,
+                problemsSolved: `- Siloed data across dozens of systems creates conflicting reports
+- Months to integrate new data sources delays insights
+- Can't trust data quality for AI/ML initiatives
+- Data teams overwhelmed with ad-hoc requests
+- No single source of truth for business metrics`,
+                personas: ['Chief Data Officer (CDO)', 'Chief Information Officer (CIO)', 'VP of Data / Head of Analytics']
+            },
+            successfactors: {
+                product: "SAP SuccessFactors",
+                category: "Human Capital Management (HCM)",
+                industry: "Cross-industry",
+                companySize: "Enterprise (5000+ employees)",
+                solutionOverview: "SAP SuccessFactors is a complete cloud HCM suite covering the full employee lifecycle: recruiting, onboarding, learning, performance, compensation, and core HR/payroll for 100+ countries.",
+                valueProps: `- Complete end-to-end talent management
+- Global payroll and compliance for 100+ countries
+- AI-powered skills ontology and career development
+- Employee experience management with Qualtrics
+- Native integration with SAP ecosystem`,
+                problemsSolved: `- Disconnected HR systems creating data silos
+- High turnover and difficulty retaining top talent
+- Skills gaps threatening digital transformation
+- Manual, paper-based HR processes
+- Compliance complexity across global operations`,
+                personas: ['Chief Human Resources Officer (CHRO)', 'Chief Financial Officer (CFO)', 'VP of IT / Enterprise Architecture']
+            },
+            ariba: {
+                product: "SAP Ariba",
+                category: "Source-to-Pay / Procurement",
+                industry: "Cross-industry",
+                companySize: "Enterprise (5000+ employees)",
+                solutionOverview: "SAP Ariba is a complete source-to-pay platform connecting buyers with the world's largest B2B network (5.5M+ organizations, $6T+ annual commerce). It automates procurement from sourcing through payment.",
+                valueProps: `- World's largest B2B supplier network
+- AI-powered spend analytics and recommendations
+- Automated procure-to-pay workflows
+- Real-time supplier risk monitoring
+- Native integration with SAP S/4HANA`,
+                problemsSolved: `- Maverick spending outside negotiated contracts
+- Poor visibility into supplier risk and ESG compliance
+- Manual, paper-based procurement processes
+- Fragmented supplier relationships across business units
+- Inability to capture and prove savings`,
+                personas: ['Chief Procurement Officer (CPO)', 'Chief Financial Officer (CFO)', 'Chief Supply Chain Officer (CSCO)']
+            }
+        };
+
+        function loadSample(key) {
+            const data = sampleData[key];
+            document.getElementById('product').value = data.product;
+            document.getElementById('category').value = data.category;
+            document.getElementById('industry').value = data.industry;
+            document.getElementById('companySize').value = data.companySize;
+            document.getElementById('solutionOverview').value = data.solutionOverview;
+            document.getElementById('valueProps').value = data.valueProps;
+            document.getElementById('problemsSolved').value = data.problemsSolved;
+            
+            // Clear all checkboxes first
+            document.querySelectorAll('.persona-checkbox').forEach(cb => {
+                cb.classList.remove('checked');
+                cb.querySelector('input').checked = false;
+            });
+            
+            // Check the sample personas
+            data.personas.forEach(persona => {
+                const checkbox = document.querySelector(`.persona-checkbox input[value="${persona}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.closest('.persona-checkbox').classList.add('checked');
+                }
+            });
+        }
+        
+        function toggleCheckbox(el) {
+            const input = el.querySelector('input');
+            input.checked = !input.checked;
+            el.classList.toggle('checked', input.checked);
+        }
+
+        function getSelectedPersonas() {
+            const selected = [];
+            document.querySelectorAll('.persona-checkbox input:checked').forEach(cb => {
+                selected.push(cb.value);
+            });
+            return selected;
+        }
+
+        document.getElementById('personaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('runBtn');
+            const errorEl = document.getElementById('errorMessage');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            const personas = getSelectedPersonas();
+            if (personas.length === 0) {
+                errorEl.textContent = 'Please select at least one persona to build.';
+                errorEl.classList.add('visible');
+                return;
+            }
+            
+            btn.classList.add('loading');
+            btn.disabled = true;
+            errorEl.classList.remove('visible');
+            resultsSection.classList.remove('visible');
+            
+            const inputs = {
+                product: document.getElementById('product').value,
+                category: document.getElementById('category').value,
+                industry: document.getElementById('industry').value,
+                companySize: document.getElementById('companySize').value,
+                solutionOverview: document.getElementById('solutionOverview').value,
+                valueProps: document.getElementById('valueProps').value,
+                problemsSolved: document.getElementById('problemsSolved').value,
+                personas: personas
+            };
+            
+            try {
+                const response = await fetch('/.netlify/functions/lab-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ labType: 'persona-builder', inputs })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate personas');
+                }
+                
+                document.getElementById('resultProduct').textContent = inputs.product;
+                document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
+                resultsSection.classList.add('visible');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                errorEl.textContent = error.message || 'Something went wrong. Please try again.';
+                errorEl.classList.add('visible');
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        function copyResults() {
+            const content = document.getElementById('resultsContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+            });
+        }
+    </script>
+</body>
+</html>

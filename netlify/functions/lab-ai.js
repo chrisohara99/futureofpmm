@@ -446,6 +446,33 @@ You adapt marketing content across regions and languages while preserving:
 
 You provide both the localized content AND notes explaining your adaptation choices.`,
 
+        'persona-builder': `You are an expert in enterprise B2B buyer personas and journey mapping, specifically for complex software sales.
+
+You help PMMs build detailed buyer persona profiles that go beyond demographics to capture real decision drivers. Your personas are actionable — they help sales have better conversations and help marketing create resonant content.
+
+**Your persona profiles include:**
+1. **Role Overview**: Title, responsibilities, reporting structure, KPIs
+2. **Top Priorities**: What they're measured on, what keeps them up at night
+3. **Pain Points**: Specific frustrations with status quo, unmet needs
+4. **Success Metrics**: How they define and measure success
+5. **Information Sources**: Where they learn, who they trust, what they read
+6. **Buying Role**: Economic buyer, technical buyer, user buyer, champion, gatekeeper, or blocker
+7. **Common Objections**: Why they might say no, concerns they'll raise
+8. **Messaging Hooks**: What resonates, value props that land, words that work
+9. **Journey Engagement**: When/how they engage at each buying stage
+10. **Content Preferences**: What formats and depth they prefer
+
+**Enterprise C-Suite personas you know deeply:**
+- CDO (Chief Data Officer): Data quality, governance, AI readiness, proving data ROI
+- CFO (Chief Financial Officer): Cost optimization, risk management, compliance, cash flow
+- CHRO (Chief Human Resources Officer): Talent, employee experience, skills gaps, DEI
+- CIO (Chief Information Officer): System reliability, security, technical debt, enabling agility
+- CPO (Chief Procurement Officer): Cost savings, supplier risk, contract compliance
+- CRO/CSO (Chief Revenue/Sales Officer): Pipeline, win rates, productivity, forecast accuracy
+- CSCO (Chief Supply Chain Officer): Resilience, inventory optimization, sustainability
+
+You write in a practical, actionable style that PMMs and sales teams can immediately use.`,
+
         'launch-planner': `You are an expert GTM launch planner for enterprise B2B software companies, specifically SAP.
 
 You create comprehensive Launch Bills of Materials (BOMs) — task trackers that cover all workstreams needed for a successful product launch, event, or campaign.
@@ -1159,6 +1186,89 @@ Reframe the value prop for these roles:
 
 ## 5. Common Objections & Responses
 Anticipate 3 likely objections and provide response frameworks.`;
+
+        case 'persona-builder':
+            const personaList = Array.isArray(inputs.personas) ? inputs.personas : [inputs.personas];
+            return `Build detailed buyer personas for this enterprise software sale:
+
+**Product/Solution:** ${inputs.product}
+**Product Category:** ${inputs.category}
+**Industry Focus:** ${inputs.industry || 'Cross-industry'}
+**Company Size Target:** ${inputs.companySize || 'Enterprise (1000+ employees)'}
+
+**Solution Overview:**
+${inputs.solutionOverview}
+
+**Key Value Propositions:**
+${inputs.valueProps}
+
+**Primary Problems Solved:**
+${inputs.problemsSolved}
+
+**Target Personas to Build:** ${personaList.join(', ')}
+
+---
+
+For EACH persona listed above, generate a comprehensive buyer profile:
+
+## [Persona Title]
+
+### 📋 Role Overview
+- **Typical Title**: [specific titles at different company sizes]
+- **Reports To**: [typical reporting structure]
+- **Team Size**: [typical span of control]
+- **Key Responsibilities**: [top 3-4]
+
+### 🎯 Top 3 Priorities
+What they're measured on and what keeps them up at night. Be specific.
+
+### 😰 Pain Points (Status Quo)
+- [Specific frustrations with how things work today]
+- [Unmet needs that create friction]
+- [What makes their job harder than it should be]
+
+### 📊 Success Metrics
+How do they define and measure success? What KPIs matter most?
+
+### 📚 Information Sources
+- **Publications/Websites**: Where they learn
+- **Analysts/Influencers**: Who they trust
+- **Peer Networks**: Where they discuss
+- **Events**: Where they gather
+
+### 🛒 Buying Role
+**Role in Committee**: [Economic Buyer / Technical Buyer / User Buyer / Champion / Gatekeeper / Blocker]
+**Engagement Level by Stage**:
+| Stage | Engagement | Key Questions |
+|-------|------------|---------------|
+| Awareness | [Low/Med/High] | [What are they asking?] |
+| Consideration | [Low/Med/High] | [What are they asking?] |
+| Decision | [Low/Med/High] | [What are they asking?] |
+| Purchase | [Low/Med/High] | [What are they asking?] |
+| Adoption | [Low/Med/High] | [What are they asking?] |
+
+### ⚠️ Common Objections
+Top 3 reasons they might say no, with response guidance.
+
+### 💬 Messaging Hooks
+- **What resonates**: Language and themes that work
+- **What falls flat**: Approaches to avoid
+- **Sample value prop**: One sentence tailored to this persona
+
+### 📄 Content Preferences
+What formats, depth, and types of content do they prefer at each stage?
+
+---
+
+After all personas, provide:
+
+## Buying Committee Summary
+A table showing how these personas interact:
+| Persona | Role | Power Level | When They Engage | What They Need From Us |
+|---------|------|-------------|------------------|------------------------|
+
+## Multi-Threading Recommendations
+How to ensure you're not single-threaded. Which persona combinations work together?`;
 
         case 'pricing-rationale':
             return `Build a pricing rationale document for this deal:
