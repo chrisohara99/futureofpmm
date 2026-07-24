@@ -1,28 +1,20 @@
 # Newsletter Issue #25: The Curriculum Continues
 
-**Theme:** Expanding the learning journey with Units 9 & 10
+**Theme:** Expanding the learning journey with Unit 9: Segmentation & Sizing
 
 ---
 
 ## 1. THIS WEEK'S FOCUS: The Curriculum Continues
 
-The curriculum is no longer 7 units. It's 10—and growing.
+The curriculum is no longer 8 units. It's 9—and growing.
 
-This week we're releasing **Unit 9: Segmentation & Sizing** and **Unit 10: Buyer Personas & Journey Mapping**. These units tackle the foundational strategy work that separates good PMMs from great ones: knowing exactly who you're targeting, how big the opportunity is, and who's actually in the room when decisions get made.
+This week we're releasing **Unit 9: Segmentation & Sizing**. This unit tackles the foundational strategy work that separates good PMMs from great ones: knowing exactly who you're targeting, how big the opportunity is, and where to place your bets.
 
 **Unit 9** covers:
-- Market segmentation (category, competition, growth)
+- Market segmentation (category, competition, growth quadrants)
 - Building TAM with AI assistance
+- Customer segmentation (funnel stages, buying roles, buyer power)
 - Buyer tiers (SMB → Mid-Market → Enterprise)
-- Buying committee dynamics
-
-**Unit 10** covers:
-- Enterprise C-suite personas (CDO, CFO, CHRO, CIO, CPO, CRO, CSCO)
-- Journey mapping across buying stages
-- Multi-threading strategies for complex deals
-- Content mapping by persona × stage
-
-Plus: a new **Persona Builder Lab** that generates detailed buyer profiles with AI.
 
 **CTA:** Continue Your Learning Journey → Start Unit 9
 
@@ -58,20 +50,21 @@ This unit introduces three segmentation lenses:
 
 | Rank | Learner | Units |
 |------|---------|-------|
-| 🥇 | Chris O'Hara | 8 ✓ |
-| 🥇 | Sean Thomson | 8 ✓ |
-| 🥉 | Corrie Birkeness | 7 |
-| 4 | Axel Schuller | 7 |
-| 5 | Venkata Giduthuri, Neil Whitehead, Kuba Kufel, Tiffany Baker, Liam Clarke | 6 |
+| 🥇 | Corrie Birkeness | 7 |
+| 🥇 | Axel Schuller | 7 |
+| 🥇 | Venkata Giduthuri | 7 |
+| 4 | Liam Clarke, Neil Whitehead, Tiffany Baker, Kuba Kufel | 6 |
+| 5 | Stuart Giles | 5 |
 
 **Stats:**
-- 117 registered learners
-- 41 have passed Unit 1
-- 2 have completed all 8 units so far
+- 120+ registered learners
+- 9 units now available (with more on the way)
 
 ### ⭐ User of the Week: Corrie Birkeness
 
-Corrie has been quietly crushing the curriculum—7 units complete and counting. As one of our most consistent learners, she's been methodically working through each unit and providing valuable feedback. Unit 8 is next!
+Corrie has been crushing the curriculum—7 units complete and counting. As one of our most consistent learners, she's been methodically working through each module with focus and determination. Now that Unit 9 is live, we're watching to see if Corrie can extend her lead.
+
+Keep it up, Corrie! 🎉
 
 ---
 
@@ -97,28 +90,30 @@ Quick pulse from recent feedback:
 
 ### Top 5 Stories This Week
 
-**1. Gartner: 40% of Enterprise Apps Will Embed AI Agents by Year-End**
-Up from under 5% last year. The shift is real: from "AI that answers" to "AI that acts." For PMMs, this means every competitive brief needs an agent strategy.
+**1. HubSpot Launches Agent Hub and Agent Builder (July 23)**
+HubSpot just unveiled Agent Hub in public beta—a unified console for AI agents plus a no-code builder. Professional and Enterprise customers can now create custom agents without engineering help. The agentic marketing stack is going mainstream.
 
-**2. AI Agents Market Hits $11B in 2026**
-Growing at 44-46% CAGR through 2030. But here's the catch: governance gaps and unclear ROI are causing high failure rates. Sound familiar? (That's why Unit 1 matters.)
+**2. Forbes: 94% of B2B Buyers Now Use AI in Their Journey**
+According to 6sense's 2025 B2B Buyer Experience Report, nearly all B2B buyers use generative AI at some point when researching vendors. By the time prospects visit your site, they've already asked ChatGPT or Perplexity about you. Content for two audiences isn't optional anymore.
 
-**3. B2B AI Agents Now Priced Against Labor, Not Seats**
-IdeaProof calls this "the biggest software category shift of 2026." When your product replaces tasks, not users, the whole pricing model changes. (That's why Unit 8 matters.)
+**3. BCG: Agentic AI Is Redefining Marketing Growth**
+New research from BCG argues that "agentic AI is ushering in a new era for marketing—one where autonomous systems learn, decide, and act alongside human teams." Their advice: CMOs who move first will win.
 
-**4. OpenAI ChatGPT Work Launches for Enterprise**
-McKinsey notes a 130% AI valuation gap reshaping how enterprises buy and govern AI. The infrastructure layer is becoming as important as the model layer.
+**4. 82% Expect AI Agents to Handle 1/3 of Marketing Decisions**
+A Kana survey (July 2026) found that 82% of business leaders expect AI agents to handle at least a third of routine marketing decisions within two years. The governance frameworks aren't ready—but adoption is happening anyway.
 
-**5. Search Engines Adjust for AI-Generated Content**
-Google now rewards "genuine expertise" over volume. For PMMs: quality > quantity, and human insight > AI slop. Build your narrative library, don't mass-produce commodity content.
+**5. 66% of B2B Buyers Regularly Use AI for Vendor Research**
+Semrush surveyed 600+ US B2B professionals this spring: 66% regularly use AI tools to research products and vendors, and 92% said AI shaped their most recent vendor shortlist. Your content needs to work for machines, not just humans.
 
 ---
 
-## 6. CTA: Preview the Framework Approach
+## 6. CTA: The PMM Framework
 
-We've been building something new: an **interactive PMM Framework** that maps every product marketing function to training, assessments, labs, and toolkits.
+Remember the Review of PMM Roles and Functions? We've taken each one and crafted training around the areas with the biggest gaps.
 
-Think of it as a skills map for your career. Click any box to see:
+The result: an **interactive PMM Framework** that maps every product marketing function to training, assessments, labs, and toolkits. Think of it as a skills map—designed specifically for SAP product marketers.
+
+Click any box to see:
 - 🎯 Self-assessment (where do you stand?)
 - 📚 Training module
 - ✅ Quiz to validate learning
@@ -142,7 +137,5 @@ Chris
 
 **Links:**
 - Start Unit 9: https://futureofpmm.com/curriculum/unit-09/
-- Preview Unit 10: https://futureofpmm.com/curriculum/unit-10/
-- Persona Builder Lab: https://futureofpmm.com/curriculum/labs/persona-builder.html
 - PMM Framework: https://futureofpmm.com/framework/
 - Full Leaderboard: https://futureofpmm.com/curriculum/leaderboard/
