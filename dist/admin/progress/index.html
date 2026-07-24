@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Program Progress | Future of PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --pmm-dark:#1e3a5f; --pmm-blue:#2a78d6; --pmm-blue-soft:#e7f0fb;
+            --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --surface:#ffffff; --plane:#f1f5f9;
+            --good:#0ca30c; --warn:#eab308; --bad:#dc2626;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--plane);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+
+        header{background:var(--pmm-dark);color:#fff;padding:1.5rem 2rem;}
+        .head-inner{max-width:1160px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+        header h1{font-size:1.4rem;font-weight:800;letter-spacing:-0.01em;}
+        header .subtitle{font-size:.9rem;opacity:.8;margin-top:.15rem;}
+        header .meta{font-size:.8rem;opacity:.75;text-align:right;line-height:1.5;}
+        .pill{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:.15rem .55rem;border-radius:999px;font-size:.72rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;}
+
+        .container{max-width:1160px;margin:0 auto;padding:2rem;}
+
+        .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.1rem;margin-bottom:1.6rem;}
+        .kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.25rem 1.35rem;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+        .kpi .label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+        .kpi .value{font-size:2.5rem;font-weight:800;letter-spacing:-0.02em;color:var(--pmm-dark);margin-top:.2rem;line-height:1;}
+        .kpi .value.mono{font-family:'JetBrains Mono',monospace;}
+        .kpi .foot{font-size:.82rem;color:var(--muted);margin-top:.4rem;}
+        .kpi .foot .up{color:var(--good);font-weight:600;}
+
+        .row{display:grid;grid-template-columns:1.15fr .85fr;gap:1.4rem;margin-bottom:1.6rem;}
+        @media(max-width:820px){.row{grid-template-columns:1fr;}}
+        .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.5rem;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+        .panel h2{font-size:.95rem;font-weight:700;color:var(--pmm-dark);margin-bottom:.25rem;}
+        .panel .hint{font-size:.8rem;color:var(--muted);margin-bottom:1.15rem;}
+
+        /* Funnel bars */
+        .bar-row{display:grid;grid-template-columns:64px 1fr 44px;align-items:center;gap:.7rem;margin-bottom:.55rem;}
+        .bar-row .unit{font-size:.8rem;color:var(--muted);font-weight:600;}
+        .bar-track{background:var(--plane);border-radius:6px;height:26px;overflow:hidden;}
+        .bar-fill{height:100%;background:var(--pmm-blue);border-radius:6px;min-width:3px;transition:width .6s cubic-bezier(.2,.7,.2,1);}
+        .bar-row .num{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;text-align:right;color:var(--ink);}
+        .note{margin-top:1rem;font-size:.82rem;color:var(--muted);background:var(--pmm-blue-soft);border-radius:8px;padding:.6rem .8rem;}
+        .note strong{color:var(--pmm-dark);}
+
+        /* Satisfaction */
+        .nps-hero{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.2rem;}
+        .nps-hero .big{font-family:'JetBrains Mono',monospace;font-size:3rem;font-weight:700;color:var(--pmm-dark);line-height:1;}
+        .nps-hero .scale{font-size:.8rem;color:var(--muted);}
+        .stacked{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:1rem 0 .8rem;background:var(--plane);}
+        .stacked span{display:block;height:100%;}
+        .seg-good{background:var(--good);} .seg-warn{background:var(--warn);} .seg-bad{background:var(--bad);}
+        .legend{display:flex;flex-wrap:wrap;gap:1rem;font-size:.82rem;color:var(--muted);}
+        .legend .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:.35rem;vertical-align:middle;}
+        .subratings{margin-top:1.2rem;border-top:1px solid var(--line);padding-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem;}
+        .subrating{display:flex;justify-content:space-between;font-size:.82rem;}
+        .subrating .k{color:var(--muted);} .subrating .v{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--pmm-dark);}
+
+        /* Voice */
+        .quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;}
+        .quote{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--pmm-blue);border-radius:0 10px 10px 0;padding:1rem 1.1rem;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+        .quote p{font-size:.9rem;color:var(--ink);}
+        .quote .src{font-size:.74rem;color:var(--muted);margin-top:.5rem;}
+        .section-title{font-size:.95rem;font-weight:700;color:var(--pmm-dark);margin:0 0 .9rem;}
+
+        footer{max-width:1160px;margin:0 auto;padding:0 2rem 2.5rem;color:var(--muted);font-size:.78rem;}
+        footer a{color:var(--pmm-blue);text-decoration:none;}
+        .loading{text-align:center;padding:4rem 2rem;color:var(--muted);}
+        .access-denied{text-align:center;padding:5rem 2rem;}
+        .access-denied h1{color:var(--bad);margin-bottom:.6rem;}
+        .access-denied a{color:var(--pmm-blue);}
+        .err{background:#fee2e2;color:#991b1b;padding:1rem;border-radius:10px;}
+    </style>
+</head>
+<body>
+    <div id="app"><div class="loading">Loading program progress…</div></div>
+
+    <script>
+    // ---- Access gate (same superuser model as /admin) ----
+    const SUPERUSERS = [
+        'christopher.ohara@sap.com','sean.thomson@sap.com','brian.raver@sap.com',
+        'olivier.duvelleroy@sap.com','j.chen02@sap.com','kelly.amaroso@sap.com',
+        'dahra.williams@sap.com','jasmine.churchill@sap.com','dante.ricci@sap.com',
+        'kasier.larsen@sap.com','markdonahue23@gmail.com','brenda.bown@sap.com',
+        'matthew.montgomery@sap.com'
+    ];
+    let currentUser = null;
+    try {
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (directUser) currentUser = JSON.parse(directUser).email?.toLowerCase();
+    } catch (e) {}
+
+    if (!currentUser || !SUPERUSERS.includes(currentUser)) {
+        document.getElementById('app').innerHTML = `
+            <div class="access-denied">
+                <h1>🔒 Access restricted</h1>
+                <p>This progress view is for program leads.</p>
+                <p style="margin-top:1rem;"><a href="/curriculum/">← Back to the curriculum</a></p>
+            </div>`;
+    } else {
+        loadProgress();
+    }
+
+    const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+    // Quotes we don't want in an exec view: profanity, filler, test noise
+    const BLOCK = [/\bf+u+c+k/i, /\bshit/i, /\bass\b/i, /test/i];
+    const FILLER = [/^just started/i, /^n\/?a$/i, /^none/i, /^\-+$/, /^\.*$/];
+
+    async function loadProgress() {
+        try {
+            const [subRes, survRes] = await Promise.all([
+                fetch('/.netlify/functions/subscriber-status').then(r => r.json()),
+                fetch('/.netlify/functions/admin-surveys').then(r => r.json())
+            ]);
+
+            const subs = subRes.subscribers || [];
+            const stats = subRes.stats || {};
+            const responses = survRes.responses || [];
+            const summary = survRes.summary || {};
+
+            const hasUnit = s => s.unit1||s.unit2||s.unit3||s.unit4||s.unit5||s.unit6||s.unit7||s.unit8;
+            const total = subs.length;
+            const active = subs.filter(hasUnit).length;
+            const activePct = total ? Math.round(active/total*100) : 0;
+
+            // Momentum: registrations in the trailing 30 days
+            const now = Date.now();
+            const newLast30 = subs.filter(s => {
+                if (!s.registered || !s.registeredAt) return false;
+                const t = new Date(s.registeredAt).getTime();
+                return !isNaN(t) && (now - t) <= 30*24*3600*1000;
+            }).length;
+
+            // Unit funnel
+            const units = [1,2,3,4,5,6,7,8].map(n => ({ n, count: stats['unit'+n+'Passed'] || 0 }));
+            const maxUnit = Math.max(1, ...units.map(u => u.count));
+            const deepCore = units[5].count; // past unit 6
+
+            // Depth: average units among active learners
+            const totalUnitsPassed = subs.reduce((sum,s)=>sum+[s.unit1,s.unit2,s.unit3,s.unit4,s.unit5,s.unit6,s.unit7,s.unit8].filter(Boolean).length,0);
+            const avgDepth = active ? (totalUnitsPassed/active).toFixed(1) : '0';
+
+            // Satisfaction
+            const promoters = summary.promoters||0, passives = summary.passives||0, detractors = summary.detractors||0;
+            const sTotal = summary.total || responses.length || 1;
+            const npsScore = (summary.npsScore ?? 0);
+            const avgValue = summary.avgValue || '—';
+            const avgNPS = summary.avgNPS || '—';
+
+            // Sub-ratings (averaged where present)
+            const avgOf = key => {
+                const vals = responses.map(r => r[key]).filter(v => typeof v === 'number' && v > 0);
+                return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '—';
+            };
+            const subRatings = [
+                ['AI Labs','labs_rating'], ['Content','content_rating'],
+                ['Assessments','assessments_rating'], ['Newsletter','newsletter_rating'],
+                ['Presentation','presentation_rating']
+            ].map(([label,key]) => ({label, v: avgOf(key)})).filter(r => r.v !== '—');
+
+            // Quiz calibration
+            const diffCounts = responses.reduce((m,r)=>{const d=(r.quiz_difficulty||'').toLowerCase();if(d)m[d]=(m[d]||0)+1;return m;},{});
+            const justRight = diffCounts['just-right']||0;
+            const diffTotal = Object.values(diffCounts).reduce((a,b)=>a+b,0)||1;
+            const justRightPct = Math.round(justRight/diffTotal*100);
+
+            // Voice-of-learner quotes: substantive top_learning, de-duped
+            const seen = new Set();
+            const quotes = responses
+                .map(r => ({ text:(r.top_learning||'').trim(), unit:r.from_unit }))
+                .filter(q => q.text.length >= 18)
+                .filter(q => !BLOCK.some(re=>re.test(q.text)) && !FILLER.some(re=>re.test(q.text)))
+                .filter(q => { const k=q.text.toLowerCase(); if(seen.has(k))return false; seen.add(k); return true; })
+                .sort((a,b)=>b.text.length-a.text.length)
+                .slice(0,6);
+
+            render({total,active,activePct,newLast30,units,maxUnit,deepCore,avgDepth,
+                promoters,passives,detractors,sTotal,npsScore,avgValue,avgNPS,
+                subRatings,justRight,diffTotal,justRightPct,quotes});
+        } catch (err) {
+            document.getElementById('app').innerHTML = `<div class="container"><div class="err">Couldn't load live data: ${esc(err.message)}</div></div>`;
+        }
+    }
+
+    function render(d) {
+        const updated = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+        const pctOf = n => Math.round(n/d.sTotal*100);
+
+        const bars = d.units.map(u => `
+            <div class="bar-row">
+                <div class="unit">Unit ${u.n}</div>
+                <div class="bar-track"><div class="bar-fill" style="width:${Math.round(u.count/d.maxUnit*100)}%"></div></div>
+                <div class="num">${u.count}</div>
+            </div>`).join('');
+
+        const quoteCards = d.quotes.length ? d.quotes.map(q => `
+            <div class="quote"><p>&ldquo;${esc(q.text)}&rdquo;</p>${q.unit?`<div class="src">— on ${esc(q.unit)}</div>`:''}</div>`).join('')
+            : '<p style="color:var(--muted);font-size:.88rem;">No substantive open responses yet.</p>';
+
+        const subRatingRows = d.subRatings.map(r => `
+            <div class="subrating"><span class="k">${esc(r.label)}</span><span class="v">${r.v}/5</span></div>`).join('');
+
+        document.getElementById('app').innerHTML = `
+            <header>
+                <div class="head-inner">
+                    <div>
+                        <h1>Future of PMM — Program Progress</h1>
+                        <div class="subtitle">AI Enablement for Product Marketing · live view</div>
+                    </div>
+                    <div class="meta">
+                        <span class="pill">Read-only · exec view</span><br>
+                        Updated ${updated}<br>Signed in as ${esc(currentUser)}
+                    </div>
+                </div>
+            </header>
+            <div class="container">
+                <div class="kpis">
+                    <div class="kpi">
+                        <div class="label">Enrolled</div>
+                        <div class="value mono">${d.total}</div>
+                        <div class="foot">${d.newLast30>0?`<span class="up">▲ ${d.newLast30} new</span> in last 30 days`:'across SAP'}</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="label">Active learners</div>
+                        <div class="value mono">${d.active}</div>
+                        <div class="foot">${d.activePct}% activation · avg ${d.avgDepth} of 8 units</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="label">Satisfaction (NPS)</div>
+                        <div class="value mono">${d.npsScore}</div>
+                        <div class="foot">${d.sTotal} survey responses · ${d.avgNPS}/10 avg</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="label">Avg lesson value</div>
+                        <div class="value mono">${d.avgValue}<span style="font-size:1.1rem;color:var(--muted);">/5</span></div>
+                        <div class="foot">quizzes rated "just-right" ${d.justRightPct}% of the time</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="panel">
+                        <h2>Adoption &amp; depth of engagement</h2>
+                        <div class="hint">Learners who have completed each unit (8-unit curriculum, self-paced).</div>
+                        ${bars}
+                        <div class="note"><strong>${d.deepCore} learners</strong> have gone past Unit 6 — a committed core is working through the full program, with first completions imminent.</div>
+                    </div>
+                    <div class="panel">
+                        <h2>How learners rate it</h2>
+                        <div class="hint">Based on ${d.sTotal} in-course survey responses.</div>
+                        <div class="nps-hero"><span class="big">${d.npsScore}</span><span class="scale">NPS (−100 to +100)</span></div>
+                        <div class="stacked">
+                            <span class="seg-good" style="width:${pctOf(d.promoters)}%"></span>
+                            <span class="seg-warn" style="width:${pctOf(d.passives)}%"></span>
+                            <span class="seg-bad" style="width:${pctOf(d.detractors)}%"></span>
+                        </div>
+                        <div class="legend">
+                            <span><span class="dot" style="background:var(--good)"></span>${d.promoters} promoters</span>
+                            <span><span class="dot" style="background:var(--warn)"></span>${d.passives} passive</span>
+                            <span><span class="dot" style="background:var(--bad)"></span>${d.detractors} detractors</span>
+                        </div>
+                        ${subRatingRows?`<div class="subratings">${subRatingRows}</div>`:''}
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-title">Voice of the learner — the #1 thing people took away</div>
+                    <div class="quotes">${quoteCards}</div>
+                </div>
+            </div>
+            <footer>
+                Live data from the Future of PMM platform (Supabase), refreshed on load. Individual learner records are omitted from this view.
+                · <a href="/admin/">Full admin dashboard →</a>
+            </footer>`;
+    }
+    </script>
+</body>
+</html>
