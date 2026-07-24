@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/unit-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9: Segmentation & Sizing | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--sap-blue); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: var(--dark-slate); }
+        
+        .objectives-box {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--sap-blue); font-size: 1.1rem; }
+        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
+        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .key-concept {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--gold);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .key-concept h4 { color: var(--dark-slate); margin-bottom: 0.5rem; font-size: 1rem; }
+        .key-concept p { margin: 0; font-size: 0.95rem; }
+        
+        .case-study {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--sap-orange);
+        }
+        .case-study h4 { color: var(--sap-orange); margin-bottom: 0.5rem; font-size: 1rem; }
+        .case-study p { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        
+        .sap-context {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--green);
+        }
+        .sap-context h4 { color: var(--green); margin-bottom: 0.5rem; font-size: 1rem; }
+        .sap-context p { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .sap-context ul { margin: 0.5rem 0 0 1.25rem; font-size: 0.95rem; }
+        
+        /* Segment Matrix */
+        .segment-matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        .segment-matrix .header-cell {
+            background: var(--dark-slate);
+            color: white;
+            padding: 0.75rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .segment-matrix .cell {
+            background: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .segment-matrix .row-header {
+            background: #f5f5f5;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .segment-matrix .cell.highlight { background: #E3F2FD; }
+        .segment-matrix .cell .emoji { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+        .segment-matrix .cell .label { font-size: 0.8rem; color: #666; }
+        
+        @media (max-width: 700px) {
+            .segment-matrix { grid-template-columns: repeat(2, 1fr); }
+            .segment-matrix .header-cell:nth-child(n+3) { display: none; }
+        }
+        
+        /* Growth Quadrant */
+        .growth-quadrant {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .quadrant-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-top: 4px solid;
+        }
+        .quadrant-box.stars { border-color: var(--gold); }
+        .quadrant-box.question { border-color: var(--sap-blue); }
+        .quadrant-box.cash { border-color: var(--green); }
+        .quadrant-box.dogs { border-color: #999; }
+        .quadrant-box h4 { font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .quadrant-box p { font-size: 0.9rem; color: #666; margin: 0; }
+        
+        @media (max-width: 600px) { .growth-quadrant { grid-template-columns: 1fr; } }
+        
+        /* Buyer Tiers */
+        .tier-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .tier-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .tier-card .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .tier-card h4 { color: var(--dark-slate); margin-bottom: 0.5rem; }
+        .tier-card .revenue { font-size: 0.85rem; color: #666; margin-bottom: 0.75rem; }
+        .tier-card ul { text-align: left; font-size: 0.85rem; margin: 0; padding-left: 1.25rem; }
+        
+        @media (max-width: 700px) { .tier-cards { grid-template-columns: 1fr; } }
+        
+        /* TAM Pyramid */
+        .tam-pyramid {
+            max-width: 500px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+        .tam-level {
+            padding: 1.25rem;
+            margin: 0 auto;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+        }
+        .tam-level.tam { background: var(--dark-slate); width: 100%; }
+        .tam-level.sam { background: var(--sap-blue); width: 75%; margin-top: -8px; }
+        .tam-level.som { background: var(--green); width: 50%; margin-top: -8px; }
+        .tam-level .amount { font-size: 1.5rem; display: block; }
+        .tam-level .label { font-size: 0.85rem; opacity: 0.9; }
+        
+        /* Funnel Stages */
+        .funnel-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        .funnel-stage {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .funnel-stage::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+        .funnel-stage.awareness::before { background: #90CAF9; }
+        .funnel-stage.consideration::before { background: #64B5F6; }
+        .funnel-stage.decision::before { background: #42A5F5; }
+        .funnel-stage.purchase::before { background: #1E88E5; }
+        .funnel-stage.adoption::before { background: var(--green); }
+        .funnel-stage .stage-name { font-weight: 600; min-width: 120px; }
+        .funnel-stage .stage-desc { font-size: 0.9rem; color: #666; }
+        
+        /* Buying Committee */
+        .committee-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .committee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .committee-card h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 1rem; }
+        .committee-card .power { font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+        .committee-card .power.high { background: #FFCDD2; color: #C62828; }
+        .committee-card .power.medium { background: #FFF9C4; color: #F57F17; }
+        .committee-card .power.low { background: #C8E6C9; color: #2E7D32; }
+        .committee-card p { font-size: 0.9rem; color: #666; margin: 0.5rem 0 0; }
+        
+        @media (max-width: 600px) { .committee-grid { grid-template-columns: 1fr; } }
+        
+        /* AI Prompt Box */
+        .ai-prompt {
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #9C27B0;
+        }
+        .ai-prompt h4 { color: #7B1FA2; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .ai-prompt pre {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .stat-box .number { font-size: 2.5rem; font-weight: 700; color: var(--sap-blue); }
+        .stat-box .label { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+        
+        @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+        
+        /* Quiz CTA */
+        .quiz-cta {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+        }
+        .quiz-cta h2 { color: white; border: none; margin-bottom: 0.75rem; }
+        .quiz-cta p { opacity: 0.9; margin-bottom: 1.5rem; }
+        .quiz-cta .btn {
+            display: inline-block;
+            background: white;
+            color: var(--dark-slate);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .quiz-cta .btn:hover { transform: translateY(-2px); }
+        
+        .footer { text-align: center; padding: 2rem; color: #666; font-size: 0.9rem; }
+        .footer a { color: var(--sap-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/future-pmm-logo.png" alt="Future of PMM">
+        </a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <a href="/framework/">Framework</a>
+        </nav>
+    </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="unit-label">Unit 9 <span class="funnel-badge">📊 Strategy</span></div>
+        <h1>Segmentation & Sizing</h1>
+        <div class="time">⏱️ 30 minutes • 📖 Reading + Interactive Examples</div>
+    </div>
+</section>
+
+<main>
+    <div class="objectives-box">
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Segment markets by category, competition, growth potential, and buyer tier (SMB/Mid-market/Enterprise)</li>
+            <li>Build a TAM/SAM/SOM analysis using AI-assisted research and available data</li>
+            <li>Map customer segments by funnel stage, role, and buyer power</li>
+            <li>Identify buying committees and understand who influences vs. who decides</li>
+        </ul>
+    </div>
+    
+    <!-- LESSON 1: Market Segmentation -->
+    <section id="lesson1">
+        <h2>Lesson 1: Market Segmentation</h2>
+        
+        <p>Before you can position a product, enable a sales team, or run a campaign, you need to answer a deceptively simple question: <strong>who are we going after?</strong></p>
+        
+        <p>Market segmentation is the discipline of dividing a broad market into distinct subsets of buyers who have common needs, characteristics, or behaviors. For B2B software—especially at enterprise scale—this means thinking along three dimensions:</p>
+        
+        <ol>
+            <li><strong>Category view</strong> — where do we play relative to competition?</li>
+            <li><strong>Growth view</strong> — which segments are expanding vs. contracting?</li>
+            <li><strong>Buyer tier view</strong> — SMB, mid-market, or enterprise?</li>
+        </ol>
+        
+        <h3>The Category-Competition Matrix</h3>
+        
+        <p>Every market can be mapped against two axes: <strong>how mature is the category</strong> (established vs. emerging) and <strong>how crowded is the competition</strong> (fragmented vs. consolidated). This gives you four strategic quadrants:</p>
+        
+        <div class="segment-matrix">
+            <div class="header-cell"></div>
+            <div class="header-cell">Fragmented Competition</div>
+            <div class="header-cell">Consolidated Competition</div>
+            <div class="header-cell">Our Opportunity</div>
+            
+            <div class="cell row-header">Emerging Category</div>
+            <div class="cell">
+                <span class="emoji">🌱</span>
+                <span class="label">Land grab — first mover wins</span>
+            </div>
+            <div class="cell">
+                <span class="emoji">⚔️</span>
+                <span class="label">Platform war — pick your battles</span>
+            </div>
+            <div class="cell highlight">
+                <span class="emoji">🎯</span>
+                <span class="label">Define the category narrative</span>
+            </div>
+            
+            <div class="cell row-header">Established Category</div>
+            <div class="cell">
+                <span class="emoji">🔄</span>
+                <span class="label">Consolidation play — acquire or be acquired</span>
+            </div>
+            <div class="cell">
+                <span class="emoji">🏰</span>
+                <span class="label">Defend & expand — switching costs matter</span>
+            </div>
+            <div class="cell highlight">
+                <span class="emoji">💡</span>
+                <span class="label">Differentiate on outcomes, not features</span>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>💡 Why This Matters for PMM</h4>
+            <p>Your messaging strategy depends on which quadrant you're in. In emerging/fragmented markets, you're educating buyers on <em>why this category matters</em>. In established/consolidated markets, you're persuading them <em>why you're the better choice</em>. Same product, very different narrative.</p>
+        </div>
+        
+        <h3>Growth Quadrant Analysis</h3>
+        
+        <p>Not all segments deserve equal investment. The classic BCG matrix—adapted for software markets—helps you prioritize:</p>
+        
+        <div class="growth-quadrant">
+            <div class="quadrant-box stars">
+                <h4>⭐ Stars</h4>
+                <p>High growth, high share. Invest heavily—these are your future cash cows.</p>
+            </div>
+            <div class="quadrant-box question">
+                <h4>❓ Question Marks</h4>
+                <p>High growth, low share. Decide: double down or exit? Can't stay here forever.</p>
+            </div>
+            <div class="quadrant-box cash">
+                <h4>💰 Cash Cows</h4>
+                <p>Low growth, high share. Milk for profit, fund your stars and question marks.</p>
+            </div>
+            <div class="quadrant-box dogs">
+                <h4>🐕 Dogs</h4>
+                <p>Low growth, low share. Divest or harvest. Don't throw good money after bad.</p>
+            </div>
+        </div>
+        
+        <div class="sap-context">
+            <h4>🟢 SAP Context</h4>
+            <p>At SAP, segmentation often maps to our industry cloud strategy. Some industries (like retail or utilities) have mature, established needs. Others (like sustainability or AI governance) are emerging. Your PMM strategy should reflect where your product sits in each industry's growth curve.</p>
+        </div>
+        
+        <h3>Buyer Tier Segmentation</h3>
+        
+        <p>The same product sold to a 50-person company and a 50,000-person enterprise requires completely different motions:</p>
+        
+        <div class="tier-cards">
+            <div class="tier-card">
+                <div class="icon">🏪</div>
+                <h4>SMB</h4>
+                <div class="revenue">&lt; $50M revenue</div>
+                <ul>
+                    <li>Self-serve or low-touch</li>
+                    <li>Price-sensitive</li>
+                    <li>Fast decisions (days/weeks)</li>
+                    <li>1-2 decision makers</li>
+                </ul>
+            </div>
+            <div class="tier-card">
+                <div class="icon">🏢</div>
+                <h4>Mid-Market</h4>
+                <div class="revenue">$50M - $1B revenue</div>
+                <ul>
+                    <li>Inside sales + partners</li>
+                    <li>Value-conscious</li>
+                    <li>Moderate cycles (weeks/months)</li>
+                    <li>3-5 decision makers</li>
+                </ul>
+            </div>
+            <div class="tier-card">
+                <div class="icon">🏛️</div>
+                <h4>Enterprise</h4>
+                <div class="revenue">&gt; $1B revenue</div>
+                <ul>
+                    <li>Field sales + solutions</li>
+                    <li>Outcome-focused</li>
+                    <li>Long cycles (months/quarters)</li>
+                    <li>7-12+ decision makers</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>💡 The Motion Must Match the Market</h4>
+            <p>Enterprise messaging emphasizes <strong>risk reduction</strong> and <strong>strategic alignment</strong>. SMB messaging emphasizes <strong>speed to value</strong> and <strong>simplicity</strong>. Mid-market is the awkward middle—too big for self-serve, too small for white-glove. Get the motion wrong and you'll burn CAC fighting the wrong battle.</p>
+        </div>
+    </section>
+    
+    <!-- LESSON 2: Building TAM with AI -->
+    <section id="lesson2">
+        <h2>Lesson 2: Building TAM with AI</h2>
+        
+        <p>Total Addressable Market (TAM) isn't just a number for investor decks—it's the foundation for territory planning, resource allocation, and strategic prioritization. But too often, TAM analysis is either hand-wavy ("it's a $50B market!") or paralyzingly complex.</p>
+        
+        <p>AI changes that. With the right prompts and data sources, you can build defensible TAM models in hours, not weeks.</p>
+        
+        <h3>The TAM/SAM/SOM Framework</h3>
+        
+        <div class="tam-pyramid">
+            <div class="tam-level tam">
+                <span class="amount">$50B</span>
+                <span class="label">TAM — Total Addressable Market</span>
+            </div>
+            <div class="tam-level sam">
+                <span class="amount">$12B</span>
+                <span class="label">SAM — Serviceable Addressable Market</span>
+            </div>
+            <div class="tam-level som">
+                <span class="amount">$800M</span>
+                <span class="label">SOM — Serviceable Obtainable Market</span>
+            </div>
+        </div>
+        
+        <ul>
+            <li><strong>TAM</strong> = Everyone who could theoretically buy your product category</li>
+            <li><strong>SAM</strong> = The portion you can actually reach with your current go-to-market</li>
+            <li><strong>SOM</strong> = What you can realistically capture given competition and resources</li>
+        </ul>
+        
+        <h3>Data Sources for TAM Analysis</h3>
+        
+        <p>Good TAM analysis triangulates multiple data sources:</p>
+        
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="number">📊</div>
+                <div class="label">Industry reports (Gartner, IDC, Forrester)</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">🏢</div>
+                <div class="label">Public filings (10-K, S-1, earnings calls)</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">🔍</div>
+                <div class="label">LinkedIn, ZoomInfo, company databases</div>
+            </div>
+        </div>
+        
+        <h3>AI-Assisted TAM Building</h3>
+        
+        <p>Here's how to use AI to accelerate your TAM analysis:</p>
+        
+        <div class="ai-prompt">
+            <h4>🤖 Sample Prompt: Top-Down TAM</h4>
+            <pre>I'm sizing the market for [product category] in [region/industry].
+
+Help me build a TAM estimate using:
+1. Industry analyst reports (cite Gartner, IDC, Forrester if available)
+2. Public company revenue disclosures in this space
+3. Growth rate projections (CAGR)
+
+Structure the output as:
+- TAM: Total market size with methodology
+- Key assumptions and limitations
+- 3-year projection with growth drivers</pre>
+        </div>
+        
+        <div class="ai-prompt">
+            <h4>🤖 Sample Prompt: Bottom-Up TAM</h4>
+            <pre>Help me build a bottom-up TAM for [product] targeting [buyer persona].
+
+Calculate:
+1. Total number of target companies by segment (SMB/Mid/Enterprise)
+2. Estimated # of [relevant users/seats/units] per company tier
+3. Average deal size by tier based on [pricing model]
+4. Multiply to get TAM, then adjust for:
+   - Geographic coverage (we only sell in [regions])
+   - Industry fit (we focus on [industries])
+   - Tech stack requirements
+
+Show your math at each step.</pre>
+        </div>
+        
+        <div class="case-study">
+            <h4>📌 Example: Sizing SAP Datasphere TAM</h4>
+            <p><strong>Top-down:</strong> IDC sizes the global data management market at $82B (2024), growing 12% CAGR. Cloud data platforms represent ~35% = $28.7B.</p>
+            <p><strong>Bottom-up:</strong> 50,000 enterprises globally with 500+ employees × average $200K annual data platform spend × 40% addressable (right tech stack, cloud-ready) = $4B SAM.</p>
+            <p><strong>SOM:</strong> Current market share (~8%) × growth investments = $500M realistic year target.</p>
+        </div>
+        
+        <div class="key-concept">
+            <h4>💡 The "So What" Test</h4>
+            <p>TAM analysis isn't academic—it drives real decisions. <strong>Which segments do we prioritize?</strong> Where do we hire? Which features matter most? A good TAM model should make these tradeoffs explicit, not hide them in aggregate numbers.</p>
+        </div>
+    </section>
+    
+    <!-- LESSON 3: Customer Segmentation Deep Dive -->
+    <section id="lesson3">
+        <h2>Lesson 3: Customer Segmentation Deep Dive</h2>
+        
+        <p>Market segmentation tells you <em>which companies</em> to target. Customer segmentation tells you <em>which people</em> within those companies matter—and what motivates them.</p>
+        
+        <p>At SAP scale, this means understanding three dimensions:</p>
+        <ol>
+            <li><strong>Funnel stages</strong> — where is the buyer in their journey?</li>
+            <li><strong>Roles</strong> — who does what in the buying process?</li>
+            <li><strong>Buyer power</strong> — who decides vs. who influences?</li>
+        </ol>
+        
+        <h3>Funnel Stage Segmentation</h3>
+        
+        <p>Different content, different channels, different messages for each stage:</p>
+        
+        <div class="funnel-visual">
+            <div class="funnel-stage awareness">
+                <span class="stage-name">🔍 Awareness</span>
+                <span class="stage-desc">Buyer recognizes a problem exists. Content: thought leadership, trends, pain points.</span>
+            </div>
+            <div class="funnel-stage consideration">
+                <span class="stage-name">🤔 Consideration</span>
+                <span class="stage-desc">Buyer evaluates solution categories. Content: comparison guides, use cases, ROI frameworks.</span>
+            </div>
+            <div class="funnel-stage decision">
+                <span class="stage-name">📋 Decision</span>
+                <span class="stage-desc">Buyer compares specific vendors. Content: demos, proof points, customer references.</span>
+            </div>
+            <div class="funnel-stage purchase">
+                <span class="stage-name">✍️ Purchase</span>
+                <span class="stage-desc">Buyer negotiates and procures. Content: business cases, security/compliance docs, pricing.</span>
+            </div>
+            <div class="funnel-stage adoption">
+                <span class="stage-name">🚀 Adoption</span>
+                <span class="stage-desc">Buyer implements and expands. Content: onboarding, training, success stories.</span>
+            </div>
+        </div>
+        
+        <div class="sap-context">
+            <h4>🟢 SAP Funnel Reality</h4>
+            <p>Enterprise deals rarely follow a linear funnel. Buyers loop back, stakeholders enter late, and procurement can restart the whole process. Smart PMMs map content to <em>buyer needs at each stage</em>, not just sequential steps. Build modular content that works when the CIO asks "wait, remind me why we need this?" in month six.</p>
+        </div>
+        
+        <h3>Role-Based Segmentation</h3>
+        
+        <p>The same product needs different messages for different roles:</p>
+        
+        <div class="segment-matrix" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="header-cell">Role</div>
+            <div class="header-cell">Cares About</div>
+            <div class="header-cell">Content That Works</div>
+            
+            <div class="cell row-header">C-Suite</div>
+            <div class="cell"><span class="label">Strategic outcomes, competitive advantage, risk</span></div>
+            <div class="cell"><span class="label">Executive briefings, board-ready ROI, analyst endorsements</span></div>
+            
+            <div class="cell row-header">IT/Technical</div>
+            <div class="cell"><span class="label">Architecture, integration, security, maintenance</span></div>
+            <div class="cell"><span class="label">Technical docs, sandbox access, reference architectures</span></div>
+            
+            <div class="cell row-header">Line of Business</div>
+            <div class="cell"><span class="label">Solving their specific problem, usability, speed</span></div>
+            <div class="cell"><span class="label">Use cases, demos, day-in-the-life scenarios</span></div>
+            
+            <div class="cell row-header">Procurement</div>
+            <div class="cell"><span class="label">Price, terms, compliance, vendor risk</span></div>
+            <div class="cell"><span class="label">Competitive pricing, certifications, legal terms</span></div>
+        </div>
+        
+        <h3>The Buying Committee: Buyers vs. Influencers</h3>
+        
+        <p>Enterprise deals involve committees, not individuals. Understanding buyer power is critical:</p>
+        
+        <div class="committee-grid">
+            <div class="committee-card">
+                <h4>👔 Economic Buyer <span class="power high">High Power</span></h4>
+                <p>Controls the budget. Usually a VP or C-level. Can say yes when everyone else says no. Can kill deals single-handedly.</p>
+            </div>
+            <div class="committee-card">
+                <h4>👩‍💻 Technical Buyer <span class="power high">High Power</span></h4>
+                <p>Validates technical fit. Can veto on architecture, security, or integration concerns. Often IT or Engineering leadership.</p>
+            </div>
+            <div class="committee-card">
+                <h4>📊 User Buyer <span class="power medium">Medium Power</span></h4>
+                <p>Will actually use the product. Drives adoption success. Can influence with enthusiasm or kill with indifference.</p>
+            </div>
+            <div class="committee-card">
+                <h4>🛡️ Coach/Champion <span class="power medium">Medium Power</span></h4>
+                <p>Your internal advocate. Sells when you're not in the room. Critical for navigating politics. Find and enable them.</p>
+            </div>
+            <div class="committee-card">
+                <h4>📋 Procurement <span class="power low">Gatekeeping</span></h4>
+                <p>Manages the process, not the decision. Can slow deals but rarely kills them alone. Respect the process.</p>
+            </div>
+            <div class="committee-card">
+                <h4>⚖️ Legal/Security <span class="power low">Gatekeeping</span></h4>
+                <p>Risk and compliance review. Can block deals on red flags. Front-load compliance docs to avoid late surprises.</p>
+            </div>
+        </div>
+        
+        <div class="key-concept">
+            <h4>💡 Multi-Threading is Survival</h4>
+            <p>Deals that depend on a single champion are fragile. That person leaves, gets promoted, or loses influence—and your deal evaporates. Smart PMMs create content that helps sales <strong>multi-thread</strong>: reach multiple stakeholders with role-specific value props. If you're only talking to one person, you're one reorg away from starting over.</p>
+        </div>
+        
+        <div class="case-study">
+            <h4>📌 Mapping a Real Deal</h4>
+            <p>For a $2M SAP Datasphere deal, a typical buying committee might include:</p>
+            <ul style="margin-top: 0.5rem;">
+                <li><strong>Economic Buyer:</strong> CFO or CDO (approves spend, cares about business outcomes)</li>
+                <li><strong>Technical Buyer:</strong> VP Data Engineering (validates architecture, integration with existing stack)</li>
+                <li><strong>User Buyer:</strong> BI/Analytics team leads (will build on the platform daily)</li>
+                <li><strong>Champion:</strong> Director of Data Strategy (believes in the vision, drives internal consensus)</li>
+                <li><strong>Gatekeepers:</strong> Procurement, InfoSec, Legal</li>
+            </ul>
+            <p style="margin-top: 0.75rem; margin-bottom: 0;">Your PMM job: ensure sales has the right asset for each person. Economic buyer gets ROI models. Technical buyer gets architecture docs. Users get demos. Champion gets competitive ammunition.</p>
+        </div>
+    </section>
+    
+    <!-- Quiz CTA -->
+    <div class="quiz-cta">
+        <h2>Ready to Test Your Knowledge?</h2>
+        <p>Complete the Unit 9 quiz to earn your badge and unlock the next unit.</p>
+        <a href="quiz.html" class="btn">Take the Quiz →</a>
+    </div>
+</main>
+
+<footer class="footer">
+    <p><a href="/curriculum/">← Back to Curriculum</a> · <a href="/framework/">PMM Framework</a></p>
+</footer>
+
+<script>
+// Simple scroll progress
+window.addEventListener('scroll', () => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / docHeight) * 100;
+    document.getElementById('progressFill').style.width = scrolled + '%';
+});
+</script>
+
+</body>
+</html>

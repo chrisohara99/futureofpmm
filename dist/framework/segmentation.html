@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segmentation & Sizing | PMM Framework</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0369a1;
+            --primary-light: #e0f2fe;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --green: #10b981;
+            --yellow: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--primary); }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo span { color: var(--primary); }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), #0ea5e9);
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .phase-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            max-width: 700px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        .asset-section {
+            margin-bottom: 2rem;
+        }
+
+        .asset-section h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .asset-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .asset-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .asset-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn.secondary {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn.secondary:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Progress Card */
+        .progress-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 100px;
+        }
+
+        .progress-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-item:last-child {
+            border-bottom: none;
+        }
+
+        .progress-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .progress-icon.complete {
+            background: var(--green);
+            color: white;
+        }
+
+        .progress-icon.pending {
+            background: var(--border);
+            color: var(--text-light);
+        }
+
+        .progress-text {
+            flex: 1;
+        }
+
+        .progress-text span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .progress-text small {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Leave Behind */
+        .leave-behind {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: none;
+        }
+
+        .leave-behind h3 {
+            color: #92400e;
+        }
+
+        .leave-behind p {
+            color: #a16207;
+        }
+
+        .leave-behind .btn {
+            background: #f59e0b;
+        }
+
+        .leave-behind .btn:hover {
+            background: #d97706;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/framework/" class="back-link">
+                ← Back to Framework
+            </a>
+            <a href="/" class="logo">Future of <span>PMM</span></a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="phase-badge">Strategize Phase</span>
+            <h1>📊 Segmentation & Sizing</h1>
+            <p>Define target segments, size addressable markets, and understand buyer tiers. Master TAM/SAM/SOM analysis and map the buying committee to win enterprise deals.</p>
+            <div class="hero-meta">
+                <div class="meta-item">📚 Unit 9</div>
+                <div class="meta-item">⏱️ ~30 min</div>
+                <div class="meta-item">✅ Quiz included</div>
+            </div>
+        </div>
+    </section>
+
+    <main class="main">
+        <div class="content-grid">
+            <div class="content-main">
+                <!-- Assessment -->
+                <section class="asset-section">
+                    <h2>🎯 Mini Assessment</h2>
+                    <div class="asset-card">
+                        <h3>Segmentation Self-Assessment</h3>
+                        <p>Rate your current capabilities across market segmentation, TAM analysis, and customer targeting. Identify your strengths and areas for growth.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/assessments/segmentation.html" class="btn">Start Assessment</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Training -->
+                <section class="asset-section">
+                    <h2>📚 Training Module</h2>
+                    <div class="asset-card">
+                        <h3>Segmentation & Sizing Fundamentals</h3>
+                        <p>A comprehensive module covering market segmentation (category, growth, buyer tiers), TAM building with AI, and customer segmentation (funnel stages, roles, buyer power).</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/unit-09/" class="btn">Start Training</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quiz -->
+                <section class="asset-section">
+                    <h2>✅ Knowledge Check</h2>
+                    <div class="asset-card">
+                        <h3>Unit 9 Quiz</h3>
+                        <p>Test your understanding of segmentation concepts. Score 80% or higher to unlock your completion badge.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/unit-09/quiz.html" class="btn">Take Quiz</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Lab -->
+                <section class="asset-section">
+                    <h2>🔬 Hands-on Lab</h2>
+                    <div class="asset-card">
+                        <h3>Geo Visibility Analyzer</h3>
+                        <p>Analyze geographic market segments and regional positioning. Understand where your product has traction and where to expand.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/labs/geo-visibility.html" class="btn">Start Lab</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Leave Behind -->
+                <section class="asset-section">
+                    <h2>📄 Leave Behind</h2>
+                    <div class="asset-card leave-behind">
+                        <h3>Segmentation Toolkit</h3>
+                        <p>TAM/SAM/SOM templates, buyer tier cheat sheets, and buying committee mapping tools from the textbook.</p>
+                        <div class="btn-row">
+                            <a href="/curriculum/toolkits/segmentation-toolkit.pdf" class="btn">Download Toolkit (.pdf)</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <aside>
+                <div class="progress-card">
+                    <h3>Your Progress</h3>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">1</div>
+                        <div class="progress-text">
+                            <span>Assessment</span>
+                            <small>Not started</small>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">2</div>
+                        <div class="progress-text">
+                            <span>Training</span>
+                            <small>3 lessons</small>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">3</div>
+                        <div class="progress-text">
+                            <span>Quiz</span>
+                            <small>80% to pass</small>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-icon pending">4</div>
+                        <div class="progress-text">
+                            <span>Lab</span>
+                            <small>Optional</small>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p><a href="/framework/">← Back to PMM Framework</a> · <a href="/">Future of PMM</a></p>
+    </footer>
+</body>
+</html>

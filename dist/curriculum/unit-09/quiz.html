@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/unit-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9 Assessment | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero { background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%); padding: 2rem; color: white; text-align: center; }
+        .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .assessment-intro { background: white; border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .assessment-intro p { color: #666; margin-bottom: 0.5rem; }
+        .scoring-info { display: flex; gap: 2rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--light-gray); flex-wrap: wrap; }
+        .scoring-info div { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+        
+        .exercise { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .exercise-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--light-gray); flex-wrap: wrap; gap: 0.5rem; }
+        .exercise-number { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .exercise-title { font-size: 1.2rem; color: var(--dark-slate); font-weight: 600; }
+        .exercise-points { background: var(--light-blue); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        
+        .exercise-instructions { background: #F8F9FA; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem; color: #555; }
+        
+        /* Sorting Exercise */
+        .sort-items { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .sort-item {
+            background: var(--dark-slate);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .sort-item:hover { transform: scale(1.02); }
+        .sort-item.selected { background: var(--sap-orange); box-shadow: 0 4px 12px rgba(237,125,49,0.3); }
+        .sort-item.placed { opacity: 0.4; cursor: default; }
+        
+        .sort-zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        @media (max-width: 700px) { .sort-zones { grid-template-columns: 1fr; } }
+        .sort-zones.two-col { grid-template-columns: repeat(2, 1fr); }
+        
+        .sort-zone {
+            min-height: 140px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #FAFAFA;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sort-zone:hover { background: #F0F4F8; border-color: #aaa; }
+        .sort-zone.active { background: #E3F2FD; border-color: var(--sap-blue); }
+        .sort-zone-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.75rem; text-align: center; padding: 0.5rem; border-radius: 6px; }
+        .sort-zone.smb .sort-zone-title { background: #E8F5E9; color: var(--green); }
+        .sort-zone.mid .sort-zone-title { background: #FFF3E0; color: var(--sap-orange); }
+        .sort-zone.ent .sort-zone-title { background: #E3F2FD; color: var(--sap-blue); }
+        .sort-zone-items { display: flex; flex-direction: column; gap: 0.5rem; }
+        .sort-zone-items .sort-item { font-size: 0.8rem; padding: 0.5rem 0.75rem; }
+        .sort-zone.smb .sort-zone-items .sort-item { background: var(--green); }
+        .sort-zone.mid .sort-zone-items .sort-item { background: var(--sap-orange); }
+        .sort-zone.ent .sort-zone-items .sort-item { background: var(--sap-blue); }
+        
+        .help-text { font-size: 0.8rem; color: #888; margin-top: 1rem; text-align: center; }
+        
+        /* Match Exercise */
+        .match-container { margin-top: 1rem; }
+        .match-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray); flex-wrap: wrap; }
+        .match-row:last-child { border-bottom: none; }
+        .match-left { font-weight: 500; min-width: 200px; }
+        .match-arrow { color: #999; }
+        .match-select { padding: 0.5rem 1rem; border-radius: 6px; border: 2px solid #ddd; font-size: 0.95rem; cursor: pointer; min-width: 200px; }
+        .match-select:focus { border-color: var(--sap-blue); outline: none; }
+        .match-select.correct { border-color: var(--green); background: #E8F5E9; }
+        .match-select.incorrect { border-color: var(--red); background: #FFEBEE; }
+        
+        /* Scenario */
+        .scenario-box { background: #F8F9FA; padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid var(--sap-blue); }
+        .scenario-box h4 { color: var(--sap-blue); margin-bottom: 0.75rem; }
+        .scenario-box p { font-size: 0.95rem; margin-bottom: 0.5rem; }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; background: white; border: 2px solid #eee; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { border-color: var(--sap-blue); background: #FAFAFA; }
+        .option.selected { border-color: var(--sap-blue); background: #E3F2FD; }
+        .option.correct { border-color: var(--green); background: #E8F5E9; }
+        .option.incorrect { border-color: var(--red); background: #FFEBEE; }
+        .option input { display: none; }
+        .option-marker { background: var(--dark-slate); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+        .option.correct .option-marker { background: var(--green); }
+        .option.incorrect .option-marker { background: var(--red); }
+        .option-text { font-size: 0.95rem; }
+        
+        /* Feedback */
+        .feedback-box { padding: 1rem; border-radius: 8px; margin-top: 1rem; display: none; font-size: 0.95rem; }
+        .feedback-box.show { display: block; }
+        .feedback-box.correct { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+        .feedback-box.incorrect { background: #FFEBEE; color: #C62828; border: 1px solid #EF9A9A; }
+        
+        /* Submit */
+        .submit-section { text-align: center; margin: 2rem 0; }
+        .submit-btn { background: var(--sap-blue); color: white; border: none; padding: 1rem 3rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .submit-btn:hover { background: #3D64A8; transform: translateY(-2px); }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        /* Results */
+        .results-container { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: none; margin-top: 2rem; }
+        .results-container.show { display: block; }
+        .results-header { text-align: center; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .results-header.pass { background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); }
+        .results-header.fail { background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%); }
+        .results-score { font-size: 4rem; font-weight: 800; }
+        .results-header.pass .results-score { color: var(--green); }
+        .results-header.fail .results-score { color: var(--red); }
+        .results-message { font-size: 1.5rem; font-weight: 600; margin-top: 0.5rem; }
+        .results-header.pass .results-message { color: #2E7D32; }
+        .results-header.fail .results-message { color: #C62828; }
+        .results-detail { color: #666; margin-top: 0.5rem; }
+        
+        .breakdown { margin: 1.5rem 0; }
+        .breakdown h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--dark-slate); }
+        .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray); }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { font-weight: 500; }
+        .breakdown-score { font-family: monospace; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 4px; }
+        .breakdown-score.full { background: #E8F5E9; color: var(--green); }
+        .breakdown-score.partial { background: #FFF3E0; color: var(--sap-orange); }
+        .breakdown-score.zero { background: #FFEBEE; color: var(--red); }
+        
+        .next-steps { text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--light-gray); }
+        .next-steps h3 { margin-bottom: 1rem; }
+        .next-btn { display: inline-block; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 0.5rem; transition: all 0.2s; }
+        .next-btn.primary { background: var(--sap-blue); color: white; }
+        .next-btn.primary:hover { background: #3D64A8; }
+        .next-btn.secondary { background: #f5f5f5; color: var(--dark-slate); border: 2px solid #ddd; }
+        .next-btn.secondary:hover { border-color: var(--sap-blue); }
+        
+        .footer { text-align: center; padding: 2rem; color: #888; font-size: 0.85rem; }
+        .footer a { color: var(--sap-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/future-pmm-logo.png" alt="Future of PMM">
+        </a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="index.html">Unit 9</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <h1>Unit 9: Segmentation & Sizing</h1>
+        <p>Assessment • 4 exercises • ~10 minutes</p>
+    </div>
+</section>
+
+<main>
+    <div class="assessment-intro">
+        <p>Test your understanding of market segmentation, TAM analysis, and customer segmentation concepts.</p>
+        <div class="scoring-info">
+            <div>🎯 <strong>80%</strong> to pass</div>
+            <div>📝 <strong>4</strong> exercises</div>
+            <div>⏱️ <strong>~10</strong> minutes</div>
+        </div>
+    </div>
+    
+    <!-- Exercise 1: Buyer Tier Sorting -->
+    <div class="exercise" id="exercise1">
+        <div class="exercise-header">
+            <div>
+                <div class="exercise-number">Exercise 1 of 4</div>
+                <div class="exercise-title">Buyer Tier Characteristics</div>
+            </div>
+            <div class="exercise-points">27 points</div>
+        </div>
+        <p class="exercise-instructions">Sort each characteristic to the buyer tier it best describes. Tap an item, then tap a zone.</p>
+        
+        <div class="sort-items" id="items1">
+            <div class="sort-item" data-answer="smb" data-id="1">Self-serve or low-touch sales</div>
+            <div class="sort-item" data-answer="smb" data-id="2">1-2 decision makers</div>
+            <div class="sort-item" data-answer="smb" data-id="3">Price-sensitive buying</div>
+            <div class="sort-item" data-answer="mid" data-id="4">Inside sales + partners</div>
+            <div class="sort-item" data-answer="mid" data-id="5">3-5 decision makers</div>
+            <div class="sort-item" data-answer="mid" data-id="6">Weeks to months cycle</div>
+            <div class="sort-item" data-answer="ent" data-id="7">Field sales + solutions</div>
+            <div class="sort-item" data-answer="ent" data-id="8">7-12+ decision makers</div>
+            <div class="sort-item" data-answer="ent" data-id="9">Outcome-focused buying</div>
+        </div>
+        
+        <div class="sort-zones" id="zones1">
+            <div class="sort-zone smb" data-zone="smb">
+                <div class="sort-zone-title">🏪 SMB</div>
+                <div class="sort-zone-items"></div>
+            </div>
+            <div class="sort-zone mid" data-zone="mid">
+                <div class="sort-zone-title">🏢 Mid-Market</div>
+                <div class="sort-zone-items"></div>
+            </div>
+            <div class="sort-zone ent" data-zone="ent">
+                <div class="sort-zone-title">🏛️ Enterprise</div>
+                <div class="sort-zone-items"></div>
+            </div>
+        </div>
+        <p class="help-text">Tap item → Tap zone to place</p>
+        <div class="feedback-box" id="feedback1"></div>
+    </div>
+    
+    <!-- Exercise 2: TAM/SAM/SOM Matching -->
+    <div class="exercise" id="exercise2">
+        <div class="exercise-header">
+            <div>
+                <div class="exercise-number">Exercise 2 of 4</div>
+                <div class="exercise-title">TAM/SAM/SOM Definitions</div>
+            </div>
+            <div class="exercise-points">21 points</div>
+        </div>
+        <p class="exercise-instructions">Match each definition to the correct market sizing term:</p>
+        
+        <div class="match-container" id="matches">
+            <div class="match-row">
+                <div class="match-left">Everyone who could theoretically buy your product category</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="tam">
+                    <option value="">Select...</option>
+                    <option value="tam">TAM (Total Addressable)</option>
+                    <option value="sam">SAM (Serviceable Addressable)</option>
+                    <option value="som">SOM (Serviceable Obtainable)</option>
+                </select>
+            </div>
+            <div class="match-row">
+                <div class="match-left">The portion you can reach with your current go-to-market</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="sam">
+                    <option value="">Select...</option>
+                    <option value="tam">TAM (Total Addressable)</option>
+                    <option value="sam">SAM (Serviceable Addressable)</option>
+                    <option value="som">SOM (Serviceable Obtainable)</option>
+                </select>
+            </div>
+            <div class="match-row">
+                <div class="match-left">What you can realistically capture given competition and resources</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="som">
+                    <option value="">Select...</option>
+                    <option value="tam">TAM (Total Addressable)</option>
+                    <option value="sam">SAM (Serviceable Addressable)</option>
+                    <option value="som">SOM (Serviceable Obtainable)</option>
+                </select>
+            </div>
+        </div>
+        <div class="feedback-box" id="feedback2"></div>
+    </div>
+    
+    <!-- Exercise 3: Buying Committee Roles -->
+    <div class="exercise" id="exercise3">
+        <div class="exercise-header">
+            <div>
+                <div class="exercise-number">Exercise 3 of 4</div>
+                <div class="exercise-title">Buying Committee Roles</div>
+            </div>
+            <div class="exercise-points">28 points</div>
+        </div>
+        <p class="exercise-instructions">Match each buying committee role to their description:</p>
+        
+        <div class="match-container" id="matches3">
+            <div class="match-row">
+                <div class="match-left">Controls the budget, can say yes when others say no</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="economic">
+                    <option value="">Select...</option>
+                    <option value="economic">Economic Buyer</option>
+                    <option value="technical">Technical Buyer</option>
+                    <option value="user">User Buyer</option>
+                    <option value="champion">Coach/Champion</option>
+                </select>
+            </div>
+            <div class="match-row">
+                <div class="match-left">Validates architecture, security, integration fit</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="technical">
+                    <option value="">Select...</option>
+                    <option value="economic">Economic Buyer</option>
+                    <option value="technical">Technical Buyer</option>
+                    <option value="user">User Buyer</option>
+                    <option value="champion">Coach/Champion</option>
+                </select>
+            </div>
+            <div class="match-row">
+                <div class="match-left">Will actually use the product daily</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="user">
+                    <option value="">Select...</option>
+                    <option value="economic">Economic Buyer</option>
+                    <option value="technical">Technical Buyer</option>
+                    <option value="user">User Buyer</option>
+                    <option value="champion">Coach/Champion</option>
+                </select>
+            </div>
+            <div class="match-row">
+                <div class="match-left">Your internal advocate who sells when you're not in the room</div>
+                <div class="match-arrow">→</div>
+                <select class="match-select" data-answer="champion">
+                    <option value="">Select...</option>
+                    <option value="economic">Economic Buyer</option>
+                    <option value="technical">Technical Buyer</option>
+                    <option value="user">User Buyer</option>
+                    <option value="champion">Coach/Champion</option>
+                </select>
+            </div>
+        </div>
+        <div class="feedback-box" id="feedback3"></div>
+    </div>
+    
+    <!-- Exercise 4: Scenarios -->
+    <div class="exercise" id="exercise4">
+        <div class="exercise-header">
+            <div>
+                <div class="exercise-number">Exercise 4 of 4</div>
+                <div class="exercise-title">Segmentation Scenarios</div>
+            </div>
+            <div class="exercise-points">24 points</div>
+        </div>
+        
+        <div class="scenario-box">
+            <h4>📋 Scenario 1</h4>
+            <p>Your product is in an <strong>emerging category</strong> with <strong>fragmented competition</strong>. What should your PMM messaging strategy prioritize?</p>
+        </div>
+        
+        <div class="options" id="scenario1">
+            <label class="option" data-value="a">
+                <input type="radio" name="scenario1" value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">Focus on feature comparisons with competitors to show you're the best option.</span>
+            </label>
+            <label class="option" data-value="b">
+                <input type="radio" name="scenario1" value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Educate buyers on why this category matters — define the problem and own the narrative before competitors do.</span>
+            </label>
+            <label class="option" data-value="c">
+                <input type="radio" name="scenario1" value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Emphasize switching costs and integration depth to lock in customers.</span>
+            </label>
+            <label class="option" data-value="d">
+                <input type="radio" name="scenario1" value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">Wait for the market to mature before investing in messaging.</span>
+            </label>
+        </div>
+        <div class="feedback-box" id="feedback4a"></div>
+        
+        <div class="scenario-box" style="margin-top: 2rem;">
+            <h4>📋 Scenario 2</h4>
+            <p>Your sales team reports that deals are stalling because your champion just left the prospect company. What lesson does this teach about enterprise sales?</p>
+        </div>
+        
+        <div class="options" id="scenario2">
+            <label class="option" data-value="a">
+                <input type="radio" name="scenario2" value="a">
+                <span class="option-marker">A</span>
+                <span class="option-text">Find a new champion quickly — single-threading is the only way enterprise deals work.</span>
+            </label>
+            <label class="option" data-value="b">
+                <input type="radio" name="scenario2" value="b">
+                <span class="option-marker">B</span>
+                <span class="option-text">Multi-threading is survival — PMMs should create role-specific content that helps sales reach multiple stakeholders, not depend on one person.</span>
+            </label>
+            <label class="option" data-value="c">
+                <input type="radio" name="scenario2" value="c">
+                <span class="option-marker">C</span>
+                <span class="option-text">Focus on smaller deals where there's only one decision maker.</span>
+            </label>
+            <label class="option" data-value="d">
+                <input type="radio" name="scenario2" value="d">
+                <span class="option-marker">D</span>
+                <span class="option-text">This is a sales problem, not a PMM problem.</span>
+            </label>
+        </div>
+        <div class="feedback-box" id="feedback4b"></div>
+    </div>
+    
+    <div class="submit-section">
+        <button class="submit-btn" id="submitBtn">Submit Assessment</button>
+    </div>
+    
+    <div class="results-container" id="resultsContainer">
+        <div class="results-header" id="resultsHeader">
+            <div class="results-score" id="resultsScore">0%</div>
+            <div class="results-message" id="resultsMessage">Keep Learning!</div>
+            <div class="results-detail" id="resultsDetail"></div>
+        </div>
+        
+        <div class="breakdown">
+            <h3>Score Breakdown</h3>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Buyer Tier Sorting</span>
+                <span class="breakdown-score" id="score1">0/27</span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">TAM/SAM/SOM Matching</span>
+                <span class="breakdown-score" id="score2">0/21</span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Buying Committee Roles</span>
+                <span class="breakdown-score" id="score3">0/28</span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Scenarios</span>
+                <span class="breakdown-score" id="score4">0/24</span>
+            </div>
+        </div>
+        
+        <div class="next-steps">
+            <h3 id="nextStepsTitle">Next Steps</h3>
+            <div id="nextStepsContent"></div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <p><a href="/curriculum/">← Back to Curriculum</a> · <a href="index.html">Review Unit 9</a></p>
+</footer>
+
+<script>
+const supabase = window.supabase.createClient(
+    'https://yyqzkczutlidhgyiyawc.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM2NjQ0NzksImV4cCI6MjAyOTI0MDQ3OX0.L2A7_xD1hXxDV-V7lJt_mLw_Z-PV6gTt0gBxPSqQ_J8'
+);
+
+// Sorting logic
+let selectedItem = null;
+
+document.querySelectorAll('.sort-item').forEach(item => {
+    item.addEventListener('click', function() {
+        if (this.classList.contains('placed')) {
+            return;
+        }
+        document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedItem = this;
+    });
+});
+
+document.querySelectorAll('.sort-zone').forEach(zone => {
+    zone.addEventListener('click', function() {
+        if (!selectedItem) return;
+        
+        const zoneItems = this.querySelector('.sort-zone-items');
+        const clone = selectedItem.cloneNode(true);
+        clone.classList.remove('selected');
+        clone.classList.add('placed');
+        clone.addEventListener('click', function() {
+            this.remove();
+            const original = document.querySelector(`.sort-item[data-id="${this.dataset.id}"]`);
+            if (original) original.classList.remove('placed');
+        });
+        
+        zoneItems.appendChild(clone);
+        selectedItem.classList.add('placed');
+        selectedItem.classList.remove('selected');
+        selectedItem = null;
+    });
+});
+
+// Option selection
+document.querySelectorAll('.option').forEach(option => {
+    option.addEventListener('click', function() {
+        const name = this.querySelector('input').name;
+        document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+            input.closest('.option').classList.remove('selected');
+        });
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+
+// Submit
+document.getElementById('submitBtn').addEventListener('click', function() {
+    let totalScore = 0;
+    const scores = { ex1: 0, ex2: 0, ex3: 0, ex4: 0 };
+    
+    // Exercise 1: Buyer Tier Sorting (27 pts, 3 each)
+    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) scores.ex1 += 3;
+    });
+    
+    // Exercise 2: TAM/SAM/SOM Matching (21 pts, 7 each)
+    document.querySelectorAll('#matches .match-select').forEach(select => {
+        const isCorrect = select.value === select.dataset.answer;
+        select.classList.remove('correct', 'incorrect');
+        select.classList.add(isCorrect ? 'correct' : 'incorrect');
+        if (isCorrect) scores.ex2 += 7;
+    });
+    
+    // Exercise 3: Buying Committee Matching (28 pts, 7 each)
+    document.querySelectorAll('#matches3 .match-select').forEach(select => {
+        const isCorrect = select.value === select.dataset.answer;
+        select.classList.remove('correct', 'incorrect');
+        select.classList.add(isCorrect ? 'correct' : 'incorrect');
+        if (isCorrect) scores.ex3 += 7;
+    });
+    
+    // Exercise 4: Scenarios (24 pts, 12 each)
+    const s1 = document.querySelector('input[name="scenario1"]:checked');
+    const s2 = document.querySelector('input[name="scenario2"]:checked');
+    
+    document.querySelectorAll('#scenario1 .option, #scenario2 .option').forEach(opt => {
+        opt.classList.remove('correct', 'incorrect');
+    });
+    
+    if (s1) {
+        const opt = s1.closest('.option');
+        if (s1.value === 'b') {
+            scores.ex4 += 12;
+            opt.classList.add('correct');
+            document.getElementById('feedback4a').innerHTML = '✅ Correct! In emerging/fragmented markets, you\'re educating buyers on why this category matters — first mover defines the narrative.';
+            document.getElementById('feedback4a').className = 'feedback-box show correct';
+        } else {
+            opt.classList.add('incorrect');
+            document.querySelector('#scenario1 .option[data-value="b"]').classList.add('correct');
+            document.getElementById('feedback4a').innerHTML = '❌ In emerging categories with fragmented competition, the priority is category education — define why this problem matters before competitors do.';
+            document.getElementById('feedback4a').className = 'feedback-box show incorrect';
+        }
+    }
+    
+    if (s2) {
+        const opt = s2.closest('.option');
+        if (s2.value === 'b') {
+            scores.ex4 += 12;
+            opt.classList.add('correct');
+            document.getElementById('feedback4b').innerHTML = '✅ Correct! Multi-threading is survival. Deals that depend on one champion are fragile. PMMs should create role-specific content for multiple stakeholders.';
+            document.getElementById('feedback4b').className = 'feedback-box show correct';
+        } else {
+            opt.classList.add('incorrect');
+            document.querySelector('#scenario2 .option[data-value="b"]').classList.add('correct');
+            document.getElementById('feedback4b').innerHTML = '❌ The lesson is multi-threading — never depend on a single champion. PMMs create content for each buying committee role.';
+            document.getElementById('feedback4b').className = 'feedback-box show incorrect';
+        }
+    }
+    
+    totalScore = scores.ex1 + scores.ex2 + scores.ex3 + scores.ex4;
+    const passed = totalScore >= 80;
+    
+    // Show sorting feedback
+    const fb1 = document.getElementById('feedback1');
+    let correct1 = 0;
+    document.querySelectorAll('#zones1 .sort-zone-items .sort-item').forEach(item => {
+        const zone = item.closest('.sort-zone').dataset.zone;
+        if (item.dataset.answer === zone) correct1++;
+    });
+    fb1.innerHTML = `${correct1}/9 items placed correctly`;
+    fb1.className = `feedback-box show ${correct1 === 9 ? 'correct' : 'incorrect'}`;
+    
+    // TAM/SAM/SOM feedback
+    const matchFb = document.getElementById('feedback2');
+    const matchCorrect = document.querySelectorAll('#matches .match-select.correct').length;
+    matchFb.innerHTML = `${matchCorrect}/3 matches correct`;
+    matchFb.className = `feedback-box show ${matchCorrect === 3 ? 'correct' : 'incorrect'}`;
+    
+    // Buying committee feedback
+    const fb3 = document.getElementById('feedback3');
+    const match3Correct = document.querySelectorAll('#matches3 .match-select.correct').length;
+    fb3.innerHTML = `${match3Correct}/4 matches correct`;
+    fb3.className = `feedback-box show ${match3Correct === 4 ? 'correct' : 'incorrect'}`;
+    
+    // Display results
+    document.getElementById('resultsScore').textContent = `${totalScore}%`;
+    document.getElementById('resultsHeader').className = `results-header ${passed ? 'pass' : 'fail'}`;
+    document.getElementById('resultsMessage').textContent = passed ? '🎉 Segmentation Pro!' : 'Keep Learning!';
+    document.getElementById('resultsDetail').textContent = passed 
+        ? 'You understand market segmentation, TAM analysis, and buying committee dynamics.'
+        : 'Review the unit content and try again.';
+    
+    document.getElementById('score1').textContent = `${scores.ex1}/27`;
+    document.getElementById('score1').className = `breakdown-score ${scores.ex1 >= 24 ? 'full' : scores.ex1 > 0 ? 'partial' : 'zero'}`;
+    document.getElementById('score2').textContent = `${scores.ex2}/21`;
+    document.getElementById('score2').className = `breakdown-score ${scores.ex2 === 21 ? 'full' : scores.ex2 > 0 ? 'partial' : 'zero'}`;
+    document.getElementById('score3').textContent = `${scores.ex3}/28`;
+    document.getElementById('score3').className = `breakdown-score ${scores.ex3 === 28 ? 'full' : scores.ex3 > 0 ? 'partial' : 'zero'}`;
+    document.getElementById('score4').textContent = `${scores.ex4}/24`;
+    document.getElementById('score4').className = `breakdown-score ${scores.ex4 === 24 ? 'full' : scores.ex4 > 0 ? 'partial' : 'zero'}`;
+    
+    document.getElementById('nextStepsTitle').textContent = passed ? 'Congratulations!' : 'Not quite there yet';
+    document.getElementById('nextStepsContent').innerHTML = passed
+        ? `<p>You've mastered segmentation & sizing concepts!</p>
+           <a href="/curriculum/" class="next-btn primary">Back to Curriculum</a>`
+        : `<p>Review the segmentation concepts and try again.</p>
+           <a href="index.html" class="next-btn secondary">Review Unit 9</a>
+           <a href="javascript:location.reload()" class="next-btn primary">Retry Assessment</a>`;
+    
+    document.getElementById('resultsContainer').classList.add('show');
+    document.getElementById('submitBtn').disabled = true;
+    
+    // Save score
+    saveScore(totalScore);
+    
+    document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+});
+
+async function saveScore(percentage) {
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        
+        await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chapter: 'unit-09',
+                score: percentage,
+                total: 100,
+                percentage: percentage,
+                userId: user.id
+            })
+        });
+    } catch (error) {
+        console.error('Failed to save score:', error);
+    }
+}
+</script>
+</body>
+</html>
