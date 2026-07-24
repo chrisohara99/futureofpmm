@@ -13,17 +13,28 @@
             background: #0f172a;
             color: white;
             line-height: 1.6;
+            overflow: hidden;
         }
         .slide {
             min-height: 100vh;
             padding: 4rem;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
         }
         .slide-inner {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             width: 100%;
         }
@@ -59,27 +70,9 @@
             color: rgba(255,255,255,0.8);
             margin-bottom: 1rem;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-            font-size: 1.1rem;
-        }
-        th, td {
-            padding: 1rem 1.25rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        th {
-            background: rgba(59, 130, 246, 0.2);
-            font-weight: 600;
-            color: #93c5fd;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.05em;
-        }
-        td { color: rgba(255,255,255,0.9); }
-        .stat-grid {
+        
+        /* Stats from Dashboard */
+        .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
@@ -92,17 +85,119 @@
             padding: 1.5rem;
             text-align: center;
         }
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
         .stat-card .value {
             font-size: 3rem;
             font-weight: 800;
             color: #3b82f6;
             line-height: 1;
         }
-        .stat-card .label {
+        .stat-card .sub {
             font-size: 0.9rem;
             color: rgba(255,255,255,0.6);
             margin-top: 0.5rem;
         }
+        .stat-card .sub .green { color: #22c55e; font-weight: 600; }
+        
+        /* Two column layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        
+        /* Progress bars */
+        .progress-list {
+            list-style: none;
+        }
+        .progress-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .progress-label {
+            width: 60px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        .progress-bar {
+            flex: 1;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        .progress-value {
+            width: 30px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        /* NPS */
+        .nps-display {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+        .nps-score {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #22c55e;
+        }
+        .nps-label {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.6);
+        }
+        .nps-bar {
+            display: flex;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1.5rem 0 1rem;
+        }
+        .nps-promoters { background: #22c55e; flex: 18; }
+        .nps-passive { background: #eab308; flex: 8; }
+        .nps-detractors { background: #ef4444; flex: 0; }
+        .nps-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.85rem;
+        }
+        .nps-legend span { display: flex; align-items: center; gap: 0.5rem; }
+        .nps-legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+        
+        /* Ratings */
+        .ratings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .rating-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .rating-label { color: rgba(255,255,255,0.7); }
+        .rating-value { font-weight: 700; color: #3b82f6; }
+        
+        /* Leaderboard */
         .leaderboard {
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
@@ -115,25 +210,27 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .leaderboard-item:last-child { border-bottom: none; }
-        .leaderboard-rank {
-            font-size: 2rem;
-            margin-right: 1.5rem;
+        .leaderboard-rank { font-size: 2rem; margin-right: 1.5rem; }
+        .leaderboard-name { flex: 1; font-weight: 600; font-size: 1.2rem; }
+        .leaderboard-progress { font-size: 1rem; color: rgba(255,255,255,0.6); margin-right: 1rem; }
+        .leaderboard-score { font-size: 1.5rem; font-weight: 800; color: #3b82f6; }
+        
+        .perfect-score {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
-        .leaderboard-name {
-            flex: 1;
-            font-weight: 600;
-            font-size: 1.2rem;
+        .perfect-score span {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
-        .leaderboard-progress {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.6);
-            margin-right: 1rem;
-        }
-        .leaderboard-score {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #3b82f6;
-        }
+        
+        /* Features */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -150,14 +247,34 @@
             font-size: 1.2rem;
             color: #93c5fd;
             margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
-        .feature-card p {
+        .feature-card p { font-size: 1rem; margin: 0; }
+        
+        /* Framework image */
+        .framework-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .framework-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .framework-container img {
+            width: 100%;
+            height: auto;
+        }
+        .click-hint {
+            text-align: center;
             font-size: 1rem;
-            margin: 0;
+            color: rgba(255,255,255,0.5);
+            margin-top: 1rem;
         }
+        
+        /* News */
         .news-item {
             background: rgba(59, 130, 246, 0.1);
             border-left: 4px solid #3b82f6;
@@ -165,36 +282,9 @@
             margin: 1.5rem 0;
             border-radius: 0 12px 12px 0;
         }
-        .news-item h4 {
-            font-size: 1.3rem;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-        .news-item p {
-            font-size: 1.1rem;
-            margin: 0;
-        }
-        .cta {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            padding: 3rem;
-            border-radius: 12px;
-            text-align: center;
-            margin: 2rem 0;
-        }
-        .cta h3 {
-            color: white;
-            font-size: 2rem;
-            margin: 0 0 1rem;
-        }
-        .cta p {
-            color: rgba(255,255,255,0.9);
-            font-size: 1.3rem;
-            margin-bottom: 0;
-        }
-        .highlight {
-            color: #fbbf24;
-            font-weight: 700;
-        }
+        .news-item h4 { font-size: 1.3rem; color: white; margin-bottom: 0.5rem; }
+        .news-item p { font-size: 1.1rem; margin: 0; }
+        
         ul.feature-list {
             list-style: none;
             margin: 1rem 0;
@@ -208,31 +298,75 @@
             gap: 1rem;
         }
         ul.feature-list li:last-child { border-bottom: none; }
-        .perfect-score {
-            display: inline-flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
+        
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
         }
-        .perfect-score span {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            font-weight: 500;
+        .cta h3 { color: white; font-size: 2rem; margin: 0 0 1rem; }
+        .cta p { color: rgba(255,255,255,0.9); font-size: 1.3rem; margin-bottom: 0; }
+        
+        .highlight { color: #fbbf24; font-weight: 700; }
+        .callout {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            font-size: 1.1rem;
         }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            z-index: 100;
+        }
+        .nav button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+        .nav button:hover { background: rgba(255,255,255,0.2); }
+        .nav button:disabled { opacity: 0.3; cursor: default; }
+        .nav .progress-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            min-width: 60px;
+            text-align: center;
+        }
+        
         @media (max-width: 768px) {
             .slide { padding: 2rem; }
             h2 { font-size: 1.8rem; }
-            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
             .feature-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <!-- Slide 1: Title -->
-    <div class="slide slide-title">
+    <div class="slide slide-title active" data-slide="0">
         <div class="slide-inner">
             <h1>What's New</h1>
             <p>AI Office Hours Update — July 2026</p>
@@ -240,38 +374,144 @@
         </div>
     </div>
     
-    <!-- Slide 2: Program Stats -->
-    <div class="slide">
+    <!-- Slide 2: Program Dashboard -->
+    <div class="slide" data-slide="1">
         <div class="slide-inner">
-            <h2><span class="emoji">📊</span> Program Stats</h2>
+            <h2><span class="emoji">📊</span> Program Progress</h2>
             
-            <div class="stat-grid">
+            <div class="dashboard-grid">
                 <div class="stat-card">
+                    <div class="label">Enrolled</div>
                     <div class="value">118</div>
-                    <div class="label">Total Enrolled</div>
+                    <div class="sub"><span class="green">▲ 42 new</span> in last 30 days</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value" style="color: #22c55e;">+42</div>
-                    <div class="label">New in 30 Days</div>
+                    <div class="label">Active Learners</div>
+                    <div class="value">41</div>
+                    <div class="sub">35% activation · avg 3.5 of 8 units</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value">147</div>
-                    <div class="label">Chapters Completed</div>
+                    <div class="label">Satisfaction (NPS)</div>
+                    <div class="value" style="color: #22c55e;">69</div>
+                    <div class="sub">26 survey responses · 9.04/10 avg</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value">200+</div>
-                    <div class="label">Quiz Submissions</div>
+                    <div class="label">Avg Lesson Value</div>
+                    <div class="value">4.27<span style="font-size: 1.5rem; opacity: 0.6;">/5</span></div>
+                    <div class="sub">quizzes rated "just-right" 96%</div>
                 </div>
             </div>
             
-            <p style="text-align: center; font-size: 1.4rem; margin-top: 2rem;">
-                <span class="highlight">36% of all enrollments happened in the last month!</span>
-            </p>
+            <div class="two-col">
+                <div>
+                    <h3>Adoption & Depth of Engagement</h3>
+                    <p style="font-size: 1rem; color: rgba(255,255,255,0.6);">Learners who have completed each unit (8-unit curriculum, self-paced)</p>
+                    <ul class="progress-list">
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 1</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                            <span class="progress-value">41</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 2</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 71%;"></div></div>
+                            <span class="progress-value">29</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 3</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 66%;"></div></div>
+                            <span class="progress-value">27</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 4</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 37%;"></div></div>
+                            <span class="progress-value">15</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 5</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 27%;"></div></div>
+                            <span class="progress-value">11</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 6</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 24%;"></div></div>
+                            <span class="progress-value">10</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 7</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 12%;"></div></div>
+                            <span class="progress-value">5</span>
+                        </li>
+                        <li class="progress-item">
+                            <span class="progress-label">Unit 8</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 10%;"></div></div>
+                            <span class="progress-value">4</span>
+                        </li>
+                    </ul>
+                    <div class="callout">
+                        <strong>10 learners</strong> have gone past Unit 6 — a committed core is working through the full program, with first completions imminent.
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>How Learners Rate It</h3>
+                    <div class="nps-display">
+                        <div class="nps-score">69</div>
+                        <div class="nps-label">NPS (-100 to +100)</div>
+                        <div class="nps-bar">
+                            <div class="nps-promoters"></div>
+                            <div class="nps-passive"></div>
+                            <div class="nps-detractors"></div>
+                        </div>
+                        <div class="nps-legend">
+                            <span><span class="dot" style="background: #22c55e;"></span> 18 promoters</span>
+                            <span><span class="dot" style="background: #eab308;"></span> 8 passive</span>
+                            <span><span class="dot" style="background: #ef4444;"></span> 0 detractors</span>
+                        </div>
+                    </div>
+                    <div class="ratings-grid">
+                        <div class="rating-item">
+                            <span class="rating-label">AI Labs</span>
+                            <span class="rating-value">4.3/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span class="rating-label">Content</span>
+                            <span class="rating-value">4.1/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span class="rating-label">Assessments</span>
+                            <span class="rating-value">4.2/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span class="rating-label">Newsletter</span>
+                            <span class="rating-value">4.1/5</span>
+                        </div>
+                        <div class="rating-item">
+                            <span class="rating-label">Presentation</span>
+                            <span class="rating-value">4.0/5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
-    <!-- Slide 3: Leaderboard -->
-    <div class="slide">
+    <!-- Slide 3: Framework Demo -->
+    <div class="slide" data-slide="2">
+        <div class="slide-inner">
+            <h2><span class="emoji">🎯</span> Framework Spotlight: The Positioning Stack</h2>
+            
+            <p>One of 30 visual frameworks now embedded in the curriculum. Click to explore:</p>
+            
+            <div class="framework-container" onclick="window.open('https://futureofproductmarketing.com/curriculum/unit-02', '_blank')">
+                <img src="images/04-positioning-stack.svg" alt="The Positioning Stack Framework">
+            </div>
+            <p class="click-hint">👆 Click to open Unit 2: Strategic Positioning</p>
+        </div>
+    </div>
+    
+    <!-- Slide 4: Leaderboard -->
+    <div class="slide" data-slide="3">
         <div class="slide-inner">
             <h2><span class="emoji">🏆</span> Leaderboard: Furthest Along</h2>
             
@@ -323,8 +563,8 @@
         </div>
     </div>
     
-    <!-- Slide 4: What's New in Academy -->
-    <div class="slide">
+    <!-- Slide 5: What's New -->
+    <div class="slide" data-slide="4">
         <div class="slide-inner">
             <h2><span class="emoji">🆕</span> What's New in the Academy</h2>
             
@@ -349,8 +589,8 @@
         </div>
     </div>
     
-    <!-- Slide 5: AI + PMM News -->
-    <div class="slide">
+    <!-- Slide 6: AI News -->
+    <div class="slide" data-slide="5">
         <div class="slide-inner">
             <h2><span class="emoji">🤖</span> AI + PMM News This Month</h2>
             
@@ -373,8 +613,8 @@
         </div>
     </div>
     
-    <!-- Slide 6: Call to Action -->
-    <div class="slide">
+    <!-- Slide 7: CTA -->
+    <div class="slide" data-slide="6">
         <div class="slide-inner">
             <h2><span class="emoji">📣</span> Get Involved</h2>
             
@@ -404,5 +644,47 @@
             </p>
         </div>
     </div>
+    
+    <!-- Navigation -->
+    <div class="nav">
+        <button id="prev" onclick="changeSlide(-1)">←</button>
+        <span class="progress-text"><span id="current">1</span> / <span id="total">7</span></span>
+        <button id="next" onclick="changeSlide(1)">→</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides.forEach(s => s.classList.remove('active'));
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = currentSlide + 1;
+            document.getElementById('prev').disabled = currentSlide === 0;
+            document.getElementById('next').disabled = currentSlide === totalSlides - 1;
+        }
+        
+        function changeSlide(dir) {
+            showSlide(currentSlide + dir);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+        
+        // Click to advance (except on interactive elements)
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav') || e.target.closest('.framework-container') || e.target.closest('button')) return;
+            changeSlide(1);
+        });
+        
+        showSlide(0);
+    </script>
 </body>
 </html>
