@@ -644,6 +644,17 @@ function renderDashboard() {
     const unitsGrid = document.getElementById('unitsGrid');
     unitsGrid.innerHTML = '';
     
+    // Check if user is a superuser (bypasses sequential unlock)
+    let isSuperuser = false;
+    try {
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (directUser) {
+            const email = JSON.parse(directUser).email?.toLowerCase();
+            const superusers = ['christopher.ohara@sap.com', 'chrisohara1968@gmail.com', 'sean.thomson@sap.com', 'brian.raver@sap.com', 'olivier.duvelleroy@sap.com'];
+            isSuperuser = superusers.includes(email);
+        }
+    } catch (e) {}
+    
     UNITS.forEach((unit, index) => {
         const isCompleted = userProgress.completedUnits.has(unit.id);
         const quiz = userProgress.quizzes[unit.id];
@@ -653,8 +664,11 @@ function renderDashboard() {
         const unlockDateStr = getUnlockDateStr(unit.id);
         
         // Check if unlocked by progress (previous unit completed or first unit with assessments done)
+        // Superusers bypass sequential unlock requirement
         let isProgressUnlocked = false;
-        if (index === 0) {
+        if (isSuperuser) {
+            isProgressUnlocked = true;
+        } else if (index === 0) {
             isProgressUnlocked = assessmentsDone;
         } else {
             const prevUnit = UNITS[index - 1];
