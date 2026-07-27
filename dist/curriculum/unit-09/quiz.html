@@ -464,12 +464,7 @@
 </footer>
 
 <script>
-const supabase = window.supabase.createClient(
-    'https://yyqzkczutlidhgyiyawc.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM2NjQ0NzksImV4cCI6MjAyOTI0MDQ3OX0.L2A7_xD1hXxDV-V7lJt_mLw_Z-PV6gTt0gBxPSqQ_J8'
-);
-
-// Sorting logic
+// Sorting logic (must run first before any async operations)
 let selectedItem = null;
 
 document.querySelectorAll('.sort-item').forEach(item => {
@@ -642,6 +637,10 @@ document.getElementById('submitBtn').addEventListener('click', function() {
 
 async function saveScore(percentage) {
     try {
+        const supabase = window.supabase.createClient(
+            'https://yyqzkczutlidhgyiyawc.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM2NjQ0NzksImV4cCI6MjAyOTI0MDQ3OX0.L2A7_xD1hXxDV-V7lJt_mLw_Z-PV6gTt0gBxPSqQ_J8'
+        );
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
         
