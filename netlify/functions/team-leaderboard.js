@@ -5,6 +5,12 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 // CONFIG: Only count these units (update weekly as new units release)
 const ACTIVE_UNITS = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'unit-06', 'unit-07', 'unit-08'];  // All 8 units active
 
+// Emails to exclude from leaderboard (admins/testers)
+const EXCLUDE_EMAILS = [
+  'christopher.ohara@sap.com',
+  'chrisohara1968@gmail.com'
+];
+
 // Brian R's team - 36 members (excluding Chris, Dan, Kaiser, and Brian R - interim leader)
 const TEAM_EMAILS = [
   "a.naji@sap.com",
@@ -96,6 +102,9 @@ exports.handler = async (event) => {
       console.error('Supabase error:', profiles);
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'Database error', details: profiles }) };
     }
+    
+    // Filter out excluded emails (admins/testers)
+    profiles = profiles.filter(p => !EXCLUDE_EMAILS.includes(p.email?.toLowerCase()));
 
     // Get all quiz scores for these users
     const userIds = profiles.map(p => p.id);
