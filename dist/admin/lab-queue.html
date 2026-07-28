@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Feedback Queue | Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --dark-slate: #44546A;
@@ -17,186 +16,35 @@
             --red: #C00000;
             --orange: #ED7D31;
             --bg: #f8fafc;
-            --card-bg: #ffffff;
         }
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
-            color: #1e293b;
-            line-height: 1.6;
-        }
-        
-        .header {
-            background: var(--dark-slate);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 { font-size: 1.25rem; font-weight: 600; }
-        .header a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; }
-        .header a:hover { color: white; }
-        
-        main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-        
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 1.25rem;
-            text-align: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-        }
-        .stat-value { font-size: 2rem; font-weight: 700; color: var(--sap-blue); }
-        .stat-label { font-size: 0.85rem; color: #64748b; margin-top: 0.25rem; }
-        
-        .filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            background: white;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover { border-color: var(--sap-blue); }
-        .filter-btn.active { 
-            background: var(--sap-blue); 
-            color: white; 
-            border-color: var(--sap-blue); 
-        }
-        
-        .queue-list { display: flex; flex-direction: column; gap: 1rem; }
-        
-        .queue-item {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border-left: 4px solid #e2e8f0;
-        }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.6; }
+        .header { background: var(--dark-slate); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.25rem; }
+        .header a { color: rgba(255,255,255,0.8); text-decoration: none; }
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .status { padding: 1rem; background: #fef3c7; border-radius: 8px; margin-bottom: 1rem; }
+        .queue-item { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #e2e8f0; }
         .queue-item.priority-high { border-left-color: var(--red); }
         .queue-item.priority-medium { border-left-color: var(--orange); }
         .queue-item.priority-low { border-left-color: var(--green); }
-        
-        .queue-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .queue-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--dark-slate);
-        }
-        .queue-meta {
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .badge {
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .badge-type {
-            background: #eff6ff;
-            color: var(--sap-blue);
-        }
-        .badge-new {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .badge-reviewed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .badge-done {
-            background: #e2e8f0;
-            color: #475569;
-        }
-        
-        .queue-body {
-            color: #475569;
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
+        .queue-title { font-size: 1.1rem; font-weight: 600; color: var(--dark-slate); margin-bottom: 0.5rem; }
+        .queue-meta { font-size: 0.85rem; color: #64748b; margin-bottom: 1rem; }
+        .queue-body { background: #f8fafc; padding: 1rem; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem; }
+        .queue-body p { margin-bottom: 0.5rem; }
         .queue-body strong { color: var(--dark-slate); }
-        
-        .queue-details {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        .detail-row {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .detail-row:last-child { margin-bottom: 0; }
-        .detail-label { 
-            color: #64748b; 
-            min-width: 100px; 
-            font-weight: 500;
-        }
-        .detail-value { color: #1e293b; }
-        
-        .queue-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .action-btn {
-            padding: 0.4rem 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            background: white;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .action-btn:hover { background: #f1f5f9; }
-        .action-btn.priority-high { border-color: var(--red); color: var(--red); }
-        .action-btn.priority-medium { border-color: var(--orange); color: var(--orange); }
-        .action-btn.priority-low { border-color: var(--green); color: var(--green); }
-        .action-btn.status { border-color: var(--sap-blue); color: var(--sap-blue); }
-        
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #64748b;
-        }
-        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
-        
-        .date { font-size: 0.8rem; color: #94a3b8; }
-        
-        @media (max-width: 640px) {
-            main { padding: 1rem; }
-            .queue-item { padding: 1rem; }
-        }
+        .btn { padding: 0.4rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 6px; background: white; font-size: 0.85rem; cursor: pointer; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .btn:hover { background: #f1f5f9; }
+        .btn-high { border-color: var(--red); color: var(--red); }
+        .btn-medium { border-color: var(--orange); color: var(--orange); }
+        .btn-low { border-color: var(--green); color: var(--green); }
+        .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-left: 0.5rem; }
+        .badge-new { background: #fef3c7; color: #92400e; }
+        .badge-high { background: #fee2e2; color: var(--red); }
+        .badge-medium { background: #ffedd5; color: var(--orange); }
+        .badge-low { background: #d1fae5; color: #065f46; }
+        .empty { text-align: center; padding: 3rem; color: #64748b; }
+        #loading { text-align: center; padding: 2rem; }
     </style>
 </head>
 <body>
@@ -206,210 +54,116 @@
     </header>
     
     <main>
-        <div class="stats-row" id="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="statTotal">-</div>
-                <div class="stat-label">Total Requests</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statNew">-</div>
-                <div class="stat-label">New</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statHigh">-</div>
-                <div class="stat-label">High Priority</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statSuggest">-</div>
-                <div class="stat-label">Lab Ideas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statCustomize">-</div>
-                <div class="stat-label">LOB Requests</div>
-            </div>
-        </div>
-        
-        <div class="filters">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="new">New</button>
-            <button class="filter-btn" data-filter="high">🔴 High</button>
-            <button class="filter-btn" data-filter="medium">🟠 Medium</button>
-            <button class="filter-btn" data-filter="low">🟢 Low</button>
-            <button class="filter-btn" data-filter="suggest-lab">💡 Lab Ideas</button>
-            <button class="filter-btn" data-filter="lob-customize">🎯 LOB Requests</button>
-        </div>
-        
-        <div class="queue-list" id="queueList">
-            <div class="empty-state">
-                <div class="icon">📭</div>
-                <p>Loading requests...</p>
-            </div>
-        </div>
+        <div id="status" class="status">Loading...</div>
+        <div id="queue"></div>
     </main>
     
     <script>
         const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDQ2NjQ3OSwiZXhwIjoyMDkwMDQyNDc5fQ.0s65OtVUqKhvyfmf0e2bz23urbnsMegHLZeHOeqjw0E';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDQ2NjQ3OSwiZXhwIjoyMDkwMDQyNDc5fQ.0s65OtVUqKhvyfmf0e2bz23urbnsMegHLZeHOeqjw0E';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let items = [];
         
-        let allItems = [];
-        let currentFilter = 'all';
+        async function loadData() {
+            try {
+                const res = await fetch(SUPABASE_URL + '/rest/v1/lab_feedback?select=*&order=created_at.desc', {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY
+                    }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to fetch: ' + res.status);
+                }
+                
+                items = await res.json();
+                document.getElementById('status').textContent = 'Loaded ' + items.length + ' requests';
+                document.getElementById('status').style.background = '#d1fae5';
+                render();
+            } catch (err) {
+                document.getElementById('status').textContent = 'Error: ' + err.message;
+                document.getElementById('status').style.background = '#fee2e2';
+                console.error(err);
+            }
+        }
         
-        async function loadQueue() {
-            const { data, error } = await supabase
-                .from('lab_feedback')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Load error:', error);
-                document.getElementById('queueList').innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⚠️</div>
-                        <p>Error loading queue. Table may not exist yet.</p>
-                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Submit a request first to create the table.</p>
-                    </div>
-                `;
+        function render() {
+            if (items.length === 0) {
+                document.getElementById('queue').innerHTML = '<div class="empty">No requests yet</div>';
                 return;
             }
             
-            allItems = data || [];
-            updateStats();
-            renderQueue();
-        }
-        
-        function updateStats() {
-            document.getElementById('statTotal').textContent = allItems.length;
-            document.getElementById('statNew').textContent = allItems.filter(i => i.status === 'new').length;
-            document.getElementById('statHigh').textContent = allItems.filter(i => i.priority === 'high').length;
-            document.getElementById('statSuggest').textContent = allItems.filter(i => i.type === 'suggest-lab').length;
-            document.getElementById('statCustomize').textContent = allItems.filter(i => i.type === 'lob-customize').length;
-        }
-        
-        function renderQueue() {
-            let filtered = allItems;
-            
-            if (currentFilter === 'new') {
-                filtered = allItems.filter(i => i.status === 'new');
-            } else if (currentFilter === 'high' || currentFilter === 'medium' || currentFilter === 'low') {
-                filtered = allItems.filter(i => i.priority === currentFilter);
-            } else if (currentFilter === 'suggest-lab' || currentFilter === 'lob-customize') {
-                filtered = allItems.filter(i => i.type === currentFilter);
-            }
-            
-            if (filtered.length === 0) {
-                document.getElementById('queueList').innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        <p>No requests matching this filter.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            document.getElementById('queueList').innerHTML = filtered.map(item => renderItem(item)).join('');
-        }
-        
-        function renderItem(item) {
-            const data = item.data || {};
-            const isLabIdea = item.type === 'suggest-lab';
-            const priorityClass = item.priority !== 'unset' ? `priority-${item.priority}` : '';
-            
-            const statusBadge = {
-                'new': '<span class="badge badge-new">New</span>',
-                'reviewed': '<span class="badge badge-reviewed">Reviewed</span>',
-                'done': '<span class="badge badge-done">Done</span>'
-            }[item.status] || '';
-            
-            const typeLabel = isLabIdea ? '💡 Lab Idea' : '🎯 LOB Request';
-            const title = isLabIdea 
-                ? `${data.category || 'General'} Lab`
-                : `${data.lab} → ${data.lob}`;
-            
-            let details = '';
-            if (isLabIdea) {
-                details = `
-                    <div class="detail-row"><span class="detail-label">LOBs:</span><span class="detail-value">${(data.lobs || []).join(', ') || '-'}</span></div>
-                    <div class="detail-row"><span class="detail-label">Problem:</span><span class="detail-value">${data.problem || '-'}</span></div>
-                    <div class="detail-row"><span class="detail-label">Inputs:</span><span class="detail-value">${data.inputs || '-'}</span></div>
-                    <div class="detail-row"><span class="detail-label">Outputs:</span><span class="detail-value">${data.outputs || '-'}</span></div>
-                `;
-            } else {
-                details = `
-                    <div class="detail-row"><span class="detail-label">Lab:</span><span class="detail-value">${data.lab || '-'}</span></div>
-                    <div class="detail-row"><span class="detail-label">LOB:</span><span class="detail-value">${data.lob || '-'}</span></div>
-                    <div class="detail-row"><span class="detail-label">Notes:</span><span class="detail-value">${data.notes || 'No notes'}</span></div>
-                `;
-            }
-            
-            const date = new Date(item.created_at).toLocaleDateString('en-US', { 
-                month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
-            });
-            
-            return `
-                <div class="queue-item ${priorityClass}" data-id="${item.id}">
-                    <div class="queue-header">
-                        <div>
-                            <div class="queue-title">${title}</div>
-                            <span class="date">From: ${item.submitter_name || 'Anonymous'} • ${date}</span>
-                        </div>
-                        <div class="queue-meta">
-                            <span class="badge badge-type">${typeLabel}</span>
-                            ${statusBadge}
-                        </div>
-                    </div>
-                    <div class="queue-details">${details}</div>
-                    <div class="queue-actions">
-                        <button class="action-btn priority-high" onclick="setPriority('${item.id}', 'high')">🔴 High</button>
-                        <button class="action-btn priority-medium" onclick="setPriority('${item.id}', 'medium')">🟠 Medium</button>
-                        <button class="action-btn priority-low" onclick="setPriority('${item.id}', 'low')">🟢 Low</button>
-                        <button class="action-btn status" onclick="setStatus('${item.id}', 'reviewed')">✓ Mark Reviewed</button>
-                        <button class="action-btn" onclick="setStatus('${item.id}', 'done')">✓ Done</button>
-                    </div>
-                </div>
-            `;
+            document.getElementById('queue').innerHTML = items.map(item => {
+                const d = item.data || {};
+                const isLabIdea = item.type === 'suggest-lab';
+                const title = isLabIdea ? (d.category || 'Lab Idea') : (d.lab + ' → ' + d.lob);
+                const priorityClass = item.priority !== 'unset' ? 'priority-' + item.priority : '';
+                const priorityBadge = item.priority !== 'unset' ? '<span class="badge badge-' + item.priority + '">' + item.priority.toUpperCase() + '</span>' : '';
+                const statusBadge = item.status === 'new' ? '<span class="badge badge-new">NEW</span>' : '';
+                
+                let body = '';
+                if (isLabIdea) {
+                    body = '<p><strong>Category:</strong> ' + (d.category || '-') + '</p>' +
+                           '<p><strong>LOBs:</strong> ' + ((d.lobs || []).join(', ') || '-') + '</p>' +
+                           '<p><strong>Problem:</strong> ' + (d.problem || '-') + '</p>' +
+                           '<p><strong>Inputs:</strong> ' + (d.inputs || '-') + '</p>' +
+                           '<p><strong>Outputs:</strong> ' + (d.outputs || '-') + '</p>';
+                } else {
+                    body = '<p><strong>Lab:</strong> ' + (d.lab || '-') + '</p>' +
+                           '<p><strong>LOB:</strong> ' + (d.lob || '-') + '</p>' +
+                           '<p><strong>Notes:</strong> ' + (d.notes || 'None') + '</p>';
+                }
+                
+                const date = new Date(item.created_at).toLocaleString();
+                
+                return '<div class="queue-item ' + priorityClass + '" data-id="' + item.id + '">' +
+                    '<div class="queue-title">' + (isLabIdea ? '💡 ' : '🎯 ') + title + statusBadge + priorityBadge + '</div>' +
+                    '<div class="queue-meta">From: ' + (item.submitter_name || 'Anonymous') + ' • ' + date + '</div>' +
+                    '<div class="queue-body">' + body + '</div>' +
+                    '<div>' +
+                        '<button class="btn btn-high" onclick="setPriority(\'' + item.id + '\', \'high\')">🔴 High</button>' +
+                        '<button class="btn btn-medium" onclick="setPriority(\'' + item.id + '\', \'medium\')">🟠 Medium</button>' +
+                        '<button class="btn btn-low" onclick="setPriority(\'' + item.id + '\', \'low\')">🟢 Low</button>' +
+                        '<button class="btn" onclick="setStatus(\'' + item.id + '\', \'done\')">✓ Done</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
         }
         
         async function setPriority(id, priority) {
-            const { error } = await supabase
-                .from('lab_feedback')
-                .update({ priority })
-                .eq('id', id);
-            
-            if (!error) {
-                const item = allItems.find(i => i.id === id);
-                if (item) item.priority = priority;
-                renderQueue();
-            }
+            await fetch(SUPABASE_URL + '/rest/v1/lab_feedback?id=eq.' + id, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_KEY,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({ priority: priority })
+            });
+            const item = items.find(i => i.id === id);
+            if (item) item.priority = priority;
+            render();
         }
         
         async function setStatus(id, status) {
-            const { error } = await supabase
-                .from('lab_feedback')
-                .update({ status })
-                .eq('id', id);
-            
-            if (!error) {
-                const item = allItems.find(i => i.id === id);
-                if (item) item.status = status;
-                updateStats();
-                renderQueue();
-            }
+            await fetch(SUPABASE_URL + '/rest/v1/lab_feedback?id=eq.' + id, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_KEY,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({ status: status })
+            });
+            items = items.filter(i => i.id !== id);
+            render();
         }
         
-        // Filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                renderQueue();
-            });
-        });
-        
         // Load on page load
-        loadQueue();
+        loadData();
     </script>
 </body>
 </html>
