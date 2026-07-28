@@ -345,8 +345,241 @@
             </div>
         </div>
         
+        <!-- Suggest a Lab Card -->
+        <a href="suggest-a-lab.html" class="lab-card suggest-card">
+            <div class="lab-icon">💡</div>
+            <div class="lab-unit">Your Ideas</div>
+            <h3>Suggest a Lab</h3>
+            <p>Have an idea for a new AI lab? Walk through our guided wizard and help us build the tools you actually need.</p>
+            <div class="lab-meta">
+                <span class="lab-badge suggest">Interactive</span>
+                <span class="lab-output">📝 Submit Idea</span>
+            </div>
+        </a>
+        
     </div>
+    
+    <!-- LOB Customization Section -->
+    <section class="feedback-section">
+        <div class="feedback-header">
+            <h2>🎯 Customize Labs for Your Line of Business</h2>
+            <p>Our labs use general SAP examples by default. Request a customized version tailored to your specific product line.</p>
+        </div>
+        
+        <div class="feedback-form" id="lobCustomizeForm">
+            <div class="form-row">
+                <label>Which lab would you like customized?</label>
+                <select id="labSelect" class="form-select">
+                    <option value="">Select a lab...</option>
+                    <option value="positioning-stack">Positioning Stack Generator</option>
+                    <option value="battlecoach">BattleCoach</option>
+                    <option value="ci-brief">CI Brief Generator</option>
+                    <option value="messaging">Messaging Framework Generator</option>
+                    <option value="enablement-bundler">Enablement Bundler</option>
+                    <option value="content-localization">Content Localization Agent</option>
+                    <option value="launch-planner">Launch Planner</option>
+                    <option value="pricing-rationale">Pricing Rationale Builder</option>
+                    <option value="analyst-briefing">Analyst Briefing Simulator</option>
+                    <option value="segment-builder">Segment Builder</option>
+                    <option value="persona-builder">Persona Builder</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label>Which Line of Business?</label>
+                <div class="lob-chips" id="lobChips">
+                    <button type="button" class="lob-chip" data-lob="SuccessFactors">SuccessFactors</button>
+                    <button type="button" class="lob-chip" data-lob="Concur">Concur</button>
+                    <button type="button" class="lob-chip" data-lob="Ariba">Ariba</button>
+                    <button type="button" class="lob-chip" data-lob="S/4HANA">S/4HANA</button>
+                    <button type="button" class="lob-chip" data-lob="CX">Customer Experience</button>
+                    <button type="button" class="lob-chip" data-lob="BTP">BTP</button>
+                    <button type="button" class="lob-chip" data-lob="Analytics">Analytics</button>
+                    <button type="button" class="lob-chip" data-lob="Signavio">Signavio</button>
+                    <button type="button" class="lob-chip" data-lob="Fieldglass">Fieldglass</button>
+                    <button type="button" class="lob-chip" data-lob="IBP">IBP</button>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <label>What specific customizations would help? (optional)</label>
+                <textarea id="customNotes" class="form-textarea" placeholder="E.g., Include Workday and ADP as competitors, use HR/talent management terminology, reference SuccessFactors-specific integrations..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <label>Your Name (optional)</label>
+                <input type="text" id="customName" class="form-input" placeholder="So we can follow up">
+            </div>
+            
+            <button type="button" class="submit-btn" id="submitCustomize" disabled>
+                <span>📨 Submit Request</span>
+            </button>
+            
+            <div class="success-message" id="customizeSuccess" style="display: none;">
+                ✅ Thanks! Your customization request has been submitted. We'll prioritize based on demand.
+            </div>
+        </div>
+    </section>
 </main>
+
+<style>
+    .suggest-card {
+        background: linear-gradient(135deg, #4472C4 0%, #44546A 100%) !important;
+        color: white !important;
+    }
+    .suggest-card h3, .suggest-card p, .suggest-card .lab-unit { color: white !important; }
+    .suggest-card .lab-unit { opacity: 0.85; }
+    .suggest-card:hover { transform: translateY(-4px); }
+    .lab-badge.suggest {
+        background: rgba(255,255,255,0.2) !important;
+        color: white !important;
+    }
+    
+    .feedback-section {
+        margin-top: 4rem;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .feedback-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .feedback-header h2 {
+        font-size: 1.5rem;
+        color: #44546A;
+        margin-bottom: 0.5rem;
+    }
+    .feedback-header p {
+        color: #666;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .form-row {
+        margin-bottom: 1.5rem;
+    }
+    .form-row label {
+        display: block;
+        font-weight: 600;
+        color: #44546A;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .form-select, .form-input, .form-textarea {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+    }
+    .form-select:focus, .form-input:focus, .form-textarea:focus {
+        outline: none;
+        border-color: #4472C4;
+    }
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .lob-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .lob-chip {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 50px;
+        background: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: inherit;
+        transition: all 0.2s;
+    }
+    .lob-chip:hover { border-color: #4472C4; }
+    .lob-chip.selected {
+        border-color: #4472C4;
+        background: #4472C4;
+        color: white;
+    }
+    
+    .submit-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 1rem;
+        background: #4472C4;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .submit-btn:hover:not(:disabled) { background: #3b5998; }
+    .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .success-message {
+        text-align: center;
+        padding: 1rem;
+        background: #ecfdf5;
+        border: 1px solid #10b981;
+        border-radius: 8px;
+        color: #065f46;
+        margin-top: 1rem;
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    // LOB Chip selection
+    let selectedLOB = '';
+    document.querySelectorAll('.lob-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.lob-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            selectedLOB = chip.dataset.lob;
+            updateSubmitState();
+        });
+    });
+    
+    // Form validation
+    function updateSubmitState() {
+        const labSelected = document.getElementById('labSelect').value !== '';
+        const lobSelected = selectedLOB !== '';
+        document.getElementById('submitCustomize').disabled = !(labSelected && lobSelected);
+    }
+    
+    document.getElementById('labSelect').addEventListener('change', updateSubmitState);
+    
+    // Submit
+    document.getElementById('submitCustomize').addEventListener('click', () => {
+        const data = {
+            timestamp: new Date().toISOString(),
+            lab: document.getElementById('labSelect').value,
+            lob: selectedLOB,
+            notes: document.getElementById('customNotes').value,
+            name: document.getElementById('customName').value
+        };
+        
+        console.log('LOB Customization Request:', data);
+        
+        // Show success
+        document.getElementById('lobCustomizeForm').style.display = 'none';
+        document.getElementById('customizeSuccess').style.display = 'block';
+    });
+</script>
 
 <script src="/assets/js/user-menu.js"></script>
 </body>

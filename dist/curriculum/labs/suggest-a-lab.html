@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggest a Lab | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+            --card-bg: #FFFFFF;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 600px; margin: 0 auto; }
+        
+        main { max-width: 700px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+        
+        .wizard-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e5e7eb;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sap-blue), var(--gold));
+            transition: width 0.3s ease;
+        }
+        
+        .wizard-step {
+            padding: 2.5rem;
+            display: none;
+        }
+        .wizard-step.active { display: block; }
+        
+        .step-header {
+            margin-bottom: 2rem;
+        }
+        .step-number {
+            display: inline-block;
+            background: var(--sap-blue);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        .step-header h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.5rem;
+        }
+        .step-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+        .option-btn:hover {
+            border-color: var(--sap-blue);
+            background: #f8fafc;
+        }
+        .option-btn.selected {
+            border-color: var(--sap-blue);
+            background: #eff6ff;
+        }
+        .option-btn .icon {
+            font-size: 1.5rem;
+        }
+        .option-btn .label {
+            font-weight: 600;
+            color: var(--dark-slate);
+        }
+        .option-btn .desc {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 1.5rem;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: var(--sap-blue);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--dark-slate);
+        }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-primary {
+            background: var(--sap-blue);
+            color: white;
+        }
+        .btn-primary:hover { background: #3b5998; }
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+        .btn-success:hover { background: #5a9a3a; }
+        
+        .summary-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-label { color: #666; font-size: 0.9rem; }
+        .summary-value { font-weight: 600; color: var(--dark-slate); }
+        
+        .success-state {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .success-state h2 {
+            color: var(--green);
+            margin-bottom: 0.75rem;
+        }
+        .success-state p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .lob-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .lob-pill {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .lob-pill:hover { border-color: var(--sap-blue); }
+        .lob-pill.selected {
+            border-color: var(--sap-blue);
+            background: var(--sap-blue);
+            color: white;
+        }
+        
+        @media (max-width: 640px) {
+            .hero { padding: 2rem 1.5rem; }
+            .hero h1 { font-size: 1.75rem; }
+            main { padding: 1.5rem; }
+            .wizard-step { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="The Future of PMM"></a>
+            <nav class="nav">
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/curriculum/labs/">Labs</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>💡 Suggest a Lab</h1>
+        <p>Help us build the AI tools you need. Answer a few questions and we'll design a lab that solves your real workflow challenges.</p>
+    </section>
+    
+    <main>
+        <div class="wizard-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+            </div>
+            
+            <!-- Step 1: Category -->
+            <div class="wizard-step active" id="step1">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>What type of work would this lab help with?</h2>
+                    <p>Select the primary category for your lab idea.</p>
+                </div>
+                
+                <div class="options-grid" id="categoryOptions">
+                    <button class="option-btn" data-value="competitive">
+                        <span class="icon">⚔️</span>
+                        <div>
+                            <div class="label">Competitive Intelligence</div>
+                            <div class="desc">Battle cards, win/loss analysis, competitive positioning</div>
+                        </div>
+                    </button>
+                    <button class="option-btn" data-value="content">
+                        <span class="icon">✍️</span>
+                        <div>
+                            <div class="label">Content & Messaging</div>
+                            <div class="desc">Positioning, value props, customer stories, campaigns</div>
+                        </div>
+                    </button>
+                    <button class="option-btn" data-value="enablement">
+                        <span class="icon">📦</span>
+                        <div>
+                            <div class="label">Sales Enablement</div>
+                            <div class="desc">Pitch decks, talk tracks, objection handling, demos</div>
+                        </div>
+                    </button>
+                    <button class="option-btn" data-value="research">
+                        <span class="icon">🔬</span>
+                        <div>
+                            <div class="label">Market Research</div>
+                            <div class="desc">Customer insights, market sizing, trend analysis</div>
+                        </div>
+                    </button>
+                    <button class="option-btn" data-value="launch">
+                        <span class="icon">🚀</span>
+                        <div>
+                            <div class="label">Launch & GTM</div>
+                            <div class="desc">Launch planning, GTM strategy, campaign orchestration</div>
+                        </div>
+                    </button>
+                    <button class="option-btn" data-value="other">
+                        <span class="icon">💡</span>
+                        <div>
+                            <div class="label">Something Else</div>
+                            <div class="desc">A different PMM workflow or challenge</div>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="nav-buttons">
+                    <a href="/curriculum/labs/" class="btn btn-secondary">← Back to Labs</a>
+                    <button class="btn btn-primary" id="next1" disabled>Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Line of Business -->
+            <div class="wizard-step" id="step2">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Which SAP Line of Business?</h2>
+                    <p>Select all that apply. This helps us tailor examples and terminology.</p>
+                </div>
+                
+                <div class="lob-pills" id="lobOptions">
+                    <button class="lob-pill" data-value="S/4HANA">S/4HANA</button>
+                    <button class="lob-pill" data-value="SuccessFactors">SuccessFactors</button>
+                    <button class="lob-pill" data-value="Concur">Concur</button>
+                    <button class="lob-pill" data-value="Ariba">Ariba</button>
+                    <button class="lob-pill" data-value="CX">Customer Experience (CX)</button>
+                    <button class="lob-pill" data-value="BTP">Business Technology Platform</button>
+                    <button class="lob-pill" data-value="Analytics">Analytics & Planning</button>
+                    <button class="lob-pill" data-value="Signavio">Signavio</button>
+                    <button class="lob-pill" data-value="Fieldglass">Fieldglass</button>
+                    <button class="lob-pill" data-value="IBP">Integrated Business Planning</button>
+                    <button class="lob-pill" data-value="Cross-LOB">Cross-LOB / Platform</button>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="back2">← Back</button>
+                    <button class="btn btn-primary" id="next2" disabled>Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Problem Statement -->
+            <div class="wizard-step" id="step3">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>What problem would this lab solve?</h2>
+                    <p>Describe the workflow challenge or task you'd like AI to help with.</p>
+                </div>
+                
+                <textarea class="text-input" id="problemInput" placeholder="Example: I spend hours creating region-specific versions of our product one-pagers. I need a tool that takes our master content and adapts it for different industries and regions while maintaining brand consistency..."></textarea>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="back3">← Back</button>
+                    <button class="btn btn-primary" id="next3" disabled>Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Inputs & Outputs -->
+            <div class="wizard-step" id="step4">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    <h2>What would you input, and what would you get out?</h2>
+                    <p>Describe the ideal workflow: what you'd give the lab, and what it would produce.</p>
+                </div>
+                
+                <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Inputs (what you'd provide):</label>
+                <textarea class="text-input" id="inputsInput" placeholder="Example: Master product one-pager PDF, target region (EMEA, APJ, NA), target industry (Manufacturing, Retail, etc.)" style="min-height: 80px;"></textarea>
+                
+                <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Outputs (what you'd get):</label>
+                <textarea class="text-input" id="outputsInput" placeholder="Example: Localized one-pager with region-specific customer references, local compliance notes, and adapted value messaging" style="min-height: 80px;"></textarea>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="back4">← Back</button>
+                    <button class="btn btn-primary" id="next4" disabled>Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 5: Review & Submit -->
+            <div class="wizard-step" id="step5">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    <h2>Review Your Lab Suggestion</h2>
+                    <p>Does this look right? Edit any field by going back, or submit your idea.</p>
+                </div>
+                
+                <div class="summary-card" id="summaryCard">
+                    <div class="summary-item">
+                        <span class="summary-label">Category</span>
+                        <span class="summary-value" id="sumCategory">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Line(s) of Business</span>
+                        <span class="summary-value" id="sumLOB">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Problem</span>
+                        <span class="summary-value" id="sumProblem" style="max-width: 300px; text-align: right;">-</span>
+                    </div>
+                </div>
+                
+                <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Your Name (optional):</label>
+                <input type="text" class="text-input" id="nameInput" placeholder="So we can follow up with questions" style="min-height: auto; height: 48px; margin-bottom: 1.5rem;">
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="back5">← Back</button>
+                    <button class="btn btn-success" id="submitBtn">🚀 Submit Lab Idea</button>
+                </div>
+            </div>
+            
+            <!-- Success State -->
+            <div class="wizard-step" id="stepSuccess">
+                <div class="success-state">
+                    <div class="success-icon">🎉</div>
+                    <h2>Lab Idea Submitted!</h2>
+                    <p>Thank you for your suggestion. Chris will review it and may reach out to discuss details. Great ideas often become the next labs in the curriculum!</p>
+                    <a href="/curriculum/labs/" class="btn btn-primary">← Back to Labs</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Wizard state
+        const state = {
+            category: '',
+            lobs: [],
+            problem: '',
+            inputs: '',
+            outputs: '',
+            name: ''
+        };
+        
+        let currentStep = 1;
+        const totalSteps = 5;
+        
+        // Category selection
+        document.querySelectorAll('#categoryOptions .option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#categoryOptions .option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                state.category = btn.dataset.value;
+                document.getElementById('next1').disabled = false;
+            });
+        });
+        
+        // LOB selection (multi-select)
+        document.querySelectorAll('#lobOptions .lob-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('selected');
+                const val = pill.dataset.value;
+                if (state.lobs.includes(val)) {
+                    state.lobs = state.lobs.filter(l => l !== val);
+                } else {
+                    state.lobs.push(val);
+                }
+                document.getElementById('next2').disabled = state.lobs.length === 0;
+            });
+        });
+        
+        // Text inputs
+        document.getElementById('problemInput').addEventListener('input', (e) => {
+            state.problem = e.target.value;
+            document.getElementById('next3').disabled = state.problem.trim().length < 20;
+        });
+        
+        document.getElementById('inputsInput').addEventListener('input', updateStep4);
+        document.getElementById('outputsInput').addEventListener('input', updateStep4);
+        
+        function updateStep4() {
+            state.inputs = document.getElementById('inputsInput').value;
+            state.outputs = document.getElementById('outputsInput').value;
+            document.getElementById('next4').disabled = state.inputs.trim().length < 10 || state.outputs.trim().length < 10;
+        }
+        
+        // Navigation
+        function goToStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            document.getElementById('progressFill').style.width = (step / totalSteps * 100) + '%';
+            currentStep = step;
+            
+            if (step === 5) {
+                updateSummary();
+            }
+        }
+        
+        function updateSummary() {
+            const categoryLabels = {
+                competitive: '⚔️ Competitive Intelligence',
+                content: '✍️ Content & Messaging',
+                enablement: '📦 Sales Enablement',
+                research: '🔬 Market Research',
+                launch: '🚀 Launch & GTM',
+                other: '💡 Other'
+            };
+            document.getElementById('sumCategory').textContent = categoryLabels[state.category] || state.category;
+            document.getElementById('sumLOB').textContent = state.lobs.join(', ') || '-';
+            document.getElementById('sumProblem').textContent = state.problem.substring(0, 100) + (state.problem.length > 100 ? '...' : '');
+        }
+        
+        document.getElementById('next1').addEventListener('click', () => goToStep(2));
+        document.getElementById('next2').addEventListener('click', () => goToStep(3));
+        document.getElementById('next3').addEventListener('click', () => goToStep(4));
+        document.getElementById('next4').addEventListener('click', () => goToStep(5));
+        
+        document.getElementById('back2').addEventListener('click', () => goToStep(1));
+        document.getElementById('back3').addEventListener('click', () => goToStep(2));
+        document.getElementById('back4').addEventListener('click', () => goToStep(3));
+        document.getElementById('back5').addEventListener('click', () => goToStep(4));
+        
+        // Submit
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            state.name = document.getElementById('nameInput').value;
+            
+            // Send to webhook or log
+            const payload = {
+                timestamp: new Date().toISOString(),
+                ...state
+            };
+            
+            console.log('Lab Suggestion:', payload);
+            
+            // Could send to a Netlify function or webhook here
+            // For now, just show success
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('stepSuccess').classList.add('active');
+            document.getElementById('progressFill').style.width = '100%';
+        });
+    </script>
+</body>
+</html>
