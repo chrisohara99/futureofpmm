@@ -49,8 +49,13 @@
 </head>
 <body>
     <header class="header">
+        <div style="display:flex;align-items:center;gap:2rem;">
+            <a href="/" style="color:white;text-decoration:none;">🏠 Home</a>
+            <a href="/curriculum/labs/" style="color:white;text-decoration:none;">🔬 Labs</a>
+            <a href="/curriculum/labs/suggest-a-lab.html" style="color:white;text-decoration:none;">💡 Suggest</a>
+        </div>
         <h1>🗂️ Lab Feedback Queue</h1>
-        <a href="/curriculum/labs/">← Back to Labs</a>
+        <div style="font-size:0.85rem;opacity:0.8;">Admin</div>
     </header>
     
     <main>
@@ -126,6 +131,7 @@
                         '<button class="btn btn-medium" onclick="setPriority(\'' + item.id + '\', \'medium\')">🟠 Medium</button>' +
                         '<button class="btn btn-low" onclick="setPriority(\'' + item.id + '\', \'low\')">🟢 Low</button>' +
                         '<button class="btn" onclick="setStatus(\'' + item.id + '\', \'done\')">✓ Done</button>' +
+                        '<button class="btn" style="border-color:#dc2626;color:#dc2626;margin-left:1rem;" onclick="deleteItem(\'' + item.id + '\')">🗑️ Delete</button>' +
                     '</div>' +
                 '</div>';
             }).join('');
@@ -159,6 +165,20 @@
                 body: JSON.stringify({ status: status })
             });
             items = items.filter(i => i.id !== id);
+            render();
+        }
+        
+        async function deleteItem(id) {
+            if (!confirm('Delete this request permanently?')) return;
+            await fetch(SUPABASE_URL + '/rest/v1/lab_feedback?id=eq.' + id, {
+                method: 'DELETE',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_KEY
+                }
+            });
+            items = items.filter(i => i.id !== id);
+            document.getElementById('status').textContent = 'Loaded ' + items.length + ' requests';
             render();
         }
         
