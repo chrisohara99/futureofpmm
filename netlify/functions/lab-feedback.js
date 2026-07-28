@@ -99,7 +99,7 @@ exports.handler = async (event) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: 'Future of PMM <noreply@futureofpmm.com>',
+                        from: 'Future of PMM <onboarding@resend.dev>',
                         to: [NOTIFY_EMAIL],
                         subject: emailSubject,
                         html: emailBody
