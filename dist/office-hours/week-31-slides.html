@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Hours Week 31 | New Lab Feedback Features</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #4472C4;
+            --gold: #FFC000;
+            --green: #70AD47;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; }
+        
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+        }
+        
+        .slide-title {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+        }
+        .slide-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        .slide-demo {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, #1e3a5f 100%);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--gold);
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            max-width: 700px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #0f172a;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        ul {
+            font-size: 1.4rem;
+            line-height: 2.2;
+            list-style: none;
+        }
+        ul li::before {
+            content: "→";
+            color: var(--gold);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+        
+        .step-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .step {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            min-width: 140px;
+        }
+        .step .num {
+            background: var(--sap-blue);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            font-weight: 700;
+        }
+        .step .label {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .demo-link {
+            display: inline-block;
+            background: var(--gold);
+            color: #0f172a;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            transition: transform 0.2s;
+        }
+        .demo-link:hover { transform: scale(1.05); }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+        
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .screenshot {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .screenshot-placeholder {
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 4rem 2rem;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .cta-box {
+            background: linear-gradient(135deg, var(--sap-blue), var(--dark-slate));
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .cta-box h3 { color: white; font-size: 1.75rem; margin-bottom: 1rem; }
+        .cta-box p { opacity: 0.9; margin-bottom: 1.5rem; }
+        
+        .nav-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.5);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 900px) {
+            .slide { padding: 2rem; }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.75rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <section class="slide slide-title">
+        <span class="badge">Week 31 • July 28, 2026</span>
+        <h1>New Lab Feedback<br>Features</h1>
+        <p class="subtitle">Helping you shape the future of our AI labs with interactive feedback tools</p>
+        <span class="slide-number">1/7</span>
+    </section>
+    
+    <!-- Slide 2: The Problem -->
+    <section class="slide slide-content">
+        <h2>The Challenge</h2>
+        <ul>
+            <li>Labs are built for generic SAP use cases</li>
+            <li>Different LOBs have different terminology & competitors</li>
+            <li>You know what tools would help — we need to hear it</li>
+            <li>No structured way to capture and prioritize requests</li>
+        </ul>
+        <span class="slide-number">2/7</span>
+    </section>
+    
+    <!-- Slide 3: Three New Features -->
+    <section class="slide slide-content">
+        <h2>Three New Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon">💡</div>
+                <h3>Suggest a Lab</h3>
+                <p>Guided wizard to propose new AI lab ideas with full context</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎯</div>
+                <h3>LOB Customization</h3>
+                <p>Request existing labs tailored for your line of business</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🗂️</div>
+                <h3>Request Queue</h3>
+                <p>Transparent tracking with priority labels</p>
+            </div>
+        </div>
+        <span class="slide-number">3/7</span>
+    </section>
+    
+    <!-- Slide 4: Suggest a Lab Wizard -->
+    <section class="slide slide-demo">
+        <h2>💡 Suggest a Lab — 5-Step Wizard</h2>
+        <div class="step-flow">
+            <div class="step">
+                <div class="num">1</div>
+                <div class="label">Category</div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+                <div class="num">2</div>
+                <div class="label">LOB</div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+                <div class="num">3</div>
+                <div class="label">Problem</div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+                <div class="num">4</div>
+                <div class="label">In/Out</div>
+            </div>
+            <span class="arrow">→</span>
+            <div class="step">
+                <div class="num">5</div>
+                <div class="label">Submit</div>
+            </div>
+        </div>
+        <ul>
+            <li>Select category: Competitive, Content, Enablement, Research, Launch</li>
+            <li>Choose your LOB(s): SuccessFactors, Concur, Ariba, CX, BTP...</li>
+            <li>Describe the workflow problem you're facing</li>
+            <li>Define what you'd input and what you'd want out</li>
+        </ul>
+        <a href="/curriculum/labs/suggest-a-lab.html" class="demo-link">Try It Live →</a>
+        <span class="slide-number">4/7</span>
+    </section>
+    
+    <!-- Slide 5: LOB Customization -->
+    <section class="slide slide-demo">
+        <h2>🎯 LOB Customization Requests</h2>
+        <ul>
+            <li>Pick any existing lab (BattleCoach, Messaging, etc.)</li>
+            <li>Select your LOB: SuccessFactors, Concur, Sales & Service, Commerce, Emarsys...</li>
+            <li>Add specific notes on what customizations would help</li>
+            <li>We prioritize based on demand</li>
+        </ul>
+        <div class="cta-box">
+            <h3>Example Request</h3>
+            <p>"Customize BattleCoach for Concur — include Expensify, Brex, and Ramp as competitors, use T&E terminology"</p>
+        </div>
+        <a href="/curriculum/labs/#lobCustomizeForm" class="demo-link">Request Customization →</a>
+        <span class="slide-number">5/7</span>
+    </section>
+    
+    <!-- Slide 6: Admin Queue -->
+    <section class="slide slide-demo">
+        <h2>🗂️ Request Queue</h2>
+        <ul>
+            <li>All requests visible in one place</li>
+            <li>Priority labels: 🔴 High, 🟠 Medium, 🟢 Low</li>
+            <li>Status tracking: New → Reviewed → Done</li>
+            <li>Transparent — see what's in the pipeline</li>
+        </ul>
+        <a href="/admin/lab-queue.html" class="demo-link">View Queue →</a>
+        <span class="slide-number">6/7</span>
+    </section>
+    
+    <!-- Slide 7: Call to Action -->
+    <section class="slide slide-title">
+        <h2>Your Turn!</h2>
+        <h1>What lab would<br>make your job easier?</h1>
+        <div style="margin-top: 2rem;">
+            <a href="/curriculum/labs/suggest-a-lab.html" class="demo-link" style="margin-right: 1rem;">💡 Suggest a Lab</a>
+            <a href="/curriculum/labs/" class="demo-link" style="background: white; color: var(--dark-slate);">🎯 Request Customization</a>
+        </div>
+        <span class="slide-number">7/7</span>
+    </section>
+    
+    <div class="nav-hint">Use ↓ to scroll between slides</div>
+</body>
+</html>
