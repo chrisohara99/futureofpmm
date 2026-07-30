@@ -48,6 +48,7 @@ const DAN_TEAM = new Set([
 const SUPERUSERS = new Set([
   'christopher.ohara@sap.com', 'sean.thomson@sap.com', 'brian.raver@sap.com',
   'olivier.duvelleroy@sap.com', 'j.chen02@sap.com', 'kelly.amaroso@sap.com',
+  'sarah.sternberg@sap.com',
   'dahra.williams@sap.com', 'jasmine.churchill@sap.com', 'dante.ricci@sap.com',
   'kasier.larsen@sap.com', 'markdonahue23@gmail.com', 'brenda.bown@sap.com',
   'matthew.montgomery@sap.com'
