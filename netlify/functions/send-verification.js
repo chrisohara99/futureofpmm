@@ -77,6 +77,12 @@ exports.handler = async (event) => {
 
     const verifyUrl = `https://futureofpmm.com/curriculum/verify.html?token=${encodeURIComponent(token)}`;
 
+    // Check Resend API key is configured
+    if (!RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not configured');
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Email service not configured' }) };
+    }
+
     // Send email via Resend
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -85,7 +91,7 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Future of PMM <noreply@futureofpmm.com>',
+        from: 'Future of PMM <chris@futureofpmm.com>',
         to: email,
         subject: 'Verify your email - Future of PMM Curriculum',
         html: `
@@ -109,8 +115,12 @@ exports.handler = async (event) => {
 
     if (!emailRes.ok) {
       const err = await emailRes.text();
-      console.error('Resend error:', err);
-      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Failed to send email' }) };
+      console.error('Resend error:', emailRes.status, err);
+      // Return more specific error for debugging
+      const errorMsg = emailRes.status === 403 ? 'Email domain not verified' :
+                       emailRes.status === 401 ? 'Invalid API key' :
+                       'Failed to send email';
+      return { statusCode: 500, headers, body: JSON.stringify({ error: errorMsg }) };
     }
 
     return { statusCode: 200, headers, body: JSON.stringify({ success: true }) };
