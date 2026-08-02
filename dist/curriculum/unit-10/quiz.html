@@ -655,16 +655,14 @@ function showResults() {
     document.getElementById('scorePercent').textContent = percentage + '%';
     document.getElementById('finalCorrect').textContent = correctAnswers;
     
+    // Always save the score
+    saveScore(percentage);
+    
     if (percentage >= 80) {
         scoreCircle.classList.add('pass');
         document.getElementById('resultsTitle').textContent = '🎉 Congratulations!';
         document.getElementById('resultsMessage').textContent = `You passed with ${correctAnswers} out of 10 correct!`;
         document.getElementById('badgeEarned').style.display = 'block';
-        
-        // Track completion
-        if (typeof CurriculumProgress !== 'undefined') {
-            CurriculumProgress.trackQuizCompletion(10, percentage);
-        }
     } else {
         scoreCircle.classList.add('fail');
         document.getElementById('resultsTitle').textContent = 'Keep Learning!';
@@ -672,6 +670,42 @@ function showResults() {
     }
     
     resultsCard.classList.add('show');
+}
+
+async function saveScore(percentage) {
+    try {
+        // Get user email from localStorage
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (!directUser) {
+            console.log('No user - cannot save score');
+            return;
+        }
+        const user = JSON.parse(directUser);
+        
+        const res = await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'quiz_score',
+                email: user.email,
+                data: {
+                    chapter: 'unit-10',
+                    score: percentage,
+                    total: 100,
+                    percentage: percentage
+                }
+            })
+        });
+        
+        const result = await res.json();
+        if (result.error) {
+            console.error('Failed to save score:', result.error);
+        } else {
+            console.log('Score saved successfully');
+        }
+    } catch (error) {
+        console.error('Failed to save score:', error);
+    }
 }
 
 // Event listeners
