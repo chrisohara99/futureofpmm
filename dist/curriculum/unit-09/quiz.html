@@ -637,24 +637,35 @@ document.getElementById('submitBtn').addEventListener('click', function() {
 
 async function saveScore(percentage) {
     try {
-        const supabase = window.supabase.createClient(
-            'https://yyqzkczutlidhgyiyawc.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM2NjQ0NzksImV4cCI6MjAyOTI0MDQ3OX0.L2A7_xD1hXxDV-V7lJt_mLw_Z-PV6gTt0gBxPSqQ_J8'
-        );
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        // Get user email from localStorage
+        const directUser = localStorage.getItem('pmm_direct_user');
+        if (!directUser) {
+            console.log('No user - cannot save score');
+            return;
+        }
+        const user = JSON.parse(directUser);
         
-        await fetch('/.netlify/functions/save-result', {
+        const res = await fetch('/.netlify/functions/save-result', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                chapter: 'unit-09',
-                score: percentage,
-                total: 100,
-                percentage: percentage,
-                userId: user.id
+                type: 'quiz_score',
+                email: user.email,
+                data: {
+                    chapter: 'unit-09',
+                    score: percentage,
+                    total: 100,
+                    percentage: percentage
+                }
             })
         });
+        
+        const result = await res.json();
+        if (result.error) {
+            console.error('Failed to save score:', result.error);
+        } else {
+            console.log('Score saved successfully');
+        }
     } catch (error) {
         console.error('Failed to save score:', error);
     }
