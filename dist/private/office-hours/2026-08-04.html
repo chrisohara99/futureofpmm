@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Office Hours — August 4, 2026 | Future of PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f172a;
+            color: white;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+        .slide {
+            min-height: 100vh;
+            padding: 4rem;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+        .slide-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* Title Slide */
+        .slide-title {
+            background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+            text-align: center;
+        }
+        .slide-title h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .slide-title p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+        .slide-title .highlight-box {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-top: 2rem;
+            display: inline-block;
+        }
+        .slide-title .highlight-box span {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        h2 .emoji { font-size: 2rem; }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 2rem 0 1rem;
+        }
+        p { 
+            font-size: 1.25rem; 
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
+        }
+        
+        /* Unit Announcement */
+        .announcement {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        .announcement h3 {
+            color: white;
+            font-size: 2rem;
+            margin: 0 0 0.5rem;
+        }
+        .announcement p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .unit-topics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .unit-topic {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+        
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .unit-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        .unit-card h3 {
+            color: white;
+            margin: 0 0 0.5rem;
+        }
+        .unit-card .unit-num {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        .unit-card ul {
+            margin: 1rem 0 0 1.25rem;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+        }
+        .unit-card li { margin-bottom: 0.5rem; }
+        
+        /* Leaderboard */
+        .leaderboard {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .leaderboard-item:last-child { border-bottom: none; }
+        .leaderboard-item.highlight { background: rgba(249, 115, 22, 0.15); }
+        .leaderboard-rank { font-size: 1.5rem; margin-right: 1rem; width: 40px; }
+        .leaderboard-name { flex: 1; font-weight: 600; font-size: 1.1rem; }
+        .leaderboard-progress { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin-right: 1rem; }
+        .leaderboard-score { font-size: 1.3rem; font-weight: 800; color: #3b82f6; }
+        .new-badge {
+            background: #22c55e;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        /* Survey Results */
+        .survey-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .survey-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .survey-card .label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .survey-card .value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .survey-card .value.green { color: #22c55e; }
+        .survey-card .value.blue { color: #3b82f6; }
+        .survey-card .value.yellow { color: #eab308; }
+        .survey-card .sub {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.5rem;
+        }
+        
+        /* NPS Bar */
+        .nps-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0 1rem;
+        }
+        .nps-promoters { background: #22c55e; }
+        .nps-passive { background: #eab308; }
+        .nps-detractors { background: #ef4444; }
+        .nps-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.95rem;
+        }
+        .nps-legend span { display: flex; align-items: center; gap: 0.5rem; }
+        .nps-legend .dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        /* Presenter Slides */
+        .slide-presenter {
+            text-align: left;
+        }
+        .presenter-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+        .presenter-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .presenter-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+        .presenter-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .presenter-info h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .presenter-info .role {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        .presenter-bio {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            max-width: 900px;
+            margin-bottom: 2rem;
+        }
+        .highlights {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.15);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .highlight-icon { font-size: 1.5rem; }
+        
+        /* BattleCoach Slide */
+        .slide-battlecoach {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+        .battlecoach-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .battlecoach-header h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .battlecoach-header .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        .feature-card p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            z-index: 100;
+        }
+        .nav button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+        .nav button:hover { background: rgba(255,255,255,0.2); }
+        .nav button:disabled { opacity: 0.3; cursor: default; }
+        .nav .progress-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .slide { padding: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .survey-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .unit-topics { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide slide-title active" data-slide="0">
+        <div class="slide-inner">
+            <h1>Office Hours</h1>
+            <p>August 4, 2026 — 10:00 AM ET</p>
+            <div class="highlight-box">
+                <span>🎉 Unit 10 Deep Dive • BattleCoach Demo with Soo & Skyler</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 2: Units 9 + 10 Overview -->
+    <div class="slide" data-slide="1">
+        <div class="slide-inner">
+            <h2><span class="emoji">📚</span> Units 9 & 10 Now Live</h2>
+            
+            <div class="two-col">
+                <div class="unit-card">
+                    <div class="unit-num">09</div>
+                    <h3>Segmentation & Sizing</h3>
+                    <p style="font-size: 1rem; opacity: 0.8;">Market sizing and customer segmentation with AI</p>
+                    <ul>
+                        <li>TAM/SAM/SOM sizing frameworks</li>
+                        <li>Customer & buyer segmentation</li>
+                        <li>Buyer tier strategy (SMB → Enterprise)</li>
+                        <li>Growth quadrant analysis</li>
+                        <li>Competitive landscape mapping</li>
+                    </ul>
+                </div>
+                
+                <div class="unit-card" style="border-color: #f97316;">
+                    <div class="unit-num" style="color: #f97316;">10</div>
+                    <h3>Buyer Personas & Journey Mapping</h3>
+                    <p style="font-size: 1rem; opacity: 0.8;">Understanding your buyers in the AI era</p>
+                    <ul>
+                        <li>AI-era persona development</li>
+                        <li>Jobs-to-be-done frameworks</li>
+                        <li>Buyer journey mapping</li>
+                        <li>Buying committee dynamics</li>
+                        <li>AI buyer agents (the new reality)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem; opacity: 0.7;">
+                <strong>82% of the curriculum now complete</strong> — 10 of 12 units live
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 3: Leaderboard -->
+    <div class="slide" data-slide="2">
+        <div class="slide-inner">
+            <h2><span class="emoji">🏆</span> Leaderboard Update</h2>
+            
+            <p>Top performers through Unit 10</p>
+            
+            <div class="leaderboard">
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥇</span>
+                    <span class="leaderboard-name">Sean Thomson</span>
+                    <span class="leaderboard-progress">10/10 units</span>
+                    <span class="leaderboard-score">1000</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥈</span>
+                    <span class="leaderboard-name">Venkata Giduthuri</span>
+                    <span class="leaderboard-progress">10/10 units</span>
+                    <span class="leaderboard-score">1000</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥉</span>
+                    <span class="leaderboard-name">Mark Mckissick</span>
+                    <span class="leaderboard-progress">10/10 units</span>
+                    <span class="leaderboard-score">990</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">4</span>
+                    <span class="leaderboard-name">Aneta Sablik</span>
+                    <span class="leaderboard-progress">9/10 units</span>
+                    <span class="leaderboard-score">900</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">5</span>
+                    <span class="leaderboard-name">Heather Margolis</span>
+                    <span class="leaderboard-progress">9/10 units</span>
+                    <span class="leaderboard-score">890</span>
+                </div>
+                <div class="leaderboard-item highlight">
+                    <span class="leaderboard-rank">6</span>
+                    <span class="leaderboard-name">Hyunsoo Shim <span class="new-badge">Presenting Today</span></span>
+                    <span class="leaderboard-progress">8/10 units</span>
+                    <span class="leaderboard-score">800</span>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-size: 1rem; opacity: 0.7;">
+                Full leaderboard: futureofpmm.com/curriculum/leaderboard
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 4: Survey Results -->
+    <div class="slide" data-slide="3">
+        <div class="slide-inner">
+            <h2><span class="emoji">📊</span> Survey Results Update</h2>
+            
+            <div class="survey-grid">
+                <div class="survey-card">
+                    <div class="label">Enrolled</div>
+                    <div class="value blue">127</div>
+                    <div class="sub">+15 since last month</div>
+                </div>
+                <div class="survey-card">
+                    <div class="label">Completed Unit 1+</div>
+                    <div class="value green">68%</div>
+                    <div class="sub">actively engaged</div>
+                </div>
+                <div class="survey-card">
+                    <div class="label">Avg. Quiz Score</div>
+                    <div class="value yellow">87%</div>
+                    <div class="sub">across all units</div>
+                </div>
+            </div>
+            
+            <h3>Curriculum NPS</h3>
+            <div class="nps-bar">
+                <div class="nps-promoters" style="width: 72%;"></div>
+                <div class="nps-passive" style="width: 20%;"></div>
+                <div class="nps-detractors" style="width: 8%;"></div>
+            </div>
+            <div class="nps-legend">
+                <span><div class="dot" style="background: #22c55e;"></div> Promoters 72%</span>
+                <span><div class="dot" style="background: #eab308;"></div> Passive 20%</span>
+                <span><div class="dot" style="background: #ef4444;"></div> Detractors 8%</span>
+            </div>
+            
+            <p style="text-align: center; margin-top: 1.5rem;">
+                <strong style="font-size: 2rem; color: #22c55e;">+64</strong>
+                <span style="opacity: 0.7;"> NPS Score</span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 5: Intro to Soo -->
+    <div class="slide slide-presenter" data-slide="4" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
+        <div class="slide-inner">
+            <span class="presenter-badge">⭐ BattleCoach Co-Creator</span>
+            <div class="presenter-header">
+                <div class="presenter-photo"><img src="/assets/images/users/soo-shim-headshot.jpg" alt="Soo Shim"></div>
+                <div class="presenter-info">
+                    <h2 style="margin-bottom: 0.5rem;">Hyunsoo "Soo" Shim</h2>
+                    <p class="role" style="margin: 0;">Competitive Field Readiness · Finance & Procurement LOB PMM</p>
+                </div>
+            </div>
+            <p class="presenter-bio">
+                Soo leads competitive field readiness initiatives, building scalable systems that turn positioning into winning execution. She built executive communities like the <strong>CPO Think Tank</strong> and has spent her career translating complex product portfolios into clear, differentiated value stories. BattleCoach represents her vision for how PMM intelligence can become an embedded coaching capability that scales.
+            </p>
+            <div class="highlights">
+                <div class="highlight"><span class="highlight-icon">🎯</span> Solution-level competitive playbooks</div>
+                <div class="highlight"><span class="highlight-icon">🧠</span> "AI still needs our brain inputs"</div>
+                <div class="highlight"><span class="highlight-icon">📋</span> Pass the logo swap test</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 6: Intro to Skyler -->
+    <div class="slide slide-presenter" data-slide="5" style="background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);">
+        <div class="slide-inner">
+            <span class="presenter-badge">⭐ BattleCoach Co-Creator</span>
+            <div class="presenter-header">
+                <div class="presenter-photo"><img src="/assets/images/users/skyler-neal-headshot.jpg" alt="Skyler Neal"></div>
+                <div class="presenter-info">
+                    <h2 style="margin-bottom: 0.5rem;">Skyler Neal</h2>
+                    <p class="role" style="margin: 0;">SAP GTM Strategy & Execution · Author, Agent of Curiosity</p>
+                </div>
+            </div>
+            <p class="presenter-bio">
+                Skyler writes <strong>Agent of Curiosity</strong> — a newsletter documenting her AI journey at the intersection of Product Marketing and AI. She's been building in public with practical agent builds like the "Signal Scanner" and sharing honest takes on what's actually working. If you're a PMM trying to figure out how AI fits into your workflow, Skyler's showing the way.
+            </p>
+            <div class="highlights">
+                <div class="highlight"><span class="highlight-icon">📰</span> Agent of Curiosity newsletter</div>
+                <div class="highlight"><span class="highlight-icon">🔧</span> "Signal Scanner" agent build</div>
+                <div class="highlight"><span class="highlight-icon">💡</span> Building in public</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 7: BattleCoach Overview -->
+    <div class="slide slide-battlecoach" data-slide="6">
+        <div class="slide-inner">
+            <div class="battlecoach-header">
+                <h2>What is BattleCoach?</h2>
+                <p class="tagline">An AI-powered competitive co-pilot and deal simulator for sellers</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h4>Deal-Specific Plays</h4>
+                    <p>Generates competitive plays based on stage, competitor, and vertical</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💬</div>
+                    <h4>Talk Tracks & Scripts</h4>
+                    <p>Auto-generates meeting plans and scripts tailored to each deal</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💣</div>
+                    <h4>FUD Responses</h4>
+                    <p>Landmine detection and pre-built responses to competitor claims</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎭</div>
+                    <h4>Sales Simulation</h4>
+                    <p>Practice mode for realistic competitive scenario rehearsal</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h4>Coach Mode</h4>
+                    <p>AI coach that recommends strategic plays based on deal intel</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🧠</div>
+                    <h4>PMM Intelligence</h4>
+                    <p>Encodes tribal knowledge into scalable systems</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 8: Demo Time -->
+    <div class="slide slide-title" data-slide="7" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+        <div class="slide-inner">
+            <h1>🎬 Demo Time</h1>
+            <p>Soo & Skyler present BattleCoach</p>
+            <div class="highlight-box" style="background: rgba(0,0,0,0.2); border-color: rgba(0,0,0,0.3);">
+                <span>20 minutes • Live walkthrough • Q&A</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="nav">
+        <button id="prev" disabled>←</button>
+        <span class="progress-text">1 / 8</span>
+        <button id="next">→</button>
+    </div>
+    
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const progressText = document.querySelector('.progress-text');
+        let currentSlide = 0;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            progressText.textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+        
+        prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlide + 1);
+            if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+        });
+    </script>
+</body>
+</html>
