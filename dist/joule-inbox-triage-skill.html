@@ -117,17 +117,27 @@ document.getElementById('hamburger').addEventListener('click', function() {
     
     <p class="subtitle">How we built a custom skill to classify emails, surface what's urgent, and generate draft replies — without engineering support, infrastructure, or write permissions on the mailbox.</p>
     
-    <p class="byline">By <strong>Chris O'Hara</strong> & <strong>Kristel Medina</strong> · 10 min read</p>
+    <p class="byline">By <strong>Chris O'Hara</strong> · 10 min read</p>
     
-    <p>Brenda Bown's team came to us with a familiar problem: the CMO's inbox was unmanageable. Hundreds of emails a day, no reliable way to surface what actually needed attention, and draft replies that took longer to compose than the decisions they contained. They wanted an AI agent that could triage the inbox each morning — classify what's urgent, flag what needs a response, and generate ready-to-paste drafts for everything that does.</p>
+    <p>Most of us start the day the same way: staring at an inbox that filled up overnight, trying to figure out what actually needs attention before the first meeting. The volume isn't the problem — it's the cognitive load of classifying, prioritizing, and deciding what to do with each message. By the time you've triaged manually, half your morning is gone.</p>
     
-    <p>We explored a third-party inbox agent first. The demos were impressive, but the implementation requirements weren't: hosting, maintenance, Graph API write permissions, security review. For a pilot, that was too much friction.</p>
-    
-    <p>Then we tried Joule Desktop with a custom Skill — and got to 80% of the value in an afternoon. No infrastructure. No write permissions. No engineers required. This is how we built it.</p>
+    <p>We wanted an AI agent that could handle that triage automatically — classify what's urgent, flag what needs a response, and generate ready-to-paste drafts for everything that does. The question was how to get there without a multi-month implementation project.</p>
 
-    <h2>Why We Chose Joule Desktop + Skill</h2>
+    <h2>The Easy Way and the Hard Way</h2>
     
-    <p>We evaluated three approaches before settling on the one that actually shipped:</p>
+    <p>There are two paths to inbox automation, and both are worth it — which one you choose depends on volume, urgency, and how much infrastructure you're willing to maintain.</p>
+    
+    <p>The <strong>hard way</strong> is full automation: a custom agent or Microsoft Power Automate workflow that runs on a schedule, writes drafts directly to Outlook, and requires no daily prompting. It's the right answer for high-volume executive mailboxes where even "triage my inbox" is too much friction. But it requires Graph API write permissions, security review, and ongoing maintenance.</p>
+    
+    <p>The <strong>easy way</strong> is a Joule Desktop Skill — a plain Markdown file that tells Joule how to triage your email when you ask. No infrastructure, no write permissions, no engineers. You prompt it each morning ("triage my inbox"), and it returns a classified digest with draft replies you can copy-paste. You give up automation; you gain speed to value.</p>
+    
+    <p>We started with the easy way — and got to 80% of the value in an afternoon. For most people, that's enough. For high-volume mailboxes, the hard way is worth the investment. But here's the thing: <strong>building Joule skills is one of the fastest paths to successful AI adoption</strong>. You learn the patterns, see immediate results, and build confidence before tackling the bigger automation projects.</p>
+    
+    <p>This is how we built the inbox triage skill.</p>
+
+    <h2>Comparing the Approaches</h2>
+    
+    <p>Here's how the options stack up:</p>
     
     <table>
         <tr>
@@ -152,7 +162,7 @@ document.getElementById('hamburger').addEventListener('click', function() {
         </tr>
     </table>
     
-    <p>The trade-off was acceptable: Brenda would need to type "triage my inbox" each morning instead of having it run automatically. In exchange, we could deploy in hours instead of weeks, with no security review and no IT ticket. The Microsoft Power Automate path remains the right upgrade if full automation becomes necessary — but for a pilot, the Joule Desktop approach got us to value immediately.</p>
+    <p>The trade-off is simple: type "triage my inbox" each morning instead of having it run automatically. In exchange, you deploy in hours instead of weeks, with no security review and no IT ticket. The Power Automate path remains the right upgrade when full automation becomes necessary — but for getting started, the Joule Desktop approach gets you to value immediately.</p>
 
     <h2>Step 1: Register the App in Microsoft Entra ID</h2>
     
@@ -268,6 +278,26 @@ description: >-
     <p>If there are no unread emails in the 12-hour window, Joule responds: <em>"No unread emails in the last 12 hours. Inbox is clear."</em></p>
     
     <p>You can also ask for a broader summary — covering all recent emails regardless of read status — by prompting: <em>"give me the summary anyway."</em></p>
+
+    <h2>What Success Looks Like</h2>
+    
+    <p>Here's an actual morning triage session. The skill processed 12 unread emails and generated draft replies for each one that needed a response:</p>
+    
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+        <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #64748b; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.05em;">📬 Draft replies generated:</p>
+        <ul style="margin: 0; padding-left: 1.25rem;">
+            <li><strong>Timothy Norris</strong> — RE: Thanks and Next Steps: SAP x Neuralift</li>
+            <li><strong>ITSM Notification</strong> — RE: Author action required for INC32925982</li>
+            <li><strong>Thomson, Sean</strong> — RE: AI for PMM Use Cases</li>
+            <li><strong>Little, Emery</strong> — RE: AI for PMM Use Cases</li>
+            <li><strong>Turbyfill, Cara</strong> — RE: [CONFIDENTIAL] SSF HR Request</li>
+            <li><strong>Churchill, Jasmine</strong> — RE: R1019 - AI for PMM Timeline</li>
+        </ul>
+    </div>
+    
+    <p>Each draft includes the recipient, subject line, a contextually appropriate response, and — critically — a note flagging anything that needs human review before sending. The Cara Turbyfill email, for example, was flagged as sensitive (HR/confidential) and marked for manual review rather than auto-drafted.</p>
+    
+    <p>The drafts aren't perfect, but they don't need to be. They give you a starting point that's 80% there — which turns a 45-minute morning triage into a 10-minute review and send session.</p>
 
     <h2>What the Skill Does NOT Do</h2>
     
