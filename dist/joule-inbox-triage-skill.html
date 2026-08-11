@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm Triaging My Inbox with Joule Desktop | Future of PMM</title>
+    <meta name="description" content="How we built a custom Joule Desktop skill to classify emails, surface what's urgent, and generate draft replies — without engineering support or infrastructure.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --pmm-blue: #3b82f6; --pmm-dark: #1e3a5f; --accent: #c84b31; --green: #10b981; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Merriweather', Georgia, serif; background: #faf9f7; color: #1a1a2e; line-height: 1.8; }
+        
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; width: auto; }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover { color: var(--pmm-blue); background: #f3f4f6; }
+        
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            nav { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #fff; flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.1); transition: right 0.3s ease; z-index: 1000; gap: 0; }
+            nav.open { right: 0; }
+            nav > a { padding: 0.75rem 0; font-size: 1.1rem; }
+        }
+        
+        article { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+        
+        .series-badge { display: inline-block; background: var(--green); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        
+        .article-meta { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        h1 { font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1.5rem; color: #1a1a2e; }
+        
+        .subtitle { font-size: 1.25rem; color: #4b5563; margin-bottom: 2rem; font-style: italic; line-height: 1.6; }
+        
+        .byline { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #6b7280; padding-bottom: 2rem; border-bottom: 1px solid #e5e2dd; margin-bottom: 2rem; }
+        .byline strong { color: #1a1a2e; }
+        
+        p { margin-bottom: 1.5rem; font-size: 1.1rem; }
+        
+        h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; color: #1a1a2e; }
+        
+        h3 { font-size: 1.2rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--pmm-dark); }
+        
+        ul, ol { margin: 1.5rem 0; padding-left: 1.5rem; }
+        li { margin-bottom: 0.75rem; }
+        
+        blockquote { border-left: 4px solid var(--accent); padding-left: 1.5rem; margin: 2rem 0; font-style: italic; color: #4b5563; }
+        
+        code { font-family: 'JetBrains Mono', monospace; background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+        
+        pre { background: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; }
+        pre code { background: none; padding: 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f8fafc; font-weight: 600; color: var(--pmm-dark); font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+        tr:hover { background: #fafafa; }
+        
+        .callout { background: #eff6ff; border-left: 4px solid var(--pmm-blue); padding: 1.25rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
+        .callout p { margin: 0; color: #1e40af; }
+        
+        .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
+        .warning p { margin: 0; color: #92400e; }
+        
+        a { color: var(--accent); }
+        
+        .cta-box { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: white; padding: 2rem; border-radius: 12px; margin: 2.5rem 0; text-align: center; }
+        .cta-box h3 { color: white; margin: 0 0 0.75rem 0; }
+        .cta-box p { color: rgba(255,255,255,0.9); margin: 0 0 1rem 0; }
+        .cta-box a { display: inline-block; background: #f59e0b; color: #1a1a2e; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.9rem; }
+        
+        footer { background: var(--pmm-dark); color: white; padding: 2rem 0; text-align: center; font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="The Future of PMM"></a>
+        <nav id="main-nav">
+            <a href="/">Home</a>
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/newsletters.html">Newsletter</a>
+            <a href="/about.html">About</a>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+<script>
+document.getElementById('hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.getElementById('main-nav').classList.toggle('open');
+});
+</script>
+
+<article>
+    <span class="series-badge">🔧 Joule Desktop Skills · Part 1</span>
+    
+    <p class="article-meta">Practical Guide · August 2026</p>
+    
+    <h1>I'm Triaging My Inbox with Joule Desktop</h1>
+    
+    <p class="subtitle">How we built a custom skill to classify emails, surface what's urgent, and generate draft replies — without engineering support, infrastructure, or write permissions on the mailbox.</p>
+    
+    <p class="byline">By <strong>Chris O'Hara</strong> & <strong>Kristel Medina</strong> · 10 min read</p>
+    
+    <p>Brenda Bown's team came to us with a familiar problem: the CMO's inbox was unmanageable. Hundreds of emails a day, no reliable way to surface what actually needed attention, and draft replies that took longer to compose than the decisions they contained. They wanted an AI agent that could triage the inbox each morning — classify what's urgent, flag what needs a response, and generate ready-to-paste drafts for everything that does.</p>
+    
+    <p>We explored a third-party inbox agent first. The demos were impressive, but the implementation requirements weren't: hosting, maintenance, Graph API write permissions, security review. For a pilot, that was too much friction.</p>
+    
+    <p>Then we tried Joule Desktop with a custom Skill — and got to 80% of the value in an afternoon. No infrastructure. No write permissions. No engineers required. This is how we built it.</p>
+
+    <h2>Why We Chose Joule Desktop + Skill</h2>
+    
+    <p>We evaluated three approaches before settling on the one that actually shipped:</p>
+    
+    <table>
+        <tr>
+            <th>Option</th>
+            <th>Pro</th>
+            <th>Con</th>
+        </tr>
+        <tr>
+            <td>Custom inbox-agent (Python)</td>
+            <td>Full automation, writes back to Outlook</td>
+            <td>Requires hosting, maintenance, Graph API write perms</td>
+        </tr>
+        <tr>
+            <td>Microsoft Power Automate + AI Builder</td>
+            <td>Native, production-grade, fully automatic</td>
+            <td>More setup time, requires IT involvement for licensing</td>
+        </tr>
+        <tr>
+            <td><strong>Joule Desktop + Skill</strong></td>
+            <td><strong>Fast to deploy, no infrastructure, no write perms needed</strong></td>
+            <td><strong>Read-only; must prompt manually each morning</strong></td>
+        </tr>
+    </table>
+    
+    <p>The trade-off was acceptable: Brenda would need to type "triage my inbox" each morning instead of having it run automatically. In exchange, we could deploy in hours instead of weeks, with no security review and no IT ticket. The Microsoft Power Automate path remains the right upgrade if full automation becomes necessary — but for a pilot, the Joule Desktop approach got us to value immediately.</p>
+
+    <h2>Step 1: Register the App in Microsoft Entra ID</h2>
+    
+    <p>Joule Desktop's email integration runs through Microsoft Graph. To connect it to the right mailbox context, we registered an Azure application via SAP's internal provisioning process.</p>
+    
+    <h3>How to request an Entra app registration at SAP:</h3>
+    
+    <ol>
+        <li>Go to <strong>itsupport.sap.com</strong></li>
+        <li>Open a ticket under category: <strong>Azure: Entra App Registration</strong></li>
+        <li>Provide: app name, business justification, and the owner(s) to assign</li>
+    </ol>
+    
+    <p>We created two apps during the pilot process:</p>
+    
+    <table>
+        <tr>
+            <th>App Name</th>
+            <th>Client ID</th>
+            <th>Purpose</th>
+        </tr>
+        <tr>
+            <td>CMO-Inbox-Automation-Pilot</td>
+            <td><code>875d7149-579f-4f4c-bc55-d8ae995331dd</code></td>
+            <td>Initial pilot registration</td>
+        </tr>
+        <tr>
+            <td>inbox-automation</td>
+            <td><code>e76d6f06-c513-4dfa-8d80-2f3eb6d88cb2</code></td>
+            <td>Final registered app</td>
+        </tr>
+    </table>
+    
+    <p>The SAP Global Authentication Team provisions these automatically. Confirmation arrives via email from <code>auth@global.corp.sap</code> with the Client ID, Object ID, and Service Principal ID.</p>
+    
+    <div class="warning">
+        <p><strong>Note:</strong> IT may request additional information before completing the registration. Ticket INC32925982 required a follow-up response before the solution was proposed. Check itsupport.sap.com for status.</p>
+    </div>
+    
+    <h3>To manage the app after creation:</h3>
+    
+    <ol>
+        <li>Request the Azure Portal access package (auto-approved): <code>myaccess.microsoft.com/@sap.onmicrosoft.com</code></li>
+        <li>Once approved, go to: Azure Portal → Azure Active Directory → App Registrations</li>
+        <li>Search for your app name and configure permissions as needed</li>
+    </ol>
+
+    <h2>Step 2: Install Joule Desktop</h2>
+    
+    <ol>
+        <li>Download <strong>Joule Work Desktop</strong> from the SAP internal software portal</li>
+        <li>Sign in with your SAP corporate credentials (SSO via Microsoft Entra ID)</li>
+        <li>Joule automatically connects to your Microsoft 365 mailbox and calendar via the built-in Graph integration — no additional configuration needed for read access</li>
+    </ol>
+    
+    <div class="callout">
+        <p><strong>Key constraint:</strong> Joule Desktop's email access is <strong>read-only</strong> by design. It can read, search, and summarize emails, but cannot send, label, or create drafts in Outlook. This is intentional — it keeps the integration simple and avoids requiring broad Graph API write permissions.</p>
+    </div>
+
+    <h2>Step 3: Write the Skill</h2>
+    
+    <p>Skills in Joule Desktop are plain Markdown files that tell Joule how to handle a specific type of request. The inbox triage skill lives at:</p>
+    
+    <pre><code>[Joule Desktop app directory]/skills/inbox-triage/SKILL.md</code></pre>
+    
+    <p>The skill has two parts:</p>
+    
+    <h3>Part A: Frontmatter (YAML header)</h3>
+    
+    <p>Defines the skill name, description, and the trigger phrases Joule listens for:</p>
+    
+    <pre><code>---
+name: inbox-triage
+description: >-
+  Triages unread email from the past 12 hours. Classifies messages into
+  Urgent, Needs-reply, FYI, Newsletter, and Sensitive buckets, then
+  generates ready-to-paste reply drafts for all items that need a response.
+  Use when the user says: "triage my inbox", "what needs my attention",
+  "morning briefing", "email digest", "catch me up on email", etc.
+---</code></pre>
+    
+    <h3>Part B: Instructions (Markdown body)</h3>
+    
+    <p>Step-by-step instructions Joule follows when the skill activates:</p>
+    
+    <ol>
+        <li><strong>Fetch</strong> — Call <code>list_emails</code> with <code>onlyUnread: true</code>, <code>top: 50</code>. Filter to the last 12 hours.</li>
+        <li><strong>Read</strong> — For emails that look urgent or need a reply, call <code>get_email</code> in parallel to read the full body. Skip automated/bulk mail.</li>
+        <li><strong>Classify</strong> — Sort each email into one of five buckets:
+            <ul>
+                <li>🔴 <strong>Urgent</strong> — needs a decision or response today</li>
+                <li>📬 <strong>Needs Reply</strong> — requires a response, not necessarily today</li>
+                <li>📋 <strong>FYI</strong> — informational, no reply needed</li>
+                <li>📰 <strong>Newsletter / Bulk</strong> — automated or marketing mail</li>
+                <li>⚠️ <strong>Sensitive</strong> — flagged keywords; never drafted, surfaced for manual review only</li>
+            </ul>
+        </li>
+        <li><strong>Output</strong> — Produce a structured digest with summaries, recommended actions, and ready-to-paste draft replies for all Needs Reply items.</li>
+    </ol>
+    
+    <h3>Sensitive keyword list (built into the skill):</h3>
+    
+    <p><code>board</code>, <code>legal</code>, <code>confidential</code>, <code>personnel</code>, <code>hr</code>, <code>human resources</code>, <code>offer letter</code>, <code>acquisition</code>, <code>merger</code>, <code>press</code>, <code>media inquiry</code>, <code>layoff</code>, <code>termination</code>, <code>compensation</code>, <code>salary</code>, <code>bonus</code>, <code>lawsuit</code>, <code>nda</code>, <code>non-disclosure</code></p>
+
+    <h2>Step 4: Test the Skill</h2>
+    
+    <ol>
+        <li>Open Joule Desktop</li>
+        <li>Type: <strong>"triage my inbox"</strong></li>
+        <li>Joule activates the skill, fetches unread emails, classifies them, and returns the digest</li>
+    </ol>
+    
+    <p>If there are no unread emails in the 12-hour window, Joule responds: <em>"No unread emails in the last 12 hours. Inbox is clear."</em></p>
+    
+    <p>You can also ask for a broader summary — covering all recent emails regardless of read status — by prompting: <em>"give me the summary anyway."</em></p>
+
+    <h2>What the Skill Does NOT Do</h2>
+    
+    <p>This is important to set expectations with end users:</p>
+    
+    <table>
+        <tr>
+            <th>Capability</th>
+            <th>Joule Desktop Skill</th>
+        </tr>
+        <tr>
+            <td>Read and summarize emails</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td>Generate draft reply text in chat</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td>Flag sensitive items</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td>Apply labels or categories in Outlook</td>
+            <td>❌ Read-only</td>
+        </tr>
+        <tr>
+            <td>Create drafts in Outlook Drafts folder</td>
+            <td>❌ Read-only</td>
+        </tr>
+        <tr>
+            <td>Send emails automatically</td>
+            <td>❌ Read-only</td>
+        </tr>
+        <tr>
+            <td>Run on a schedule without prompting</td>
+            <td>❌ Must be triggered manually</td>
+        </tr>
+    </table>
+
+    <h2>What's Next: The Path to Full Automation</h2>
+    
+    <p>If the end user needs the triage to run automatically and write back to Outlook, the recommended path is <strong>Microsoft Power Automate + AI Builder</strong>. This is the Microsoft-native production approach. It requires:</p>
+    
+    <ul>
+        <li>Power Automate license (included in most M365 E3/E5 plans)</li>
+        <li>AI Builder credits for the classification step</li>
+        <li>Mailbox delegation or shared mailbox access for the EA</li>
+    </ul>
+    
+    <p>The Joule Desktop skill is a fast, zero-infrastructure way to get started. The Power Automate path is the right upgrade when scheduling and write-back become requirements.</p>
+
+    <h2>SAP-Specific Tools & Permissions Reference</h2>
+    
+    <table>
+        <tr>
+            <th>Tool / System</th>
+            <th>What It Was Used For</th>
+        </tr>
+        <tr>
+            <td><strong>itsupport.sap.com</strong></td>
+            <td>Filed IT ticket to request Azure Entra app registrations</td>
+        </tr>
+        <tr>
+            <td><strong>SAP Global Authentication</strong></td>
+            <td>Provisioned the Entra apps and assigned owners</td>
+        </tr>
+        <tr>
+            <td><strong>Microsoft Azure Portal</strong></td>
+            <td>Manage app registrations post-creation</td>
+        </tr>
+        <tr>
+            <td><strong>myaccess.microsoft.com</strong></td>
+            <td>Request Azure Portal access package (auto-approved)</td>
+        </tr>
+        <tr>
+            <td><strong>Joule Work Desktop</strong></td>
+            <td>Platform where the skill runs; provides read-only Graph API access</td>
+        </tr>
+        <tr>
+            <td><strong>Microsoft Graph API</strong></td>
+            <td>Underlying API Joule uses to access email (<code>Mail.Read</code>)</td>
+        </tr>
+    </table>
+
+    <div class="cta-box">
+        <h3>🔧 Try Joule Desktop</h3>
+        <p>Joule Work Desktop is now available internally. Build your own skills or try the inbox triage workflow.</p>
+        <a href="/ai-tools.html">Learn More About Joule Desktop →</a>
+    </div>
+    
+    <p><em>This is Part 1 of our Joule Desktop Skills series. Coming next: Meeting Prep, Competitive Brief Generation, and more.</em></p>
+
+</article>
+
+<footer>
+    <p>SAP Data & Analytics PMM · Internal Use Only</p>
+    <p><a href="/curriculum/">Back to Curriculum</a> · <a href="/newsletters.html">Newsletter Archive</a></p>
+</footer>
+
+</body>
+</html>
