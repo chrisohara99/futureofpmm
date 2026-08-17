@@ -1596,12 +1596,25 @@ document.getElementById('labForm').addEventListener('submit', async (e) => {
     } else {
         // Live mode - call API
         document.getElementById('demoBanner').style.display = 'none';
+        
+        // Show loading state with longer delay for live mode
+        runBtn.querySelector('span').textContent = 'Querying ChatGPT, Claude, Gemini...';
+        
         try {
+            // Build inputs including queries from productQueries
+            const queries = productQueries[selectedProduct] 
+                ? productQueries[selectedProduct].map(q => q.text) 
+                : [];
+            
             const inputs = {
                 company: document.getElementById('company').value || productData[selectedProduct]?.company,
                 category: document.getElementById('category').value || productData[selectedProduct]?.category,
-                positioning: document.getElementById('positioning').value || ''
+                positioning: document.getElementById('positioning').value || demoResults[selectedProduct]?.rewrites?.[0]?.before || '',
+                queries: queries,
+                competitors: demoResults[selectedProduct]?.competitors?.map(c => c.name) || []
             };
+            
+            console.log('Sending to API:', inputs);
             
             const response = await fetch('/.netlify/functions/geo-scorecard', {
                 method: 'POST',
@@ -1609,14 +1622,26 @@ document.getElementById('labForm').addEventListener('submit', async (e) => {
                 body: JSON.stringify(inputs)
             });
             
-            if (!response.ok) throw new Error('API failed');
+            console.log('API response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API error:', errorText);
+                throw new Error('API failed: ' + errorText);
+            }
+            
             const data = await response.json();
+            console.log('API returned:', data);
             renderResults(data);
         } catch (error) {
-            console.error(error);
+            console.error('Live mode error:', error);
             // Fallback to demo if available
             if (demoResults[selectedProduct]) {
                 document.getElementById('demoBanner').style.display = 'flex';
+                document.getElementById('demoBanner').innerHTML = `
+                    <span class="icon">⚠️</span>
+                    <span><strong>Fallback to Demo</strong> — Live API error: ${error.message}. Showing cached results.</span>
+                `;
                 renderResults(demoResults[selectedProduct]);
             }
         }
