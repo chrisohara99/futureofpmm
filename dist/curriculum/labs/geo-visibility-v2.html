@@ -316,6 +316,148 @@
         .demo-banner .icon { font-size: 1.25rem; }
         .demo-banner strong { font-weight: 600; }
         
+        /* Live Mode Loading Animation */
+        .loading-overlay {
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1B2A4E 0%, #2D4A7C 50%, #0070F2 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .loading-overlay::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.1) 60deg, transparent 120deg);
+            animation: rotateGlow 3s linear infinite;
+        }
+        @keyframes rotateGlow {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .loading-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        .llm-loading-grid {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .llm-loading-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            min-width: 100px;
+            transition: all 0.3s;
+        }
+        .llm-loading-item.active {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+        .llm-loading-item.done {
+            background: rgba(24,128,56,0.4);
+        }
+        .llm-loading-item.error {
+            background: rgba(217,48,37,0.4);
+        }
+        
+        .llm-loading-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .llm-loading-icon.chatgpt { background: #10A37F; }
+        .llm-loading-icon.claude { background: #D97706; }
+        .llm-loading-icon.perplexity { background: #1FB8CD; }
+        .llm-loading-icon.gemini { background: #4285F4; }
+        
+        .llm-loading-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .llm-loading-status {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        .llm-loading-item.active .llm-loading-status {
+            opacity: 1;
+        }
+        
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10A37F, #D97706, #1FB8CD, #4285F4);
+            background-size: 300% 100%;
+            border-radius: 3px;
+            animation: progressShimmer 2s ease-in-out infinite;
+            transition: width 0.5s ease;
+        }
+        @keyframes progressShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 8px;
+        }
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: dotPulse 1.4s infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotPulse {
+            0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+            40% { opacity: 1; transform: scale(1); }
+        }
+        
         /* LLM Scorecard */
         .scorecard {
             background: var(--card);
@@ -1004,6 +1146,41 @@
     <!-- Results Section -->
     <div class="results-section" id="resultsSection">
         
+        <!-- Live Loading Animation -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-title">Querying AI Models<span class="loading-dots"><span></span><span></span><span></span></span></div>
+                <div class="loading-subtitle">Testing your visibility across major LLMs</div>
+                
+                <div class="llm-loading-grid">
+                    <div class="llm-loading-item" id="loading-chatgpt">
+                        <div class="llm-loading-icon chatgpt">🤖</div>
+                        <div class="llm-loading-name">ChatGPT</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                    <div class="llm-loading-item" id="loading-claude">
+                        <div class="llm-loading-icon claude">🧠</div>
+                        <div class="llm-loading-name">Claude</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                    <div class="llm-loading-item" id="loading-perplexity">
+                        <div class="llm-loading-icon perplexity">🔍</div>
+                        <div class="llm-loading-name">Perplexity</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                    <div class="llm-loading-item" id="loading-gemini">
+                        <div class="llm-loading-icon gemini">✨</div>
+                        <div class="llm-loading-name">Gemini</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                </div>
+                
+                <div class="loading-progress">
+                    <div class="loading-progress-bar" id="loadingProgress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Demo Banner -->
         <div class="demo-banner" id="demoBanner">
             <span class="icon">🎯</span>
@@ -1589,16 +1766,87 @@ document.getElementById('labForm').addEventListener('submit', async (e) => {
     document.getElementById('resultsSection').classList.add('show');
     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
     
+    // Reset loading states
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const scorecard = document.querySelector('.scorecard');
+    document.getElementById('loadingProgress').style.width = '0%';
+    ['chatgpt', 'claude', 'perplexity', 'gemini'].forEach(llm => {
+        const item = document.getElementById(`loading-${llm}`);
+        if (item) {
+            item.classList.remove('active', 'done', 'error');
+            item.querySelector('.llm-loading-status').textContent = 'Waiting...';
+        }
+    });
+    
     if (currentMode === 'demo' && demoResults[selectedProduct]) {
         // Use pre-cached demo results
+        loadingOverlay.style.display = 'none';
+        if (scorecard) scorecard.style.display = 'block';
         document.getElementById('demoBanner').style.display = 'flex';
         renderResults(demoResults[selectedProduct]);
     } else {
         // Live mode - call API
         document.getElementById('demoBanner').style.display = 'none';
         
-        // Show loading state with longer delay for live mode
-        runBtn.querySelector('span').textContent = 'Querying ChatGPT, Claude, Gemini...';
+        // Show animated loading overlay
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const scorecard = document.querySelector('.scorecard');
+        loadingOverlay.style.display = 'flex';
+        if (scorecard) scorecard.style.display = 'none';
+        
+        // Animate through LLMs
+        const llms = ['chatgpt', 'claude', 'perplexity', 'gemini'];
+        let currentLLM = 0;
+        
+        const updateLoadingState = (index, status) => {
+            const item = document.getElementById(`loading-${llms[index]}`);
+            if (!item) return;
+            
+            item.classList.remove('active', 'done', 'error');
+            const statusEl = item.querySelector('.llm-loading-status');
+            
+            if (status === 'active') {
+                item.classList.add('active');
+                statusEl.textContent = 'Querying...';
+            } else if (status === 'done') {
+                item.classList.add('done');
+                statusEl.textContent = '✓ Done';
+            } else if (status === 'error') {
+                item.classList.add('error');
+                statusEl.textContent = '✗ Error';
+            } else {
+                statusEl.textContent = 'Waiting...';
+            }
+        };
+        
+        // Simulate sequential progress
+        const progressBar = document.getElementById('loadingProgress');
+        const animateProgress = () => {
+            return new Promise(resolve => {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 2;
+                    progressBar.style.width = Math.min(progress, 95) + '%';
+                    
+                    // Update LLM states
+                    const llmIndex = Math.floor(progress / 25);
+                    if (llmIndex !== currentLLM && llmIndex < 4) {
+                        if (currentLLM < 4) updateLoadingState(currentLLM, 'done');
+                        currentLLM = llmIndex;
+                        updateLoadingState(currentLLM, 'active');
+                    }
+                    
+                    if (progress >= 95) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            });
+        };
+        
+        // Start animation
+        updateLoadingState(0, 'active');
+        const animationPromise = animateProgress();
         
         try {
             // Build inputs including queries from productQueries
@@ -1632,9 +1880,38 @@ document.getElementById('labForm').addEventListener('submit', async (e) => {
             
             const data = await response.json();
             console.log('API returned:', data);
+            
+            // Wait for animation to complete
+            await animationPromise;
+            
+            // Update final LLM states based on actual results
+            llms.forEach((llm, i) => {
+                const score = data.llmScores?.[llm]?.score || 0;
+                updateLoadingState(i, score > 0 ? 'done' : 'error');
+            });
+            progressBar.style.width = '100%';
+            
+            // Brief pause to show completion
+            await new Promise(r => setTimeout(r, 500));
+            
+            // Hide loading, show results
+            loadingOverlay.style.display = 'none';
+            if (scorecard) scorecard.style.display = 'block';
+            
             renderResults(data);
         } catch (error) {
             console.error('Live mode error:', error);
+            
+            // Complete animation with errors
+            await animationPromise;
+            llms.forEach((llm, i) => updateLoadingState(i, 'error'));
+            progressBar.style.width = '100%';
+            await new Promise(r => setTimeout(r, 500));
+            
+            // Hide loading
+            loadingOverlay.style.display = 'none';
+            if (scorecard) scorecard.style.display = 'block';
+            
             // Fallback to demo if available
             if (demoResults[selectedProduct]) {
                 document.getElementById('demoBanner').style.display = 'flex';
