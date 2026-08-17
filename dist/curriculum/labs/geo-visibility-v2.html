@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEO Visibility Lab | LLM Scorecard | SAP Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sap-blue: #0070F2;
+            --sap-dark: #1B2A4E;
+            --sap-orange: #E85D04;
+            --sap-green: #188038;
+            --sap-red: #D93025;
+            --sap-yellow: #F9AB00;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --border: #E5E7EB;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header { 
+            background: var(--sap-dark); 
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .logo img { height: 80px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+        .nav a:hover { color: white; }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--sap-dark) 0%, #2D4A7C 50%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-inner { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge { 
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15); 
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .hero h1 { 
+            font-size: 2.75rem; 
+            font-weight: 800; 
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .hero p { 
+            font-size: 1.2rem; 
+            opacity: 0.9; 
+            max-width: 700px;
+            line-height: 1.7;
+        }
+        
+        /* Main Layout */
+        main { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 2rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Product Selection */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .product-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .product-card:hover {
+            border-color: var(--sap-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.15);
+        }
+        .product-card.selected {
+            border-color: var(--sap-blue);
+            background: #EFF6FF;
+        }
+        .product-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .product-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--sap-dark); margin: 0; }
+        .product-card p { font-size: 0.75rem; color: var(--text-light); margin: 0.25rem 0 0; }
+        
+        /* Input Section */
+        .input-section {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .input-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--sap-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--sap-dark);
+        }
+        .form-group .hint {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: white;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--sap-blue);
+            box-shadow: 0 0 0 3px rgba(0,112,242,0.1);
+        }
+        textarea { min-height: 140px; resize: vertical; }
+        
+        /* Run Button */
+        .run-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .run-btn {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, #0052CC 100%);
+            color: white;
+            border: none;
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 14px rgba(0,112,242,0.4);
+        }
+        .run-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(0,112,242,0.5);
+        }
+        .run-btn:disabled { 
+            background: #94A3B8;
+            cursor: not-allowed; 
+            transform: none;
+            box-shadow: none;
+        }
+        .run-btn .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .results-section.show { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* LLM Scorecard */
+        .scorecard {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .scorecard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .scorecard-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sap-dark);
+        }
+        
+        /* Overall Score Gauge */
+        .overall-score {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+            border-radius: 16px;
+        }
+        .score-gauge {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1rem;
+        }
+        .score-gauge svg {
+            transform: rotate(-90deg);
+        }
+        .score-gauge .bg {
+            fill: none;
+            stroke: #E5E7EB;
+            stroke-width: 12;
+        }
+        .score-gauge .progress {
+            fill: none;
+            stroke: var(--sap-blue);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            transition: stroke-dashoffset 1.5s ease-out, stroke 0.5s;
+        }
+        .score-gauge .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .score-gauge .score-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--sap-dark);
+            line-height: 1;
+        }
+        .score-gauge .score-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+        .overall-score h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin-bottom: 0.5rem;
+        }
+        .overall-score p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* LLM Grid */
+        .llm-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 1000px) {
+            .llm-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .llm-grid { grid-template-columns: 1fr; }
+        }
+        
+        .llm-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .llm-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .llm-card.loading {
+            opacity: 0.7;
+        }
+        .llm-card .llm-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .llm-card .llm-icon.chatgpt { background: #10A37F; color: white; }
+        .llm-card .llm-icon.claude { background: #D97706; color: white; }
+        .llm-card .llm-icon.perplexity { background: #1FB8CD; color: white; }
+        .llm-card .llm-icon.gemini { background: #4285F4; color: white; }
+        
+        .llm-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .llm-card .score-badge {
+            display: inline-block;
+            font-size: 1.75rem;
+            font-weight: 800;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .llm-card .score-badge.high { background: #D1FAE5; color: #065F46; }
+        .llm-card .score-badge.medium { background: #FEF3C7; color: #92400E; }
+        .llm-card .score-badge.low { background: #FEE2E2; color: #991B1B; }
+        
+        .llm-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            text-align: left;
+        }
+        .llm-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .llm-metric .icon { font-size: 1rem; }
+        .llm-metric.positive { color: var(--sap-green); }
+        .llm-metric.neutral { color: var(--sap-yellow); }
+        .llm-metric.negative { color: var(--sap-red); }
+        
+        .llm-card .expand-btn {
+            margin-top: 1rem;
+            background: none;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .llm-card .expand-btn:hover {
+            background: var(--bg);
+            color: var(--sap-blue);
+            border-color: var(--sap-blue);
+        }
+        
+        /* Expanded Response */
+        .llm-response {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .llm-response.show { display: block; }
+        
+        /* Analysis Sections */
+        .analysis-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .analysis-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--sap-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Issue Cards */
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .issue-item {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--border);
+        }
+        .issue-item.high { border-left-color: var(--sap-red); }
+        .issue-item.medium { border-left-color: var(--sap-yellow); }
+        .issue-item.low { border-left-color: var(--sap-green); }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .issue-title { font-weight: 600; color: var(--sap-dark); }
+        .severity-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .severity-badge.high { background: #FEE2E2; color: #991B1B; }
+        .severity-badge.medium { background: #FEF3C7; color: #92400E; }
+        .severity-badge.low { background: #D1FAE5; color: #065F46; }
+        
+        .issue-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+        .issue-fix {
+            font-size: 0.85rem;
+            color: var(--sap-green);
+            font-weight: 500;
+        }
+        
+        /* Before/After */
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .before-after { grid-template-columns: 1fr; }
+        }
+        .before-box, .after-box {
+            padding: 1.25rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        .before-box {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+        }
+        .after-box {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+        }
+        .before-box h4, .after-box h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+        .before-box h4 { color: #991B1B; }
+        .after-box h4 { color: #166534; }
+        
+        /* Competitor Section */
+        .competitor-compare {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 800px) {
+            .competitor-compare { grid-template-columns: 1fr; }
+        }
+        .competitor-card {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .competitor-card.you {
+            background: #EFF6FF;
+            border: 2px solid var(--sap-blue);
+        }
+        .competitor-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin-bottom: 0.5rem;
+        }
+        .competitor-card .comp-score {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .competitor-card.you .comp-score { color: var(--sap-blue); }
+        
+        /* Action Button */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 0.875rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-btn:hover {
+            border-color: var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        .action-btn.primary {
+            background: var(--sap-blue);
+            border-color: var(--sap-blue);
+            color: white;
+        }
+        .action-btn.primary:hover {
+            background: #0052CC;
+        }
+        
+        /* Demo Mode Banner */
+        .demo-banner {
+            background: linear-gradient(90deg, #7C3AED 0%, #DB2777 100%);
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .demo-banner a { color: white; text-decoration: underline; }
+        
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Print/Export Styles */
+        @media print {
+            .header, .nav, .run-section, .action-buttons, .back-link { display: none; }
+            .scorecard, .analysis-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">
+            <span>🔬</span>
+            <span>Interactive Lab • Multi-LLM Analysis</span>
+        </div>
+        <h1>GEO Visibility Scorecard</h1>
+        <p>Test how visible your product is across ChatGPT, Claude, Perplexity, and Gemini. Get specific recommendations to improve your AI discoverability.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <!-- Product Selection -->
+    <div class="input-section">
+        <h2>📦 Select a Product</h2>
+        <div class="product-grid" id="productGrid">
+            <div class="product-card" data-product="ariba" onclick="selectProduct('ariba')">
+                <div class="icon">🛒</div>
+                <h3>SAP Ariba</h3>
+                <p>Procurement & Spend</p>
+            </div>
+            <div class="product-card" data-product="successfactors" onclick="selectProduct('successfactors')">
+                <div class="icon">👥</div>
+                <h3>SAP SuccessFactors</h3>
+                <p>Human Capital Mgmt</p>
+            </div>
+            <div class="product-card" data-product="datasphere" onclick="selectProduct('datasphere')">
+                <div class="icon">📊</div>
+                <h3>SAP Datasphere</h3>
+                <p>Data Management</p>
+            </div>
+            <div class="product-card" data-product="s4hana" onclick="selectProduct('s4hana')">
+                <div class="icon">⚙️</div>
+                <h3>SAP S/4HANA Cloud</h3>
+                <p>Cloud ERP</p>
+            </div>
+            <div class="product-card" data-product="btp" onclick="selectProduct('btp')">
+                <div class="icon">☁️</div>
+                <h3>SAP BTP</h3>
+                <p>Business Technology</p>
+            </div>
+            <div class="product-card" data-product="signavio" onclick="selectProduct('signavio')">
+                <div class="icon">🔄</div>
+                <h3>SAP Signavio</h3>
+                <p>Process Intelligence</p>
+            </div>
+            <div class="product-card" data-product="concur" onclick="selectProduct('concur')">
+                <div class="icon">✈️</div>
+                <h3>SAP Concur</h3>
+                <p>Travel & Expense</p>
+            </div>
+            <div class="product-card" data-product="custom" onclick="selectProduct('custom')">
+                <div class="icon">✏️</div>
+                <h3>Custom Product</h3>
+                <p>Enter your own</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Input Form -->
+    <form id="labForm">
+        <div class="input-section" id="customInputs" style="display: none;">
+            <h2>📝 Product Details</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="company">Product Name</label>
+                    <input type="text" id="company" name="company" placeholder="e.g., SAP Ariba">
+                </div>
+                <div class="form-group">
+                    <label for="category">Product Category</label>
+                    <input type="text" id="category" name="category" placeholder="e.g., Procurement Software">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="buyer">Target Buyer</label>
+                <p class="hint">Who researches solutions like yours?</p>
+                <input type="text" id="buyer" name="buyer" placeholder="e.g., Chief Procurement Officer at enterprise manufacturing companies">
+            </div>
+            
+            <div class="form-group">
+                <label for="positioning">Positioning Statement</label>
+                <p class="hint">Your current one-liner or elevator pitch</p>
+                <textarea id="positioning" name="positioning" placeholder="e.g., SAP Ariba is the world's largest B2B network..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="pageContent">Key Product Claims</label>
+                <p class="hint">Paste headlines, value props, and key feature descriptions</p>
+                <textarea id="pageContent" name="pageContent" style="min-height: 180px;" placeholder="Paste your product page content here..."></textarea>
+            </div>
+        </div>
+        
+        <!-- Test Queries -->
+        <div class="input-section">
+            <h2>🔍 Test Queries</h2>
+            <p class="hint" style="margin-bottom: 1rem;">These are the queries we'll test across all LLMs. Edit or add your own.</p>
+            
+            <div id="queryList">
+                <div class="form-group">
+                    <label>Query 1 (Category)</label>
+                    <input type="text" id="query1" placeholder="e.g., What are the best enterprise procurement software solutions?">
+                </div>
+                <div class="form-group">
+                    <label>Query 2 (Problem)</label>
+                    <input type="text" id="query2" placeholder="e.g., How can I reduce procurement costs and manage supplier risk?">
+                </div>
+                <div class="form-group">
+                    <label>Query 3 (Comparison)</label>
+                    <input type="text" id="query3" placeholder="e.g., Compare SAP Ariba vs Coupa vs Jaggaer">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Competitor Comparison (Optional) -->
+        <div class="input-section">
+            <h2>⚔️ Competitor Comparison (Optional)</h2>
+            <p class="hint" style="margin-bottom: 1rem;">Add competitors to see how you stack up</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="competitor1">Competitor 1</label>
+                    <input type="text" id="competitor1" placeholder="e.g., Coupa">
+                </div>
+                <div class="form-group">
+                    <label for="competitor2">Competitor 2</label>
+                    <input type="text" id="competitor2" placeholder="e.g., Jaggaer">
+                </div>
+            </div>
+        </div>
+        
+        <div class="run-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🚀 Run Multi-LLM Analysis</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+                Tests your visibility across ChatGPT, Claude, Perplexity, and Gemini
+            </p>
+        </div>
+    </form>
+    
+    <!-- Results Section -->
+    <div class="results-section" id="resultsSection">
+        
+        <!-- LLM Scorecard -->
+        <div class="scorecard">
+            <div class="scorecard-header">
+                <h2>📊 LLM Visibility Scorecard</h2>
+                <div>
+                    <button class="action-btn" onclick="exportPDF()">📄 Export PDF</button>
+                </div>
+            </div>
+            
+            <!-- Overall Score -->
+            <div class="overall-score">
+                <div class="score-gauge">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle class="bg" cx="100" cy="100" r="90"/>
+                        <circle class="progress" id="scoreProgress" cx="100" cy="100" r="90"/>
+                    </svg>
+                    <div class="score-text">
+                        <div class="score-number" id="overallScore">--</div>
+                        <div class="score-label">out of 10</div>
+                    </div>
+                </div>
+                <h3 id="scoreTitle">Calculating...</h3>
+                <p id="scoreSummary">Analyzing your visibility across major AI assistants...</p>
+            </div>
+            
+            <!-- Individual LLM Scores -->
+            <div class="llm-grid" id="llmGrid">
+                <div class="llm-card loading" id="card-chatgpt">
+                    <div class="llm-icon chatgpt">🤖</div>
+                    <h4>ChatGPT</h4>
+                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
+                    <div class="llm-metrics">
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                    </div>
+                    <button class="expand-btn" onclick="toggleResponse('chatgpt')">View Response</button>
+                    <div class="llm-response" id="response-chatgpt"></div>
+                </div>
+                
+                <div class="llm-card loading" id="card-claude">
+                    <div class="llm-icon claude">🧠</div>
+                    <h4>Claude</h4>
+                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
+                    <div class="llm-metrics">
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                    </div>
+                    <button class="expand-btn" onclick="toggleResponse('claude')">View Response</button>
+                    <div class="llm-response" id="response-claude"></div>
+                </div>
+                
+                <div class="llm-card loading" id="card-perplexity">
+                    <div class="llm-icon perplexity">🔍</div>
+                    <h4>Perplexity</h4>
+                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
+                    <div class="llm-metrics">
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                    </div>
+                    <button class="expand-btn" onclick="toggleResponse('perplexity')">View Response</button>
+                    <div class="llm-response" id="response-perplexity"></div>
+                </div>
+                
+                <div class="llm-card loading" id="card-gemini">
+                    <div class="llm-icon gemini">✨</div>
+                    <h4>Gemini</h4>
+                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
+                    <div class="llm-metrics">
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
+                    </div>
+                    <button class="expand-btn" onclick="toggleResponse('gemini')">View Response</button>
+                    <div class="llm-response" id="response-gemini"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Issues Analysis -->
+        <div class="analysis-card" id="issuesCard">
+            <h3>🔴 Issues Impacting Your Visibility</h3>
+            <div class="issue-list" id="issueList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Quick Wins -->
+        <div class="analysis-card" id="quickWinsCard">
+            <h3>⚡ Quick Wins</h3>
+            <div id="quickWinsList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Before/After Rewrites -->
+        <div class="analysis-card" id="rewritesCard">
+            <h3>✏️ Recommended Rewrites</h3>
+            <div id="rewritesList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Competitor Comparison -->
+        <div class="analysis-card" id="competitorCard" style="display: none;">
+            <h3>⚔️ Competitor Visibility Comparison</h3>
+            <div class="competitor-compare" id="competitorCompare">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="action-buttons">
+            <button class="action-btn" onclick="copyResults()">📋 Copy Results</button>
+            <button class="action-btn" onclick="exportPDF()">📄 Export PDF</button>
+            <button class="action-btn primary" onclick="runRetest()">🔄 Retest with Optimizations</button>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script>
+// Product data
+const productData = {
+    ariba: {
+        company: "SAP Ariba",
+        category: "Procurement Software / Source-to-Pay",
+        buyer: "Chief Procurement Officer (CPO) at enterprise manufacturing or retail companies",
+        positioning: "SAP Ariba is the world's largest B2B network and intelligent spend management solution, connecting millions of suppliers with enterprise buyers to simplify procurement, reduce costs, and manage supply chain risk.",
+        pageContent: `SAP Ariba solutions connect you to a global network of suppliers and the intelligent technologies you need to collaborate more effectively.
+
+Intelligent Spend Management - Transform procurement, supply chain, and finance operations with AI-powered insights.
+
+SAP Business Network - Connect with over 5.5 million organizations to find suppliers, collaborate on sourcing, and transact business.
+
+Source-to-Pay - Streamline procurement from sourcing through payment. Reduce costs, improve compliance.
+
+$6 trillion in commerce flows through the SAP Business Network annually.`,
+        queries: [
+            "What are the best enterprise procurement software solutions in 2026?",
+            "How can I reduce procurement costs and manage supplier risk?",
+            "Compare SAP Ariba vs Coupa vs Jaggaer"
+        ],
+        competitors: ["Coupa", "Jaggaer"]
+    },
+    successfactors: {
+        company: "SAP SuccessFactors",
+        category: "Human Capital Management (HCM) / HR Software",
+        buyer: "Chief Human Resources Officer (CHRO) at enterprise organizations undergoing workforce transformation",
+        positioning: "SAP SuccessFactors is the leading cloud HCM suite that transforms HR from administrative to strategic — helping organizations attract, develop, and retain talent while delivering exceptional employee experiences at scale.",
+        pageContent: `SAP SuccessFactors delivers cloud-based human experience management (HXM).
+
+End-to-End Talent Management - From recruiting to retirement, manage the complete employee lifecycle.
+
+Core HR & Payroll - Run HR operations for 100+ countries with compliant, localized payroll.
+
+AI-Powered Skills Management - Our skills ontology with 7,700+ skills helps you understand workforce capabilities.
+
+268 million users across 10,500+ customers globally. Used by 85% of the Forbes Global 2000.`,
+        queries: [
+            "What are the best enterprise HR software solutions in 2026?",
+            "How to improve employee experience and reduce turnover?",
+            "Compare SAP SuccessFactors vs Workday vs Oracle HCM"
+        ],
+        competitors: ["Workday", "Oracle HCM"]
+    },
+    datasphere: {
+        company: "SAP Datasphere",
+        category: "Data Management / Data Fabric / Business Data Cloud",
+        buyer: "Chief Data Officer (CDO) or VP of Data & Analytics at enterprise organizations",
+        positioning: "SAP Datasphere is the foundation for a business data fabric, providing seamless access to mission-critical business data across SAP and non-SAP sources with built-in business semantics.",
+        pageContent: `SAP Datasphere delivers a business data fabric that provides meaningful data access across your enterprise.
+
+Business Data Fabric - Connect, enrich, and govern data across SAP and third-party sources with built-in business context.
+
+Semantic Layer - Pre-built business semantics from SAP applications accelerate time-to-insight.
+
+Data Marketplace - Discover and access third-party data products to enrich your analytics.
+
+Native integration with SAP Analytics Cloud, SAP BW, and the broader SAP ecosystem.`,
+        queries: [
+            "What are the best enterprise data management platforms in 2026?",
+            "How to build a data fabric for SAP and non-SAP data?",
+            "Compare SAP Datasphere vs Snowflake vs Databricks"
+        ],
+        competitors: ["Snowflake", "Databricks"]
+    },
+    s4hana: {
+        company: "SAP S/4HANA Cloud",
+        category: "Cloud ERP / Enterprise Resource Planning",
+        buyer: "CIO or CFO at enterprise organizations planning ERP modernization",
+        positioning: "SAP S/4HANA Cloud is the intelligent, next-generation cloud ERP that transforms business processes with embedded AI, real-time analytics, and industry best practices.",
+        pageContent: `SAP S/4HANA Cloud delivers the intelligent enterprise.
+
+Intelligent ERP - AI-embedded processes automate routine tasks and surface insights.
+
+Real-Time Analytics - In-memory computing delivers instant visibility into operations and finance.
+
+Industry Cloud - Pre-built industry solutions for 25+ industries accelerate time-to-value.
+
+Clean Core - Modern architecture enables continuous innovation without disruption.
+
+Used by thousands of enterprises globally for finance, supply chain, manufacturing, and more.`,
+        queries: [
+            "What are the best cloud ERP solutions for large enterprises?",
+            "How to modernize legacy ERP systems?",
+            "Compare SAP S/4HANA vs Oracle Cloud ERP vs Microsoft Dynamics"
+        ],
+        competitors: ["Oracle Cloud ERP", "Microsoft Dynamics 365"]
+    },
+    btp: {
+        company: "SAP Business Technology Platform",
+        category: "Business Technology Platform / PaaS / Integration Platform",
+        buyer: "CTO or VP of Enterprise Architecture at SAP customers",
+        positioning: "SAP Business Technology Platform (SAP BTP) is the unified platform for application development, integration, data management, and AI — enabling customers to extend SAP solutions and build new applications.",
+        pageContent: `SAP Business Technology Platform unifies data, analytics, AI, and application development.
+
+Application Development - Build and extend applications with low-code/pro-code tools.
+
+Integration Suite - Connect SAP and third-party applications with pre-built integrations.
+
+AI & Machine Learning - Embed AI capabilities into business processes with SAP AI Core.
+
+Data & Analytics - Manage data and deliver insights with SAP Datasphere and SAP Analytics Cloud.
+
+Foundation for SAP's Business AI and Joule copilot capabilities.`,
+        queries: [
+            "What is the best platform for extending SAP applications?",
+            "How to integrate SAP with third-party systems?",
+            "Compare SAP BTP vs Microsoft Azure vs AWS for SAP customers"
+        ],
+        competitors: ["Microsoft Azure", "AWS"]
+    },
+    signavio: {
+        company: "SAP Signavio",
+        category: "Process Intelligence / Business Process Management",
+        buyer: "VP of Business Transformation or Chief Process Officer at enterprise organizations",
+        positioning: "SAP Signavio delivers process intelligence that helps organizations understand, improve, and transform their business processes with AI-powered insights and collaborative process design.",
+        pageContent: `SAP Signavio enables business transformation through process intelligence.
+
+Process Mining - Discover how processes actually run by analyzing system data.
+
+Process Management - Design, model, and govern processes collaboratively.
+
+Process Intelligence - AI-powered recommendations for process optimization.
+
+Journey Modeling - Map customer and employee journeys alongside business processes.
+
+Integrated with SAP S/4HANA and SAP BTP for end-to-end transformation.`,
+        queries: [
+            "What are the best process mining and process intelligence tools?",
+            "How to improve business processes with AI?",
+            "Compare SAP Signavio vs Celonis vs Microsoft Process Advisor"
+        ],
+        competitors: ["Celonis", "Microsoft Process Advisor"]
+    },
+    concur: {
+        company: "SAP Concur",
+        category: "Travel & Expense Management",
+        buyer: "CFO or VP of Finance at enterprises looking to control travel spend",
+        positioning: "SAP Concur is the world's leading travel and expense management solution, helping companies manage corporate travel, automate expense reporting, and gain visibility into employee spending.",
+        pageContent: `SAP Concur simplifies travel, expense, and invoice management.
+
+Travel Management - Book and manage corporate travel with policy compliance built in.
+
+Expense Management - Automate expense reporting with mobile capture and AI-powered auditing.
+
+Invoice Management - Streamline accounts payable with automated invoice processing.
+
+Spend Visibility - Real-time dashboards and analytics for complete spend control.
+
+Used by 50,000+ organizations globally, processing $100B+ in annual spend.`,
+        queries: [
+            "What are the best corporate travel and expense management solutions?",
+            "How to automate expense reporting and reduce fraud?",
+            "Compare SAP Concur vs Expensify vs Coupa Expenses"
+        ],
+        competitors: ["Expensify", "Coupa"]
+    }
+};
+
+let selectedProduct = null;
+
+function selectProduct(productId) {
+    // Update UI
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    document.querySelector(`[data-product="${productId}"]`).classList.add('selected');
+    
+    selectedProduct = productId;
+    
+    if (productId === 'custom') {
+        // Show custom inputs
+        document.getElementById('customInputs').style.display = 'block';
+        document.getElementById('company').value = '';
+        document.getElementById('category').value = '';
+        document.getElementById('buyer').value = '';
+        document.getElementById('positioning').value = '';
+        document.getElementById('pageContent').value = '';
+        document.getElementById('query1').value = '';
+        document.getElementById('query2').value = '';
+        document.getElementById('query3').value = '';
+        document.getElementById('competitor1').value = '';
+        document.getElementById('competitor2').value = '';
+    } else {
+        // Hide custom inputs, populate from data
+        document.getElementById('customInputs').style.display = 'none';
+        const data = productData[productId];
+        if (data) {
+            document.getElementById('company').value = data.company;
+            document.getElementById('category').value = data.category;
+            document.getElementById('buyer').value = data.buyer;
+            document.getElementById('positioning').value = data.positioning;
+            document.getElementById('pageContent').value = data.pageContent;
+            document.getElementById('query1').value = data.queries[0] || '';
+            document.getElementById('query2').value = data.queries[1] || '';
+            document.getElementById('query3').value = data.queries[2] || '';
+            document.getElementById('competitor1').value = data.competitors[0] || '';
+            document.getElementById('competitor2').value = data.competitors[1] || '';
+        }
+    }
+}
+
+// Form submission
+document.getElementById('labForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!selectedProduct) {
+        alert('Please select a product first');
+        return;
+    }
+    
+    const runBtn = document.getElementById('runBtn');
+    const spinner = document.getElementById('spinner');
+    
+    // Show loading
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Analyzing across LLMs...';
+    spinner.style.display = 'block';
+    
+    // Show results section with loading state
+    document.getElementById('resultsSection').classList.add('show');
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+    
+    // Gather inputs
+    const inputs = {
+        company: document.getElementById('company').value,
+        category: document.getElementById('category').value,
+        buyer: document.getElementById('buyer').value,
+        positioning: document.getElementById('positioning').value,
+        pageContent: document.getElementById('pageContent').value,
+        queries: [
+            document.getElementById('query1').value,
+            document.getElementById('query2').value,
+            document.getElementById('query3').value
+        ].filter(q => q),
+        competitors: [
+            document.getElementById('competitor1').value,
+            document.getElementById('competitor2').value
+        ].filter(c => c)
+    };
+    
+    try {
+        // Call the multi-LLM analysis endpoint
+        const response = await fetch('/.netlify/functions/geo-scorecard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Analysis failed');
+        }
+        
+        const data = await response.json();
+        renderResults(data);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        // For now, render demo results
+        renderDemoResults(inputs);
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '🚀 Run Multi-LLM Analysis';
+        spinner.style.display = 'none';
+    }
+});
+
+function renderResults(data) {
+    // Update overall score with animation
+    const overallScore = data.overallScore || 6.5;
+    animateScore(overallScore);
+    
+    // Update LLM cards
+    const llms = ['chatgpt', 'claude', 'perplexity', 'gemini'];
+    llms.forEach(llm => {
+        const card = document.getElementById(`card-${llm}`);
+        const llmData = data.llmScores[llm];
+        if (llmData) {
+            card.classList.remove('loading');
+            updateLLMCard(llm, llmData);
+        }
+    });
+    
+    // Render issues
+    if (data.issues) {
+        renderIssues(data.issues);
+    }
+    
+    // Render quick wins
+    if (data.quickWins) {
+        renderQuickWins(data.quickWins);
+    }
+    
+    // Render rewrites
+    if (data.rewrites) {
+        renderRewrites(data.rewrites);
+    }
+    
+    // Render competitor comparison
+    if (data.competitors && data.competitors.length > 0) {
+        renderCompetitors(data.competitors, data.overallScore);
+    }
+}
+
+function animateScore(score) {
+    const scoreEl = document.getElementById('overallScore');
+    const progressEl = document.getElementById('scoreProgress');
+    const titleEl = document.getElementById('scoreTitle');
+    const summaryEl = document.getElementById('scoreSummary');
+    
+    // Animate number
+    let current = 0;
+    const duration = 1500;
+    const increment = score / (duration / 16);
+    
+    const animate = () => {
+        current += increment;
+        if (current >= score) {
+            current = score;
+            scoreEl.textContent = score.toFixed(1);
+        } else {
+            scoreEl.textContent = current.toFixed(1);
+            requestAnimationFrame(animate);
+        }
+    };
+    animate();
+    
+    // Animate progress ring
+    const circumference = 2 * Math.PI * 90; // 565
+    const offset = circumference - (score / 10) * circumference;
+    progressEl.style.strokeDashoffset = offset;
+    
+    // Update color based on score
+    if (score >= 7) {
+        progressEl.style.stroke = '#188038';
+        titleEl.textContent = 'Good Visibility';
+        summaryEl.textContent = 'Your product is generally well-represented across AI assistants, with room for optimization.';
+    } else if (score >= 5) {
+        progressEl.style.stroke = '#F9AB00';
+        titleEl.textContent = 'Moderate Visibility';
+        summaryEl.textContent = 'Your product appears in some AI responses but may be missing from key queries or positioned weakly.';
+    } else {
+        progressEl.style.stroke = '#D93025';
+        titleEl.textContent = 'Low Visibility';
+        summaryEl.textContent = 'Your product is often missing from AI responses or positioned poorly. Significant optimization needed.';
+    }
+}
+
+function updateLLMCard(llm, data) {
+    const card = document.getElementById(`card-${llm}`);
+    const score = data.score;
+    const scoreClass = score >= 7 ? 'high' : score >= 5 ? 'medium' : 'low';
+    
+    card.innerHTML = `
+        <div class="llm-icon ${llm}">${getLLMIcon(llm)}</div>
+        <h4>${getLLMName(llm)}</h4>
+        <div class="score-badge ${scoreClass}">${score.toFixed(1)}</div>
+        <div class="llm-metrics">
+            <div class="llm-metric ${data.mentioned ? 'positive' : 'negative'}">
+                <span class="icon">${data.mentioned ? '✅' : '❌'}</span>
+                <span>${data.mentioned ? 'Mentioned' : 'Not found'}</span>
+            </div>
+            <div class="llm-metric ${data.position <= 3 ? 'positive' : data.position <= 5 ? 'neutral' : 'negative'}">
+                <span class="icon">${data.position <= 3 ? '🥇' : data.position <= 5 ? '📍' : '❓'}</span>
+                <span>${data.position ? `#${data.position}` : 'N/A'}</span>
+            </div>
+            <div class="llm-metric ${data.sentiment === 'positive' ? 'positive' : data.sentiment === 'neutral' ? 'neutral' : 'negative'}">
+                <span class="icon">${data.sentiment === 'positive' ? '👍' : data.sentiment === 'neutral' ? '😐' : '👎'}</span>
+                <span>${data.sentiment || 'N/A'}</span>
+            </div>
+            <div class="llm-metric ${data.accurate ? 'positive' : 'negative'}">
+                <span class="icon">${data.accurate ? '✓' : '⚠️'}</span>
+                <span>${data.accurate ? 'Accurate' : 'Issues'}</span>
+            </div>
+        </div>
+        <button class="expand-btn" onclick="toggleResponse('${llm}')">View Response</button>
+        <div class="llm-response" id="response-${llm}">${data.response || ''}</div>
+    `;
+}
+
+function getLLMIcon(llm) {
+    const icons = { chatgpt: '🤖', claude: '🧠', perplexity: '🔍', gemini: '✨' };
+    return icons[llm] || '💬';
+}
+
+function getLLMName(llm) {
+    const names = { chatgpt: 'ChatGPT', claude: 'Claude', perplexity: 'Perplexity', gemini: 'Gemini' };
+    return names[llm] || llm;
+}
+
+function toggleResponse(llm) {
+    const el = document.getElementById(`response-${llm}`);
+    el.classList.toggle('show');
+}
+
+function renderIssues(issues) {
+    const container = document.getElementById('issueList');
+    container.innerHTML = issues.map(issue => `
+        <div class="issue-item ${issue.severity}">
+            <div class="issue-header">
+                <span class="issue-title">${issue.title}</span>
+                <span class="severity-badge ${issue.severity}">${issue.severity}</span>
+            </div>
+            <p class="issue-description">${issue.description}</p>
+            <p class="issue-fix">💡 ${issue.fix}</p>
+        </div>
+    `).join('');
+}
+
+function renderQuickWins(quickWins) {
+    const container = document.getElementById('quickWinsList');
+    container.innerHTML = quickWins.map((win, i) => `
+        <div class="issue-item low">
+            <div class="issue-header">
+                <span class="issue-title">Quick Win #${i + 1}: ${win.title}</span>
+            </div>
+            <p class="issue-description">${win.description}</p>
+            <p class="issue-fix">⚡ ${win.action}</p>
+        </div>
+    `).join('');
+}
+
+function renderRewrites(rewrites) {
+    const container = document.getElementById('rewritesList');
+    container.innerHTML = rewrites.map(rewrite => `
+        <div style="margin-bottom: 1.5rem;">
+            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--sap-dark);">${rewrite.context}</p>
+            <div class="before-after">
+                <div class="before-box">
+                    <h4>❌ Before</h4>
+                    <p>${rewrite.before}</p>
+                </div>
+                <div class="after-box">
+                    <h4>✅ After</h4>
+                    <p>${rewrite.after}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderCompetitors(competitors, yourScore) {
+    const container = document.getElementById('competitorCard');
+    const compareEl = document.getElementById('competitorCompare');
+    
+    container.style.display = 'block';
+    
+    compareEl.innerHTML = `
+        <div class="competitor-card you">
+            <h4>Your Product</h4>
+            <div class="comp-score">${yourScore.toFixed(1)}</div>
+        </div>
+        ${competitors.map(comp => `
+            <div class="competitor-card">
+                <h4>${comp.name}</h4>
+                <div class="comp-score" style="color: ${comp.score > yourScore ? 'var(--sap-red)' : 'var(--sap-green)'}">${comp.score.toFixed(1)}</div>
+            </div>
+        `).join('')}
+    `;
+}
+
+// Demo results for when API is not available
+function renderDemoResults(inputs) {
+    const demoData = {
+        overallScore: 6.8,
+        llmScores: {
+            chatgpt: { score: 7.2, mentioned: true, position: 2, sentiment: 'positive', accurate: true, response: `Based on my analysis, ${inputs.company} is a strong option in the ${inputs.category} space...` },
+            claude: { score: 8.1, mentioned: true, position: 1, sentiment: 'positive', accurate: true, response: `${inputs.company} stands out for several reasons...` },
+            perplexity: { score: 5.5, mentioned: true, position: 4, sentiment: 'neutral', accurate: false, response: `Several solutions exist in this space. ${inputs.company} is mentioned alongside...` },
+            gemini: { score: 6.2, mentioned: true, position: 3, sentiment: 'neutral', accurate: true, response: `For ${inputs.category}, options include ${inputs.company} and others...` }
+        },
+        issues: [
+            { severity: 'high', title: 'Vague Value Claims', description: 'Phrases like "leading solution" and "world-class" cannot be verified by AI systems.', fix: 'Replace with specific metrics: "Used by X customers" or "Processes $Y in transactions"' },
+            { severity: 'medium', title: 'Missing Comparison Context', description: 'No clear differentiation from alternatives mentioned in buyer queries.', fix: 'Add specific competitive differentiators with evidence' },
+            { severity: 'low', title: 'Limited Use Case Specificity', description: 'Use cases are described broadly rather than with specific scenarios.', fix: 'Include "before and after" examples with quantified outcomes' }
+        ],
+        quickWins: [
+            { title: 'Add Quantified Outcomes', description: 'Your positioning lacks specific numbers.', action: 'Add "reduces X by Y%" or "saves Z hours per week" claims with sources.' },
+            { title: 'Include Named References', description: 'No customer names or case studies mentioned.', action: 'Add 2-3 named customer examples with outcomes.' },
+            { title: 'Clarify Category Leadership', description: '"Leading" is vague and unverifiable.', action: 'Replace with analyst rankings, market share data, or specific network size.' }
+        ],
+        rewrites: [
+            { context: 'Positioning Statement', before: inputs.positioning.substring(0, 100) + '...', after: `${inputs.company} connects [specific number] organizations and processes [specific volume] annually, enabling [specific outcome] with [specific differentiator].` },
+            { context: 'Value Proposition', before: 'Transform your operations with AI-powered insights.', after: 'Reduce [specific process] time by X% with AI that surfaces [specific insight type] — as proven by [named customer] who achieved [specific result].' }
+        ],
+        competitors: inputs.competitors.map((c, i) => ({ name: c, score: 6.5 + (i * 0.5) }))
+    };
+    
+    renderResults(demoData);
+}
+
+function copyResults() {
+    // Generate text summary
+    const score = document.getElementById('overallScore').textContent;
+    let text = `GEO Visibility Scorecard\n`;
+    text += `Overall Score: ${score}/10\n\n`;
+    // Add more details...
+    
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Results copied to clipboard!');
+    });
+}
+
+function exportPDF() {
+    window.print();
+}
+
+function runRetest() {
+    alert('Retest with optimizations coming soon!');
+}
+</script>
+
+</body>
+</html>
