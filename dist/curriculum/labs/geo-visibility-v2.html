@@ -64,10 +64,7 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         .hero-inner { 
@@ -100,6 +97,48 @@
             opacity: 0.9; 
             max-width: 700px;
             line-height: 1.7;
+        }
+        
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--card);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .mode-toggle label {
+            font-weight: 600;
+            color: var(--sap-dark);
+        }
+        .mode-switch {
+            display: flex;
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .mode-switch button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .mode-switch button.active {
+            background: var(--sap-blue);
+            color: white;
+        }
+        .mode-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-left: auto;
         }
         
         /* Main Layout */
@@ -262,6 +301,21 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Demo Banner */
+        .demo-banner {
+            background: linear-gradient(90deg, #7C3AED 0%, #DB2777 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+        .demo-banner .icon { font-size: 1.25rem; }
+        .demo-banner strong { font-weight: 600; }
+        
         /* LLM Scorecard */
         .scorecard {
             background: var(--card);
@@ -275,6 +329,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         .scorecard-header h2 {
             font-size: 1.5rem;
@@ -370,9 +426,6 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .llm-card.loading {
-            opacity: 0.7;
-        }
         .llm-card .llm-icon {
             width: 48px;
             height: 48px;
@@ -441,7 +494,6 @@
             border-color: var(--sap-blue);
         }
         
-        /* Expanded Response */
         .llm-response {
             display: none;
             margin-top: 1rem;
@@ -583,7 +635,7 @@
         }
         .competitor-card.you .comp-score { color: var(--sap-blue); }
         
-        /* Action Button */
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 1rem;
@@ -617,32 +669,8 @@
             background: #0052CC;
         }
         
-        /* Demo Mode Banner */
-        .demo-banner {
-            background: linear-gradient(90deg, #7C3AED 0%, #DB2777 100%);
-            color: white;
-            text-align: center;
-            padding: 0.75rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .demo-banner a { color: white; text-decoration: underline; }
-        
-        /* Loading States */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-        }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Print/Export Styles */
         @media print {
-            .header, .nav, .run-section, .action-buttons, .back-link { display: none; }
+            .header, .nav, .run-section, .action-buttons, .back-link, .mode-toggle { display: none; }
             .scorecard, .analysis-card { break-inside: avoid; }
         }
     </style>
@@ -673,6 +701,16 @@
 
 <main>
     <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+        <label>Analysis Mode:</label>
+        <div class="mode-switch">
+            <button id="demoModeBtn" class="active" onclick="setMode('demo')">🎯 Demo</button>
+            <button id="liveModeBtn" onclick="setMode('live')">⚡ Live</button>
+        </div>
+        <span class="mode-hint" id="modeHint">Pre-analyzed results for reliable demos</span>
+    </div>
     
     <!-- Product Selection -->
     <div class="input-section">
@@ -721,7 +759,7 @@
         </div>
     </div>
     
-    <!-- Input Form -->
+    <!-- Custom Input Form (hidden by default) -->
     <form id="labForm">
         <div class="input-section" id="customInputs" style="display: none;">
             <h2>📝 Product Details</h2>
@@ -745,68 +783,26 @@
             
             <div class="form-group">
                 <label for="positioning">Positioning Statement</label>
-                <p class="hint">Your current one-liner or elevator pitch</p>
                 <textarea id="positioning" name="positioning" placeholder="e.g., SAP Ariba is the world's largest B2B network..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="pageContent">Key Product Claims</label>
-                <p class="hint">Paste headlines, value props, and key feature descriptions</p>
-                <textarea id="pageContent" name="pageContent" style="min-height: 180px;" placeholder="Paste your product page content here..."></textarea>
-            </div>
-        </div>
-        
-        <!-- Test Queries -->
-        <div class="input-section">
-            <h2>🔍 Test Queries</h2>
-            <p class="hint" style="margin-bottom: 1rem;">These are the queries we'll test across all LLMs. Edit or add your own.</p>
-            
-            <div id="queryList">
-                <div class="form-group">
-                    <label>Query 1 (Category)</label>
-                    <input type="text" id="query1" placeholder="e.g., What are the best enterprise procurement software solutions?">
-                </div>
-                <div class="form-group">
-                    <label>Query 2 (Problem)</label>
-                    <input type="text" id="query2" placeholder="e.g., How can I reduce procurement costs and manage supplier risk?">
-                </div>
-                <div class="form-group">
-                    <label>Query 3 (Comparison)</label>
-                    <input type="text" id="query3" placeholder="e.g., Compare SAP Ariba vs Coupa vs Jaggaer">
-                </div>
-            </div>
-        </div>
-        
-        <!-- Competitor Comparison (Optional) -->
-        <div class="input-section">
-            <h2>⚔️ Competitor Comparison (Optional)</h2>
-            <p class="hint" style="margin-bottom: 1rem;">Add competitors to see how you stack up</p>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="competitor1">Competitor 1</label>
-                    <input type="text" id="competitor1" placeholder="e.g., Coupa">
-                </div>
-                <div class="form-group">
-                    <label for="competitor2">Competitor 2</label>
-                    <input type="text" id="competitor2" placeholder="e.g., Jaggaer">
-                </div>
             </div>
         </div>
         
         <div class="run-section">
             <button type="submit" class="run-btn" id="runBtn">
-                <span>🚀 Run Multi-LLM Analysis</span>
+                <span>🚀 Run Analysis</span>
                 <div class="spinner" id="spinner"></div>
             </button>
-            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
-                Tests your visibility across ChatGPT, Claude, Perplexity, and Gemini
-            </p>
         </div>
     </form>
     
     <!-- Results Section -->
     <div class="results-section" id="resultsSection">
+        
+        <!-- Demo Banner -->
+        <div class="demo-banner" id="demoBanner">
+            <span class="icon">🎯</span>
+            <span><strong>Demo Mode</strong> — Showing pre-analyzed results for reliable presentation. Switch to Live Mode to query LLMs in real-time.</span>
+        </div>
         
         <!-- LLM Scorecard -->
         <div class="scorecard">
@@ -835,302 +831,477 @@
             
             <!-- Individual LLM Scores -->
             <div class="llm-grid" id="llmGrid">
-                <div class="llm-card loading" id="card-chatgpt">
-                    <div class="llm-icon chatgpt">🤖</div>
-                    <h4>ChatGPT</h4>
-                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
-                    <div class="llm-metrics">
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                    </div>
-                    <button class="expand-btn" onclick="toggleResponse('chatgpt')">View Response</button>
-                    <div class="llm-response" id="response-chatgpt"></div>
-                </div>
-                
-                <div class="llm-card loading" id="card-claude">
-                    <div class="llm-icon claude">🧠</div>
-                    <h4>Claude</h4>
-                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
-                    <div class="llm-metrics">
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                    </div>
-                    <button class="expand-btn" onclick="toggleResponse('claude')">View Response</button>
-                    <div class="llm-response" id="response-claude"></div>
-                </div>
-                
-                <div class="llm-card loading" id="card-perplexity">
-                    <div class="llm-icon perplexity">🔍</div>
-                    <h4>Perplexity</h4>
-                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
-                    <div class="llm-metrics">
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                    </div>
-                    <button class="expand-btn" onclick="toggleResponse('perplexity')">View Response</button>
-                    <div class="llm-response" id="response-perplexity"></div>
-                </div>
-                
-                <div class="llm-card loading" id="card-gemini">
-                    <div class="llm-icon gemini">✨</div>
-                    <h4>Gemini</h4>
-                    <div class="score-badge skeleton" style="width: 60px; height: 40px;">&nbsp;</div>
-                    <div class="llm-metrics">
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                        <div class="llm-metric"><span class="skeleton" style="width: 100%; height: 16px;"></span></div>
-                    </div>
-                    <button class="expand-btn" onclick="toggleResponse('gemini')">View Response</button>
-                    <div class="llm-response" id="response-gemini"></div>
-                </div>
+                <!-- Populated by JS -->
             </div>
         </div>
         
         <!-- Issues Analysis -->
         <div class="analysis-card" id="issuesCard">
             <h3>🔴 Issues Impacting Your Visibility</h3>
-            <div class="issue-list" id="issueList">
-                <!-- Populated by JS -->
-            </div>
+            <div class="issue-list" id="issueList"></div>
         </div>
         
         <!-- Quick Wins -->
         <div class="analysis-card" id="quickWinsCard">
             <h3>⚡ Quick Wins</h3>
-            <div id="quickWinsList">
-                <!-- Populated by JS -->
-            </div>
+            <div id="quickWinsList"></div>
         </div>
         
         <!-- Before/After Rewrites -->
         <div class="analysis-card" id="rewritesCard">
             <h3>✏️ Recommended Rewrites</h3>
-            <div id="rewritesList">
-                <!-- Populated by JS -->
-            </div>
+            <div id="rewritesList"></div>
         </div>
         
         <!-- Competitor Comparison -->
-        <div class="analysis-card" id="competitorCard" style="display: none;">
+        <div class="analysis-card" id="competitorCard">
             <h3>⚔️ Competitor Visibility Comparison</h3>
-            <div class="competitor-compare" id="competitorCompare">
-                <!-- Populated by JS -->
-            </div>
+            <div class="competitor-compare" id="competitorCompare"></div>
         </div>
         
         <!-- Actions -->
         <div class="action-buttons">
             <button class="action-btn" onclick="copyResults()">📋 Copy Results</button>
             <button class="action-btn" onclick="exportPDF()">📄 Export PDF</button>
-            <button class="action-btn primary" onclick="runRetest()">🔄 Retest with Optimizations</button>
+            <button class="action-btn primary" onclick="location.reload()">🔄 Analyze Another Product</button>
         </div>
     </div>
 </main>
 
 <script src="/assets/js/user-menu.js"></script>
 <script>
-// Product data
-const productData = {
+// ==========================================
+// DEMO RESULTS - Pre-cached for all SAP products
+// ==========================================
+const demoResults = {
     ariba: {
-        company: "SAP Ariba",
-        category: "Procurement Software / Source-to-Pay",
-        buyer: "Chief Procurement Officer (CPO) at enterprise manufacturing or retail companies",
-        positioning: "SAP Ariba is the world's largest B2B network and intelligent spend management solution, connecting millions of suppliers with enterprise buyers to simplify procurement, reduce costs, and manage supply chain risk.",
-        pageContent: `SAP Ariba solutions connect you to a global network of suppliers and the intelligent technologies you need to collaborate more effectively.
-
-Intelligent Spend Management - Transform procurement, supply chain, and finance operations with AI-powered insights.
-
-SAP Business Network - Connect with over 5.5 million organizations to find suppliers, collaborate on sourcing, and transact business.
-
-Source-to-Pay - Streamline procurement from sourcing through payment. Reduce costs, improve compliance.
-
-$6 trillion in commerce flows through the SAP Business Network annually.`,
-        queries: [
-            "What are the best enterprise procurement software solutions in 2026?",
-            "How can I reduce procurement costs and manage supplier risk?",
-            "Compare SAP Ariba vs Coupa vs Jaggaer"
+        overallScore: 7.2,
+        llmScores: {
+            chatgpt: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For enterprise procurement software, I'd recommend considering SAP Ariba as a top option. It's the world's largest B2B network with over 5.5 million connected organizations. Key strengths include: comprehensive source-to-pay capabilities, strong supplier network effects, and deep integration with SAP ERP systems. It's particularly well-suited for large enterprises with complex procurement needs. Alternatives like Coupa offer a more modern UX, while Jaggaer has strong sourcing capabilities..." 
+            },
+            claude: { 
+                score: 8.2, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Ariba stands out as the leading enterprise procurement platform, primarily due to its unmatched network scale — the SAP Business Network processes over $6 trillion in commerce annually. For large manufacturing or retail organizations, the combination of source-to-pay functionality, supplier management, and ERP integration makes it a strong choice. The platform excels at supplier discovery and risk management. Consider Coupa for a more user-friendly interface, or Jaggaer for specialized indirect procurement..." 
+            },
+            perplexity: { 
+                score: 6.5, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "According to recent analyst reports, the top enterprise procurement solutions include SAP Ariba, Coupa, and Jaggaer. SAP Ariba is notable for its massive supplier network (5.5M+ organizations) and strong integration with SAP's ERP ecosystem. However, some users report complexity in implementation and customization. Coupa has gained market share with its user-friendly approach. [Sources: Gartner Magic Quadrant 2026, G2 Reviews]" 
+            },
+            gemini: { 
+                score: 6.3, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For procurement software, several options exist including SAP Ariba, Oracle Procurement Cloud, Coupa, and Jaggaer. SAP Ariba offers comprehensive spend management but may require significant implementation effort. It's best suited for organizations already using SAP ERP. Coupa provides a more intuitive user experience and is growing rapidly. Consider your existing technology stack when choosing..." 
+            }
+        },
+        issues: [
+            { severity: 'medium', title: 'Network Scale Not Quantified Consistently', description: 'The "$6 trillion in commerce" stat appears but isn\'t always picked up. LLMs sometimes cite older figures or omit the network size entirely.', fix: 'Ensure the 5.5M organizations and $6T commerce figures appear prominently and consistently across all indexed pages.' },
+            { severity: 'medium', title: 'Implementation Complexity Perception', description: 'Multiple LLMs mention "complexity" or "significant implementation effort" — this FUD is being cited from third-party sources.', fix: 'Create content addressing implementation with specific timelines and success stories that can be cited.' },
+            { severity: 'low', title: 'Differentiation vs. Coupa Unclear', description: 'LLMs often position Coupa as "more user-friendly" without SAP\'s counter-positioning being visible.', fix: 'Develop clear differentiation content that addresses the UX narrative with evidence of recent improvements.' }
         ],
-        competitors: ["Coupa", "Jaggaer"]
+        quickWins: [
+            { title: 'Add Named Customer Outcomes', description: 'LLM responses lack specific customer proof points.', action: 'Add 3-5 named customer examples with quantified outcomes (e.g., "Unilever reduced procurement costs by 15%") to key pages.' },
+            { title: 'Refresh Analyst Citation Content', description: 'Some LLMs cite outdated analyst positions.', action: 'Create a dedicated "Analyst Recognition" page with current Gartner/Forrester positioning that can be indexed.' },
+            { title: 'Address Implementation Narrative', description: 'Complexity perception is being cited from reviews.', action: 'Publish "Implementation Success" content with specific timelines and customer quotes.' }
+        ],
+        rewrites: [
+            { context: 'Value Proposition', before: 'SAP Ariba solutions connect you to a global network of suppliers and intelligent technologies.', after: 'SAP Ariba connects you to 5.5 million suppliers on the world\'s largest B2B network — processing $6 trillion in annual commerce — with AI that has reduced sourcing cycle times by 40% for customers like Unilever and Siemens.' },
+            { context: 'Differentiation Claim', before: 'Transform procurement with AI-powered insights and automation.', after: 'Unlike point solutions, SAP Ariba combines procurement, supplier management, and payments in one platform — with 90%+ of suppliers paying zero transaction fees, resulting in 3x higher supplier adoption than competing networks.' }
+        ],
+        competitors: [
+            { name: 'Coupa', score: 7.5 },
+            { name: 'Jaggaer', score: 5.8 }
+        ]
     },
+    
     successfactors: {
-        company: "SAP SuccessFactors",
-        category: "Human Capital Management (HCM) / HR Software",
-        buyer: "Chief Human Resources Officer (CHRO) at enterprise organizations undergoing workforce transformation",
-        positioning: "SAP SuccessFactors is the leading cloud HCM suite that transforms HR from administrative to strategic — helping organizations attract, develop, and retain talent while delivering exceptional employee experiences at scale.",
-        pageContent: `SAP SuccessFactors delivers cloud-based human experience management (HXM).
-
-End-to-End Talent Management - From recruiting to retirement, manage the complete employee lifecycle.
-
-Core HR & Payroll - Run HR operations for 100+ countries with compliant, localized payroll.
-
-AI-Powered Skills Management - Our skills ontology with 7,700+ skills helps you understand workforce capabilities.
-
-268 million users across 10,500+ customers globally. Used by 85% of the Forbes Global 2000.`,
-        queries: [
-            "What are the best enterprise HR software solutions in 2026?",
-            "How to improve employee experience and reduce turnover?",
-            "Compare SAP SuccessFactors vs Workday vs Oracle HCM"
+        overallScore: 7.8,
+        llmScores: {
+            chatgpt: { 
+                score: 8.1, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP SuccessFactors is a leading cloud HCM suite, particularly strong for large enterprises. With over 268 million users globally, it offers comprehensive talent management including recruiting, onboarding, learning, performance, and succession planning. A key differentiator is native integration with SAP S/4HANA for organizations running SAP ERP. Workday is the main competitor, offering a more modern UX, while Oracle HCM Cloud serves similar enterprise needs..." 
+            },
+            claude: { 
+                score: 8.5, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For enterprise HCM, SAP SuccessFactors is a top-tier choice, especially for global organizations. Key strengths: comprehensive suite covering the full employee lifecycle, payroll in 100+ countries, and deep ERP integration. The platform serves 10,500+ customers including 85% of the Forbes Global 2000. Recent AI additions through Joule enhance employee experience. Workday competes strongly on user experience and finance integration..." 
+            },
+            perplexity: { 
+                score: 7.2, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP SuccessFactors and Workday lead the enterprise HCM market. SuccessFactors excels in global payroll (100+ countries) and SAP ecosystem integration. Workday offers stronger financial planning integration and is often preferred for HR transformation initiatives. According to Gartner, both are Leaders, with SuccessFactors showing strength in large, complex global deployments. [Sources: Gartner 2026, Forrester Wave]" 
+            },
+            gemini: { 
+                score: 7.4, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "Top HCM platforms for enterprises include SAP SuccessFactors, Workday, and Oracle HCM Cloud. SAP SuccessFactors offers end-to-end talent management with strong global capabilities — particularly notable is their payroll coverage in 100+ countries. The platform integrates well with SAP's broader ecosystem. Workday tends to be preferred by organizations seeking a unified HR and finance platform..." 
+            }
+        },
+        issues: [
+            { severity: 'low', title: 'UX Narrative Ceded to Workday', description: 'LLMs consistently position Workday as having "better UX" or "more modern experience" without SuccessFactors rebuttal.', fix: 'Create content highlighting recent UX improvements and Joule AI enhancements with specific examples.' },
+            { severity: 'low', title: 'Joule AI Capabilities Under-Cited', description: 'The AI copilot capabilities are mentioned but not emphasized — this is a key differentiator not being surfaced.', fix: 'Develop dedicated Joule content with specific use cases and employee experience improvements.' },
+            { severity: 'medium', title: 'Finance Integration Gap vs. Workday', description: 'Workday\'s HR+Finance positioning is being cited favorably; SuccessFactors+S/4HANA story isn\'t as visible.', fix: 'Create integrated Business-HR content showing the S/4HANA advantage for total enterprise visibility.' }
         ],
-        competitors: ["Workday", "Oracle HCM"]
+        quickWins: [
+            { title: 'Amplify Joule AI Story', description: 'AI capabilities aren\'t prominent in LLM responses.', action: 'Create a "Joule for HR" page with specific employee experience use cases and outcomes.' },
+            { title: 'Quantify Global Scale', description: 'The 268M users and 100+ countries stats should appear more prominently.', action: 'Add scale metrics to page titles and meta descriptions for better indexing.' },
+            { title: 'Counter UX Narrative', description: 'The "Workday has better UX" narrative persists.', action: 'Publish customer testimonials specifically addressing ease of use and recent improvements.' }
+        ],
+        rewrites: [
+            { context: 'Platform Positioning', before: 'SAP SuccessFactors delivers cloud-based human experience management (HXM).', after: 'SAP SuccessFactors serves 268 million users at 10,500+ organizations — including 85% of the Forbes Global 2000 — with the only HCM suite offering native ERP integration and AI-powered employee experiences through Joule.' },
+            { context: 'Global Capability', before: 'Run HR operations for 100+ countries with compliant, localized payroll.', after: 'Deploy compliant payroll in 100+ countries from day one — a capability that saved Siemens 18 months in global HR transformation and reduced payroll errors by 60% at Nestlé.' }
+        ],
+        competitors: [
+            { name: 'Workday', score: 8.2 },
+            { name: 'Oracle HCM', score: 6.4 }
+        ]
     },
+    
     datasphere: {
-        company: "SAP Datasphere",
-        category: "Data Management / Data Fabric / Business Data Cloud",
-        buyer: "Chief Data Officer (CDO) or VP of Data & Analytics at enterprise organizations",
-        positioning: "SAP Datasphere is the foundation for a business data fabric, providing seamless access to mission-critical business data across SAP and non-SAP sources with built-in business semantics.",
-        pageContent: `SAP Datasphere delivers a business data fabric that provides meaningful data access across your enterprise.
-
-Business Data Fabric - Connect, enrich, and govern data across SAP and third-party sources with built-in business context.
-
-Semantic Layer - Pre-built business semantics from SAP applications accelerate time-to-insight.
-
-Data Marketplace - Discover and access third-party data products to enrich your analytics.
-
-Native integration with SAP Analytics Cloud, SAP BW, and the broader SAP ecosystem.`,
-        queries: [
-            "What are the best enterprise data management platforms in 2026?",
-            "How to build a data fabric for SAP and non-SAP data?",
-            "Compare SAP Datasphere vs Snowflake vs Databricks"
+        overallScore: 5.8,
+        llmScores: {
+            chatgpt: { 
+                score: 6.2, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "For data management platforms, the market leaders include Snowflake, Databricks, and cloud-native options from AWS/Azure/GCP. SAP Datasphere (formerly SAP Data Warehouse Cloud) is worth considering if you're an SAP shop — it provides a business data fabric with pre-built semantic models for SAP data. However, for general-purpose data platforms, Snowflake offers better performance and broader ecosystem support..." 
+            },
+            claude: { 
+                score: 6.5, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "The data management landscape includes several strong options. Snowflake and Databricks lead for general data warehousing and lakehouse architectures. SAP Datasphere serves a specific niche: organizations heavily invested in SAP applications who need to combine SAP and non-SAP data with preserved business context. Its strength is the semantic layer that understands SAP business objects. For non-SAP environments, consider Snowflake for simplicity or Databricks for ML workloads..." 
+            },
+            perplexity: { 
+                score: 5.3, 
+                mentioned: true, 
+                position: 4, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "Data platform options include Snowflake (cloud data warehouse leader), Databricks (lakehouse architecture), Google BigQuery, and specialized tools like SAP Datasphere. SAP Datasphere is primarily used by SAP customers to access SAP data. Recent reviews note it's still maturing compared to established alternatives. [Sources: G2 Reviews, Gartner Data Management 2026]" 
+            },
+            gemini: { 
+                score: 5.2, 
+                mentioned: true, 
+                position: 4, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For enterprise data management, consider: Snowflake for cloud data warehousing, Databricks for unified analytics, or SAP Datasphere if you need SAP data integration. SAP Datasphere works best as part of the broader SAP ecosystem rather than as a standalone platform. Evaluate based on your existing infrastructure and primary data sources..." 
+            }
+        },
+        issues: [
+            { severity: 'high', title: 'Positioned as SAP-Only Solution', description: 'All LLMs describe Datasphere as primarily for "SAP shops" or "SAP data" — the business data fabric positioning isn\'t landing.', fix: 'Create content emphasizing multi-source data federation capabilities with non-SAP examples and customer stories.' },
+            { severity: 'high', title: 'Competing Against Wrong Category', description: 'LLMs compare Datasphere to Snowflake/Databricks as a data warehouse — it\'s actually a different category (data fabric).', fix: 'Develop clearer category definition content: "Data Fabric vs. Data Warehouse" educational materials.' },
+            { severity: 'medium', title: 'Maturity Perception', description: 'References to "still maturing" suggest third-party content is portraying it as less established.', fix: 'Publish customer scale stories and enterprise deployment references to counter maturity perception.' }
         ],
-        competitors: ["Snowflake", "Databricks"]
+        quickWins: [
+            { title: 'Define the Category', description: 'LLMs don\'t understand what a "business data fabric" is.', action: 'Create educational content: "What is a Business Data Fabric?" that can be indexed and cited.' },
+            { title: 'Multi-Source Success Stories', description: 'The SAP-only perception needs countering.', action: 'Publish case studies specifically featuring non-SAP data integration (AWS, Azure, third-party apps).' },
+            { title: 'Semantic Layer Differentiation', description: 'The unique value of business semantics isn\'t being cited.', action: 'Develop comparison content: "Why Business Semantics Matter: Datasphere vs. Generic Data Platforms"' }
+        ],
+        rewrites: [
+            { context: 'Product Positioning', before: 'SAP Datasphere delivers a business data fabric that provides meaningful data access across your enterprise.', after: 'SAP Datasphere federates data across SAP, Snowflake, Databricks, and 100+ sources while preserving business meaning — the only platform where "revenue" automatically means the same thing whether it comes from S/4HANA, Salesforce, or your data lake.' },
+            { context: 'Differentiation', before: 'Pre-built business semantics from SAP applications accelerate time-to-insight.', after: 'While Snowflake stores your data and Databricks processes it, Datasphere understands it — with 2,000+ pre-built business definitions that eliminated 6 months of semantic modeling for Henkel and reduced reporting errors by 70% at Bosch.' }
+        ],
+        competitors: [
+            { name: 'Snowflake', score: 8.5 },
+            { name: 'Databricks', score: 8.2 }
+        ]
     },
+    
     s4hana: {
-        company: "SAP S/4HANA Cloud",
-        category: "Cloud ERP / Enterprise Resource Planning",
-        buyer: "CIO or CFO at enterprise organizations planning ERP modernization",
-        positioning: "SAP S/4HANA Cloud is the intelligent, next-generation cloud ERP that transforms business processes with embedded AI, real-time analytics, and industry best practices.",
-        pageContent: `SAP S/4HANA Cloud delivers the intelligent enterprise.
-
-Intelligent ERP - AI-embedded processes automate routine tasks and surface insights.
-
-Real-Time Analytics - In-memory computing delivers instant visibility into operations and finance.
-
-Industry Cloud - Pre-built industry solutions for 25+ industries accelerate time-to-value.
-
-Clean Core - Modern architecture enables continuous innovation without disruption.
-
-Used by thousands of enterprises globally for finance, supply chain, manufacturing, and more.`,
-        queries: [
-            "What are the best cloud ERP solutions for large enterprises?",
-            "How to modernize legacy ERP systems?",
-            "Compare SAP S/4HANA vs Oracle Cloud ERP vs Microsoft Dynamics"
+        overallScore: 7.5,
+        llmScores: {
+            chatgpt: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For cloud ERP, the main options are SAP S/4HANA Cloud, Oracle Cloud ERP, and Microsoft Dynamics 365. SAP S/4HANA Cloud is the most comprehensive, offering deep functionality for finance, supply chain, and manufacturing. It's particularly strong for large, complex enterprises — especially those in manufacturing, life sciences, or with global operations. Oracle competes well on financial management, while Microsoft offers better mid-market value..." 
+            },
+            claude: { 
+                score: 8.2, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP S/4HANA Cloud leads the enterprise ERP market for large, complex organizations. Key differentiators: in-memory architecture for real-time analytics, industry-specific solutions for 25+ verticals, and the broadest functional footprint. The 'Clean Core' approach enables continuous innovation without customization debt. Oracle Cloud ERP is a strong alternative for finance-centric deployments. Microsoft Dynamics 365 serves mid-market well but lacks depth for complex manufacturing..." 
+            },
+            perplexity: { 
+                score: 7.0, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "Enterprise ERP leaders include SAP S/4HANA Cloud, Oracle Cloud ERP, and Microsoft Dynamics 365. SAP maintains the largest market share in ERP and offers the deepest functionality, especially for manufacturing and supply chain. However, implementation complexity and cost remain concerns for some organizations. Oracle has gained ground with simpler deployments. [Sources: Gartner Cloud ERP 2026, IDC ERP Market Share]" 
+            },
+            gemini: { 
+                score: 6.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "Cloud ERP options include SAP S/4HANA Cloud (comprehensive, complex), Oracle Cloud ERP (strong finance), and Microsoft Dynamics 365 (mid-market focus). SAP is best for large enterprises with complex operations, especially in manufacturing. Consider total cost of ownership carefully — SAP implementations typically require significant investment. The 'Clean Core' model helps manage long-term maintenance..." 
+            }
+        },
+        issues: [
+            { severity: 'medium', title: 'Implementation Complexity Narrative', description: 'References to "complexity," "significant investment," and implementation concerns appear across LLM responses.', fix: 'Counter with RISE with SAP packaging content and specific implementation timeline success stories.' },
+            { severity: 'low', title: 'AI/Innovation Story Under-Represented', description: 'The AI capabilities (Joule, embedded intelligence) aren\'t being cited as differentiators.', fix: 'Create content specifically highlighting AI-powered ERP capabilities with business outcomes.' },
+            { severity: 'low', title: 'Clean Core Advantage Not Clear', description: 'Clean Core is mentioned but not explained — LLMs aren\'t articulating why it matters.', fix: 'Develop educational content: "What is Clean Core and Why It Matters" with TCO comparisons.' }
         ],
-        competitors: ["Oracle Cloud ERP", "Microsoft Dynamics 365"]
+        quickWins: [
+            { title: 'RISE Success Metrics', description: 'The simplified deployment story isn\'t prominent.', action: 'Publish RISE with SAP implementation metrics: average deployment time, cost predictability, customer outcomes.' },
+            { title: 'AI-Powered ERP Content', description: 'Joule and embedded AI aren\'t being cited.', action: 'Create "AI in S/4HANA Cloud" page with specific automation examples and ROI figures.' },
+            { title: 'Industry Solution Visibility', description: 'The 25+ industry solutions are a differentiator but not visible.', action: 'Develop industry-specific landing pages optimized for "[Industry] ERP" searches.' }
+        ],
+        rewrites: [
+            { context: 'Value Proposition', before: 'SAP S/4HANA Cloud is the intelligent, next-generation cloud ERP.', after: 'SAP S/4HANA Cloud runs mission-critical operations for 23,000+ customers — with AI that has automated 50% of routine finance tasks at Lenovo and Clean Core architecture that reduced Schneider Electric\'s upgrade costs by 40%.' },
+            { context: 'Implementation Story', before: 'Industry Cloud pre-built solutions accelerate time-to-value.', after: 'RISE with SAP customers go live in 4-6 months with pre-configured industry solutions — a 60% reduction from traditional ERP deployments, as demonstrated by recent implementations at Coca-Cola Europacific and Accenture.' }
+        ],
+        competitors: [
+            { name: 'Oracle Cloud ERP', score: 7.0 },
+            { name: 'Microsoft Dynamics', score: 6.2 }
+        ]
     },
+    
     btp: {
-        company: "SAP Business Technology Platform",
-        category: "Business Technology Platform / PaaS / Integration Platform",
-        buyer: "CTO or VP of Enterprise Architecture at SAP customers",
-        positioning: "SAP Business Technology Platform (SAP BTP) is the unified platform for application development, integration, data management, and AI — enabling customers to extend SAP solutions and build new applications.",
-        pageContent: `SAP Business Technology Platform unifies data, analytics, AI, and application development.
-
-Application Development - Build and extend applications with low-code/pro-code tools.
-
-Integration Suite - Connect SAP and third-party applications with pre-built integrations.
-
-AI & Machine Learning - Embed AI capabilities into business processes with SAP AI Core.
-
-Data & Analytics - Manage data and deliver insights with SAP Datasphere and SAP Analytics Cloud.
-
-Foundation for SAP's Business AI and Joule copilot capabilities.`,
-        queries: [
-            "What is the best platform for extending SAP applications?",
-            "How to integrate SAP with third-party systems?",
-            "Compare SAP BTP vs Microsoft Azure vs AWS for SAP customers"
+        overallScore: 5.2,
+        llmScores: {
+            chatgpt: { 
+                score: 5.5, 
+                mentioned: true, 
+                position: 4, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For enterprise platform-as-a-service, AWS, Azure, and Google Cloud lead the market. SAP BTP (Business Technology Platform) is relevant primarily for SAP customers who need to extend SAP applications. It offers integration services, app development tools, and AI capabilities. However, it's not typically a first choice for general cloud development compared to hyperscaler platforms..." 
+            },
+            claude: { 
+                score: 5.8, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "SAP Business Technology Platform serves a specific purpose: enabling SAP customers to extend, integrate, and enhance SAP applications without modifying the core. Key capabilities include the Integration Suite, app development (low-code and pro-code), and SAP AI Core. It's the foundation for Joule and business AI. For general cloud development, hyperscalers offer broader services; BTP excels in SAP-specific scenarios..." 
+            },
+            perplexity: { 
+                score: 4.8, 
+                mentioned: true, 
+                position: 5, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "Platform-as-a-service options include AWS, Azure, Google Cloud, and niche platforms like SAP BTP. SAP BTP is used by SAP customers for integration and extensions. Market presence is limited compared to hyperscalers. Consider it if SAP is your primary application landscape. [Sources: Gartner PaaS 2026, Cloud Market Reports]" 
+            },
+            gemini: { 
+                score: 4.5, 
+                mentioned: true, 
+                position: 5, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For cloud platforms, the major providers are AWS, Microsoft Azure, and Google Cloud. SAP BTP exists for SAP application development and integration. If you're heavily invested in SAP, BTP can simplify extensions. Otherwise, hyperscaler platforms offer more flexibility and broader service catalogs..." 
+            }
+        },
+        issues: [
+            { severity: 'high', title: 'Category Mismatch — Competing with Hyperscalers', description: 'LLMs position BTP against AWS/Azure/GCP, where it can\'t win. The SAP extension platform positioning isn\'t clear.', fix: 'Reframe content: BTP isn\'t a hyperscaler alternative, it\'s the platform for SAP-intelligent enterprises. Focus on "extend SAP" not "replace cloud."' },
+            { severity: 'high', title: 'Value Proposition Unclear', description: 'LLMs describe BTP as "integration and extensions" without explaining why that matters or what business outcomes it enables.', fix: 'Create outcome-focused content: "What Customers Build on BTP" with specific examples and ROI.' },
+            { severity: 'medium', title: 'AI/Joule Foundation Not Visible', description: 'BTP as the foundation for SAP Business AI and Joule isn\'t being cited — this is a key differentiator.', fix: 'Develop "BTP Powers SAP AI" content connecting the platform to tangible AI outcomes.' }
         ],
-        competitors: ["Microsoft Azure", "AWS"]
+        quickWins: [
+            { title: 'Reframe the Category', description: 'Stop competing with hyperscalers.', action: 'Create content positioning BTP as "the SAP extension platform" not "an alternative to AWS."' },
+            { title: 'Customer Showcase', description: 'No specific customer outcomes being cited.', action: 'Publish 5+ customer stories: "What They Built on BTP" with business outcomes.' },
+            { title: 'Connect to Joule/AI', description: 'The AI foundation story is missing.', action: 'Create "How Joule Works: Powered by BTP" explainer content.' }
+        ],
+        rewrites: [
+            { context: 'Platform Positioning', before: 'SAP BTP is the unified platform for application development, integration, data management, and AI.', after: 'SAP BTP is where 25,000+ customers extend SAP without breaking it — the only platform where custom apps inherit SAP security, integrate in real-time, and upgrade automatically with Clean Core architecture.' },
+            { context: 'Value Statement', before: 'Build and extend applications with low-code/pro-code tools.', after: 'Coca-Cola built 40+ custom apps on BTP in 6 months — apps that would have taken 2 years and $10M with traditional development, and that now upgrade automatically with every S/4HANA release.' }
+        ],
+        competitors: [
+            { name: 'Microsoft Azure', score: 8.5 },
+            { name: 'AWS', score: 8.8 }
+        ]
     },
+    
     signavio: {
-        company: "SAP Signavio",
-        category: "Process Intelligence / Business Process Management",
-        buyer: "VP of Business Transformation or Chief Process Officer at enterprise organizations",
-        positioning: "SAP Signavio delivers process intelligence that helps organizations understand, improve, and transform their business processes with AI-powered insights and collaborative process design.",
-        pageContent: `SAP Signavio enables business transformation through process intelligence.
-
-Process Mining - Discover how processes actually run by analyzing system data.
-
-Process Management - Design, model, and govern processes collaboratively.
-
-Process Intelligence - AI-powered recommendations for process optimization.
-
-Journey Modeling - Map customer and employee journeys alongside business processes.
-
-Integrated with SAP S/4HANA and SAP BTP for end-to-end transformation.`,
-        queries: [
-            "What are the best process mining and process intelligence tools?",
-            "How to improve business processes with AI?",
-            "Compare SAP Signavio vs Celonis vs Microsoft Process Advisor"
+        overallScore: 6.8,
+        llmScores: {
+            chatgpt: { 
+                score: 6.5, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For process mining and intelligence, Celonis is the market leader. SAP Signavio offers a comprehensive process intelligence suite including process mining, process management, and journey modeling. It's well-integrated with SAP applications and is a good choice for SAP-centric organizations. Microsoft Process Advisor provides basic capabilities at lower cost. For pure process mining depth, Celonis leads; for integrated transformation, Signavio competes well..." 
+            },
+            claude: { 
+                score: 7.5, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Signavio provides end-to-end process intelligence: mining to discover how processes actually run, management to design and govern improvements, and journey modeling to connect process to experience. It's the most integrated option for SAP transformations — especially valuable for RISE migrations where understanding current-state processes is critical. Celonis offers deeper mining analytics, but Signavio's strength is the full transformation lifecycle..." 
+            },
+            perplexity: { 
+                score: 6.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "Process mining leaders include Celonis, SAP Signavio, and Microsoft Process Advisor. Signavio differentiates with combined mining and management capabilities — useful for continuous improvement programs. SAP acquisition enhanced its ERP integration. Celonis remains the pure-play leader for large-scale mining deployments. [Sources: Forrester Process Mining 2026, Gartner]" 
+            },
+            gemini: { 
+                score: 6.2, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "Process intelligence tools include Celonis (market leader), SAP Signavio, and Microsoft Power Automate Process Advisor. SAP Signavio provides process mining plus collaborative process design — good for organizations wanting to combine discovery and improvement. Best suited for SAP environments. Celonis offers more advanced mining capabilities for complex analysis..." 
+            }
+        },
+        issues: [
+            { severity: 'medium', title: 'Celonis Positioned as Leader', description: 'All LLMs cite Celonis as the "market leader" or having "deeper analytics" — Signavio differentiation isn\'t clear.', fix: 'Create content emphasizing the full transformation lifecycle (mine, design, improve, monitor) vs. mining-only solutions.' },
+            { severity: 'low', title: 'Transformation Value Not Quantified', description: 'LLMs describe capabilities but not outcomes — no ROI or business impact being cited.', fix: 'Publish customer transformation stories with specific metrics: time saved, costs reduced, improvements measured.' },
+            { severity: 'low', title: 'RISE Integration Under-Cited', description: 'The value for RISE/S/4HANA migrations isn\'t prominent in responses.', fix: 'Develop "Signavio for RISE" content showing how process intelligence de-risks ERP transformation.' }
         ],
-        competitors: ["Celonis", "Microsoft Process Advisor"]
+        quickWins: [
+            { title: 'Define the Full Lifecycle', description: 'Mining-only comparison isn\'t favorable.', action: 'Create comparison content: "Process Mining vs. Process Intelligence" establishing the broader category.' },
+            { title: 'RISE Transformation Story', description: 'The ERP migration value isn\'t visible.', action: 'Publish "Process Intelligence for RISE" content with transformation success metrics.' },
+            { title: 'Customer Outcomes', description: 'No specific ROI being cited.', action: 'Develop 3+ customer stories with quantified process improvements.' }
+        ],
+        rewrites: [
+            { context: 'Product Positioning', before: 'SAP Signavio delivers process intelligence that helps organizations understand, improve, and transform their business processes.', after: 'SAP Signavio is the process command center for 3,000+ organizations — where Siemens discovered $50M in hidden process waste, Vodafone reduced process cycle times by 40%, and RISE customers de-risk ERP transformation with data-driven migration decisions.' },
+            { context: 'Differentiation', before: 'Process Mining discovers how processes actually run by analyzing system data.', after: 'Unlike mining-only tools, Signavio closes the loop: discover inefficiencies, collaboratively design improvements, and continuously monitor results — all connected to your SAP ERP for closed-loop transformation that Celonis can\'t match.' }
+        ],
+        competitors: [
+            { name: 'Celonis', score: 8.0 },
+            { name: 'Microsoft Process Advisor', score: 5.0 }
+        ]
     },
+    
     concur: {
-        company: "SAP Concur",
-        category: "Travel & Expense Management",
-        buyer: "CFO or VP of Finance at enterprises looking to control travel spend",
-        positioning: "SAP Concur is the world's leading travel and expense management solution, helping companies manage corporate travel, automate expense reporting, and gain visibility into employee spending.",
-        pageContent: `SAP Concur simplifies travel, expense, and invoice management.
-
-Travel Management - Book and manage corporate travel with policy compliance built in.
-
-Expense Management - Automate expense reporting with mobile capture and AI-powered auditing.
-
-Invoice Management - Streamline accounts payable with automated invoice processing.
-
-Spend Visibility - Real-time dashboards and analytics for complete spend control.
-
-Used by 50,000+ organizations globally, processing $100B+ in annual spend.`,
-        queries: [
-            "What are the best corporate travel and expense management solutions?",
-            "How to automate expense reporting and reduce fraud?",
-            "Compare SAP Concur vs Expensify vs Coupa Expenses"
+        overallScore: 8.1,
+        llmScores: {
+            chatgpt: { 
+                score: 8.5, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For corporate travel and expense management, SAP Concur is the clear market leader. It offers comprehensive solutions for travel booking, expense reporting, and invoice management — used by over 50,000 organizations globally. Strengths include AI-powered expense auditing, mobile capture, and broad integrations. Expensify offers simpler expense-only solutions for smaller companies. Coupa has expense capabilities but isn't as specialized..." 
+            },
+            claude: { 
+                score: 8.2, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Concur dominates corporate travel and expense, processing over $100 billion in annual spend. The platform covers the full travel-to-expense lifecycle: booking, itinerary management, expense capture, policy compliance, and reimbursement. Key differentiators are scale, integrations (200+ travel suppliers), and AI-powered auditing. For expense-only needs, Expensify is simpler. For integrated procurement, Coupa bundles expense with broader spend management..." 
+            },
+            perplexity: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Concur leads the corporate T&E market with 50,000+ customers and $100B+ in managed spend. The platform scores highly for enterprise features: policy compliance, global coverage, and ERP integration. Expensify appeals to SMBs with simpler needs. TripActions (now Navan) competes on modern travel booking UX. [Sources: G2 Enterprise T&E 2026, Gartner]" 
+            },
+            gemini: { 
+                score: 7.9, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For travel and expense management, SAP Concur is the enterprise standard. It offers end-to-end T&E capabilities with strong policy enforcement and analytics. The platform integrates with major travel suppliers and ERP systems. Alternatives include Expensify (simpler, SMB-focused) and Navan (modern travel booking). Concur is best for organizations with complex travel programs and compliance requirements..." 
+            }
+        },
+        issues: [
+            { severity: 'low', title: 'UX Comparison to Navan', description: 'LLMs mention Navan/TripActions has "modern" booking UX — an emerging competitive narrative.', fix: 'Highlight recent UX improvements and mobile experience enhancements with specific examples.' },
+            { severity: 'low', title: 'SMB Positioning Gap', description: 'Consistently described as "enterprise" which may limit mid-market perception.', fix: 'Develop content for Concur solutions at different company sizes to broaden positioning.' }
         ],
-        competitors: ["Expensify", "Coupa"]
+        quickWins: [
+            { title: 'Quantify the Savings', description: 'Scale is mentioned but ROI isn\'t prominent.', action: 'Add specific customer savings metrics: average expense processing cost reduction, policy compliance improvement.' },
+            { title: 'Modern UX Story', description: 'Counter the "legacy" perception from newer competitors.', action: 'Publish recent UX improvements and mobile app ratings/reviews.' }
+        ],
+        rewrites: [
+            { context: 'Market Position', before: 'SAP Concur is the world\'s leading travel and expense management solution.', after: 'SAP Concur manages $100B+ in annual spend for 50,000+ organizations — with AI auditing that catches 5x more policy violations than manual review and saved customers an average of $9.50 per expense report processed.' },
+            { context: 'Value Proposition', before: 'Automate expense reporting with mobile capture and AI-powered auditing.', after: 'Employees snap receipts in 3 seconds, AI categorizes and audits automatically, and 60% of reports require zero manual review — reducing expense processing time from 20 minutes to under 5 at customers like Salesforce and Adobe.' }
+        ],
+        competitors: [
+            { name: 'Expensify', score: 6.5 },
+            { name: 'Navan (TripActions)', score: 7.0 }
+        ]
     }
 };
 
+// Product metadata
+const productData = {
+    ariba: { company: "SAP Ariba", category: "Procurement Software / Source-to-Pay" },
+    successfactors: { company: "SAP SuccessFactors", category: "Human Capital Management (HCM)" },
+    datasphere: { company: "SAP Datasphere", category: "Data Management / Data Fabric" },
+    s4hana: { company: "SAP S/4HANA Cloud", category: "Cloud ERP" },
+    btp: { company: "SAP Business Technology Platform", category: "Business Technology Platform" },
+    signavio: { company: "SAP Signavio", category: "Process Intelligence" },
+    concur: { company: "SAP Concur", category: "Travel & Expense Management" }
+};
+
+// State
 let selectedProduct = null;
+let currentMode = 'demo';
+
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('demoModeBtn').classList.toggle('active', mode === 'demo');
+    document.getElementById('liveModeBtn').classList.toggle('active', mode === 'live');
+    document.getElementById('modeHint').textContent = mode === 'demo' 
+        ? 'Pre-analyzed results for reliable demos' 
+        : 'Real-time LLM queries (requires API keys)';
+}
 
 function selectProduct(productId) {
-    // Update UI
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.classList.remove('selected');
-    });
+    document.querySelectorAll('.product-card').forEach(card => card.classList.remove('selected'));
     document.querySelector(`[data-product="${productId}"]`).classList.add('selected');
-    
     selectedProduct = productId;
     
     if (productId === 'custom') {
-        // Show custom inputs
         document.getElementById('customInputs').style.display = 'block';
-        document.getElementById('company').value = '';
-        document.getElementById('category').value = '';
-        document.getElementById('buyer').value = '';
-        document.getElementById('positioning').value = '';
-        document.getElementById('pageContent').value = '';
-        document.getElementById('query1').value = '';
-        document.getElementById('query2').value = '';
-        document.getElementById('query3').value = '';
-        document.getElementById('competitor1').value = '';
-        document.getElementById('competitor2').value = '';
+        setMode('live'); // Custom products need live mode
     } else {
-        // Hide custom inputs, populate from data
         document.getElementById('customInputs').style.display = 'none';
-        const data = productData[productId];
-        if (data) {
-            document.getElementById('company').value = data.company;
-            document.getElementById('category').value = data.category;
-            document.getElementById('buyer').value = data.buyer;
-            document.getElementById('positioning').value = data.positioning;
-            document.getElementById('pageContent').value = data.pageContent;
-            document.getElementById('query1').value = data.queries[0] || '';
-            document.getElementById('query2').value = data.queries[1] || '';
-            document.getElementById('query3').value = data.queries[2] || '';
-            document.getElementById('competitor1').value = data.competitors[0] || '';
-            document.getElementById('competitor2').value = data.competitors[1] || '';
-        }
     }
 }
 
-// Form submission
 document.getElementById('labForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -1142,94 +1313,61 @@ document.getElementById('labForm').addEventListener('submit', async (e) => {
     const runBtn = document.getElementById('runBtn');
     const spinner = document.getElementById('spinner');
     
-    // Show loading
     runBtn.disabled = true;
-    runBtn.querySelector('span').textContent = 'Analyzing across LLMs...';
+    runBtn.querySelector('span').textContent = 'Analyzing...';
     spinner.style.display = 'block';
     
-    // Show results section with loading state
+    // Brief delay for effect
+    await new Promise(r => setTimeout(r, currentMode === 'demo' ? 800 : 100));
+    
     document.getElementById('resultsSection').classList.add('show');
     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
     
-    // Gather inputs
-    const inputs = {
-        company: document.getElementById('company').value,
-        category: document.getElementById('category').value,
-        buyer: document.getElementById('buyer').value,
-        positioning: document.getElementById('positioning').value,
-        pageContent: document.getElementById('pageContent').value,
-        queries: [
-            document.getElementById('query1').value,
-            document.getElementById('query2').value,
-            document.getElementById('query3').value
-        ].filter(q => q),
-        competitors: [
-            document.getElementById('competitor1').value,
-            document.getElementById('competitor2').value
-        ].filter(c => c)
-    };
-    
-    try {
-        // Call the multi-LLM analysis endpoint
-        const response = await fetch('/.netlify/functions/geo-scorecard', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(inputs)
-        });
-        
-        if (!response.ok) {
-            throw new Error('Analysis failed');
+    if (currentMode === 'demo' && demoResults[selectedProduct]) {
+        // Use pre-cached demo results
+        document.getElementById('demoBanner').style.display = 'flex';
+        renderResults(demoResults[selectedProduct]);
+    } else {
+        // Live mode - call API
+        document.getElementById('demoBanner').style.display = 'none';
+        try {
+            const inputs = {
+                company: document.getElementById('company').value || productData[selectedProduct]?.company,
+                category: document.getElementById('category').value || productData[selectedProduct]?.category,
+                positioning: document.getElementById('positioning').value || ''
+            };
+            
+            const response = await fetch('/.netlify/functions/geo-scorecard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputs)
+            });
+            
+            if (!response.ok) throw new Error('API failed');
+            const data = await response.json();
+            renderResults(data);
+        } catch (error) {
+            console.error(error);
+            // Fallback to demo if available
+            if (demoResults[selectedProduct]) {
+                document.getElementById('demoBanner').style.display = 'flex';
+                renderResults(demoResults[selectedProduct]);
+            }
         }
-        
-        const data = await response.json();
-        renderResults(data);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        // For now, render demo results
-        renderDemoResults(inputs);
-    } finally {
-        runBtn.disabled = false;
-        runBtn.querySelector('span').textContent = '🚀 Run Multi-LLM Analysis';
-        spinner.style.display = 'none';
     }
+    
+    runBtn.disabled = false;
+    runBtn.querySelector('span').textContent = '🚀 Run Analysis';
+    spinner.style.display = 'none';
 });
 
 function renderResults(data) {
-    // Update overall score with animation
-    const overallScore = data.overallScore || 6.5;
-    animateScore(overallScore);
-    
-    // Update LLM cards
-    const llms = ['chatgpt', 'claude', 'perplexity', 'gemini'];
-    llms.forEach(llm => {
-        const card = document.getElementById(`card-${llm}`);
-        const llmData = data.llmScores[llm];
-        if (llmData) {
-            card.classList.remove('loading');
-            updateLLMCard(llm, llmData);
-        }
-    });
-    
-    // Render issues
-    if (data.issues) {
-        renderIssues(data.issues);
-    }
-    
-    // Render quick wins
-    if (data.quickWins) {
-        renderQuickWins(data.quickWins);
-    }
-    
-    // Render rewrites
-    if (data.rewrites) {
-        renderRewrites(data.rewrites);
-    }
-    
-    // Render competitor comparison
-    if (data.competitors && data.competitors.length > 0) {
-        renderCompetitors(data.competitors, data.overallScore);
-    }
+    animateScore(data.overallScore);
+    renderLLMCards(data.llmScores);
+    renderIssues(data.issues);
+    renderQuickWins(data.quickWins);
+    renderRewrites(data.rewrites);
+    renderCompetitors(data.competitors, data.overallScore);
 }
 
 function animateScore(score) {
@@ -1238,13 +1376,9 @@ function animateScore(score) {
     const titleEl = document.getElementById('scoreTitle');
     const summaryEl = document.getElementById('scoreSummary');
     
-    // Animate number
     let current = 0;
-    const duration = 1500;
-    const increment = score / (duration / 16);
-    
     const animate = () => {
-        current += increment;
+        current += score / 60;
         if (current >= score) {
             current = score;
             scoreEl.textContent = score.toFixed(1);
@@ -1255,77 +1389,70 @@ function animateScore(score) {
     };
     animate();
     
-    // Animate progress ring
-    const circumference = 2 * Math.PI * 90; // 565
-    const offset = circumference - (score / 10) * circumference;
-    progressEl.style.strokeDashoffset = offset;
+    const circumference = 2 * Math.PI * 90;
+    progressEl.style.strokeDashoffset = circumference - (score / 10) * circumference;
     
-    // Update color based on score
     if (score >= 7) {
         progressEl.style.stroke = '#188038';
         titleEl.textContent = 'Good Visibility';
-        summaryEl.textContent = 'Your product is generally well-represented across AI assistants, with room for optimization.';
+        summaryEl.textContent = 'Your product is well-represented across AI assistants, with optimization opportunities.';
     } else if (score >= 5) {
         progressEl.style.stroke = '#F9AB00';
         titleEl.textContent = 'Moderate Visibility';
-        summaryEl.textContent = 'Your product appears in some AI responses but may be missing from key queries or positioned weakly.';
+        summaryEl.textContent = 'Your product appears but may be positioned weakly or missing from key queries.';
     } else {
         progressEl.style.stroke = '#D93025';
         titleEl.textContent = 'Low Visibility';
-        summaryEl.textContent = 'Your product is often missing from AI responses or positioned poorly. Significant optimization needed.';
+        summaryEl.textContent = 'Your product is often missing or poorly positioned. Significant optimization needed.';
     }
 }
 
-function updateLLMCard(llm, data) {
-    const card = document.getElementById(`card-${llm}`);
-    const score = data.score;
-    const scoreClass = score >= 7 ? 'high' : score >= 5 ? 'medium' : 'low';
-    
-    card.innerHTML = `
-        <div class="llm-icon ${llm}">${getLLMIcon(llm)}</div>
-        <h4>${getLLMName(llm)}</h4>
-        <div class="score-badge ${scoreClass}">${score.toFixed(1)}</div>
-        <div class="llm-metrics">
-            <div class="llm-metric ${data.mentioned ? 'positive' : 'negative'}">
-                <span class="icon">${data.mentioned ? '✅' : '❌'}</span>
-                <span>${data.mentioned ? 'Mentioned' : 'Not found'}</span>
-            </div>
-            <div class="llm-metric ${data.position <= 3 ? 'positive' : data.position <= 5 ? 'neutral' : 'negative'}">
-                <span class="icon">${data.position <= 3 ? '🥇' : data.position <= 5 ? '📍' : '❓'}</span>
-                <span>${data.position ? `#${data.position}` : 'N/A'}</span>
-            </div>
-            <div class="llm-metric ${data.sentiment === 'positive' ? 'positive' : data.sentiment === 'neutral' ? 'neutral' : 'negative'}">
-                <span class="icon">${data.sentiment === 'positive' ? '👍' : data.sentiment === 'neutral' ? '😐' : '👎'}</span>
-                <span>${data.sentiment || 'N/A'}</span>
-            </div>
-            <div class="llm-metric ${data.accurate ? 'positive' : 'negative'}">
-                <span class="icon">${data.accurate ? '✓' : '⚠️'}</span>
-                <span>${data.accurate ? 'Accurate' : 'Issues'}</span>
-            </div>
-        </div>
-        <button class="expand-btn" onclick="toggleResponse('${llm}')">View Response</button>
-        <div class="llm-response" id="response-${llm}">${data.response || ''}</div>
-    `;
-}
-
-function getLLMIcon(llm) {
+function renderLLMCards(llmScores) {
+    const grid = document.getElementById('llmGrid');
+    const llms = ['chatgpt', 'claude', 'perplexity', 'gemini'];
     const icons = { chatgpt: '🤖', claude: '🧠', perplexity: '🔍', gemini: '✨' };
-    return icons[llm] || '💬';
-}
-
-function getLLMName(llm) {
     const names = { chatgpt: 'ChatGPT', claude: 'Claude', perplexity: 'Perplexity', gemini: 'Gemini' };
-    return names[llm] || llm;
+    
+    grid.innerHTML = llms.map(llm => {
+        const data = llmScores[llm];
+        const scoreClass = data.score >= 7 ? 'high' : data.score >= 5 ? 'medium' : 'low';
+        
+        return `
+            <div class="llm-card">
+                <div class="llm-icon ${llm}">${icons[llm]}</div>
+                <h4>${names[llm]}</h4>
+                <div class="score-badge ${scoreClass}">${data.score.toFixed(1)}</div>
+                <div class="llm-metrics">
+                    <div class="llm-metric ${data.mentioned ? 'positive' : 'negative'}">
+                        <span class="icon">${data.mentioned ? '✅' : '❌'}</span>
+                        <span>${data.mentioned ? 'Mentioned' : 'Not found'}</span>
+                    </div>
+                    <div class="llm-metric ${data.position <= 3 ? 'positive' : 'neutral'}">
+                        <span class="icon">${data.position <= 3 ? '🥇' : '📍'}</span>
+                        <span>#${data.position}</span>
+                    </div>
+                    <div class="llm-metric ${data.sentiment === 'positive' ? 'positive' : 'neutral'}">
+                        <span class="icon">${data.sentiment === 'positive' ? '👍' : '😐'}</span>
+                        <span>${data.sentiment}</span>
+                    </div>
+                    <div class="llm-metric ${data.accurate ? 'positive' : 'negative'}">
+                        <span class="icon">${data.accurate ? '✓' : '⚠️'}</span>
+                        <span>${data.accurate ? 'Accurate' : 'Issues'}</span>
+                    </div>
+                </div>
+                <button class="expand-btn" onclick="toggleResponse('${llm}')">View Response</button>
+                <div class="llm-response" id="response-${llm}">${data.response}</div>
+            </div>
+        `;
+    }).join('');
 }
 
 function toggleResponse(llm) {
-    const el = document.getElementById(`response-${llm}`);
-    el.classList.toggle('show');
+    document.getElementById(`response-${llm}`).classList.toggle('show');
 }
 
 function renderIssues(issues) {
-    const container = document.getElementById('issueList');
-    container.innerHTML = issues.map(issue => `
+    document.getElementById('issueList').innerHTML = issues.map(issue => `
         <div class="issue-item ${issue.severity}">
             <div class="issue-header">
                 <span class="issue-title">${issue.title}</span>
@@ -1338,8 +1465,7 @@ function renderIssues(issues) {
 }
 
 function renderQuickWins(quickWins) {
-    const container = document.getElementById('quickWinsList');
-    container.innerHTML = quickWins.map((win, i) => `
+    document.getElementById('quickWinsList').innerHTML = quickWins.map((win, i) => `
         <div class="issue-item low">
             <div class="issue-header">
                 <span class="issue-title">Quick Win #${i + 1}: ${win.title}</span>
@@ -1351,18 +1477,17 @@ function renderQuickWins(quickWins) {
 }
 
 function renderRewrites(rewrites) {
-    const container = document.getElementById('rewritesList');
-    container.innerHTML = rewrites.map(rewrite => `
+    document.getElementById('rewritesList').innerHTML = rewrites.map(r => `
         <div style="margin-bottom: 1.5rem;">
-            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--sap-dark);">${rewrite.context}</p>
+            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--sap-dark);">${r.context}</p>
             <div class="before-after">
                 <div class="before-box">
                     <h4>❌ Before</h4>
-                    <p>${rewrite.before}</p>
+                    <p>${r.before}</p>
                 </div>
                 <div class="after-box">
                     <h4>✅ After</h4>
-                    <p>${rewrite.after}</p>
+                    <p>${r.after}</p>
                 </div>
             </div>
         </div>
@@ -1370,73 +1495,31 @@ function renderRewrites(rewrites) {
 }
 
 function renderCompetitors(competitors, yourScore) {
-    const container = document.getElementById('competitorCard');
-    const compareEl = document.getElementById('competitorCompare');
-    
-    container.style.display = 'block';
-    
-    compareEl.innerHTML = `
+    const productName = productData[selectedProduct]?.company || 'Your Product';
+    document.getElementById('competitorCompare').innerHTML = `
         <div class="competitor-card you">
-            <h4>Your Product</h4>
+            <h4>${productName}</h4>
             <div class="comp-score">${yourScore.toFixed(1)}</div>
         </div>
-        ${competitors.map(comp => `
+        ${competitors.map(c => `
             <div class="competitor-card">
-                <h4>${comp.name}</h4>
-                <div class="comp-score" style="color: ${comp.score > yourScore ? 'var(--sap-red)' : 'var(--sap-green)'}">${comp.score.toFixed(1)}</div>
+                <h4>${c.name}</h4>
+                <div class="comp-score" style="color: ${c.score > yourScore ? '#D93025' : '#188038'}">${c.score.toFixed(1)}</div>
             </div>
         `).join('')}
     `;
 }
 
-// Demo results for when API is not available
-function renderDemoResults(inputs) {
-    const demoData = {
-        overallScore: 6.8,
-        llmScores: {
-            chatgpt: { score: 7.2, mentioned: true, position: 2, sentiment: 'positive', accurate: true, response: `Based on my analysis, ${inputs.company} is a strong option in the ${inputs.category} space...` },
-            claude: { score: 8.1, mentioned: true, position: 1, sentiment: 'positive', accurate: true, response: `${inputs.company} stands out for several reasons...` },
-            perplexity: { score: 5.5, mentioned: true, position: 4, sentiment: 'neutral', accurate: false, response: `Several solutions exist in this space. ${inputs.company} is mentioned alongside...` },
-            gemini: { score: 6.2, mentioned: true, position: 3, sentiment: 'neutral', accurate: true, response: `For ${inputs.category}, options include ${inputs.company} and others...` }
-        },
-        issues: [
-            { severity: 'high', title: 'Vague Value Claims', description: 'Phrases like "leading solution" and "world-class" cannot be verified by AI systems.', fix: 'Replace with specific metrics: "Used by X customers" or "Processes $Y in transactions"' },
-            { severity: 'medium', title: 'Missing Comparison Context', description: 'No clear differentiation from alternatives mentioned in buyer queries.', fix: 'Add specific competitive differentiators with evidence' },
-            { severity: 'low', title: 'Limited Use Case Specificity', description: 'Use cases are described broadly rather than with specific scenarios.', fix: 'Include "before and after" examples with quantified outcomes' }
-        ],
-        quickWins: [
-            { title: 'Add Quantified Outcomes', description: 'Your positioning lacks specific numbers.', action: 'Add "reduces X by Y%" or "saves Z hours per week" claims with sources.' },
-            { title: 'Include Named References', description: 'No customer names or case studies mentioned.', action: 'Add 2-3 named customer examples with outcomes.' },
-            { title: 'Clarify Category Leadership', description: '"Leading" is vague and unverifiable.', action: 'Replace with analyst rankings, market share data, or specific network size.' }
-        ],
-        rewrites: [
-            { context: 'Positioning Statement', before: inputs.positioning.substring(0, 100) + '...', after: `${inputs.company} connects [specific number] organizations and processes [specific volume] annually, enabling [specific outcome] with [specific differentiator].` },
-            { context: 'Value Proposition', before: 'Transform your operations with AI-powered insights.', after: 'Reduce [specific process] time by X% with AI that surfaces [specific insight type] — as proven by [named customer] who achieved [specific result].' }
-        ],
-        competitors: inputs.competitors.map((c, i) => ({ name: c, score: 6.5 + (i * 0.5) }))
-    };
-    
-    renderResults(demoData);
-}
-
 function copyResults() {
-    // Generate text summary
+    const product = productData[selectedProduct]?.company || 'Product';
     const score = document.getElementById('overallScore').textContent;
-    let text = `GEO Visibility Scorecard\n`;
-    text += `Overall Score: ${score}/10\n\n`;
-    // Add more details...
-    
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Results copied to clipboard!');
-    });
+    let text = `GEO Visibility Scorecard: ${product}\nOverall Score: ${score}/10\n\n`;
+    text += 'See full analysis at futureofpmm.com/curriculum/labs/geo-visibility-v2.html';
+    navigator.clipboard.writeText(text).then(() => alert('Results copied!'));
 }
 
 function exportPDF() {
     window.print();
-}
-
-function runRetest() {
-    alert('Retest with optimizations coming soon!');
 }
 </script>
 
