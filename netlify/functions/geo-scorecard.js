@@ -3,7 +3,7 @@
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const GOOGLE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GOOGLE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 const PERPLEXITY_API_URL = 'https://api.perplexity.ai/chat/completions';
 
 exports.handler = async (event, context) => {
