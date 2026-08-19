@@ -80,31 +80,9 @@
     <div id="app"><div class="loading">Loading program progress…</div></div>
 
     <script>
-    // ---- Access gate (same superuser model as /admin) ----
-    const SUPERUSERS = [
-        'christopher.ohara@sap.com','sean.thomson@sap.com','brian.raver@sap.com',
-        'olivier.duvelleroy@sap.com','j.chen02@sap.com','kelly.amaroso@sap.com',
-        'sarah.sternberg@sap.com',
-        'dahra.williams@sap.com','jasmine.churchill@sap.com','dante.ricci@sap.com',
-        'kasier.larsen@sap.com','markdonahue23@gmail.com','brenda.bown@sap.com',
-        'matthew.montgomery@sap.com'
-    ];
-    let currentUser = null;
-    try {
-        const directUser = localStorage.getItem('pmm_direct_user');
-        if (directUser) currentUser = JSON.parse(directUser).email?.toLowerCase();
-    } catch (e) {}
-
-    if (!currentUser || !SUPERUSERS.includes(currentUser)) {
-        document.getElementById('app').innerHTML = `
-            <div class="access-denied">
-                <h1>🔒 Access restricted</h1>
-                <p>This progress view is for program leads.</p>
-                <p style="margin-top:1rem;"><a href="/curriculum/">← Back to the curriculum</a></p>
-            </div>`;
-    } else {
-        loadProgress();
-    }
+    // Public exec view - no login required
+    let currentUser = 'viewer';
+    loadProgress();
 
     const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -215,7 +193,7 @@
                     </div>
                     <div class="meta">
                         <span class="pill">Read-only · exec view</span><br>
-                        Updated ${updated}<br>Signed in as ${esc(currentUser)}
+                        Updated ${updated}
                     </div>
                 </div>
             </header>
