@@ -29,11 +29,10 @@ exports.handler = async (event, context) => {
         // Use the first query for LLM testing
         const testQuery = queries[0] || `What are the best ${category} solutions?`;
 
-        // Query all LLMs in parallel
-        const [chatgptResult, claudeResult, perplexityResult, geminiResult] = await Promise.allSettled([
+        // Query all LLMs in parallel (Perplexity skipped - requires paid API)
+        const [chatgptResult, claudeResult, geminiResult] = await Promise.allSettled([
             queryChatGPT(testQuery, company),
             queryClaude(testQuery, company),
-            queryPerplexity(testQuery, company),
             queryGemini(testQuery, company)
         ]);
 
@@ -41,7 +40,6 @@ exports.handler = async (event, context) => {
         const llmScores = {
             chatgpt: processLLMResult(chatgptResult, company),
             claude: processLLMResult(claudeResult, company),
-            perplexity: processLLMResult(perplexityResult, company),
             gemini: processLLMResult(geminiResult, company)
         };
 
