@@ -1216,6 +1216,31 @@
             <div class="llm-grid" id="llmGrid">
                 <!-- Populated by JS -->
             </div>
+            
+            <!-- Score Methodology -->
+            <div id="scoreBreakdown" style="margin-top: 2rem; padding: 1.5rem; background: #F8FAFC; border-radius: 12px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="margin: 0; color: var(--sap-dark);">📐 Score Methodology</h4>
+                    <span style="font-size: 0.75rem; color: var(--text-light); cursor: pointer;" onclick="document.getElementById('methodologyDetails').style.display = document.getElementById('methodologyDetails').style.display === 'none' ? 'block' : 'none'">ⓘ How we calculate</span>
+                </div>
+                
+                <!-- Score Components -->
+                <div id="scoreComponents" style="display: grid; gap: 0.75rem;">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Methodology Details (hidden by default) -->
+                <div id="methodologyDetails" style="display: none; margin-top: 1rem; padding: 1rem; background: white; border-radius: 8px; font-size: 0.85rem; color: var(--text-light);">
+                    <p style="margin-bottom: 0.5rem;"><strong>How scores are calculated:</strong></p>
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Mention Rate:</strong> % of relevant queries where product is mentioned</li>
+                        <li><strong>Positioning:</strong> Where you rank vs competitors (1st mention = higher score)</li>
+                        <li><strong>Sentiment:</strong> Positive/negative/neutral tone in AI responses</li>
+                        <li><strong>Accuracy:</strong> Are the facts cited about you correct?</li>
+                        <li><strong>Specificity:</strong> Does AI cite specific numbers/outcomes vs vague claims?</li>
+                    </ul>
+                </div>
+            </div>
         </div>
         
         <!-- Issues Analysis -->
@@ -1331,6 +1356,13 @@
 const demoResults = {
     ariba: {
         overallScore: 7.2,
+        scoreComponents: [
+            { name: 'Mention Rate', score: 8.5, max: 10, evidence: 'Mentioned in 4/4 LLMs tested (100%)' },
+            { name: 'Positioning', score: 7.0, max: 10, evidence: 'Avg rank: #2.25 — first mention in Claude, 2nd-3rd in others' },
+            { name: 'Sentiment', score: 7.5, max: 10, evidence: '50% positive, 50% neutral, 0% negative' },
+            { name: 'Accuracy', score: 6.0, max: 10, evidence: '3/4 LLMs cited accurate facts; 1 had outdated info' },
+            { name: 'Specificity', score: 7.0, max: 10, evidence: 'Network size cited 75% of time; ROI figures rarely' }
+        ],
         llmScores: {
             chatgpt: { 
                 score: 7.8, 
@@ -1387,6 +1419,13 @@ const demoResults = {
     
     successfactors: {
         overallScore: 7.8,
+        scoreComponents: [
+            { name: 'Mention Rate', score: 9.0, max: 10, evidence: 'Mentioned in 4/4 LLMs tested (100%)' },
+            { name: 'Positioning', score: 8.5, max: 10, evidence: 'First mention in 3/4 LLMs; strong enterprise positioning' },
+            { name: 'Sentiment', score: 7.0, max: 10, evidence: '62% positive, 25% neutral, 13% negative (UX concerns)' },
+            { name: 'Accuracy', score: 8.0, max: 10, evidence: '268M users figure cited correctly across all responses' },
+            { name: 'Specificity', score: 7.5, max: 10, evidence: 'User count and Forbes 2000 stat well cited' }
+        ],
         llmScores: {
             chatgpt: { 
                 score: 8.1, 
@@ -1499,6 +1538,13 @@ const demoResults = {
     
     s4hana: {
         overallScore: 7.5,
+        scoreComponents: [
+            { name: 'Mention Rate', score: 8.0, max: 10, evidence: 'Mentioned in 4/4 LLMs tested (100%)' },
+            { name: 'Positioning', score: 7.5, max: 10, evidence: 'First mention in 2/4 LLMs; often #2 after Oracle' },
+            { name: 'Sentiment', score: 8.0, max: 10, evidence: '75% positive; "comprehensive" mentioned frequently' },
+            { name: 'Accuracy', score: 7.0, max: 10, evidence: 'Industry solutions cited; Clean Core sometimes missed' },
+            { name: 'Specificity', score: 7.0, max: 10, evidence: 'Industry verticals cited; customer outcomes rare' }
+        ],
         llmScores: {
             chatgpt: { 
                 score: 7.8, 
@@ -2000,11 +2046,34 @@ document.getElementById('labForm').addEventListener('submit', async (e) => {
 
 function renderResults(data) {
     animateScore(data.overallScore);
+    renderScoreComponents(data.scoreComponents);
     renderLLMCards(data.llmScores);
     renderIssues(data.issues);
     renderQuickWins(data.quickWins);
     renderRewrites(data.rewrites);
     renderCompetitors(data.competitors, data.overallScore);
+}
+
+function renderScoreComponents(components) {
+    const container = document.getElementById('scoreComponents');
+    if (!components || !container) return;
+    
+    container.innerHTML = components.map(c => {
+        const pct = (c.score / c.max) * 100;
+        const color = c.score >= 7 ? '#188038' : c.score >= 5 ? '#F9AB00' : '#D93025';
+        return `
+            <div style="background: white; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--sap-dark);">${c.name}</span>
+                    <span style="font-weight: 700; color: ${color};">${c.score.toFixed(1)}</span>
+                </div>
+                <div style="background: #E5E7EB; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem;">
+                    <div style="background: ${color}; height: 100%; width: ${pct}%; border-radius: 3px;"></div>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-light); margin: 0;">${c.evidence}</p>
+            </div>
+        `;
+    }).join('');
 }
 
 function animateScore(score) {
