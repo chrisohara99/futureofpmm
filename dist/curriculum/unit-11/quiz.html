@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 11 Quiz: Skills That Survive | Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #4472C4;
+            --green: #70AD47;
+            --red: #C00000;
+            --gold: #FFC000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+            --purple: #7C3AED;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        
+        .hero {
+            background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        
+        .quiz-progress {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .quiz-progress .label { font-weight: 600; color: var(--dark-slate); }
+        .quiz-progress .score { font-size: 1.25rem; font-weight: 700; color: var(--purple); }
+        
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .question-card.active { display: block; }
+        .question-card.answered { display: block; }
+        
+        .question-num {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option:hover:not(.disabled) { border-color: var(--purple); background: #F5F3FF; }
+        .option.selected { border-color: var(--purple); background: #F5F3FF; }
+        .option.correct { border-color: var(--green); background: #E8F5E9; }
+        .option.incorrect { border-color: var(--red); background: #FFEBEE; }
+        .option.disabled { cursor: default; }
+        
+        .option input { margin-top: 2px; }
+        .option-text { font-size: 0.95rem; }
+        
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #E8F5E9; border-left: 4px solid var(--green); }
+        .feedback.incorrect { background: #FFEBEE; border-left: 4px solid var(--red); }
+        .feedback h4 { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .feedback p { font-size: 0.9rem; margin: 0; }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #6D28D9; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn.secondary { background: white; color: var(--dark-slate); border: 1px solid #e5e7eb; }
+        .btn.secondary:hover { background: #f3f4f6; }
+        
+        .results {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .results.show { display: block; }
+        .results h2 { color: var(--dark-slate); margin-bottom: 1rem; }
+        .results .final-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin: 1rem 0;
+        }
+        .results .final-score.passed { color: var(--green); }
+        .results .message { color: #666; margin-bottom: 1.5rem; }
+        .results .actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        footer a { color: var(--sap-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <nav class="nav">
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>Unit 11 Quiz: Skills That Survive</h1>
+        <p>Test your understanding of the four durable PMM skills</p>
+    </section>
+    
+    <main>
+        <div class="quiz-progress">
+            <span class="label">Question <span id="currentQ">1</span> of <span id="totalQ">8</span></span>
+            <span class="score"><span id="score">0</span>/<span id="totalQ2">8</span> correct</span>
+        </div>
+        
+        <div id="quiz-container">
+            <!-- Question 1 -->
+            <div class="question-card active" data-question="1">
+                <div class="question-num">Question 1 of 8</div>
+                <div class="question-text">According to the unit, what is the key distinction between the PMM of 2023 and the PMM of 2028?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q1">
+                        <span class="option-text">The 2028 PMM will need to know more programming languages</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q1">
+                        <span class="option-text">The 2028 PMM will work fewer hours due to automation</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q1">
+                        <span class="option-text">The 2023 PMM spent time on execution; the 2028 PMM will spend time on judgment</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q1">
+                        <span class="option-text">The 2028 PMM will manage larger teams of AI agents</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>The shift is from execution (producing deliverables) to judgment (making decisions agents can't make). Deliverables still get produced, but the human's contribution shifts from drafting to directing.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>The key distinction is that the 2023 PMM spent majority time on execution (producing deliverables), while the 2028 PMM will spend majority time on judgment (making decisions agents can't make).</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(1)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question-card" data-question="2">
+                <div class="question-num">Question 2 of 8</div>
+                <div class="question-text">What are the four surviving skills that define the agentic-era PMM?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Prompt Engineering, Data Analysis, Tool Selection, Workflow Design</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Strategic Judgment, Organizational Intelligence, Narrative Craft, Customer Empathy</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Content Creation, Competitive Analysis, Pricing Strategy, Launch Management</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Technical Writing, Project Management, Sales Enablement, Market Research</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>These four meta-skills cut across multiple PMM activities and represent capabilities that agents can't replicate—they become MORE valuable as routine work is automated.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>The four surviving skills are: Strategic Judgment, Organizational Intelligence, Narrative Craft, and Customer Empathy. These are meta-skills that agents can't replicate.</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(2)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question-card" data-question="3">
+                <div class="question-num">Question 3 of 8</div>
+                <div class="question-text">Which surviving skill is described as "the one AI is furthest from replicating"?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q3">
+                        <span class="option-text">Strategic Judgment</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q3">
+                        <span class="option-text">Organizational Intelligence</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q3">
+                        <span class="option-text">Narrative Craft</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q3">
+                        <span class="option-text">Customer Empathy</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>Organizational intelligence—navigating stakeholders, reading body language, understanding informal power structures, having the coffee conversations that reveal real objections—is uniquely human work that no agent can replicate.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>Organizational Intelligence is the skill AI is furthest from replicating. No agent can have the informal coffee conversations, read body language, or navigate the political dynamics that determine what actually gets done.</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(3)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question-card" data-question="4">
+                <div class="question-num">Question 4 of 8</div>
+                <div class="question-text">What's the key difference between "customer knowledge" and "customer empathy"?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Customer knowledge is quantitative; customer empathy is qualitative</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Customer knowledge comes from surveys; customer empathy comes from interviews</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Customer knowledge is data about customers; customer empathy is understanding what customers feel</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Customer knowledge is about segments; customer empathy is about individuals</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>Agents can provide comprehensive customer knowledge (usage patterns, NPS scores, feature requests). Customer empathy is understanding the frustration of budget approval battles, the anxiety of betting your reputation on a vendor choice, the relief when something actually works.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>Customer knowledge is data (usage patterns, support tickets, NPS). Customer empathy is understanding feelings—the frustration, anxiety, and relief that customers experience. That's why "Stop dreading Monday's forecast meeting" hits differently than "Improve forecast accuracy by 34%."</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(4)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question-card" data-question="5">
+                <div class="question-num">Question 5 of 8</div>
+                <div class="question-text">In the T-Shaped PMM model, what does the horizontal bar represent?</div>
+                <div class="options">
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q5">
+                        <span class="option-text">Broad competence across agent-augmented skills (table stakes)</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q5">
+                        <span class="option-text">Deep expertise in one surviving skill (differentiator)</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q5">
+                        <span class="option-text">Years of experience in product marketing</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q5">
+                        <span class="option-text">Knowledge of different industry verticals</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>The horizontal bar is broad agent fluency—the ability to direct agents for CI, content, data analysis, launch coordination. Every PMM needs this bar as minimum table stakes for the agentic era.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>The horizontal bar represents broad competence across agent-augmented skills—CI, content, data analysis, launch coordination. It's table stakes: the minimum agent fluency required to remain competitive.</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(5)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question-card" data-question="6">
+                <div class="question-num">Question 6 of 8</div>
+                <div class="question-text">What are the three components of Narrative Craft?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Grammar, Structure, Formatting</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Research, Drafting, Editing</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Story Selection, Specificity, Voice</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Hook, Body, Call-to-Action</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>Story Selection is knowing which story to tell when. Specificity is using concrete details (named people, specific numbers). Voice is the quality that makes your writing recognizably yours—not tics, but authentic expression.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>The three components are: Story Selection (matching stories to arguments), Specificity (concrete details rather than abstract claims), and Voice (authentic expression that makes your writing recognizably yours).</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(6)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question-card" data-question="7">
+                <div class="question-num">Question 7 of 8</div>
+                <div class="question-text">According to the positioning example in the unit, why does "Stop dreading Monday's forecast meeting" work better than "Improve forecast accuracy by 34%"?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q7">
+                        <span class="option-text">It's shorter and easier to remember</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q7">
+                        <span class="option-text">It doesn't require proof or verification</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q7">
+                        <span class="option-text">It connects with the human experience of what bad forecasting feels like</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q7">
+                        <span class="option-text">It appeals to a broader audience</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>This is the difference between knowledge-based positioning (features mapped to requirements) and empathy-based positioning (capabilities mapped to emotions). The second connects with the felt experience of daily work life.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>The empathy-based positioning works because it connects with the human experience—what bad forecasting actually feels like in a planning team's daily life. It maps capabilities to emotions, not just features to requirements.</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(7)">Submit Answer</button>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question-card" data-question="8">
+                <div class="question-num">Question 8 of 8</div>
+                <div class="question-text">What makes someone a "10x PMM" according to the unit?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Working ten times harder than their peers</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Having expertise in all four surviving skills equally</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Using ten or more AI tools effectively</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Having both broad agent fluency AND deep expertise in one human skill</span>
+                    </label>
+                </div>
+                <div class="feedback correct">
+                    <h4>✓ Correct!</h4>
+                    <p>The 10x PMM has figured out what to outsource to machines and what to keep for themselves. They have the full T-shape: broad horizontal competence in agent-augmented work PLUS deep vertical expertise in one surviving skill.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <h4>✗ Not quite</h4>
+                    <p>The 10x PMM has both bars of the T-shape: broad agent fluency (table stakes) AND deep expertise in one of the four surviving skills (differentiator). They've figured out what to outsource and what to keep.</p>
+                </div>
+                <button class="btn" onclick="submitAnswer(8)">Submit Answer</button>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <h2>Quiz Complete!</h2>
+            <div class="final-score" id="finalScore">0/8</div>
+            <p class="message" id="resultMessage"></p>
+            <div class="actions">
+                <a href="index.html" class="btn secondary">Review Unit 11</a>
+                <a href="/curriculum/unit-12/" class="btn" id="nextUnit">Continue to Unit 12 →</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 The Future of PMM · <a href="/curriculum/">Back to Curriculum</a></p>
+    </footer>
+    
+    <script>
+        let currentQuestion = 1;
+        let score = 0;
+        const totalQuestions = 8;
+        let answered = new Set();
+        
+        function submitAnswer(questionNum) {
+            if (answered.has(questionNum)) return;
+            
+            const card = document.querySelector(`[data-question="${questionNum}"]`);
+            const selected = card.querySelector('input:checked');
+            
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+            
+            answered.add(questionNum);
+            const option = selected.closest('.option');
+            const isCorrect = option.dataset.correct === 'true';
+            
+            // Disable all options
+            card.querySelectorAll('.option').forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.correct === 'true') {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            if (isCorrect) {
+                score++;
+                option.classList.add('correct');
+                card.querySelector('.feedback.correct').classList.add('show');
+            } else {
+                option.classList.add('incorrect');
+                card.querySelector('.feedback.incorrect').classList.add('show');
+            }
+            
+            // Update score display
+            document.getElementById('score').textContent = score;
+            
+            // Change button to next
+            const btn = card.querySelector('.btn');
+            if (questionNum < totalQuestions) {
+                btn.textContent = 'Next Question →';
+                btn.onclick = () => nextQuestion(questionNum);
+            } else {
+                btn.textContent = 'See Results';
+                btn.onclick = showResults;
+            }
+        }
+        
+        function nextQuestion(currentNum) {
+            const currentCard = document.querySelector(`[data-question="${currentNum}"]`);
+            const nextCard = document.querySelector(`[data-question="${currentNum + 1}"]`);
+            
+            currentCard.classList.remove('active');
+            currentCard.classList.add('answered');
+            nextCard.classList.add('active');
+            
+            currentQuestion = currentNum + 1;
+            document.getElementById('currentQ').textContent = currentQuestion;
+            
+            // Scroll to top of next question
+            nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.querySelector('.quiz-progress').style.display = 'none';
+            
+            const results = document.getElementById('results');
+            results.classList.add('show');
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = `${score}/${totalQuestions}`;
+            
+            const message = document.getElementById('resultMessage');
+            if (percentage >= 80) {
+                finalScore.classList.add('passed');
+                message.textContent = `Excellent! You've mastered the four surviving skills. You're ready for the capstone!`;
+                
+                // Record completion
+                if (typeof window.recordQuizCompletion === 'function') {
+                    window.recordQuizCompletion(11, score, totalQuestions);
+                }
+            } else {
+                message.textContent = `You scored ${percentage}%. Review the unit and try again to proceed to the capstone.`;
+                document.getElementById('nextUnit').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

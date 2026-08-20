@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/unit-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 12: Capstone — The 10x PMM | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .progress-bar { background: var(--light-gray); height: 4px; }
+        .progress-fill { background: var(--gold); height: 100%; width: 100%; transition: width 0.3s; }
+        
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero .subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .completion-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold) 0%, #F59E0B 100%);
+            color: #1e3a5f;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+        section { margin-bottom: 3rem; }
+        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
+        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
+        p { margin-bottom: 1rem; font-size: 1.05rem; }
+        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: var(--dark-slate); }
+        
+        /* Unit Review Grid */
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .unit-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--sap-blue);
+            transition: transform 0.2s;
+        }
+        .unit-card:hover { transform: translateY(-2px); }
+        .unit-card .num { font-size: 0.75rem; font-weight: 700; color: var(--sap-blue); text-transform: uppercase; letter-spacing: 1px; }
+        .unit-card h4 { font-size: 1rem; margin: 0.25rem 0 0.5rem; color: var(--dark-slate); }
+        .unit-card p { font-size: 0.85rem; color: #666; margin: 0; }
+        
+        .unit-card.foundation { border-color: #3B82F6; }
+        .unit-card.content { border-color: #10B981; }
+        .unit-card.competitive { border-color: #EF4444; }
+        .unit-card.geo { border-color: #8B5CF6; }
+        .unit-card.enablement { border-color: #F59E0B; }
+        .unit-card.personas { border-color: #EC4899; }
+        .unit-card.skills { border-color: #7C3AED; }
+        
+        /* Journey Recap */
+        .journey-box {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .journey-box h3 { margin-top: 0; color: var(--sap-blue); }
+        .journey-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+        }
+        .stat .label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        /* Key Frameworks */
+        .frameworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .framework-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .framework-card .emoji { font-size: 2rem; margin-bottom: 0.5rem; }
+        .framework-card h4 { font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--dark-slate); }
+        .framework-card p { font-size: 0.8rem; color: #666; margin: 0; }
+        
+        /* Final Assessment CTA */
+        .assessment-cta {
+            background: linear-gradient(135deg, #1e3a5f 0%, #3B82F6 100%);
+            border-radius: 16px;
+            padding: 2.5rem;
+            color: white;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .assessment-cta h2 { color: white; border: none; padding: 0; margin-bottom: 1rem; font-size: 1.75rem; }
+        .assessment-cta p { opacity: 0.9; max-width: 500px; margin: 0 auto 1.5rem; }
+        .assessment-cta .btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #1e3a5f;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .assessment-cta .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .assessment-cta .details {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Certificate Preview */
+        .certificate-preview {
+            background: white;
+            border: 3px solid var(--gold);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .certificate-preview .badge { font-size: 3rem; margin-bottom: 1rem; }
+        .certificate-preview h3 { color: var(--dark-slate); margin-bottom: 0.5rem; }
+        .certificate-preview p { color: #666; font-size: 0.95rem; }
+        
+        /* Key Takeaways */
+        .takeaways {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--gold);
+        }
+        .takeaways h3 { margin-top: 0; color: #B45309; }
+        .takeaways ul { margin-bottom: 0; }
+        .takeaways li { font-size: 0.95rem; }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--sap-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: var(--dark-slate); }
+        .nav-btn.secondary { background: white; color: var(--dark-slate); border: 1px solid var(--light-gray); }
+        .nav-btn.secondary:hover { background: var(--light-gray); }
+        .nav-btn.gold { background: var(--gold); color: #1e3a5f; }
+        
+        footer {
+            background: var(--dark-slate);
+            color: rgba(255,255,255,0.7);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        footer a { color: rgba(255,255,255,0.9); }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.75rem; }
+            main { padding: 2rem 1rem; }
+            .units-grid, .frameworks-grid { grid-template-columns: 1fr; }
+            .journey-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <nav class="nav">
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/blog.html">Blog</a>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="unit-label">Unit 12 · Final Unit</div>
+            <h1>Capstone: The 10x PMM</h1>
+            <p class="subtitle">You've completed the full curriculum. Now prove your mastery with the comprehensive final assessment.</p>
+            <div class="completion-badge">🏆 Certification Eligible</div>
+        </div>
+    </section>
+    
+    <main>
+        <section>
+            <h2>Your Journey Through the Curriculum</h2>
+            
+            <p>Over the past twelve units, you've built a complete foundation for AI-augmented product marketing. From understanding the fundamental shift in the PMM role to mastering specific workflows for content, competitive intelligence, GEO, and sales enablement—you now have the playbook for the agentic era.</p>
+            
+            <div class="journey-box">
+                <h3>📊 By the Numbers</h3>
+                <div class="journey-stats">
+                    <div class="stat">
+                        <div class="number">12</div>
+                        <div class="label">Units Completed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="number">11</div>
+                        <div class="label">Quizzes Passed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="number">6+</div>
+                        <div class="label">Hands-On Labs</div>
+                    </div>
+                    <div class="stat">
+                        <div class="number">4</div>
+                        <div class="label">Surviving Skills</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Curriculum Recap</h2>
+            
+            <div class="units-grid">
+                <div class="unit-card foundation">
+                    <div class="num">Unit 1</div>
+                    <h4>The 10x PMM</h4>
+                    <p>The fundamental shift from execution to direction; the leverage equation</p>
+                </div>
+                
+                <div class="unit-card foundation">
+                    <div class="num">Unit 2</div>
+                    <h4>The PMM Activity Audit</h4>
+                    <p>Mapping activities to AI impact; identifying elevation opportunities</p>
+                </div>
+                
+                <div class="unit-card competitive">
+                    <div class="num">Unit 3</div>
+                    <h4>Competitive Intelligence</h4>
+                    <p>Building always-on CI pipelines; automated monitoring and synthesis</p>
+                </div>
+                
+                <div class="unit-card competitive">
+                    <div class="num">Unit 4</div>
+                    <h4>Win-Loss Analysis</h4>
+                    <p>AI-assisted interview analysis; pattern extraction at scale</p>
+                </div>
+                
+                <div class="unit-card competitive">
+                    <div class="num">Unit 5</div>
+                    <h4>Battlecards & Objection Handling</h4>
+                    <p>Dynamic battlecards; real-time competitive response</p>
+                </div>
+                
+                <div class="unit-card content">
+                    <div class="num">Unit 6</div>
+                    <h4>Content Production</h4>
+                    <p>The content pyramid; AI-assisted creation workflows</p>
+                </div>
+                
+                <div class="unit-card geo">
+                    <div class="num">Unit 7</div>
+                    <h4>GEO Fundamentals</h4>
+                    <p>Generative Engine Optimization; writing for AI discovery</p>
+                </div>
+                
+                <div class="unit-card enablement">
+                    <div class="num">Unit 8</div>
+                    <h4>Sales Enablement</h4>
+                    <p>AI-powered sales tools; demo automation; pitch intelligence</p>
+                </div>
+                
+                <div class="unit-card enablement">
+                    <div class="num">Unit 9</div>
+                    <h4>Launch Execution</h4>
+                    <p>Coordinated launches; timeline automation; cross-functional alignment</p>
+                </div>
+                
+                <div class="unit-card personas">
+                    <div class="num">Unit 10</div>
+                    <h4>Buyer Personas & Journey Mapping</h4>
+                    <p>AI-generated personas; journey orchestration; touchpoint optimization</p>
+                </div>
+                
+                <div class="unit-card skills">
+                    <div class="num">Unit 11</div>
+                    <h4>Skills That Survive</h4>
+                    <p>The four durable skills; the T-shaped PMM model</p>
+                </div>
+                
+                <div class="unit-card" style="border-color: var(--gold); background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);">
+                    <div class="num" style="color: #B45309;">Unit 12</div>
+                    <h4>Capstone</h4>
+                    <p>Comprehensive review and final assessment</p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Key Frameworks You've Learned</h2>
+            
+            <div class="frameworks-grid">
+                <div class="framework-card">
+                    <div class="emoji">⚡</div>
+                    <h4>The Leverage Equation</h4>
+                    <p>Time saved × Quality maintained × Scale enabled</p>
+                </div>
+                
+                <div class="framework-card">
+                    <div class="emoji">📊</div>
+                    <h4>Activity Clusters</h4>
+                    <p>Automate, Augment, Elevate</p>
+                </div>
+                
+                <div class="framework-card">
+                    <div class="emoji">🎯</div>
+                    <h4>Content Pyramid</h4>
+                    <p>Commodity, Strategic, Signature</p>
+                </div>
+                
+                <div class="framework-card">
+                    <div class="emoji">🔍</div>
+                    <h4>GEO Principles</h4>
+                    <p>Structured, Specific, Citable</p>
+                </div>
+                
+                <div class="framework-card">
+                    <div class="emoji">🤖</div>
+                    <h4>CI Pipeline</h4>
+                    <p>Monitor → Synthesize → Deliver</p>
+                </div>
+                
+                <div class="framework-card">
+                    <div class="emoji">🧠</div>
+                    <h4>T-Shaped PMM</h4>
+                    <p>Broad fluency + Deep expertise</p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>The Four Surviving Skills</h2>
+            
+            <p>As you move forward, remember that technical fluency with AI tools is now table stakes. Your differentiator is one of these four capabilities:</p>
+            
+            <ul>
+                <li><strong>Strategic Judgment</strong> — Making good decisions under ambiguity with incomplete information</li>
+                <li><strong>Organizational Intelligence</strong> — Navigating stakeholders and building cross-functional alignment</li>
+                <li><strong>Narrative Craft</strong> — Constructing arguments that move people through story, specificity, and voice</li>
+                <li><strong>Customer Empathy</strong> — Understanding what customers feel, not just what they need</li>
+            </ul>
+            
+            <p>Which one is yours? That's the vertical bar of your T-shape—the skill that makes you irreplaceable.</p>
+        </section>
+        
+        <div class="assessment-cta">
+            <h2>🎓 Final Assessment</h2>
+            <p>Demonstrate your mastery of the complete curriculum with the comprehensive final quiz. 20 questions covering all 12 units.</p>
+            <a href="quiz.html" class="btn">Take the Final Assessment →</a>
+            <div class="details">Passing score: 80% · Time: ~15 minutes</div>
+        </div>
+        
+        <section>
+            <div class="certificate-preview">
+                <div class="badge">🏅</div>
+                <h3>Certificate of Completion</h3>
+                <p>Pass the final assessment to earn your <strong>Future of PMM Certification</strong> — proof that you've mastered AI-augmented product marketing for the agentic era.</p>
+            </div>
+        </section>
+        
+        <section>
+            <div class="takeaways">
+                <h3>💡 Remember</h3>
+                <ul>
+                    <li>The goal isn't to replace yourself with AI—it's to <strong>elevate yourself beyond what AI can do</strong></li>
+                    <li>Agent fluency is the <strong>new baseline</strong>; human judgment is the <strong>new differentiator</strong></li>
+                    <li>The PMMs who thrive will be those who figure out <strong>what to outsource and what to keep</strong></li>
+                    <li>This isn't the end of your learning—it's the <strong>foundation for everything that comes next</strong></li>
+                </ul>
+            </div>
+        </section>
+        
+        <div class="nav-buttons">
+            <a href="/curriculum/unit-11/" class="nav-btn secondary">← Unit 11: Skills That Survive</a>
+            <a href="quiz.html" class="nav-btn gold">🎓 Take Final Assessment</a>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 The Future of PMM · <a href="/curriculum/">Back to Curriculum</a></p>
+    </footer>
+</body>
+</html>

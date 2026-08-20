@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/assets/js/curriculum-progress.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Assessment | Future of PMM Certification</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #4472C4;
+            --green: #70AD47;
+            --red: #C00000;
+            --gold: #FFC000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .hero p { opacity: 0.9; }
+        .hero .badge { display: inline-block; background: var(--gold); color: #1e3a5f; padding: 0.35rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 0.75rem; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        
+        .quiz-progress {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .quiz-progress .label { font-weight: 600; color: var(--dark-slate); }
+        .quiz-progress .score { font-size: 1.25rem; font-weight: 700; color: var(--sap-blue); }
+        .progress-bar-mini {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        .progress-bar-mini .fill {
+            height: 100%;
+            background: var(--sap-blue);
+            transition: width 0.3s;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .question-card.active { display: block; }
+        .question-card.answered { display: block; }
+        
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .question-num {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--sap-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .unit-tag {
+            font-size: 0.7rem;
+            background: #f3f4f6;
+            color: #666;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-slate);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+        
+        .options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option:hover:not(.disabled) { border-color: var(--sap-blue); background: #F0F9FF; }
+        .option.selected { border-color: var(--sap-blue); background: #F0F9FF; }
+        .option.correct { border-color: var(--green); background: #E8F5E9; }
+        .option.incorrect { border-color: var(--red); background: #FFEBEE; }
+        .option.disabled { cursor: default; }
+        
+        .option input { margin-top: 2px; }
+        .option-text { font-size: 0.95rem; }
+        
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #E8F5E9; border-left: 4px solid var(--green); }
+        .feedback.incorrect { background: #FFEBEE; border-left: 4px solid var(--red); }
+        .feedback h4 { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .feedback p { font-size: 0.9rem; margin: 0; }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--sap-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: var(--dark-slate); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn.secondary { background: white; color: var(--dark-slate); border: 1px solid #e5e7eb; }
+        .btn.secondary:hover { background: #f3f4f6; }
+        .btn.gold { background: var(--gold); color: #1e3a5f; }
+        
+        .results {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .results.show { display: block; }
+        .results .trophy { font-size: 4rem; margin-bottom: 1rem; }
+        .results h2 { color: var(--dark-slate); margin-bottom: 0.5rem; }
+        .results .final-score {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+            margin: 1rem 0;
+        }
+        .results .final-score.passed { color: var(--green); }
+        .results .percentage { font-size: 1.25rem; color: #666; margin-bottom: 1rem; }
+        .results .message { color: #666; margin-bottom: 1.5rem; font-size: 1.05rem; }
+        .results .actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        
+        .certificate-earned {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 3px solid var(--gold);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .certificate-earned h3 { color: #B45309; margin-bottom: 0.5rem; }
+        .certificate-earned p { color: #92400E; font-size: 0.95rem; }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        footer a { color: var(--sap-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <nav class="nav">
+                <a href="/">Home</a>
+                <a href="/curriculum/">Curriculum</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <h1>🎓 Final Assessment</h1>
+        <p>20 questions covering the complete curriculum</p>
+        <div class="badge">Passing Score: 80%</div>
+    </section>
+    
+    <main>
+        <div class="quiz-progress">
+            <div>
+                <span class="label">Question <span id="currentQ">1</span> of 20</span>
+                <div class="progress-bar-mini">
+                    <div class="fill" id="progressFill" style="width: 5%;"></div>
+                </div>
+            </div>
+            <span class="score"><span id="score">0</span>/20</span>
+        </div>
+        
+        <div id="quiz-container">
+            <!-- Q1: Unit 1 - The Leverage Equation -->
+            <div class="question-card active" data-question="1">
+                <div class="question-meta">
+                    <div class="question-num">Question 1 of 20</div>
+                    <div class="unit-tag">Unit 1</div>
+                </div>
+                <div class="question-text">What are the three components of the Leverage Equation that defines a 10x PMM?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q1">
+                        <span class="option-text">Speed × Accuracy × Volume</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q1">
+                        <span class="option-text">Time saved × Quality maintained × Scale enabled</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q1">
+                        <span class="option-text">Efficiency × Creativity × Leadership</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q1">
+                        <span class="option-text">Input × Output × Impact</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>The Leverage Equation captures how AI amplifies PMM work: saving time, maintaining quality, and enabling scale that was previously impossible.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The Leverage Equation is: Time saved × Quality maintained × Scale enabled. This is how AI amplifies PMM output.</p></div>
+                <button class="btn" onclick="submitAnswer(1)">Submit Answer</button>
+            </div>
+            
+            <!-- Q2: Unit 2 - Activity Clusters -->
+            <div class="question-card" data-question="2">
+                <div class="question-meta">
+                    <div class="question-num">Question 2 of 20</div>
+                    <div class="unit-tag">Unit 2</div>
+                </div>
+                <div class="question-text">In the PMM Activity Audit, which cluster includes activities that become MORE valuable when routine work is automated?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Cluster 1: Automate</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Cluster 2: Augment</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Cluster 3: Elevate</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q2">
+                        <span class="option-text">Cluster 4: Eliminate</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>Cluster 3 (Elevate) activities require human judgment, relationship-building, and strategic thinking—skills that become more valuable as routine work disappears.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>Cluster 3 (Elevate) contains activities that become MORE valuable when the routine work around them is automated. This is where PMMs should focus their human energy.</p></div>
+                <button class="btn" onclick="submitAnswer(2)">Submit Answer</button>
+            </div>
+            
+            <!-- Q3: Unit 3 - CI Pipeline -->
+            <div class="question-card" data-question="3">
+                <div class="question-meta">
+                    <div class="question-num">Question 3 of 20</div>
+                    <div class="unit-tag">Unit 3</div>
+                </div>
+                <div class="question-text">What's the fundamental shift in competitive intelligence that AI enables?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q3">
+                        <span class="option-text">From qualitative to quantitative analysis</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q3">
+                        <span class="option-text">From periodic research to continuous monitoring</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q3">
+                        <span class="option-text">From internal to external data sources</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q3">
+                        <span class="option-text">From manual to automated reporting</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>AI transforms CI from quarterly reports to always-on intelligence—continuous monitoring, real-time synthesis, and immediate alerting when competitors make moves.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The shift is from periodic research (quarterly competitive reviews) to continuous monitoring (always-on intelligence that catches competitor moves in real-time).</p></div>
+                <button class="btn" onclick="submitAnswer(3)">Submit Answer</button>
+            </div>
+            
+            <!-- Q4: Unit 4 - Win-Loss -->
+            <div class="question-card" data-question="4">
+                <div class="question-meta">
+                    <div class="question-num">Question 4 of 20</div>
+                    <div class="unit-tag">Unit 4</div>
+                </div>
+                <div class="question-text">In AI-assisted win-loss analysis, what's the primary value AI provides that humans can't match at scale?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Better interview questions</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q4">
+                        <span class="option-text">More accurate win rate predictions</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Pattern extraction across large volumes of interview transcripts</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q4">
+                        <span class="option-text">Emotional intelligence during interviews</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>AI can process hundreds of interview transcripts and identify patterns, themes, and insights that would take humans months to uncover manually.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>AI's primary win-loss value is pattern extraction at scale—processing hundreds of transcripts to identify themes and insights that humans would miss or take months to find.</p></div>
+                <button class="btn" onclick="submitAnswer(4)">Submit Answer</button>
+            </div>
+            
+            <!-- Q5: Unit 5 - Battlecards -->
+            <div class="question-card" data-question="5">
+                <div class="question-meta">
+                    <div class="question-num">Question 5 of 20</div>
+                    <div class="unit-tag">Unit 5</div>
+                </div>
+                <div class="question-text">What's the key difference between static battlecards and AI-enabled battlecards?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q5">
+                        <span class="option-text">AI battlecards have more content</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q5">
+                        <span class="option-text">AI battlecards are delivered via mobile</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q5">
+                        <span class="option-text">AI battlecards update dynamically based on competitive changes and deal context</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q5">
+                        <span class="option-text">AI battlecards are created without human input</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>Dynamic battlecards update automatically when competitors make announcements and can surface deal-specific talking points based on the prospect's industry and situation.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>AI-enabled battlecards are dynamic—they update automatically based on competitive changes and can provide context-specific guidance based on deal characteristics.</p></div>
+                <button class="btn" onclick="submitAnswer(5)">Submit Answer</button>
+            </div>
+            
+            <!-- Q6: Unit 6 - Content Pyramid -->
+            <div class="question-card" data-question="6">
+                <div class="question-meta">
+                    <div class="question-num">Question 6 of 20</div>
+                    <div class="unit-tag">Unit 6</div>
+                </div>
+                <div class="question-text">In the Content Pyramid, which layer should PMMs INCREASE their personal time investment in?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Commodity content (blog posts, social updates)</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Strategic content (whitepapers, case studies)</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q6">
+                        <span class="option-text">Signature content (thought leadership, original POV)</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q6">
+                        <span class="option-text">All layers equally</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>As AI handles commodity content, PMMs should invest more in signature content—the thought leadership and original POV that only humans can create and that builds differentiated brand voice.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>PMMs should increase time on signature content (thought leadership, original perspectives) while delegating commodity content to AI. Signature content is the differentiator.</p></div>
+                <button class="btn" onclick="submitAnswer(6)">Submit Answer</button>
+            </div>
+            
+            <!-- Q7: Unit 7 - GEO -->
+            <div class="question-card" data-question="7">
+                <div class="question-meta">
+                    <div class="question-num">Question 7 of 20</div>
+                    <div class="unit-tag">Unit 7</div>
+                </div>
+                <div class="question-text">What does GEO (Generative Engine Optimization) optimize for that SEO doesn't?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q7">
+                        <span class="option-text">Higher search rankings</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q7">
+                        <span class="option-text">More backlinks</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q7">
+                        <span class="option-text">Being cited by AI systems when answering user questions</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q7">
+                        <span class="option-text">Social media sharing</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>GEO optimizes for AI citation—making your content structured, specific, and citable so that AI systems reference you when buyers ask questions about your category.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>GEO focuses on being cited by AI systems (ChatGPT, Perplexity, Copilot) when they answer buyer questions—a different optimization target than traditional search rankings.</p></div>
+                <button class="btn" onclick="submitAnswer(7)">Submit Answer</button>
+            </div>
+            
+            <!-- Q8: Unit 7 - Evidence Assurance -->
+            <div class="question-card" data-question="8">
+                <div class="question-meta">
+                    <div class="question-num">Question 8 of 20</div>
+                    <div class="unit-tag">Unit 7</div>
+                </div>
+                <div class="question-text">According to John Koblinsky's Evidence Assurance framework, what level of content gives AI "the receipts" to cite with confidence?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Directional</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Grounded</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Auditable</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q8">
+                        <span class="option-text">Verified</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>Auditable content is fully traceable to primary evidence—named customers, specific outcomes, verifiable claims. This is what AI can cite without looking stupid.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>Auditable content has full traceability—"Accenture reduced cycle times 40%" vs. "industry-leading performance." Named customer, specific outcome, verifiable claim.</p></div>
+                <button class="btn" onclick="submitAnswer(8)">Submit Answer</button>
+            </div>
+            
+            <!-- Q9: Unit 8 - Sales Enablement -->
+            <div class="question-card" data-question="9">
+                <div class="question-meta">
+                    <div class="question-num">Question 9 of 20</div>
+                    <div class="unit-tag">Unit 8</div>
+                </div>
+                <div class="question-text">What's the key shift in how sales enablement content should be structured for AI-assisted selling?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q9">
+                        <span class="option-text">Longer, more comprehensive documents</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q9">
+                        <span class="option-text">Modular, tagged content that AI can retrieve and assemble</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q9">
+                        <span class="option-text">Video-first content for better engagement</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q9">
+                        <span class="option-text">Simplified language for AI processing</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>AI-assisted selling needs modular content tagged by use case, persona, and objection—so the AI can retrieve and assemble the right pieces for each specific deal context.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>Content should be modular and tagged so AI can retrieve specific pieces and assemble them for each deal context—not monolithic documents that can't be parsed situationally.</p></div>
+                <button class="btn" onclick="submitAnswer(9)">Submit Answer</button>
+            </div>
+            
+            <!-- Q10: Unit 9 - Launch -->
+            <div class="question-card" data-question="10">
+                <div class="question-meta">
+                    <div class="question-num">Question 10 of 20</div>
+                    <div class="unit-tag">Unit 9</div>
+                </div>
+                <div class="question-text">In AI-powered launch execution, what role does the PMM primarily play?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q10">
+                        <span class="option-text">Writing all launch content personally</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q10">
+                        <span class="option-text">Managing the project timeline manually</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q10">
+                        <span class="option-text">Orchestrating stakeholders and making strategic decisions</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q10">
+                        <span class="option-text">Training the AI on product features</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>With AI handling content production and timeline automation, the PMM's value is in cross-functional orchestration, stakeholder alignment, and strategic decision-making.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>When AI handles content production and timeline automation, the PMM's primary role becomes orchestration—aligning stakeholders, making strategic calls, and ensuring cross-functional coordination.</p></div>
+                <button class="btn" onclick="submitAnswer(10)">Submit Answer</button>
+            </div>
+            
+            <!-- Q11: Unit 10 - Personas -->
+            <div class="question-card" data-question="11">
+                <div class="question-meta">
+                    <div class="question-num">Question 11 of 20</div>
+                    <div class="unit-tag">Unit 10</div>
+                </div>
+                <div class="question-text">What's the main advantage of AI-generated buyer personas over traditional persona development?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q11">
+                        <span class="option-text">They're more creative</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q11">
+                        <span class="option-text">They can be generated faster and updated continuously based on new data</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q11">
+                        <span class="option-text">They don't require customer research</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q11">
+                        <span class="option-text">They're more accurate than human-created personas</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>AI-generated personas can be created quickly and updated continuously as new customer data, market research, and win-loss insights become available—dynamic vs. static documents.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The advantage is speed and continuous updating—personas that evolve based on fresh customer data rather than becoming stale PDFs that no one references.</p></div>
+                <button class="btn" onclick="submitAnswer(11)">Submit Answer</button>
+            </div>
+            
+            <!-- Q12: Unit 11 - Four Skills -->
+            <div class="question-card" data-question="12">
+                <div class="question-meta">
+                    <div class="question-num">Question 12 of 20</div>
+                    <div class="unit-tag">Unit 11</div>
+                </div>
+                <div class="question-text">Which of the four surviving skills is described as "the one AI is furthest from replicating"?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q12">
+                        <span class="option-text">Strategic Judgment</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q12">
+                        <span class="option-text">Organizational Intelligence</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q12">
+                        <span class="option-text">Narrative Craft</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q12">
+                        <span class="option-text">Customer Empathy</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>No agent can have the coffee conversation, read body language, or navigate the informal power structures that determine what actually gets done in organizations.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>Organizational Intelligence—navigating stakeholders, reading body language, understanding hidden objections—is uniquely human and furthest from AI replication.</p></div>
+                <button class="btn" onclick="submitAnswer(12)">Submit Answer</button>
+            </div>
+            
+            <!-- Q13: Unit 11 - T-Shape -->
+            <div class="question-card" data-question="13">
+                <div class="question-meta">
+                    <div class="question-num">Question 13 of 20</div>
+                    <div class="unit-tag">Unit 11</div>
+                </div>
+                <div class="question-text">In the T-Shaped PMM model, what does the vertical bar represent?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q13">
+                        <span class="option-text">Broad competence across agent-augmented skills</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q13">
+                        <span class="option-text">Deep expertise in one of the four surviving skills</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q13">
+                        <span class="option-text">Years of experience in the industry</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q13">
+                        <span class="option-text">Technical proficiency with AI tools</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>The vertical bar is your differentiator—deep expertise in strategic judgment, organizational intelligence, narrative craft, or customer empathy. This is what makes you irreplaceable.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The vertical bar represents deep expertise in one surviving skill—your differentiator that makes you irreplaceable, not just competent.</p></div>
+                <button class="btn" onclick="submitAnswer(13)">Submit Answer</button>
+            </div>
+            
+            <!-- Q14: Unit 11 - Customer Empathy -->
+            <div class="question-card" data-question="14">
+                <div class="question-meta">
+                    <div class="question-num">Question 14 of 20</div>
+                    <div class="unit-tag">Unit 11</div>
+                </div>
+                <div class="question-text">What's the difference between customer knowledge and customer empathy?</div>
+                <div class="options">
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q14">
+                        <span class="option-text">Knowledge is data about customers; empathy is understanding what customers feel</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q14">
+                        <span class="option-text">Knowledge comes from research; empathy comes from intuition</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q14">
+                        <span class="option-text">Knowledge is quantitative; empathy is qualitative</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q14">
+                        <span class="option-text">Knowledge is about markets; empathy is about individuals</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>Agents can provide data (usage patterns, NPS, tickets). Empathy is understanding feelings—frustration, anxiety, relief. That's why "Stop dreading Monday's forecast meeting" beats "Improve accuracy 34%."</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>Customer knowledge is data (usage, NPS, tickets). Customer empathy is understanding feelings—what it feels like to fight for budget, bet your reputation on a vendor, or finally solve a problem.</p></div>
+                <button class="btn" onclick="submitAnswer(14)">Submit Answer</button>
+            </div>
+            
+            <!-- Q15: Unit 6 - Content Workflow -->
+            <div class="question-card" data-question="15">
+                <div class="question-meta">
+                    <div class="question-num">Question 15 of 20</div>
+                    <div class="unit-tag">Unit 6</div>
+                </div>
+                <div class="question-text">What's the primary risk of using AI for content production without proper oversight?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q15">
+                        <span class="option-text">The content will be too long</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q15">
+                        <span class="option-text">Producing confident-sounding content that's factually wrong or off-brand</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q15">
+                        <span class="option-text">The content will lack keywords</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q15">
+                        <span class="option-text">The content will be too creative</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>AI presents everything in the same confident voice—whether built on evidence or hallucinated. Without human oversight, you risk publishing authoritative-sounding content that's wrong.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The risk is confident-sounding content that's factually wrong or off-brand. AI doesn't flag uncertainty—it sounds authoritative even when hallucinating.</p></div>
+                <button class="btn" onclick="submitAnswer(15)">Submit Answer</button>
+            </div>
+            
+            <!-- Q16: Unit 3 - CI Implementation -->
+            <div class="question-card" data-question="16">
+                <div class="question-meta">
+                    <div class="question-num">Question 16 of 20</div>
+                    <div class="unit-tag">Unit 3</div>
+                </div>
+                <div class="question-text">What are the three stages of an AI-powered CI pipeline?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q16">
+                        <span class="option-text">Collect → Analyze → Report</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q16">
+                        <span class="option-text">Monitor → Synthesize → Deliver</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q16">
+                        <span class="option-text">Research → Write → Publish</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q16">
+                        <span class="option-text">Input → Process → Output</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>Monitor (continuous tracking of competitor signals) → Synthesize (AI analysis and pattern detection) → Deliver (actionable intelligence to the right people at the right time).</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The CI pipeline is: Monitor (track competitor signals) → Synthesize (AI analysis) → Deliver (actionable intelligence to stakeholders).</p></div>
+                <button class="btn" onclick="submitAnswer(16)">Submit Answer</button>
+            </div>
+            
+            <!-- Q17: Unit 7 - GEO Principles -->
+            <div class="question-card" data-question="17">
+                <div class="question-meta">
+                    <div class="question-num">Question 17 of 20</div>
+                    <div class="unit-tag">Unit 7</div>
+                </div>
+                <div class="question-text">Why does "Accenture reduced procurement cycle times by 40%" work better for GEO than "industry-leading performance"?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q17">
+                        <span class="option-text">It's shorter</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q17">
+                        <span class="option-text">It mentions a famous company</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q17">
+                        <span class="option-text">It's auditable—named customer, specific outcome, verifiable claim</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q17">
+                        <span class="option-text">It uses a percentage</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>AI can cite specific, verifiable claims with confidence. "Industry-leading" gives AI nothing to work with—it's directional content with no evidence chain.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The difference is auditability—named customer, specific metric, verifiable outcome. AI can cite this confidently; "industry-leading" has no evidence to trace.</p></div>
+                <button class="btn" onclick="submitAnswer(17)">Submit Answer</button>
+            </div>
+            
+            <!-- Q18: Unit 1 - 10x PMM -->
+            <div class="question-card" data-question="18">
+                <div class="question-meta">
+                    <div class="question-num">Question 18 of 20</div>
+                    <div class="unit-tag">Unit 1</div>
+                </div>
+                <div class="question-text">What's the core insight of the "10x PMM" concept?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q18">
+                        <span class="option-text">Some PMMs are naturally 10x more talented than others</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q18">
+                        <span class="option-text">AI will replace 10x as many PMMs as previous technology shifts</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q18">
+                        <span class="option-text">AI-augmented PMMs can have 10x the output impact without 10x the effort</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q18">
+                        <span class="option-text">Companies need to hire 10x more PMMs to handle AI tools</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>The 10x PMM isn't about working harder—it's about leverage. AI enables output impact that was previously impossible without dramatically increasing effort.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>10x PMM means leverage, not effort. AI-augmented PMMs can achieve 10x the output impact because they've figured out what to outsource and what to keep.</p></div>
+                <button class="btn" onclick="submitAnswer(18)">Submit Answer</button>
+            </div>
+            
+            <!-- Q19: Unit 11 - Narrative Craft -->
+            <div class="question-card" data-question="19">
+                <div class="question-meta">
+                    <div class="question-num">Question 19 of 20</div>
+                    <div class="unit-tag">Unit 11</div>
+                </div>
+                <div class="question-text">What are the three components of Narrative Craft?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q19">
+                        <span class="option-text">Grammar, Structure, Format</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q19">
+                        <span class="option-text">Story Selection, Specificity, Voice</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q19">
+                        <span class="option-text">Research, Writing, Editing</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q19">
+                        <span class="option-text">Hook, Body, Conclusion</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>Story Selection (right story for the moment), Specificity (concrete details, not abstractions), and Voice (authentic expression that makes your writing recognizably yours).</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The three components are: Story Selection (matching stories to arguments), Specificity (concrete details), and Voice (authentic expression that's recognizably yours).</p></div>
+                <button class="btn" onclick="submitAnswer(19)">Submit Answer</button>
+            </div>
+            
+            <!-- Q20: Capstone - Integration -->
+            <div class="question-card" data-question="20">
+                <div class="question-meta">
+                    <div class="question-num">Question 20 of 20</div>
+                    <div class="unit-tag">Capstone</div>
+                </div>
+                <div class="question-text">What makes someone a "10x PMM" in the agentic era?</div>
+                <div class="options">
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q20">
+                        <span class="option-text">Mastering the most AI tools</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q20">
+                        <span class="option-text">Working 10x harder than peers</span>
+                    </label>
+                    <label class="option" data-correct="false">
+                        <input type="radio" name="q20">
+                        <span class="option-text">Having 10+ years of experience</span>
+                    </label>
+                    <label class="option" data-correct="true">
+                        <input type="radio" name="q20">
+                        <span class="option-text">Having both broad agent fluency AND deep expertise in one human skill</span>
+                    </label>
+                </div>
+                <div class="feedback correct"><h4>✓ Correct!</h4><p>The 10x PMM has the full T-shape: broad horizontal competence in agent-augmented work PLUS deep vertical expertise in one surviving skill. They've figured out what to outsource and what to keep.</p></div>
+                <div class="feedback incorrect"><h4>✗ Not quite</h4><p>The 10x PMM has both bars of the T: broad agent fluency (table stakes) + deep expertise in one surviving skill (differentiator). It's about leverage, not effort.</p></div>
+                <button class="btn" onclick="submitAnswer(20)">Submit Answer</button>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="trophy">🏆</div>
+            <h2>Final Assessment Complete!</h2>
+            <div class="final-score" id="finalScore">0/20</div>
+            <div class="percentage" id="percentageText">0%</div>
+            <p class="message" id="resultMessage"></p>
+            
+            <div class="certificate-earned" id="certificateSection" style="display: none;">
+                <h3>🎓 Certificate Earned!</h3>
+                <p>Congratulations! You've demonstrated mastery of AI-augmented product marketing and earned the <strong>Future of PMM Certification</strong>.</p>
+            </div>
+            
+            <div class="actions">
+                <a href="index.html" class="btn secondary">Review Capstone</a>
+                <a href="/curriculum/" class="btn">Back to Curriculum</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2026 The Future of PMM · <a href="/curriculum/">Back to Curriculum</a></p>
+    </footer>
+    
+    <script>
+        let currentQuestion = 1;
+        let score = 0;
+        const totalQuestions = 20;
+        let answered = new Set();
+        
+        function submitAnswer(questionNum) {
+            if (answered.has(questionNum)) return;
+            
+            const card = document.querySelector(`[data-question="${questionNum}"]`);
+            const selected = card.querySelector('input:checked');
+            
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+            
+            answered.add(questionNum);
+            const option = selected.closest('.option');
+            const isCorrect = option.dataset.correct === 'true';
+            
+            // Disable all options
+            card.querySelectorAll('.option').forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.correct === 'true') {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            if (isCorrect) {
+                score++;
+                option.classList.add('correct');
+                card.querySelector('.feedback.correct').classList.add('show');
+            } else {
+                option.classList.add('incorrect');
+                card.querySelector('.feedback.incorrect').classList.add('show');
+            }
+            
+            // Update score display
+            document.getElementById('score').textContent = score;
+            
+            // Change button to next
+            const btn = card.querySelector('.btn');
+            if (questionNum < totalQuestions) {
+                btn.textContent = 'Next Question →';
+                btn.onclick = () => nextQuestion(questionNum);
+            } else {
+                btn.textContent = 'See Final Results';
+                btn.onclick = showResults;
+            }
+        }
+        
+        function nextQuestion(currentNum) {
+            const currentCard = document.querySelector(`[data-question="${currentNum}"]`);
+            const nextCard = document.querySelector(`[data-question="${currentNum + 1}"]`);
+            
+            currentCard.classList.remove('active');
+            currentCard.classList.add('answered');
+            nextCard.classList.add('active');
+            
+            currentQuestion = currentNum + 1;
+            document.getElementById('currentQ').textContent = currentQuestion;
+            document.getElementById('progressFill').style.width = ((currentQuestion / totalQuestions) * 100) + '%';
+            
+            // Scroll to top of next question
+            nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.querySelector('.quiz-progress').style.display = 'none';
+            
+            const results = document.getElementById('results');
+            results.classList.add('show');
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = `${score}/${totalQuestions}`;
+            document.getElementById('percentageText').textContent = `${percentage}%`;
+            
+            const message = document.getElementById('resultMessage');
+            const certSection = document.getElementById('certificateSection');
+            
+            if (percentage >= 80) {
+                finalScore.classList.add('passed');
+                message.textContent = `Outstanding! You've demonstrated mastery of the complete curriculum.`;
+                certSection.style.display = 'block';
+                
+                // Record completion
+                if (typeof window.recordQuizCompletion === 'function') {
+                    window.recordQuizCompletion(12, score, totalQuestions);
+                }
+            } else if (percentage >= 60) {
+                message.textContent = `Good effort! You scored ${percentage}%. Review the units you missed and try again. You need 80% to earn your certificate.`;
+            } else {
+                message.textContent = `You scored ${percentage}%. Review the curriculum units and retake the assessment when ready. You need 80% to pass.`;
+            }
+        }
+    </script>
+</body>
+</html>
