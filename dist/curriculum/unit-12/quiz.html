@@ -947,14 +947,43 @@
                 message.textContent = `Outstanding! You've demonstrated mastery of the complete curriculum.`;
                 certSection.style.display = 'block';
                 
-                // Record completion
-                if (typeof window.recordQuizCompletion === 'function') {
-                    window.recordQuizCompletion(12, score, totalQuestions);
-                }
+                // Save score to database
+                saveScore(percentage);
             } else if (percentage >= 60) {
                 message.textContent = `Good effort! You scored ${percentage}%. Review the units you missed and try again. You need 80% to earn your certificate.`;
             } else {
                 message.textContent = `You scored ${percentage}%. Review the curriculum units and retake the assessment when ready. You need 80% to pass.`;
+            }
+        }
+        
+        async function saveScore(percentage) {
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (!directUser) {
+                    console.log('No user - cannot save score');
+                    return;
+                }
+                const user = JSON.parse(directUser);
+                
+                const res = await fetch('/.netlify/functions/save-result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'quiz_score',
+                        email: user.email,
+                        data: {
+                            chapter: 'unit-12',
+                            score: percentage,
+                            total: 100,
+                            percentage: percentage
+                        }
+                    })
+                });
+                
+                const result = await res.json();
+                console.log('Score saved:', result);
+            } catch (err) {
+                console.error('Error saving score:', err);
             }
         }
     </script>

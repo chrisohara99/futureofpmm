@@ -161,7 +161,7 @@
         
         // Get total unit count
         getTotalUnitCount() {
-            return 7;
+            return 12;
         },
         
         // Get overall progress percentage
@@ -173,7 +173,7 @@
         
         // Get next unit to work on
         getNextUnit() {
-            const units = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'unit-06', 'unit-07'];
+            const units = ['unit-01', 'unit-02', 'unit-03', 'unit-04', 'unit-05', 'unit-06', 'unit-07', 'unit-08', 'unit-09', 'unit-10', 'unit-11', 'unit-12'];
             for (const unit of units) {
                 if (!this.hasPassedUnit(unit)) {
                     return unit;

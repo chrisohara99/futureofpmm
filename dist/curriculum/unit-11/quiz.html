@@ -554,13 +554,42 @@
                 finalScore.classList.add('passed');
                 message.textContent = `Excellent! You've mastered the four surviving skills. You're ready for the capstone!`;
                 
-                // Record completion
-                if (typeof window.recordQuizCompletion === 'function') {
-                    window.recordQuizCompletion(11, score, totalQuestions);
-                }
+                // Save score to database
+                saveScore(percentage);
             } else {
                 message.textContent = `You scored ${percentage}%. Review the unit and try again to proceed to the capstone.`;
                 document.getElementById('nextUnit').style.display = 'none';
+            }
+        }
+        
+        async function saveScore(percentage) {
+            try {
+                const directUser = localStorage.getItem('pmm_direct_user');
+                if (!directUser) {
+                    console.log('No user - cannot save score');
+                    return;
+                }
+                const user = JSON.parse(directUser);
+                
+                const res = await fetch('/.netlify/functions/save-result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'quiz_score',
+                        email: user.email,
+                        data: {
+                            chapter: 'unit-11',
+                            score: percentage,
+                            total: 100,
+                            percentage: percentage
+                        }
+                    })
+                });
+                
+                const result = await res.json();
+                console.log('Score saved:', result);
+            } catch (err) {
+                console.error('Error saving score:', err);
             }
         }
     </script>
