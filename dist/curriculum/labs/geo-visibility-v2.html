@@ -1278,7 +1278,19 @@
             <div class="tab-content" id="tab-citations">
                 <h3 style="margin-bottom: 1rem; color: var(--sap-dark);">What Sources Are Being Cited?</h3>
                 <p style="margin-bottom: 1.5rem; color: var(--text-light);">When AI mentions your product, where is it getting the information from?</p>
+                
+                <!-- Citation Summary -->
+                <div id="citationSummary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Detailed Citation Analysis -->
                 <div id="citationAudit">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Missing Citations -->
+                <div id="missingCitations" style="margin-top: 2rem;">
                     <!-- Populated by JS -->
                 </div>
             </div>
@@ -2241,11 +2253,56 @@ const deepDiveData = {
             { query: 'Most cost-effective procurement platform', status: '⚠️', note: 'Often positioned as "enterprise" not "cost-effective"' }
         ],
         citations: [
-            { source: 'SAP.com product pages', status: 'primary', note: 'Main source for capabilities and positioning' },
-            { source: 'G2 Reviews', status: 'cited', note: 'User reviews frequently referenced for pros/cons' },
-            { source: 'Gartner Magic Quadrant', status: 'cited', note: 'Leader positioning mentioned in comparisons' },
-            { source: 'Wikipedia', status: 'cited', note: 'Background info and acquisition history' },
-            { source: 'Customer case studies', status: 'rarely', note: 'Specific customer outcomes rarely cited' }
+            { 
+                source: 'SAP.com', 
+                status: 'primary', 
+                frequency: '85%',
+                sentiment: 'neutral',
+                note: 'Main source for capabilities',
+                whatsCited: ['Product features', 'Network size (5.5M)', 'Integration capabilities'],
+                missing: ['Customer ROI figures', 'Implementation timelines'],
+                recommendation: 'Add quantified outcomes and named customer results to product pages'
+            },
+            { 
+                source: 'G2 Reviews', 
+                status: 'cited', 
+                frequency: '45%',
+                sentiment: 'mixed',
+                note: 'User reviews for pros/cons',
+                whatsCited: ['Ease of use concerns', 'Integration praise', 'Support feedback'],
+                missing: ['Recent UX improvements', 'Enterprise success stories'],
+                recommendation: 'Encourage satisfied enterprise customers to leave detailed reviews'
+            },
+            { 
+                source: 'Gartner Magic Quadrant', 
+                status: 'cited', 
+                frequency: '35%',
+                sentiment: 'positive',
+                note: 'Leader positioning',
+                whatsCited: ['Leader quadrant position', 'Completeness of vision'],
+                missing: ['Specific evaluation criteria wins'],
+                recommendation: 'Create indexed content highlighting Gartner strengths'
+            },
+            { 
+                source: 'Third-party reviews', 
+                status: 'cited', 
+                frequency: '25%',
+                sentiment: 'mixed',
+                note: 'TrustRadius, Capterra',
+                whatsCited: ['Feature comparisons', 'Pricing perception'],
+                missing: ['Recent product updates', 'Mid-market success'],
+                recommendation: 'Diversify review presence beyond enterprise-focused platforms'
+            },
+            { 
+                source: 'Customer case studies', 
+                status: 'rarely', 
+                frequency: '10%',
+                sentiment: 'positive',
+                note: 'Specific outcomes rarely appear',
+                whatsCited: ['Brand names occasionally'],
+                missing: ['Specific ROI numbers', 'Timeline to value', 'Before/after metrics'],
+                recommendation: 'Publish indexable case studies with structured data markup'
+            }
         ],
         actionPlan: [
             { priority: 1, title: 'Add quantified customer outcomes to key pages', description: 'Include specific ROI figures like "reduced procurement costs by X%" with named customers.' },
@@ -2354,18 +2411,77 @@ function renderDeepDive(productId) {
         </div>
     `).join('');
     
-    // Citations
+    // Citation Summary Stats
+    const primaryCount = data.citations.filter(c => c.status === 'primary').length;
+    const citedCount = data.citations.filter(c => c.status === 'cited').length;
+    const rarelyCount = data.citations.filter(c => c.status === 'rarely').length;
+    
+    document.getElementById('citationSummary').innerHTML = `
+        <div style="background: #E8F5E9; padding: 1rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #188038;">${primaryCount}</div>
+            <div style="font-size: 0.8rem; color: #188038; font-weight: 500;">PRIMARY</div>
+        </div>
+        <div style="background: #FFF3E0; padding: 1rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #E85D04;">${citedCount}</div>
+            <div style="font-size: 0.8rem; color: #E85D04; font-weight: 500;">CITED</div>
+        </div>
+        <div style="background: #FFEBEE; padding: 1rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #D93025;">${rarelyCount}</div>
+            <div style="font-size: 0.8rem; color: #D93025; font-weight: 500;">RARELY</div>
+        </div>
+    `;
+    
+    // Detailed Citations
     document.getElementById('citationAudit').innerHTML = `
         <div class="issue-list">
             ${data.citations.map(c => `
-                <div class="issue-item ${c.status === 'primary' ? 'low' : c.status === 'cited' ? 'medium' : 'high'}">
+                <div class="issue-item ${c.status === 'primary' ? 'low' : c.status === 'cited' ? 'medium' : 'high'}" style="cursor: pointer;" onclick="this.querySelector('.citation-details').style.display = this.querySelector('.citation-details').style.display === 'none' ? 'block' : 'none'">
                     <div class="issue-header">
                         <span class="issue-title">${c.source}</span>
-                        <span class="severity-badge ${c.status === 'primary' ? 'low' : c.status === 'cited' ? 'medium' : 'high'}">${c.status}</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span style="font-size: 0.75rem; color: var(--text-light);">${c.frequency || ''} of responses</span>
+                            <span class="severity-badge ${c.status === 'primary' ? 'low' : c.status === 'cited' ? 'medium' : 'high'}">${c.status.toUpperCase()}</span>
+                        </div>
                     </div>
                     <p class="issue-description">${c.note}</p>
+                    
+                    <div class="citation-details" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <h5 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.5rem;">✅ What's Being Cited</h5>
+                                <ul style="font-size: 0.85rem; color: var(--text); margin: 0; padding-left: 1rem;">
+                                    ${(c.whatsCited || []).map(w => `<li>${w}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.5rem;">❌ Missing From Citations</h5>
+                                <ul style="font-size: 0.85rem; color: var(--sap-red); margin: 0; padding-left: 1rem;">
+                                    ${(c.missing || []).map(m => `<li>${m}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        ${c.recommendation ? `
+                        <div style="background: #E3F2FD; padding: 0.75rem 1rem; border-radius: 6px; border-left: 3px solid var(--sap-blue);">
+                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--sap-blue);">💡 RECOMMENDATION:</span>
+                            <p style="font-size: 0.85rem; color: var(--text); margin: 0.25rem 0 0 0;">${c.recommendation}</p>
+                        </div>
+                        ` : ''}
+                    </div>
                 </div>
             `).join('')}
+        </div>
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-light); margin-top: 1rem;">Click any source to expand details</p>
+    `;
+    
+    // Missing Citations Alert
+    const missingSources = ['Press releases', 'Recent blog posts', 'Video content', 'Podcast mentions'];
+    document.getElementById('missingCitations').innerHTML = `
+        <div style="background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 1.25rem;">
+            <h4 style="margin: 0 0 0.75rem 0; color: #F57C00; font-size: 0.95rem;">⚠️ Sources NOT Being Cited</h4>
+            <p style="font-size: 0.85rem; color: var(--text); margin-bottom: 0.75rem;">These content types exist but rarely appear in AI responses:</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                ${missingSources.map(s => `<span style="background: white; border: 1px solid #FFE082; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">${s}</span>`).join('')}
+            </div>
         </div>
     `;
     
