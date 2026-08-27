@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP BTP Migration Guide - The Future of PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pmm-blue: #3b82f6;
+            --pmm-dark: #1e3a5f;
+            --pmm-orange: #c84b31;
+            --pmm-light: #f8fafc;
+            --pmm-green: #059669;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: #1e293b;
+            background: var(--pmm-light);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--pmm-dark) 0%, #2d4a6f 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .header .meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .download-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--pmm-orange);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #b54328;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--pmm-dark);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .toc {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .toc h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        
+        .toc ul {
+            list-style: none;
+            columns: 2;
+            gap: 1rem;
+        }
+        
+        .toc li {
+            padding: 0.25rem 0;
+        }
+        
+        .toc a {
+            color: var(--pmm-blue);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            font-size: 1.5rem;
+            color: var(--pmm-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--pmm-orange);
+        }
+        
+        .section h3 {
+            font-size: 1.15rem;
+            color: var(--pmm-dark);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--pmm-dark);
+        }
+        
+        tr:hover {
+            background: #f8fafc;
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--pmm-orange);
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+        
+        .highlight strong {
+            color: #92400e;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--pmm-blue);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+        
+        .success-box {
+            background: #ecfdf5;
+            border-left: 4px solid var(--pmm-green);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+        
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+            color: #475569;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .phase-list {
+            list-style: none;
+            padding: 0;
+            counter-reset: phase;
+        }
+        
+        .phase-list li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1rem;
+            counter-increment: phase;
+        }
+        
+        .phase-list li::before {
+            content: counter(phase);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--pmm-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: var(--pmm-blue);
+        }
+        
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.75rem; }
+            .toc ul { columns: 1; }
+            .container { padding: 1rem; }
+            .section { padding: 1.5rem; }
+            table { font-size: 0.8rem; }
+            th, td { padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 SAP BTP Migration Guide</h1>
+        <p class="subtitle">The Future of PMM — Infrastructure Documentation</p>
+        <div class="meta">
+            <span>📅 August 27, 2026</span>
+            <span>👤 Chris O'Hara</span>
+            <span>🎯 Target: SAP Business Technology Platform</span>
+        </div>
+    </div>
+    
+    <div class="download-bar">
+        <a href="migration-guide.pdf" class="btn btn-primary" download>
+            📥 Download PDF
+        </a>
+        <a href="MIGRATION-GUIDE.md" class="btn btn-secondary" download>
+            📄 Download Markdown
+        </a>
+        <a href="https://github.com/chrisohara99/futureofpmm" class="btn btn-secondary" target="_blank">
+            🔗 GitHub Repository
+        </a>
+    </div>
+    
+    <div class="container">
+        
+        <div class="toc">
+            <h2>📑 Table of Contents</h2>
+            <ul>
+                <li><a href="#summary">1. Executive Summary</a></li>
+                <li><a href="#architecture">2. Current Architecture</a></li>
+                <li><a href="#database">3. Database Schema</a></li>
+                <li><a href="#functions">4. Serverless Functions</a></li>
+                <li><a href="#services">5. Third-Party Services</a></li>
+                <li><a href="#auth">6. Authentication</a></li>
+                <li><a href="#assets">7. Static Assets</a></li>
+                <li><a href="#migration">8. Migration Steps</a></li>
+                <li><a href="#ai">9. AI Considerations</a></li>
+                <li><a href="#env">10. Environment Variables</a></li>
+            </ul>
+        </div>
+        
+        <div class="section" id="summary">
+            <h2>1. Executive Summary</h2>
+            <p>The Future of PMM is an internal learning platform for SAP Product Marketing serving <strong>~170 registered users</strong>. The site includes a 12-unit curriculum, interactive assessments, AI-powered labs, and a weekly newsletter system.</p>
+            
+            <div class="highlight">
+                <strong>Migration Goal:</strong> Move from Netlify + Supabase to SAP-managed infrastructure on Business Technology Platform (BTP), leveraging SAP Identity Authentication Service (IAS) for SSO.
+            </div>
+        </div>
+        
+        <div class="section" id="architecture">
+            <h2>2. Current Architecture Overview</h2>
+            
+            <h3>2.1 Hosting & CDN</h3>
+            <table>
+                <tr><th>Component</th><th>Current Provider</th><th>Purpose</th></tr>
+                <tr><td>Static Hosting</td><td><strong>Netlify</strong></td><td>HTML/CSS/JS serving</td></tr>
+                <tr><td>CDN</td><td>Netlify Edge</td><td>Global content delivery</td></tr>
+                <tr><td>SSL Certificate</td><td>Netlify (auto-renewed)</td><td>HTTPS</td></tr>
+                <tr><td>Domain DNS</td><td>Network Solutions</td><td>DNS management</td></tr>
+            </table>
+            
+            <h3>2.2 Backend Services</h3>
+            <table>
+                <tr><th>Service</th><th>Provider</th><th>Purpose</th></tr>
+                <tr><td>Database</td><td><strong>Supabase</strong> (PostgreSQL)</td><td>User profiles, quiz scores, progress</td></tr>
+                <tr><td>Authentication</td><td>Supabase Auth</td><td>Magic link email login</td></tr>
+                <tr><td>Serverless Functions</td><td>Netlify Functions</td><td>API endpoints, AI integrations</td></tr>
+                <tr><td>Email Delivery</td><td><strong>Resend</strong></td><td>Newsletters, welcome emails</td></tr>
+            </table>
+            
+            <h3>2.3 AI/External APIs</h3>
+            <table>
+                <tr><th>Service</th><th>Provider</th><th>Purpose</th></tr>
+                <tr><td>AI Text Generation</td><td><strong>Anthropic Claude</strong></td><td>Messaging Lab, BattleCoach</td></tr>
+                <tr><td>AI Text Generation</td><td><strong>OpenAI GPT-4</strong></td><td>GEO Lab, competitive analysis</td></tr>
+                <tr><td>Web Search</td><td><strong>Brave Search API</strong></td><td>Research tools, daily digest</td></tr>
+            </table>
+        </div>
+        
+        <div class="section" id="database">
+            <h2>3. Database Schema</h2>
+            
+            <h3>3.1 Core Tables</h3>
+            <pre><code>-- User profiles (linked to Auth)
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
+  company TEXT DEFAULT 'SAP',
+  role TEXT,
+  team TEXT,
+  newsletter_opt_in BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Quiz scores for curriculum units
+CREATE TABLE quiz_scores (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id),
+  chapter TEXT NOT NULL,  -- 'unit-01', 'unit-02', etc.
+  score INTEGER NOT NULL,
+  total INTEGER NOT NULL,
+  percentage INTEGER NOT NULL,
+  completed_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Assessment results (10x Scorecard, Cognitive Style)
+CREATE TABLE assessment_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id),
+  assessment_type TEXT NOT NULL,
+  result_key TEXT,
+  result_name TEXT,
+  result_data JSONB,
+  completed_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Survey/feedback responses
+CREATE TABLE survey_responses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT,
+  value_rating INTEGER,
+  nps INTEGER,
+  improvements TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);</code></pre>
+            
+            <h3>3.2 Current Data Volume</h3>
+            <table>
+                <tr><th>Table</th><th>Records</th></tr>
+                <tr><td>Profiles</td><td>~170</td></tr>
+                <tr><td>Quiz Scores</td><td>~800</td></tr>
+                <tr><td>Assessment Results</td><td>~200</td></tr>
+                <tr><td>Survey Responses</td><td>~50</td></tr>
+            </table>
+        </div>
+        
+        <div class="section" id="functions">
+            <h2>4. Serverless Functions (API Endpoints)</h2>
+            
+            <h3>4.1 Authentication & User Management</h3>
+            <table>
+                <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+                <tr><td><code>/api/send-verification</code></td><td>POST</td><td>Send magic link email</td></tr>
+                <tr><td><code>/api/verify-token</code></td><td>POST</td><td>Validate magic link token</td></tr>
+                <tr><td><code>/api/subscriber-status</code></td><td>GET</td><td>Admin dashboard data</td></tr>
+            </table>
+            
+            <h3>4.2 Progress Tracking</h3>
+            <table>
+                <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+                <tr><td><code>/api/save-result</code></td><td>POST</td><td>Save quiz/assessment results</td></tr>
+                <tr><td><code>/api/progress</code></td><td>GET/POST</td><td>Get/update user progress</td></tr>
+            </table>
+            
+            <h3>4.3 AI Labs</h3>
+            <table>
+                <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+                <tr><td><code>/api/lab-ai</code></td><td>POST</td><td>Messaging Lab, BattleCoach (Claude)</td></tr>
+                <tr><td><code>/api/geo-scorecard</code></td><td>POST</td><td>GEO Visibility Lab (multi-LLM)</td></tr>
+            </table>
+        </div>
+        
+        <div class="section" id="services">
+            <h2>5. Third-Party Service Requirements</h2>
+            
+            <h3>5.1 Service Comparison Matrix</h3>
+            <table>
+                <tr><th>Current Service</th><th>Purpose</th><th>SAP BTP Equivalent</th></tr>
+                <tr><td>Supabase</td><td>Database + Auth</td><td>SAP HANA Cloud + SAP IAS</td></tr>
+                <tr><td>Netlify</td><td>Static hosting</td><td>SAP Build Work Zone / Static Files</td></tr>
+                <tr><td>Netlify Functions</td><td>Serverless</td><td>SAP BTP Cloud Foundry / Kyma</td></tr>
+                <tr><td>Resend</td><td>Email</td><td>SAP internal SMTP / approved service</td></tr>
+                <tr><td>Anthropic Claude</td><td>AI</td><td>SAP AI Core (if available)</td></tr>
+                <tr><td>OpenAI</td><td>AI</td><td>SAP AI Core (if available)</td></tr>
+            </table>
+            
+            <h3>5.2 Required API Keys</h3>
+            <pre><code># Email Service
+RESEND_API_KEY=re_xxxxx
+FROM_EMAIL=chris@futureofpmm.com
+
+# AI Services
+ANTHROPIC_API_KEY=sk-ant-xxxxx
+OPENAI_API_KEY=sk-xxxxx
+BRAVE_API_KEY=BSAxxxxx
+
+# Database
+SUPABASE_URL=https://yyqzkczutlidhgyiyawc.supabase.co
+SUPABASE_SERVICE_KEY=eyJxxxxx</code></pre>
+        </div>
+        
+        <div class="section" id="auth">
+            <h2>6. Authentication Architecture</h2>
+            
+            <h3>6.1 Current Flow (Magic Link)</h3>
+            <ol>
+                <li>User enters SAP email on login page</li>
+                <li>System sends magic link via Resend</li>
+                <li>User clicks link → JWT token generated</li>
+                <li>Token stored in localStorage (7-day expiry)</li>
+                <li>Token validated on each protected page</li>
+            </ol>
+            
+            <h3>6.2 SAP Alternative: SAP Identity Authentication Service (IAS)</h3>
+            <div class="success-box">
+                <strong>Benefits of SAP IAS:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Single sign-on with existing SAP credentials</li>
+                    <li>Automatic user provisioning from SAP directory</li>
+                    <li>Automatic role/team mapping from SAP HR data</li>
+                    <li>Audit logging for compliance</li>
+                    <li>No separate password management</li>
+                </ul>
+            </div>
+            
+            <div class="info-box">
+                <strong>Note:</strong> Current system restricts to @sap.com email addresses only. SAP IAS would eliminate the need for separate account creation.
+            </div>
+        </div>
+        
+        <div class="section" id="assets">
+            <h2>7. Static Assets & Content</h2>
+            
+            <h3>7.1 File Structure</h3>
+            <pre><code>/dist/
+├── index.html                 # Homepage
+├── curriculum/               
+│   ├── index.html            # Curriculum overview
+│   ├── unit-01/ through unit-12/  # 12 unit pages
+│   ├── labs/                 # Interactive labs
+│   └── signup.html           # Registration
+├── newsletters/              # 29 newsletter issues
+├── digests/                  # 200+ daily AI digests
+├── assessments/              # Interactive assessments
+├── admin/                    # Admin dashboard
+├── assets/
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── private/                  # Gated content</code></pre>
+            
+            <h3>7.2 Content Volume</h3>
+            <table>
+                <tr><th>Asset Type</th><th>Count</th></tr>
+                <tr><td>HTML Pages</td><td>~350 files</td></tr>
+                <tr><td>CSS/JS</td><td>~20 files</td></tr>
+                <tr><td>Images</td><td>~50 files</td></tr>
+                <tr><td><strong>Total Size</strong></td><td><strong>~15 MB</strong></td></tr>
+            </table>
+        </div>
+        
+        <div class="section" id="migration">
+            <h2>8. Migration Steps</h2>
+            
+            <ol class="phase-list">
+                <li>
+                    <strong>Phase 1: Infrastructure Setup</strong><br>
+                    Provision SAP HANA Cloud or PostgreSQL on BTP. Set up SAP IAS for authentication. Configure Cloud Foundry runtime for serverless functions.
+                </li>
+                <li>
+                    <strong>Phase 2: Database Migration</strong><br>
+                    Export data from Supabase (CSV/JSON). Create tables in SAP database. Import profiles, quiz scores, progress data. Verify data integrity.
+                </li>
+                <li>
+                    <strong>Phase 3: Authentication Migration</strong><br>
+                    Configure SAP IAS integration. Map existing users to SAP directory. Update frontend auth code. Test SSO flow.
+                </li>
+                <li>
+                    <strong>Phase 4: Function Migration</strong><br>
+                    Port Netlify Functions to SAP BTP runtime. Update environment variables. Configure AI service access (if approved). Update API endpoints.
+                </li>
+                <li>
+                    <strong>Phase 5: DNS & Go-Live</strong><br>
+                    Configure SAP CDN/hosting. Update DNS records. SSL certificate provisioning. Cutover with minimal downtime.
+                </li>
+            </ol>
+        </div>
+        
+        <div class="section" id="ai">
+            <h2>9. AI Service Considerations</h2>
+            
+            <h3>9.1 Current AI Usage</h3>
+            <table>
+                <tr><th>Feature</th><th>Model</th><th>Monthly Volume</th></tr>
+                <tr><td>Messaging Lab</td><td>Claude 3.5 Sonnet</td><td>~500 requests</td></tr>
+                <tr><td>BattleCoach</td><td>Claude 3.5 Sonnet</td><td>~200 requests</td></tr>
+                <tr><td>GEO Scorecard</td><td>GPT-4 + Claude</td><td>~100 requests</td></tr>
+                <tr><td>Daily Digest</td><td>GPT-4 + Brave</td><td>~30 requests</td></tr>
+            </table>
+            
+            <h3>9.2 Recommendation</h3>
+            <div class="highlight">
+                The AI labs are valuable but <strong>not critical</strong> to core learning. Suggest:
+                <ul style="margin-top: 0.5rem;">
+                    <li>Core curriculum (Units 1-12) works without AI</li>
+                    <li>Labs marked as "AI-powered" with fallback content</li>
+                    <li>AI access added post-migration if/when approved</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section" id="env">
+            <h2>10. Environment Variables Summary</h2>
+            
+            <pre><code># Database
+DATABASE_URL=&lt;SAP_HANA_OR_POSTGRES_CONNECTION_STRING&gt;
+DB_SERVICE_KEY=&lt;SERVICE_ACCOUNT_KEY&gt;
+
+# Authentication
+SAP_IAS_CLIENT_ID=&lt;IAS_CLIENT_ID&gt;
+SAP_IAS_CLIENT_SECRET=&lt;IAS_CLIENT_SECRET&gt;
+SAP_IAS_TENANT=&lt;TENANT_URL&gt;
+
+# Email (if using external service)
+EMAIL_API_KEY=&lt;APPROVED_EMAIL_SERVICE_KEY&gt;
+FROM_EMAIL=&lt;APPROVED_SENDER_ADDRESS&gt;
+
+# AI Services (if approved)
+ANTHROPIC_API_KEY=&lt;IF_APPROVED&gt;
+OPENAI_API_KEY=&lt;IF_APPROVED&gt;
+BRAVE_API_KEY=&lt;IF_APPROVED&gt;
+
+# Admin
+ADMIN_EMAILS=christopher.ohara@sap.com</code></pre>
+        </div>
+        
+        <div class="section">
+            <h2>Support & Contact</h2>
+            <table>
+                <tr><td><strong>Site Owner</strong></td><td>Chris O'Hara (christopher.ohara@sap.com)</td></tr>
+                <tr><td><strong>Current Hosting</strong></td><td>Netlify (Team: chrisohara99)</td></tr>
+                <tr><td><strong>GitHub Repository</strong></td><td><a href="https://github.com/chrisohara99/futureofpmm">github.com/chrisohara99/futureofpmm</a></td></tr>
+                <tr><td><strong>Supabase Project</strong></td><td>yyqzkczutlidhgyiyawc</td></tr>
+            </table>
+        </div>
+        
+    </div>
+    
+    <div class="footer">
+        <p>Document Version 1.0 · Last Updated: August 27, 2026</p>
+        <p><a href="/">← Back to The Future of PMM</a></p>
+    </div>
+    
+</body>
+</html>
