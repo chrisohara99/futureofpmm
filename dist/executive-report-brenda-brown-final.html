@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of PMM — Executive Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark: #1a1a2e;
+            --sap-gold: #e9730c;
+            --sap-green: #188918;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; color: #1e293b; background: white; font-size: 11pt; }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d4a6f 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            margin-bottom: 0;
+        }
+        .header-inner { max-width: 800px; margin: 0 auto; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .header .subtitle { font-size: 1rem; opacity: 0.85; }
+        .header .meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 1.5rem 2rem; }
+        
+        .section {
+            margin-bottom: 1.75rem;
+            page-break-inside: avoid;
+        }
+        
+        .section h2 {
+            font-size: 1.15rem;
+            color: #1a1a2e;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #0070f2;
+        }
+        
+        .section h3 {
+            font-size: 0.95rem;
+            color: #1a1a2e;
+            margin: 1.25rem 0 0.5rem;
+        }
+        
+        p { margin-bottom: 0.75rem; color: #334155; }
+        
+        .stat-grid {
+            display: flex;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background: #f1f5f9;
+            padding: 0.85rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0070f2;
+        }
+        
+        .stat-card .label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.75rem 0;
+            font-size: 0.85rem;
+        }
+        
+        th, td {
+            padding: 0.5rem 0.65rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 3px solid #0070f2;
+            padding: 0.85rem;
+            border-radius: 0 6px 6px 0;
+            margin: 0.75rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .highlight-box.gold {
+            background: #fef3c7;
+            border-left-color: #e9730c;
+        }
+        
+        .highlight-box.green {
+            background: #dcfce7;
+            border-left-color: #188918;
+        }
+        
+        ul { margin: 0.5rem 0; padding-left: 1.25rem; color: #334155; }
+        li { margin-bottom: 0.35rem; }
+        
+        .three-col {
+            display: flex;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .pillar-card {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.85rem;
+            text-align: center;
+        }
+        
+        .pillar-card .pillar-num {
+            font-size: 0.65rem;
+            color: #0070f2;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .pillar-card .pillar-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0.35rem 0;
+        }
+        
+        .pillar-card .pillar-desc {
+            font-size: 0.75rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        
+        .pillar-card.active {
+            background: #eff6ff;
+            border-color: #0070f2;
+        }
+        
+        .phase-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.65rem;
+            border-radius: 6px;
+            margin-bottom: 0.35rem;
+            font-size: 0.85rem;
+        }
+        
+        .phase-row.reach { background: #f0fdf4; }
+        .phase-row.activate { background: #fef3c7; }
+        .phase-row.embed { background: #1a1a2e; color: white; }
+        
+        .phase-label {
+            font-weight: 700;
+            font-size: 0.75rem;
+            width: 70px;
+            flex-shrink: 0;
+        }
+        
+        .phase-goal {
+            width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .labs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+        
+        .lab-item {
+            background: #f8fafc;
+            padding: 0.5rem 0.65rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border-left: 3px solid #0070f2;
+        }
+        
+        .lab-item .lab-name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        .lab-item .lab-bow {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #64748b;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 0.75rem;
+            margin: 0.5rem 0;
+            font-size: 0.85rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #64748b;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 1rem;
+        }
+        
+        .page-break { page-break-before: always; }
+        
+        @media print {
+            body { background: white; }
+            .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .pillar-card.active, .highlight-box, .stat-card, .phase-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <h1>The Future of PMM</h1>
+            <p class="subtitle">Executive Summary — Pilot Program Results & H2 Engagement Plan</p>
+            <p class="meta">Prepared for Brenda Brown · September 2026 · Chris O'Hara</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        
+        <!-- 1. THE VISION -->
+        <div class="section">
+            <h2>🎯 The Vision: Three Pillars of PMM Excellence</h2>
+            
+            <p>The Book of Work establishes product marketing as a strategic discipline at SAP. To bring it to life across ~500 PMMs, we've defined three pillars — each AI-enabled:</p>
+            
+            <div class="three-col">
+                <div class="pillar-card">
+                    <div class="pillar-num">Pillar 01</div>
+                    <div class="pillar-title">Disciplined Operations</div>
+                    <div class="pillar-desc">Execute with consistency — one set of playbooks, frameworks, and standards every PMM inherits.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">Pillar 02</div>
+                    <div class="pillar-title">Connected Community</div>
+                    <div class="pillar-desc">One culture, shared success — all-hands, AMAs, spotlights, and recognition.</div>
+                </div>
+                <div class="pillar-card active">
+                    <div class="pillar-num">Pillar 03</div>
+                    <div class="pillar-title">Continuous Learning</div>
+                    <div class="pillar-desc">Real-time sandbox and Labs — hands-on sessions where PMMs apply AI tools to real work.</div>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <strong>This Report:</strong> The Future of PMM pilot represents the <strong>first Labs cohort</strong> under Pillar 03 — validating the learning journey and AI Labs before scaling to all 500 PMMs.
+            </div>
+        </div>
+        
+        <!-- 2. THE BOOK OF WORK -->
+        <div class="section">
+            <h2>📋 The Book of Work</h2>
+            
+            <p>What product marketing owns — and where it partners with the teams that execute.</p>
+            
+            <h3>PMM Leads / Accountable (11 Areas)</h3>
+            <table>
+                <tr><th style="width: 5%;">#</th><th style="width: 32%;">Area</th><th>Description</th></tr>
+                <tr><td>01</td><td>Messaging & Positioning</td><td>Product narrative, value articulation, persona-level messaging</td></tr>
+                <tr><td>02</td><td>Category Storytelling</td><td>Use-case stories and differentiated POV</td></tr>
+                <tr><td>03</td><td>Market Insights & Signal Synthesis</td><td>Customer, analyst, competitive insights → recommendations</td></tr>
+                <tr><td>04</td><td>Launch Narrative Inputs</td><td>Buyer value, positioning, approved messaging, briefs</td></tr>
+                <tr><td>05</td><td>Adoption & Growth Strategy</td><td>Launch, adoption, expansion → business outcomes</td></tr>
+                <tr><td>06</td><td>Customer Profiles / Personas</td><td>Personas, buying committees, journey needs</td></tr>
+                <tr><td>07</td><td>Commercialization</td><td>Product value, pricing narrative, packaging</td></tr>
+                <tr><td>08</td><td>Launch & Disclosure</td><td>Tiering, messaging lock, readiness inputs</td></tr>
+                <tr><td>09</td><td>GTM & Field Readiness</td><td>Positioning, objection handling, content for Sales</td></tr>
+                <tr><td>10</td><td>Demo</td><td>Demo prioritization, buyer narrative, use-case strategy</td></tr>
+                <tr><td>11</td><td>Customer Reference Strategy</td><td>Reference requirements, story priorities</td></tr>
+            </table>
+            
+            <h3>PMM Partners / Supports (8 Areas)</h3>
+            <table>
+                <tr><th style="width: 5%;">#</th><th style="width: 32%;">Area</th><th>Description</th></tr>
+                <tr><td>01</td><td>Marketing Planning</td><td>Product priorities, audience insights for Integrated Marketing</td></tr>
+                <tr><td>02</td><td>Campaign Execution</td><td>Approved messaging, buyer context for Digital/Field</td></tr>
+                <tr><td>03</td><td>Press & Communications</td><td>Product truth, narrative guardrails for PR/Comms</td></tr>
+                <tr><td>04</td><td>Partner & ISV</td><td>Partner-facing positioning, business value</td></tr>
+                <tr><td>05</td><td>Pricing Communication</td><td>Value narrative, ROI framing, packaging translation</td></tr>
+                <tr><td>06</td><td>Community</td><td>Community strategy, audience priorities</td></tr>
+                <tr><td>07</td><td>Learning Journeys</td><td>Messaging and content strategy for Learning teams</td></tr>
+                <tr><td>08</td><td>Customer Journey Content</td><td>What to say, to whom, and why — packaged at scale</td></tr>
+            </table>
+        </div>
+        
+        <div class="page-break"></div>
+        
+        <!-- 3. PILOT RESULTS -->
+        <div class="section">
+            <h2>📊 Pilot Results: First Labs Cohort</h2>
+            
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="number">181</div>
+                    <div class="label">Registered Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">351</div>
+                    <div class="label">Quiz Attempts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">73%</div>
+                    <div class="label">Pass Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">9.1</div>
+                    <div class="label">NPS (0-10)</div>
+                </div>
+            </div>
+            
+            <h3>12-Unit Curriculum → Book of Work Mapping</h3>
+            <table>
+                <tr><th>Unit</th><th>Topic</th><th>Book of Work Areas</th></tr>
+                <tr><td>1</td><td>The AI Transformation</td><td>Foundation for all 19 BoW areas</td></tr>
+                <tr><td>2</td><td>AI & the Buyer Journey</td><td>01 Messaging, 06 Personas, 09 GTM</td></tr>
+                <tr><td>3</td><td>Content Strategy for AI</td><td>02 Storytelling, 04 Launch Narrative</td></tr>
+                <tr><td>4</td><td>Competitive Intelligence</td><td>03 Market Insights & Signal Synthesis</td></tr>
+                <tr><td>5</td><td>Messaging That Lands</td><td>01 Messaging & Positioning</td></tr>
+                <tr><td>6</td><td>Always-On Competitive</td><td>03 Market Insights, 07 Commercialization</td></tr>
+                <tr><td>7</td><td>Content for Two Audiences</td><td>02 Storytelling, 08 Launch & Disclosure</td></tr>
+                <tr><td>8</td><td>GEO & AI Visibility</td><td>09 GTM & Field Readiness</td></tr>
+                <tr><td>9</td><td>Segmentation & Sizing</td><td>06 Customer Profiles/Personas</td></tr>
+                <tr><td>10</td><td>Buyer Personas & Journeys</td><td>06 Personas, 07 Commercialization</td></tr>
+                <tr><td>11</td><td>Skills That Survive</td><td>Strategic judgment across all BoW areas</td></tr>
+                <tr><td>12</td><td>Capstone Assessment</td><td>Comprehensive validation</td></tr>
+            </table>
+            
+            <h3>What Learners Said</h3>
+            <p class="quote">"I need to change my overall mindset of how to use AI from intern to co-worker."</p>
+            <p class="quote">"Understanding GEO — SEO does not ensure returns in AI results."</p>
+            <p class="quote">"How to structure PMM content so AI agents can parse it, quote it, and cite it accurately."</p>
+            
+            <div class="highlight-box green">
+                <strong>Key Finding:</strong> The curriculum successfully shifted mental models. Learners consistently cited the "AI as co-worker" framework as an actionable insight they're now applying.
+            </div>
+        </div>
+        
+        <!-- 4. AI LABS -->
+        <div class="section">
+            <h2>🔬 AI in Action: 16 PMM Labs</h2>
+            
+            <p>A safe sandbox to test AI use cases across LoBs. Sixteen labs built and tested; covering all major Book of Work areas:</p>
+            
+            <div class="labs-grid">
+                <div class="lab-item">
+                    <div class="lab-name">GEO Visibility Scorecard</div>
+                    <div class="lab-bow">BoW 09: GTM & Field Readiness</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">PMM Activity Audit</div>
+                    <div class="lab-bow">BoW All: Cross-functional assessment</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">GEO Visibility Test</div>
+                    <div class="lab-bow">BoW 09: GTM & Field Readiness</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">BattleCoach</div>
+                    <div class="lab-bow">BoW 03: Market Insights, 07: Commercialization</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">CI Brief Generator</div>
+                    <div class="lab-bow">BoW 03: Market Insights, 09: GTM</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Messaging Framework Generator</div>
+                    <div class="lab-bow">BoW 01: Messaging & Positioning</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Enablement Bundler</div>
+                    <div class="lab-bow">BoW 09: GTM & Field Readiness</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Content Localization Agent</div>
+                    <div class="lab-bow">BoW 02: Storytelling, Partner 08: Content</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Launch Planner</div>
+                    <div class="lab-bow">BoW 08: Launch & Disclosure</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Pricing Rationale Builder</div>
+                    <div class="lab-bow">BoW 07: Commercialization, Partner 05: Pricing</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Analyst Briefing Simulator</div>
+                    <div class="lab-bow">BoW 03: Market Insights</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Segment Builder</div>
+                    <div class="lab-bow">BoW 06: Customer Profiles/Personas</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Persona Builder</div>
+                    <div class="lab-bow">BoW 06: Customer Profiles/Personas</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Agent Positioning Test</div>
+                    <div class="lab-bow">BoW 01: Messaging, 09: GTM</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Content Layer Audit</div>
+                    <div class="lab-bow">BoW 02: Storytelling, Partner 08: Content</div>
+                </div>
+                <div class="lab-item">
+                    <div class="lab-name">Demo Narrative Builder</div>
+                    <div class="lab-bow">BoW 10: Demo</div>
+                </div>
+            </div>
+            
+            <div class="highlight-box gold">
+                <strong>Vision — PMM Co-Pilot:</strong> Transform these experimental labs into production-ready AI agents operating within SAP infrastructure (Joule, SAP AI Core) with proper guardrails. The Book of Work becomes an interactive system.
+            </div>
+        </div>
+        
+        <div class="page-break"></div>
+        
+        <!-- 5. H2 ENGAGEMENT PLAN -->
+        <div class="section">
+            <h2>📅 H2 Engagement Plan: From Vision to 500 PMMs</h2>
+            
+            <p>Move the whole org from aware to active to contributing — each phase makes the next one land.</p>
+            
+            <div class="phase-row reach">
+                <div class="phase-label">REACH</div>
+                <div class="phase-goal"><strong>Everyone hears it</strong></div>
+                <div>All-hands, exec comms, community hub as front door</div>
+            </div>
+            
+            <div class="phase-row activate">
+                <div class="phase-label">ACTIVATE</div>
+                <div class="phase-goal"><strong>Many take part</strong></div>
+                <div>Learning journey + Labs, AMAs, Spotlights, first playbooks</div>
+            </div>
+            
+            <div class="phase-row embed">
+                <div class="phase-label">EMBED</div>
+                <div class="phase-goal"><strong>It becomes the norm</strong></div>
+                <div>Playbooks in daily work, champions in every LoB, recognition live</div>
+            </div>
+            
+            <h3>Three-Phase H2 Rollout</h3>
+            <table>
+                <tr><th>Phase</th><th>Timing</th><th>Key Activities</th></tr>
+                <tr><td><strong>01 Light the Path</strong></td><td>Early H2</td><td>All-hands with Eric & Brenda, publish Book of Work, community hub live</td></tr>
+                <tr><td><strong>02 Activate</strong></td><td>Mid H2</td><td>Learning journey + Labs cohort, Spotlight Series, first playbooks ship</td></tr>
+                <tr><td><strong>03 Embed</strong></td><td>Late H2</td><td>Playbooks adopted cross-LoB, recognition program, measured engagement</td></tr>
+            </table>
+            
+            <h3>Pilot Results Map to ACTIVATE</h3>
+            <table>
+                <tr><th>Metric</th><th>Pilot Result</th><th>Scales To</th></tr>
+                <tr><td>Reached (registered)</td><td>181 users</td><td>500 PMMs</td></tr>
+                <tr><td>Activated (1+ units)</td><td>~80 learners (44%)</td><td>Target: 50%+ of 500</td></tr>
+                <tr><td>Contributing (completed)</td><td>7+ learners</td><td>Champions network in every LoB</td></tr>
+            </table>
+            
+            <div class="highlight-box green">
+                <strong>Pilot Outcome:</strong> The "first Labs cohort" validated the model with 9.1 NPS, 73% pass rate, and 16 working AI labs. Ready to scale from ACTIVATE to EMBED.
+            </div>
+        </div>
+        
+        <!-- 6. NEXT STEPS -->
+        <div class="section">
+            <h2>🚀 Next Steps</h2>
+            
+            <h3>Immediate: Site Migration</h3>
+            <p>Complete Migration Guide prepared — current architecture, database schema, SAP BTP equivalents, phase-by-phase plan. <strong>Ready to hand off to IT.</strong></p>
+            
+            <h3>In Progress: SuccessFactors Learning</h3>
+            <p>12-unit curriculum being adapted for SuccessFactors — formal tracking, integration with employee learning records, scalable delivery globally.</p>
+            
+            <h3>Phase 03 Vision: Embed</h3>
+            <ul>
+                <li><strong>Learning</strong> — PMMs complete curriculum for foundational AI-era skills</li>
+                <li><strong>Tools</strong> — AI agents assist with each of the 19 Book of Work areas</li>
+                <li><strong>Guardrails</strong> — All AI-assisted work within approved guidelines</li>
+                <li><strong>Measurement</strong> — Track engagement across all 500 PMMs</li>
+            </ul>
+        </div>
+        
+        <!-- SUMMARY -->
+        <div class="section">
+            <h2>✅ Summary</h2>
+            
+            <p>The Future of PMM pilot achieved its objectives under <strong>Pillar 03: Continuous Learning</strong>:</p>
+            
+            <ul>
+                <li><strong>Validated demand</strong> — 181 users registered, 53 provided feedback, NPS of 9.1</li>
+                <li><strong>Proved the curriculum</strong> — 73% pass rate, 12 units mapped to Book of Work</li>
+                <li><strong>Built the lab infrastructure</strong> — 16 AI labs covering all major BoW areas</li>
+                <li><strong>Prepared for scale</strong> — Migration guide complete, SuccessFactors in progress</li>
+            </ul>
+            
+            <p>The pilot positions SAP to move from <strong>ACTIVATE</strong> to <strong>EMBED</strong> across all 500 PMMs — with playbooks, recognition, and measured adoption at every step.</p>
+        </div>
+        
+    </div>
+    
+    <div class="footer">
+        <p>The Future of PMM · Executive Summary · September 2026</p>
+        <p>Aligned to: SAP Product Marketing Book of Work</p>
+    </div>
+    
+</body>
+</html>
