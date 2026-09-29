@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of PMM — The Friday Note #7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #faf9f7;
+            --accent: #c84b31;
+            --muted: #6b7280;
+            --border: #e5e2dd;
+            --section-bg: #f3f1ed;
+            --link: #2563eb;
+            --purple: #7c3aed;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Source Sans 3', Georgia, serif;
+            background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+            color: var(--ink);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .newsletter {
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--paper);
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 30px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .header {
+            background: var(--ink);
+            color: #fff;
+            padding: 3rem 2.5rem 2.5rem;
+        }
+        .header-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 span { color: var(--accent); }
+        .header-meta {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.5rem;
+        }
+        .section {
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .section:last-of-type { border-bottom: none; }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .intro-note {
+            background: var(--section-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .intro-note p:last-child { margin-bottom: 0; }
+        .signature {
+            font-style: italic;
+            color: var(--muted);
+            margin-top: 1rem;
+        }
+
+        /* Anchor Feature */
+        .anchor-feature {
+            background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+        .anchor-feature .badge, .badge {
+            display: inline-block;
+            background: #f59e0b;
+            color: #1e3a5f;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        .anchor-feature h3 {
+            color: white;
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+        }
+        .anchor-feature p {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.95rem;
+        }
+        .anchor-feature .stack-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 1.25rem 0;
+        }
+        .anchor-feature .stack-layer {
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .anchor-feature .stack-layer:first-child {
+            background: rgba(255,255,255,0.25);
+            border-radius: 8px 8px 0 0;
+        }
+        .anchor-feature .stack-layer:nth-child(2) { background: rgba(255,255,255,0.15); }
+        .anchor-feature .stack-layer:nth-child(3) { background: rgba(255,255,255,0.10); }
+        .anchor-feature .stack-layer:last-child {
+            background: rgba(255,255,255,0.05);
+            border-radius: 0 0 8px 8px;
+        }
+        .anchor-feature .stack-arrow {
+            text-align: center;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+            padding: 0.15rem 0;
+        }
+        .anchor-feature .btn, .btn {
+            display: inline-block;
+            margin-top: 1rem;
+            background: #f59e0b;
+            color: #1e3a5f;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .anchor-feature .btn:hover, .btn:hover {
+            opacity: 0.95;
+            text-decoration: none;
+        }
+
+        /* Article Card */
+        .article-card {
+            background: var(--section-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--purple);
+        }
+        .article-card .tag {
+            display: inline-block;
+            background: var(--purple);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+        .article-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+        .article-card p {
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+        .article-card .read-link {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--purple);
+        }
+
+        /* Pull Quote */
+        .pull-quote {
+            margin: 2rem 0;
+            padding: 1.5rem 2rem;
+            border-left: 3px solid var(--purple);
+            background: linear-gradient(135deg, rgba(124,58,237,0.04), transparent);
+        }
+        .pull-quote p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            line-height: 1.45;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        .pull-quote cite {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-style: normal;
+        }
+
+        /* Chart Feature */
+        .chart-feature {
+            background: var(--section-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .chart-feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .chart-visual {
+            margin: 1rem 0;
+        }
+        .bar-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .bar-label {
+            width: 80px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+        .bar {
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 50px;
+        }
+        .chart-source {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+        .news-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .news-item:last-child { border-bottom: none; }
+        .news-item .source {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+        }
+        .news-item h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+            color: var(--ink);
+        }
+        .news-item p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+
+        /* Intel Box */
+        .intel-box {
+            background: var(--section-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .intel-box h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .intel-row {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        .intel-row:last-of-type { border-bottom: none; }
+        .intel-row .company {
+            font-weight: 700;
+            color: var(--ink);
+            min-width: 90px;
+        }
+        .intel-row .update {
+            color: var(--muted);
+        }
+        .intel-row .update strong {
+            color: var(--ink);
+        }
+        .intel-link {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Newsletter Recommendation */
+        .newsletter-rec {
+            background: var(--section-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .newsletter-rec .tag {
+            display: inline-block;
+            background: var(--purple);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        .newsletter-rec h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        .newsletter-rec .author {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+        .newsletter-rec p {
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+        .follow-link {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--purple);
+        }
+
+        /* CTA */
+        .cta-box {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        .cta-box h3 {
+            color: white;
+            margin: 0 0 0.75rem;
+        }
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.25rem;
+        }
+        .cta-box .btn {
+            display: inline-block;
+            background: #f59e0b;
+            color: #1e3a5f;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--ink);
+            color: rgba(255,255,255,0.5);
+            padding: 2rem 2.5rem;
+            text-align: center;
+        }
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .footer-links { font-size: 0.85rem; }
+        .footer-links a {
+            color: rgba(255,255,255,0.5);
+            margin: 0 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .header { padding: 2rem 1.5rem; }
+            .header h1 { font-size: 1.8rem; }
+            .section { padding: 1.5rem; }
+            .anchor-feature { padding: 1.5rem; }
+            .bar-label { width: 70px; font-size: 0.75rem; }
+            .intel-row { flex-direction: column; gap: 0.25rem; }
+            .intel-row .company { min-width: auto; }
+        }
+    
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: #3b82f6; background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; margin: 0; }
+        .nav-menu a:hover { background: #f3f4f6; color: #3b82f6; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: #1e3a5f; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            .logo img { height: 70px !important; }
+            nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: #1e3a5f; flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { display: flex !important; right: 0 !important; }
+            nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; padding: 0.75rem 0 !important; background: transparent !important; }
+            nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: white !important; }
+            .nav-menu { position: static; background: transparent; border: none; box-shadow: none; opacity: 1; visibility: visible; transform: none; padding-left: 1rem; }
+            .nav-menu a { color: rgba(255,255,255,0.7) !important; padding: 0.5rem 0; }
+            .nav-menu a:hover { background: transparent; color: white !important; }
+        }
+
+    </style>
+
+    <!-- Schema.org NewsArticle for GEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "The Future of PMM — The Friday Note #7",
+      "description": "",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "jobTitle": "VP Product Marketing",
+        "worksFor": {"@type": "Organization", "name": "SAP"}
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      },
+      "datePublished": "2026-03-01",
+      "mainEntityOfPage": "https://futureofpmm.com/newsletters/issue-007.html",
+      "inLanguage": "en"
+    }
+    </script>
+</head>
+<body>
+    <div class="newsletter">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-label">The Friday Note — Issue #7</div>
+            <h1>The New <span>Middlemen</span></h1>
+            <div class="header-meta">March 27, 2026 • The Future of PMM</div>
+        </div>
+
+        <!-- WELCOME -->
+        <div class="section">
+            <div class="section-label">Welcome</div>
+            <div class="intro-note">
+                <p>This week I've been thinking about <em>middlemen</em>.</p>
+                <p>Not the old kind — the distributors, the resellers, the channel partners. The new kind. The ones that showed up this week all at once, without asking.</p>
+                <p>Google AI Mode crossed 75 million daily active users and started testing shopping ads inside the conversational interface. Meta embedded Manus — its $2B AI acquisition — into Ads Manager for 4 million+ advertisers. OpenAI rolled ChatGPT ads to every free and Go user. And maybe the biggest move of all: <strong>OpenAI and Amazon announced a $50B strategic partnership</strong> that Forrester says may have just won consumer agentic commerce.</p>
+                <p>Three platforms. Same week. Same move: <strong>inserting an AI layer between your product and your buyer.</strong></p>
+                <p>This week: why the real story isn't ads — it's the full-stack connection from ERP to AI checkout. Plus: a chart on the agentic commerce explosion, and this week's news roundup.</p>
+            </div>
+            <p class="signature">—Chris</p>
+        </div>
+
+        <!-- ANCHOR PIECE: DEEP DIVE -->
+        <div class="section">
+            <div class="section-label">🔥 Deep Dive</div>
+            <h2>The Full-Stack Buyer: From ERP to AI Checkout</h2>
+            <p>For 20 years, the buyer's journey had a clean separation: marketing owned awareness, sales owned the deal, and the ERP handled fulfillment on the backend. These systems talked to each other through humans — handoffs, meetings, spreadsheets, Slack threads.</p>
+            <p>That separation is collapsing. And the companies that understand <em>why</em> are about to have an enormous advantage.</p>
+
+            <div class="anchor-feature">
+                <div class="badge">🏗️ The New Commerce Stack</div>
+                <h3>Agents Are Connecting the Full Stack</h3>
+                <p>Here's what's being built — from both ends simultaneously:</p>
+                <div class="stack-diagram">
+                    <div class="stack-layer">🧠 AI Discovery — ChatGPT, Google AI Mode, Perplexity</div>
+                    <div class="stack-arrow">↕ UCP (Universal Commerce Protocol) — Shopify + Google</div>
+                    <div class="stack-layer">🛒 Agentic Checkout — "Buy it in ChatGPT," Google AI Mode Shopping</div>
+                    <div class="stack-arrow">↕ MCP / A2A / AP2 (Agent Protocols)</div>
+                    <div class="stack-layer">📦 Commerce Cloud — Shopify, Salesforce Commerce, SAP Commerce</div>
+                    <div class="stack-arrow">↕ Native ERP Integration</div>
+                    <div class="stack-layer">🏭 ERP Backend — SAP, Oracle Fusion, Microsoft Dynamics</div>
+                </div>
+                <a href="https://futureofpmm.com/deep-dive-full-stack-buyer" class="btn">Read the Full Analysis →</a>
+            </div>
+
+            <p><strong>From the top down:</strong> Shopify and Google co-developed UCP (Universal Commerce Protocol) — an open standard that lets AI agents browse catalogs, build carts, and complete checkout. Walmart, Target, Wayfair, and Etsy are already on board. Google is rolling agentic checkout into AI Mode in Search and Gemini. OpenAI's ChatGPT already has "Buy it in ChatGPT" live with Etsy and Shopify merchants.</p>
+            <p><strong>From the bottom up:</strong> SAP announced MCP servers for Commerce Cloud — so AI agents can query inventory, pricing, and product data natively from SAP's backend. Oracle has 1,000+ AI agents across Fusion apps connecting supply chain, procurement, and finance. Microsoft's Dynamics 365 Commerce MCP Server exposes catalog, pricing, promotions, inventory, carts, orders, and fulfillment as MCP-enabled capabilities.</p>
+            <p><strong>And now the bridge:</strong> The OpenAI + Amazon deal is the missing piece. Amazon's $50B investment includes a co-created Stateful Runtime Environment on Bedrock — persistent-memory agents that move across software systems, hold context, and execute multi-step workflows. Pair that with Amazon's marketplace (the #1 product search engine) and ChatGPT (the #3 product search tool per Forrester), and you have the first end-to-end agentic commerce pipeline at scale.</p>
+            <p><strong>What this means for PMMs:</strong> When an AI agent can discover your product, compare it to competitors, check real-time inventory via MCP, negotiate pricing against ERP data, and complete checkout via UCP — all in one session — your "funnel" isn't a funnel anymore. It's a single transaction.</p>
+            <p>The PMMs who win will be the ones who understand this full stack. Not just the discovery layer (that was Issue #5). Not just the ad layer. The whole thing — from how your product appears in an LLM's training data to how your ERP confirms the order.</p>
+        </div>
+
+        <!-- CASE STUDY: OpenAI + Amazon -->
+        <div class="section">
+            <div class="section-label">🚀 Case Study</div>
+            <h2>OpenAI + Amazon: The $50B Bet on Agentic Commerce</h2>
+            <p>On February 27, Amazon invested $50 billion in OpenAI — the largest AI deal in history. But the commerce implications have been underreported.</p>
+
+            <div class="article-card">
+                <div class="tag">📚 Forrester Analysis</div>
+                <h4>"Power Couple OpenAI + Amazon May Have Just Won Consumer Agentic Commerce"</h4>
+                <p>Forrester's thesis: the most popular answer engine (ChatGPT) + the most popular product search engine (Amazon) may dominate the most popular search engine (Google). Amazon leverages OpenAI to power Rufus as a massive product discovery engine. New product feeds for Shop Direct create a direct line to Amazon's chat shopping experience.</p>
+                <a href="https://www.forrester.com/blogs/power-couple-openai-amazon-may-have-just-won-consumer-agentic-commerce/" class="read-link">Read Forrester's analysis →</a>
+            </div>
+
+            <p><strong>The PMM angle:</strong> If your product is sold through Amazon, your listing just became AI-discoverable in a fundamentally new way. If you compete with Amazon-listed products, the competitive landscape just shifted. Either way — structured product data, clear differentiation, and machine-readable positioning aren't optional anymore.</p>
+        </div>
+
+        <!-- CHART OF THE WEEK -->
+        <div class="section">
+            <div class="section-label">📊 Chart of the Week</div>
+            <h2>The Agentic Commerce Explosion</h2>
+
+            <div class="chart-feature">
+                <div class="badge">📈 Data</div>
+                <h3>Consumers Using AI in Their Buying Journey</h3>
+                <div class="chart-visual">
+                    <div class="bar-row">
+                        <div class="bar-label">2023</div>
+                        <div class="bar" style="width: 18%; background: #94a3b8;">~8%</div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">2024</div>
+                        <div class="bar" style="width: 28%; background: #64748b;">~15%</div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">Jan 2026</div>
+                        <div class="bar" style="width: 70%; background: #3b82f6;">45%</div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">2030 (est.)</div>
+                        <div class="bar" style="width: 95%; background: linear-gradient(90deg, #7c3aed, #c84b31);">~50% via agents</div>
+                    </div>
+                </div>
+                <p class="chart-source">Sources: <a href="https://newsroom.ibm.com/2026-01-07-ibm-nrf-study-brands-and-retailers-navigate-a-new-reality-as-ai-shapes-consumer-decisions-before-shopping-begins" target="_blank">IBM Institute for Business Value (Jan 2026)</a>, <a href="https://www.morganstanley.com/insights/articles/agentic-commerce-market-impact-outlook" target="_blank">Morgan Stanley (2030 projection)</a>, <a href="https://www.pymnts.com/artificial-intelligence-2/2025/visa-47percent-of-americans-use-ai-tools-for-holiday-shopping/" target="_blank">PYMNTS (2025 holiday data)</a></p>
+            </div>
+
+            <p>The numbers tell the story: 45% of consumers already use AI for at least part of their buying journey (IBM, Jan 2026). Morgan Stanley projects nearly half of online shoppers will use AI shopping <em>agents</em> by 2030, accounting for ~25% of spending. McKinsey estimates agentic commerce could redirect $3–5 trillion in global retail spend by 2030.</p>
+            <p>Meanwhile, traffic from AI sources to retail sites has surged 1,200% — while traditional search traffic declined 10% year-over-year.</p>
+        </div>
+
+        <!-- NEWS ROUNDUP -->
+        <div class="section">
+            <div class="section-label">📰 News Roundup</div>
+            <h2>What Happened This Week</h2>
+
+            <div class="news-grid">
+                <div class="news-item">
+                    <div class="source">OpenAI</div>
+                    <h4><a href="https://www.reuters.com/business/media-telecom/openai-expand-ads-chatgpt-all-free-low-cost-users-information-reports-2026-03-21/" target="_blank">ChatGPT ads expand to all free and Go users in the U.S. →</a></h4>
+                    <p>Retail and grocery brands dominate early ad inventory. Criteo joins as ad tech partner. Truist estimates under $1B in ad revenue this year, growing to $30B by 2030.</p>
+                </div>
+                <div class="news-item">
+                    <div class="source">Meta</div>
+                    <h4><a href="https://coinis.com/blog/meta-manus-ai-ads-manager-guide" target="_blank">Manus AI embedded in Ads Manager for 4M+ advertisers →</a></h4>
+                    <p>Acquired for $2B in December, integrated in seven weeks — the fastest product integration in Meta's history. Also rolling to WhatsApp Business and Instagram Creator Marketplace.</p>
+                </div>
+                <div class="news-item">
+                    <div class="source">Shopify + Google</div>
+                    <h4><a href="https://blog.google/products-and-platforms/products/shopping/ucp-updates/" target="_blank">Universal Commerce Protocol (UCP) gains momentum →</a></h4>
+                    <p>The open standard for agentic checkout now backed by Walmart, Target, Wayfair, and Etsy. Google rolling agentic checkout into AI Mode and Gemini.</p>
+                </div>
+                <div class="news-item">
+                    <div class="source">Gartner</div>
+                    <h4><a href="https://www.gartner.com/en/articles/strategic-predictions-for-2026" target="_blank">AI skills mandatory for marketers by 2027 →</a></h4>
+                    <p>Plus: predicts $58B productivity shift from AI adoption. Rising +1,200% in our digest trend tracking this week — the biggest single-week spike we've measured.</p>
+                </div>
+                <div class="news-item">
+                    <div class="source">Zalando</div>
+                    <h4><a href="https://marketplace-universe.com/zalando-strategy-2026/" target="_blank">Stock surges 12% on AI content economics →</a></h4>
+                    <p>AI-generated images produce 70% more content at the same cost. Best trading day in two years. The content cost curve is bending fast.</p>
+                </div>
+                <div class="news-item">
+                    <div class="source">Alibaba</div>
+                    <h4><a href="https://aibusiness.com/agentic-ai/alibaba-launches-enterprise-ai-agent-platform" target="_blank">Wukong enterprise AI platform launches →</a></h4>
+                    <p>Multi-agent platform for document editing, approvals, and research. Another signal that the agent paradigm is going global, not just Silicon Valley.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPETITIVE INTEL DASHBOARD -->
+        <div class="section">
+            <div class="section-label">Updated</div>
+            <h2>Competitive Intelligence Dashboard</h2>
+            <p>The agentic commerce stack is forming in real time. Here's who's where.</p>
+
+            <div class="intel-box">
+                <h3>🔍 Key Updates (March 25)</h3>
+                <div class="intel-row">
+                    <div class="company">Amazon</div>
+                    <div class="update">$50B OpenAI deal. Rufus + ChatGPT integration. <strong>New entrant: agentic commerce leader.</strong></div>
+                </div>
+                <div class="intel-row">
+                    <div class="company">Shopify</div>
+                    <div class="update">UCP co-developed with Google. Agentic checkout live. <strong>Infrastructure play confirmed.</strong></div>
+                </div>
+                <div class="intel-row">
+                    <div class="company">Salesforce</div>
+                    <div class="update">"Agentforce Marketing" rebrand. 6,000+ deals. <strong>$1.8B Data Cloud ARR.</strong></div>
+                </div>
+                <div class="intel-row">
+                    <div class="company">Meta</div>
+                    <div class="update">Manus AI live in Ads Manager. <strong>Fastest integration in company history.</strong></div>
+                </div>
+                <div class="intel-row">
+                    <div class="company">SAP</div>
+                    <div class="update">MCP servers for Commerce Cloud (Q2). <strong>ERP-to-agent pipeline forming.</strong></div>
+                </div>
+                <a href="https://futureofpmm.com/competitive-intel" class="intel-link">View the full dashboard →</a>
+            </div>
+        </div>
+
+        <!-- NEWSLETTER WE LIKE -->
+        <div class="section">
+            <div class="section-label">Newsletter We Like</div>
+            <h2>📬 Recommended Read</h2>
+
+            <div class="newsletter-rec">
+                <div class="tag">Commerce + AI</div>
+                <h4>The AI Economy by Allie K. Miller</h4>
+                <div class="author">Former Amazon AI Leader · AI Advisor · 1M+ followers</div>
+                <p>Allie was one of the first to connect the dots between AI infrastructure and commerce at Amazon. Her newsletter breaks down the business implications of AI moves — not just the tech — which is exactly the lens PMMs need right now. Her recent deep dive on Shopify and Google's Universal Commerce Protocol is essential reading alongside this week's issue.</p>
+                <a href="https://theaieconomy.substack.com/" class="follow-link">Follow The AI Economy →</a>
+            </div>
+        </div>
+
+        <!-- CTA: 10x PMM SCORECARD -->
+        <div class="section">
+            <div class="cta-box">
+                <h3>Still Haven't Taken the 10x PMM Scorecard?</h3>
+                <p>Last week we launched an interactive assessment that maps your team's AI maturity across Content, Competitive Intel, and Demand Gen. Over 500 PMMs have taken it so far. The average score? 2.1 out of 5. Six minutes. Eighteen dimensions. See where you stand.</p>
+                <a href="https://futureofpmm.com/10x-scorecard" class="btn">Take the Assessment →</a>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-brand">The Future of PMM</div>
+            <p>Tools, skillsets, and best practices for AI-powered product marketing.</p>
+            <div class="footer-links">
+                <a href="https://futureofpmm.com">Website</a>
+                <a href="https://futureofpmm.com/blog">Articles</a>
+                <a href="https://futureofpmm.com/newsletters">Archive</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

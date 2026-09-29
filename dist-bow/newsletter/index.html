@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Archive | Future of PMM</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.5;
+            background: var(--bg-light);
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a.active {
+            color: var(--sap-blue);
+            font-weight: 500;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--sap-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 3rem 2rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--text-secondary);
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+        
+        /* Filter Bar */
+        .filter-bar {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filter-bar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .filter-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tag {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-tag:hover {
+            border-color: var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        
+        .filter-tag.active {
+            background: var(--sap-light-blue);
+            border-color: var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Newsletter Grid */
+        .newsletter-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .newsletter-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .newsletter-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 2px 8px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .newsletter-num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .newsletter-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--text-primary);
+        }
+        
+        .newsletter-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .newsletter-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .newsletter-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+        }
+        
+        .newsletter-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        /* Year Divider */
+        .year-divider {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 1.5rem 0 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 1.5rem 2rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: var(--text-secondary);
+            margin-left: 1.5rem;
+        }
+        
+        @media (max-width: 700px) {
+            .newsletter-card {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            .newsletter-num {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/" class="logo">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect width="28" height="28" rx="4" fill="#0070f2"/>
+                <path d="M7 14h14M14 7v14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <span>Future of PMM</span>
+        </a>
+        <nav>
+            <a href="/bow/">Book of Work</a>
+            <a href="/learning/">Learn</a>
+            <a href="/resources/">AI Tools</a>
+            <a href="/newsletter/" class="active">Newsletter</a>
+            <a href="#">Resources</a>
+        </nav>
+        <div class="header-right">
+            <div class="avatar">CO</div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumb">
+                <a href="/">Home</a> / Newsletter Archive
+            </div>
+            <h1>Newsletter Archive</h1>
+            <p>30 issues covering AI-powered PMM practices, tools, and workflows. Each issue is tagged to relevant Book of Work areas.</p>
+        </div>
+    </div>
+    
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-bar-inner">
+            <span class="filter-label">Filter by BoW:</span>
+            <div class="filter-tags">
+                <span class="filter-tag active">All</span>
+                <span class="filter-tag">Market Insights</span>
+                <span class="filter-tag">GTM Readiness</span>
+                <span class="filter-tag">Learning Journeys</span>
+                <span class="filter-tag">Content Strategy</span>
+                <span class="filter-tag">Messaging</span>
+                <span class="filter-tag">Launch</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <div class="year-divider">September 2026</div>
+        <div class="newsletter-grid">
+            <a href="/newsletter/issue-030.html" class="newsletter-card">
+                <div class="newsletter-num">#30</div>
+                <div class="newsletter-content">
+                    <h3>Site Migration & What's Next</h3>
+                    <p>Final issue on the pilot site. Looking ahead to the official SAP PMM community hub.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Learning Journeys</span>
+                        <span class="newsletter-tag">Community</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Sep 2</div>
+            </a>
+        </div>
+        
+        <div class="year-divider">August 2026</div>
+        <div class="newsletter-grid">
+            <a href="/newsletter/issue-029.html" class="newsletter-card">
+                <div class="newsletter-num">#29</div>
+                <div class="newsletter-content">
+                    <h3>Units 11-12 Launch</h3>
+                    <p>Influencer/analyst relations and segmentation units complete the 12-unit curriculum.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Learning Journeys</span>
+                        <span class="newsletter-tag">Press/Media</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Aug 20</div>
+            </a>
+            
+            <a href="/newsletter/issue-028.html" class="newsletter-card">
+                <div class="newsletter-num">#28</div>
+                <div class="newsletter-content">
+                    <h3>AI Tool Stack Update</h3>
+                    <p>Approved AI tools for PMM work, governance guidelines, and workflow recommendations.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Learning Journeys</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Aug 19</div>
+            </a>
+            
+            <a href="/newsletter/issue-027.html" class="newsletter-card">
+                <div class="newsletter-num">#27</div>
+                <div class="newsletter-content">
+                    <h3>Curriculum Progress Report</h3>
+                    <p>Milestone: 181 registered users, 351 quiz attempts, 73% pass rate.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Learning Journeys</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Aug 11</div>
+            </a>
+            
+            <a href="/newsletter/issue-026.html" class="newsletter-card">
+                <div class="newsletter-num">#26</div>
+                <div class="newsletter-content">
+                    <h3>Labs Launch: GEO Visibility</h3>
+                    <p>First PMM Lab goes live — test your product's AI visibility with real-time scoring.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Market Insights</span>
+                        <span class="newsletter-tag">Learning Journeys</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Aug 4</div>
+            </a>
+        </div>
+        
+        <div class="year-divider">July 2026</div>
+        <div class="newsletter-grid">
+            <a href="/newsletter/issue-025.html" class="newsletter-card">
+                <div class="newsletter-num">#25</div>
+                <div class="newsletter-content">
+                    <h3>Unit 10: Market Intelligence</h3>
+                    <p>Deep dive into market intelligence practices with AI augmentation.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Market Insights</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jul 27</div>
+            </a>
+            
+            <a href="/newsletter/issue-024.html" class="newsletter-card">
+                <div class="newsletter-num">#24</div>
+                <div class="newsletter-content">
+                    <h3>Unit 9: Buyer Personas</h3>
+                    <p>Building data-driven personas with AI assistance.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Customer Personas</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jul 22</div>
+            </a>
+            
+            <a href="/newsletter/issue-023.html" class="newsletter-card">
+                <div class="newsletter-num">#23</div>
+                <div class="newsletter-content">
+                    <h3>Unit 8: Demand Generation</h3>
+                    <p>AI-powered demand generation strategies and measurement.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Marketing Planning</span>
+                        <span class="newsletter-tag">Campaign Execution</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jul 13</div>
+            </a>
+            
+            <a href="/newsletter/issue-022.html" class="newsletter-card">
+                <div class="newsletter-num">#22</div>
+                <div class="newsletter-content">
+                    <h3>Unit 7: Messaging & Positioning</h3>
+                    <p>Core PMM competency: building differentiated positioning frameworks.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Messaging & Positioning</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jul 6</div>
+            </a>
+        </div>
+        
+        <div class="year-divider">June 2026</div>
+        <div class="newsletter-grid">
+            <a href="/newsletter/issue-021.html" class="newsletter-card">
+                <div class="newsletter-num">#21</div>
+                <div class="newsletter-content">
+                    <h3>Unit 6: Pricing & Packaging</h3>
+                    <p>Commercialization fundamentals with AI-assisted analysis.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Commercialization</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jun 29</div>
+            </a>
+            
+            <a href="/newsletter/issue-020.html" class="newsletter-card">
+                <div class="newsletter-num">#20</div>
+                <div class="newsletter-content">
+                    <h3>Unit 5: Sales Enablement</h3>
+                    <p>Equipping field teams with AI-powered sales tools and battlecards.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">GTM & Field Readiness</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jun 24</div>
+            </a>
+            
+            <a href="/newsletter/issue-019.html" class="newsletter-card">
+                <div class="newsletter-num">#19</div>
+                <div class="newsletter-content">
+                    <h3>Unit 4: Content Strategy</h3>
+                    <p>Building content for two audiences: humans and AI systems.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Customer Journey Content</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jun 15</div>
+            </a>
+            
+            <a href="/newsletter/issue-017.html" class="newsletter-card">
+                <div class="newsletter-num">#17</div>
+                <div class="newsletter-content">
+                    <h3>Unit 3: Competitive Intelligence</h3>
+                    <p>Always-on competitive monitoring with AI assistance.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Market Insights</span>
+                        <span class="newsletter-tag">GTM & Field Readiness</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Jun 4</div>
+            </a>
+        </div>
+        
+        <div class="year-divider">Earlier Issues</div>
+        <div class="newsletter-grid">
+            <a href="/newsletter/issue-014.html" class="newsletter-card">
+                <div class="newsletter-num">#14</div>
+                <div class="newsletter-content">
+                    <h3>Unit 2: GEO Visibility</h3>
+                    <p>AI-powered visibility: how to be found by AI assistants.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Market Insights</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">May 21</div>
+            </a>
+            
+            <a href="/newsletter/issue-001.html" class="newsletter-card">
+                <div class="newsletter-num">#1</div>
+                <div class="newsletter-content">
+                    <h3>Welcome to Future of PMM</h3>
+                    <p>Launching the AI-powered PMM learning community at SAP.</p>
+                    <div class="newsletter-tags">
+                        <span class="newsletter-tag">Learning Journeys</span>
+                    </div>
+                </div>
+                <div class="newsletter-date">Feb 2026</div>
+            </a>
+        </div>
+        
+        <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary);">
+            <a href="/newsletter/archive.html">View all 30 issues →</a>
+        </p>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <span>© 2026 SAP SE. Internal use only.</span>
+        <div>
+            <a href="#">Contact</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+    </footer>
+</body>
+</html>

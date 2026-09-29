@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Insights & Signal Synthesis | Book of Work</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: var(--bg-light);
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a.active {
+            color: var(--sap-blue);
+            font-weight: 500;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--sap-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .page-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--text-secondary);
+        }
+        
+        .area-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+            background: var(--sap-light-blue);
+            color: var(--sap-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        
+        .page-header .lead {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+        
+        /* Layout */
+        .page-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        /* Description */
+        .area-description {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .area-description p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .area-description ul {
+            margin-left: 1.25rem;
+            color: var(--text-secondary);
+        }
+        
+        .area-description li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Articles Grid */
+        .articles-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .article-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            gap: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .article-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 2px 8px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .article-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--sap-light-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.25rem;
+        }
+        
+        .article-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .article-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Labs Section */
+        .labs-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .lab-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+        
+        .lab-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 2px 8px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .lab-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .lab-badge {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: #e8fff0;
+            color: #0a8043;
+        }
+        
+        .lab-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--text-primary);
+        }
+        
+        .lab-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        
+        .sidebar-card h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .sidebar-links {
+            list-style: none;
+        }
+        
+        .sidebar-links li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-links li:last-child {
+            border-bottom: none;
+        }
+        
+        .sidebar-links a {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-links a:hover {
+            color: var(--sap-blue);
+        }
+        
+        .sidebar-links .active {
+            color: var(--sap-blue);
+            font-weight: 500;
+        }
+        
+        /* Key Deliverables */
+        .deliverables-list {
+            list-style: none;
+        }
+        
+        .deliverables-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .deliverables-list li::before {
+            content: "✓";
+            color: var(--sap-blue);
+            font-weight: bold;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 1.5rem 2rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: var(--text-secondary);
+            margin-left: 1.5rem;
+        }
+        
+        @media (max-width: 900px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/" class="logo">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect width="28" height="28" rx="4" fill="#0070f2"/>
+                <path d="M7 14h14M14 7v14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <span>Future of PMM</span>
+        </a>
+        <nav>
+            <a href="/bow/" class="active">Book of Work</a>
+            <a href="/learning/">Learn</a>
+            <a href="/resources/">AI Tools</a>
+            <a href="/newsletter/">Newsletter</a>
+            <a href="#">Resources</a>
+        </nav>
+        <div class="header-right">
+            <div class="avatar">CO</div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="breadcrumb">
+                <a href="/">Home</a> / <a href="/bow/">Book of Work</a> / Market Insights
+            </div>
+            <span class="area-badge">PMM Leads · Area 03</span>
+            <h1>Market Insights &amp; Signal Synthesis</h1>
+            <p class="lead">PMM systematically gathers and synthesizes buyer feedback — adoption blockers, persona priorities, pain points — and routes structured insights back to Product Management.</p>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="page-layout">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Description -->
+            <section class="content-section">
+                <div class="area-description">
+                    <h2>What PMM Owns</h2>
+                    <p>PMM owns insight synthesis and application to positioning, messaging, roadmap feedback, win/loss, and GTM. Research may be run by CMI, AR, Product, or other teams — but PMM synthesizes findings into actionable market intelligence.</p>
+                    
+                    <p><strong>Key responsibilities:</strong></p>
+                    <ul>
+                        <li>Synthesize customer, analyst, competitive, and field insights</li>
+                        <li>Route structured intelligence to Product Management and GTM</li>
+                        <li>Maintain competitive battlecards and win/loss analysis</li>
+                        <li>Track AI visibility and GEO performance</li>
+                        <li>Inform positioning and messaging evolution</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- Articles -->
+            <section class="content-section">
+                <h2>Articles &amp; Guides</h2>
+                <div class="articles-grid">
+                    <a href="/bow/market-insights/articles/competitive-intel/" class="article-card">
+                        <div class="article-icon">📊</div>
+                        <div class="article-content">
+                            <h3>Always-On Competitive Intelligence</h3>
+                            <p>How AI changes the competitive intelligence game from periodic research to continuous monitoring.</p>
+                            <span class="article-meta">8 min read · Unit 3</span>
+                        </div>
+                    </a>
+                    
+                    <a href="/bow/market-insights/articles/geo-visibility/" class="article-card">
+                        <div class="article-icon">🔍</div>
+                        <div class="article-content">
+                            <h3>Is Your Brand AI-Visible?</h3>
+                            <p>Why traditional SEO isn't enough in an age of AI-assisted buyer research.</p>
+                            <span class="article-meta">6 min read · Unit 2</span>
+                        </div>
+                    </a>
+                    
+                    <a href="/bow/market-insights/articles/from-keywords-to-entities/" class="article-card">
+                        <div class="article-icon">🏷️</div>
+                        <div class="article-content">
+                            <h3>From Keywords to Entities</h3>
+                            <p>The shift from keyword optimization to entity-based discovery in AI systems.</p>
+                            <span class="article-meta">7 min read · Unit 2</span>
+                        </div>
+                    </a>
+                    
+                    <a href="/bow/market-insights/articles/battlecards-guide/" class="article-card">
+                        <div class="article-icon">⚔️</div>
+                        <div class="article-content">
+                            <h3>Competitive Battlecards Guide</h3>
+                            <p>Build and maintain effective battlecards that sales teams actually use.</p>
+                            <span class="article-meta">10 min read · Unit 3</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Labs -->
+            <section class="content-section">
+                <h2>Labs (Phase 2)</h2>
+                <div class="labs-grid">
+                    <a href="/learning/labs/geo-visibility/" class="lab-card">
+                        <div class="lab-card-header">
+                            <div>
+                                <h3>GEO Visibility Test</h3>
+                            </div>
+                            <span class="lab-badge">Live</span>
+                        </div>
+                        <p>Score how visible your product is to AI-assisted buyer research. Get specific recommendations to improve discoverability.</p>
+                    </a>
+                    
+                    <a href="/learning/labs/ci-brief/" class="lab-card">
+                        <div class="lab-card-header">
+                            <div>
+                                <h3>CI Brief Generator</h3>
+                            </div>
+                            <span class="lab-badge">Live</span>
+                        </div>
+                        <p>Generate sales-ready competitive briefs with trap questions and objection handlers from your competitor intelligence.</p>
+                    </a>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Navigation -->
+            <div class="sidebar-card">
+                <h3>Book of Work Areas</h3>
+                <ul class="sidebar-links">
+                    <li><a href="/bow/messaging-positioning/">01. Messaging & Positioning</a></li>
+                    <li><a href="/bow/category-vision/">02. Category & Vision</a></li>
+                    <li><a href="/bow/market-insights/" class="active">03. Market Insights</a></li>
+                    <li><a href="/bow/launch-narrative/">04. Launch Narrative</a></li>
+                    <li><a href="/bow/adoption-growth/">05. Adoption & Growth</a></li>
+                    <li><a href="/bow/personas/">06. Customer Personas</a></li>
+                    <li><a href="/bow/commercialization/">07. Commercialization</a></li>
+                    <li><a href="/bow/launch-disclosure/">08. Launch & Disclosure</a></li>
+                </ul>
+            </div>
+            
+            <!-- Key Deliverables -->
+            <div class="sidebar-card">
+                <h3>Key Deliverables</h3>
+                <ul class="deliverables-list">
+                    <li>Competitive battlecards</li>
+                    <li>Win/loss analysis reports</li>
+                    <li>Analyst briefing inputs</li>
+                    <li>GEO visibility audits</li>
+                    <li>Market signal synthesis</li>
+                    <li>Voice of Customer summaries</li>
+                </ul>
+            </div>
+            
+            <!-- Related Learning -->
+            <div class="sidebar-card">
+                <h3>Related Learning</h3>
+                <ul class="sidebar-links">
+                    <li><a href="/learning/curriculum/unit-02/">Unit 2: AI-Powered Visibility</a></li>
+                    <li><a href="/learning/curriculum/unit-03/">Unit 3: Competitive Intelligence</a></li>
+                    <li><a href="/learning/curriculum/unit-10/">Unit 10: Market Intelligence</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <span>© 2026 SAP SE. Internal use only.</span>
+        <div>
+            <a href="#">Contact</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+    </footer>
+</body>
+</html>
