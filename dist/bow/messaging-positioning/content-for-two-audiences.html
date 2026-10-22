@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content for Two Audiences: Writing for Humans and AI | NextGen PMM</title>
+    <meta name="description" content="42% of B2B buyers now start research in AI search tools. Here's how to create content that serves both humans who read and AI systems that parse — with before/after examples.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/messaging-positioning/">Messaging & Positioning</a>
+            </div>
+            <h1>Content for Two Audiences: Writing for Humans and AI</h1>
+            <div class="article-meta">Messaging & Positioning</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <h1>Content for Two Audiences: Writing for Humans and AI</h1>
+        <p>By <a href="#">Chris O'Hara</a> · March 11, 2026</p>
+    </div>
+</section>
+    
+    <article>
+        
+        <p>Here's a number that should change how you think about content:</p>
+        
+        <div>
+            <div>42%</div>
+            <div>of B2B buyers now start research in AI search tools</div>
+            <div>ChatGPT, Claude, Perplexity — before ever visiting a vendor website. Up from 11% twelve months ago.</div>
+        </div>
+        
+        <p>This isn't a trend line. It's a structural shift.</p>
+        
+        <p>For three decades, content strategy has meant one thing: write for humans, optimize for search engines. The search engine was a sorting mechanism that matched human queries to human-readable pages. The audience was always, ultimately, a person.</p>
+        
+        <p><strong>That's no longer true.</strong></p>
+        
+        <p>Now you're writing for two audiences simultaneously:</p>
+        
+        <ol>
+            <li><strong>Humans</strong> who read your blog posts, watch your videos, and scroll your landing pages</li>
+            <li><strong>AI systems</strong> that parse your content to answer questions, make recommendations, and — increasingly — make purchasing decisions on behalf of humans</li>
+        </ol>
+        
+        <p>The skills are different. The formats are different. And the marketers who figure out how to serve both audiences will have a significant advantage over those still optimizing for one.</p>
+        
+        <h2>The Shift: From SEO to GEO</h2>
+        
+        <p>The industry is starting to call this <strong>Generative Engine Optimization (GEO)</strong> — the practice of structuring content so that AI systems can accurately understand and represent it.</p>
+        
+        <p>What works for GEO is fundamentally different from what worked for SEO:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>SEO (Optimizing for Search)</th>
+                    <th>GEO (Optimizing for AI)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Keywords and phrases</td>
+                    <td>Structured data and schemas</td>
+                </tr>
+                <tr>
+                    <td>Backlinks and domain authority</td>
+                    <td>Accuracy and verifiability</td>
+                </tr>
+                <tr>
+                    <td>Click-through optimization</td>
+                    <td>Question-answer clarity</td>
+                </tr>
+                <tr>
+                    <td>Page rank position</td>
+                    <td>Inclusion in AI responses</td>
+                </tr>
+                <tr>
+                    <td>Human readability first</td>
+                    <td>Machine parseability first</td>
+                </tr>
+                <tr>
+                    <td>Optimize for ranking</td>
+                    <td>Optimize for citation</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div>
+            <p><strong>The uncomfortable truth:</strong> A lot of content that ranks well in Google is nearly useless to AI systems. Long-form blog posts with keywords sprinkled throughout don't give AI what it needs — clear, structured, verifiable answers to specific questions.</p>
+        </div>
+        
+        <h2>What AI Systems Actually Need</h2>
+        
+        <p>When an AI assistant tries to answer a question about your product, it's looking for specific types of information in specific formats. Here are the four requirements:</p>
+        
+        <div>
+            <div>
+                <div>1</div>
+                <h4>Structured Product Information</h4>
+                <p>Not "Our enterprise-grade platform delivers ROI" but actual specifications: what the product does, what it integrates with, what it costs, what's included at each tier.</p>
+            </div>
+            <div>
+                <div>2</div>
+                <h4>Clear Question-Answer Pairs</h4>
+                <p>The actual questions buyers ask, with direct answers. Not buried in a 2,000-word blog post — explicitly structured as Q&A.</p>
+            </div>
+            <div>
+                <div>3</div>
+                <h4>Verifiable Facts</h4>
+                <p>AI systems are increasingly checking claims against multiple sources. Unsubstantiated superlatives ("industry-leading," "best-in-class") get filtered out.</p>
+            </div>
+            <div>
+                <div>4</div>
+                <h4>Machine-Readable Formats</h4>
+                <p>JSON-LD schemas, structured data markup, clean APIs. The stuff that feels like "developer work" is becoming marketer-relevant.</p>
+            </div>
+        </div>
+        
+        <div>
+            <div>Related</div>
+            <p><a href="vendor-of-the-week-evertune.html">Evertune</a> helps brands monitor and optimize how they appear in AI-generated search results across ChatGPT, Claude, Gemini, and Perplexity.</p>
+        </div>
+        
+        <h2>Before & After: Product Description</h2>
+        
+        <p>Let's make this concrete. Here's how the same product information looks when written for humans only versus written for both humans and AI.</p>
+        
+        <h3>Example 1: Product Overview</h3>
+        
+        <div>
+            <div>
+                <div>❌ Before (Human-Only)</div>
+                <h4>Acme Analytics Platform</h4>
+                <p>Acme Analytics is the industry-leading business intelligence solution trusted by forward-thinking enterprises worldwide. Our cutting-edge platform leverages advanced AI to deliver actionable insights that drive ROI and transform your data into a competitive advantage.</p>
+                <p>With Acme, you'll unlock the full potential of your data ecosystem and empower your teams to make smarter decisions faster. Join thousands of satisfied customers who have revolutionized their analytics capabilities.</p>
+                <p><em>Contact us for a personalized demo!</em></p>
+            </div>
+            <div>
+                <div>✓ After (Human + AI)</div>
+                <h4>Acme Analytics Platform</h4>
+                <p><strong>What it is:</strong> Self-service business intelligence platform for SQL-based analytics and dashboard creation.</p>
+                <p><strong>Primary use cases:</strong></p>
+                <ul>
+                    <li>Ad-hoc data exploration</li>
+                    <li>Automated reporting dashboards</li>
+                    <li>Embedded analytics for SaaS products</li>
+                </ul>
+                <p><strong>Deployment:</strong> Cloud (AWS, GCP, Azure) or on-premise</p>
+                <p><strong>Integrations:</strong> Snowflake, Databricks, BigQuery, Redshift, PostgreSQL</p>
+                <p><strong>Pricing:</strong> Starts at $70/user/month (Starter), $150/user/month (Pro), custom Enterprise pricing</p>
+            </div>
+        </div>
+        
+        <p><strong>What changed:</strong> The "Before" version is pure marketing copy — emotionally appealing but informationally empty. An AI assistant asked "What does Acme Analytics do and what does it cost?" would struggle to extract a useful answer.</p>
+        
+        <p>The "After" version answers specific questions directly: what it is, what it's for, how it deploys, what it connects to, what it costs. An AI can parse this and accurately represent it.</p>
+        
+        <h3>Example 2: FAQ Structure</h3>
+        
+        <div>
+            <div>
+                <div>❌ Before (Prose-Style FAQ)</div>
+                <h4>Does Acme integrate with Salesforce?</h4>
+                <p>Great question! At Acme, we understand that your CRM is the heart of your business operations. That's why we've built deep, meaningful integrations with the tools you already use and love. Our Salesforce integration is one of our most popular features, allowing you to seamlessly connect your analytics with your customer data for powerful insights that drive growth. Want to learn more about how Acme can supercharge your Salesforce experience? Let's talk!</p>
+            </div>
+            <div>
+                <div>✓ After (AI-Optimized FAQ)</div>
+                <h4>Does Acme integrate with Salesforce?</h4>
+                <p><strong>Yes.</strong> Acme offers native Salesforce integration on Pro and Enterprise plans.</p>
+                <p><strong>What's included:</strong></p>
+                <ul>
+                    <li>Bi-directional data sync (contacts, opportunities, accounts)</li>
+                    <li>Real-time pipeline dashboards</li>
+                    <li>Embedded analytics in Salesforce UI</li>
+                </ul>
+                <p><strong>Setup time:</strong> ~2 hours with admin access</p>
+                <p><strong>Documentation:</strong> <a href="#">docs.acme.com/salesforce</a></p>
+            </div>
+        </div>
+        
+        <p><strong>What changed:</strong> The "Before" version takes 80 words to not answer the question. The "After" version leads with a direct answer (Yes), then provides specifics an AI — or a human — can actually use: what's included, how long it takes, where to learn more.</p>
+        
+        <h3>Example 3: Competitive Positioning</h3>
+        
+        <div>
+            <div>
+                <div>❌ Before (Marketing Positioning)</div>
+                <h4>Why Acme vs. Competitors</h4>
+                <p>While other analytics tools force you into rigid, one-size-fits-all approaches, Acme was built from the ground up to be flexible, powerful, and intuitive. Our customers consistently tell us that switching to Acme was the best decision they ever made for their data stack. Unlike legacy vendors who nickel-and-dime you with hidden fees, Acme offers transparent pricing and unlimited support. We're not just a vendor — we're your partner in data-driven success.</p>
+            </div>
+            <div>
+                <div>✓ After (Structured Comparison)</div>
+                <h4>Acme vs. Tableau vs. Looker</h4>
+                <p><strong>Acme strengths:</strong></p>
+                <ul>
+                    <li>Embedded analytics (white-label for SaaS)</li>
+                    <li>SQL-native workflow</li>
+                    <li>Per-user pricing (no viewer fees)</li>
+                </ul>
+                <p><strong>Tableau strengths:</strong> Desktop authoring, visualization breadth</p>
+                <p><strong>Looker strengths:</strong> LookML modeling, Google Cloud integration</p>
+                <p><strong>Best fit:</strong> Acme for product teams embedding analytics; Tableau for analyst-heavy orgs; Looker for GCP-native companies.</p>
+            </div>
+        </div>
+        
+        <p><strong>What changed:</strong> The "Before" version makes vague claims with no specifics. An AI asked "How does Acme compare to Tableau?" would get nothing useful.</p>
+        
+        <p>The "After" version names competitors directly, acknowledges their strengths honestly, and provides clear guidance on fit. This is exactly what an AI needs to give an accurate comparison — and what a human evaluator actually wants to know.</p>
+        
+        <h2>The Schema Layer: Making It Machine-Readable</h2>
+        
+        <p>Beyond writing style, there's a technical layer that makes content truly AI-accessible: structured data markup. This is how you tell AI systems — explicitly — what your content means.</p>
+        
+        <div>
+            <pre><span>// Schema.org markup for a SaaS product page</span>
+{
+  <span>"@context"</span>: <span>"https://schema.org"</span>,
+  <span>"@type"</span>: <span>"SoftwareApplication"</span>,
+  <span>"name"</span>: <span>"Acme Analytics Platform"</span>,
+  <span>"applicationCategory"</span>: <span>"BusinessApplication"</span>,
+  <span>"operatingSystem"</span>: <span>"Web-based (Cloud)"</span>,
+  <span>"offers"</span>: {
+    <span>"@type"</span>: <span>"AggregateOffer"</span>,
+    <span>"lowPrice"</span>: <span>70</span>,
+    <span>"highPrice"</span>: <span>150</span>,
+    <span>"priceCurrency"</span>: <span>"USD"</span>,
+    <span>"priceSpecification"</span>: {
+      <span>"@type"</span>: <span>"UnitPriceSpecification"</span>,
+      <span>"billingDuration"</span>: <span>"P1M"</span>,
+      <span>"unitText"</span>: <span>"per user"</span>
+    }
+  },
+  <span>"featureList"</span>: [
+    <span>"SQL-based analytics"</span>,
+    <span>"Dashboard creation"</span>,
+    <span>"Embedded analytics"</span>,
+    <span>"Salesforce integration"</span>
+  ]
+}</pre>
+        </div>
+        
+        <p>This markup sits invisibly in your page's HTML, but it tells AI systems exactly what your product is, what it costs, and what it does — in a format they can parse programmatically.</p>
+        
+        <h2>The Dual-Audience Framework</h2>
+        
+        <p>Here's how to think about creating content that serves both audiences:</p>
+        
+        <h3>Layer 1: Human-First Content</h3>
+        <p>This is what you're already doing. Narrative storytelling, brand voice, emotional resonance, visual design. The content that makes humans want to engage, trust, and buy. <strong>Don't abandon this.</strong></p>
+        
+        <h3>Layer 2: Machine-Readable Substrate</h3>
+        <p>Underneath the human-readable layer, add structured data that AI can parse:</p>
+        <ul>
+            <li>Schema.org markup on product pages</li>
+            <li>Structured FAQs in addition to prose explanations</li>
+            <li>Clean JSON for product specifications</li>
+            <li>Consistent taxonomy and naming conventions</li>
+        </ul>
+        
+        <h3>Layer 3: API-Ready Data</h3>
+        <p>For organizations ready to go further: actual endpoints that AI agents can query for real-time information. Pricing APIs, inventory checks, integration compatibility — the infrastructure that lets agents transact, not just research.</p>
+        
+        <div>
+            <p><strong>The key insight:</strong> You're not replacing human-focused content with machine-focused content. You're adding a layer underneath it. The blog post still exists for the human reader; the structured data exists for the AI agent that needs to pull a specific fact from it.</p>
+        </div>
+        
+        <h2>Test Your Current AI Visibility</h2>
+        
+        <p>Before you start optimizing, establish a baseline. Here's a simple audit:</p>
+        
+        <ol>
+            <li><strong>Query three AI assistants</strong> — Ask Claude, ChatGPT, and Perplexity: "What is [your product]? How does it compare to [competitor]? What does it cost?"</li>
+            <li><strong>Score the responses</strong> — Are they accurate? Complete? Do they mention your key differentiators? Or do they hallucinate, omit you entirely, or get basic facts wrong?</li>
+            <li><strong>Identify the gaps</strong> — Where is the AI getting it wrong? That's where your content is failing to communicate clearly.</li>
+            <li><strong>Check your competitors</strong> — How do they show up in the same queries? Better or worse than you?</li>
+        </ol>
+        
+        <p>This 30-minute exercise will tell you exactly where to focus your GEO efforts.</p>
+        
+        <div>
+            <h3>Five Things to Do This Week</h3>
+            <ol>
+                <li><strong>Run the AI visibility audit above.</strong> Document the gaps.</li>
+                <li><strong>Pick one product page</strong> and add Schema.org markup. Most CMS platforms make this straightforward.</li>
+                <li><strong>Rewrite your FAQ page</strong> with direct answers first, context second. Lead with "Yes" or "No" when appropriate.</li>
+                <li><strong>Create a "machine-readable" version of your battlecard</strong> — feature comparisons as tables, differentiators as bullet lists, not paragraphs.</li>
+                <li><strong>Talk to your dev team about structured data.</strong> Ask what's already implemented and what's on the roadmap.</li>
+            </ol>
+        </div>
+        
+        <div>
+            <div>The Bottom Line</div>
+            <p>The content strategy that worked for the last decade — write for humans, optimize for Google — is becoming incomplete. The new job is writing for two audiences simultaneously: humans who need to be persuaded and AI systems who need to be informed. The marketers who figure this out early will have an advantage. Their products will show up accurately in AI recommendations. Their competitive positioning will be reflected correctly when agents compare options. The ones who wait will find themselves invisible to a growing share of the buyer's journey — not because their content is bad, but because it was only written for one audience.</p>
+        </div>
+        
+    </article>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

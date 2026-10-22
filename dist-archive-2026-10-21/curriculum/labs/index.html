@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Labs | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--sap-orange) 100%);
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.2rem; opacity: 0.95; max-width: 700px; margin: 0 auto; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; }
+        
+        .labs-intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .labs-intro h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .labs-intro p { color: #555; max-width: 600px; margin: 0 auto; }
+        
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .lab-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+        .lab-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .lab-card.coming-soon {
+            opacity: 0.7;
+            cursor: default;
+        }
+        .lab-card.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .lab-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .lab-unit {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--sap-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .lab-card h3 {
+            font-size: 1.15rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.75rem;
+        }
+        
+        .lab-card p {
+            font-size: 0.9rem;
+            color: #666;
+            flex: 1;
+        }
+        
+        .lab-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        .lab-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .lab-badge.active { background: var(--green); color: white; }
+        .lab-badge.soon { background: var(--light-gray); color: #666; }
+        
+        .lab-output {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>🔬 AI Labs</h1>
+    <p>Apply what you've learned to real projects. Input your work, get AI-powered analysis and deliverables you can use Monday morning.</p>
+</section>
+
+<main>
+    <a href="/curriculum/" class="back-link">← Back to Curriculum</a>
+    
+    <div class="labs-intro">
+        <h2>Hands-On Practice</h2>
+        <p>Each lab takes concepts from the curriculum and turns them into actionable outputs for your actual products, content, and competitive challenges.</p>
+    </div>
+    
+    <div class="labs-grid">
+        
+        <a href="geo-visibility-v2.html" class="lab-card" style="border: 2px solid #0070F2; background: linear-gradient(135deg, #EFF6FF 0%, white 100%);">
+            <div class="lab-icon">📊</div>
+            <div class="lab-unit" style="color: #0070F2;">⭐ Featured Lab</div>
+            <h3>GEO Visibility Scorecard</h3>
+            <p>Test visibility across ChatGPT, Claude, Perplexity & Gemini. Get scores per LLM, competitor comparison, and actionable rewrites. Multi-LLM analysis in one click.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active" style="background: #0070F2;">NEW</span>
+                <span class="lab-output">📊 LLM Scorecard</span>
+            </div>
+        </a>
+        
+        <a href="activity-audit.html" class="lab-card">
+            <div class="lab-icon">🧠</div>
+            <div class="lab-unit">Unit 1: AI Impact</div>
+            <h3>PMM Activity Audit</h3>
+            <p>Analyze your weekly PMM activities for AI transformation potential. Get a prioritized automation roadmap with specific tool recommendations.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Automation Plan</span>
+            </div>
+        </a>
+        
+        <a href="geo-visibility.html" class="lab-card">
+            <div class="lab-icon">🔍</div>
+            <div class="lab-unit">Unit 2: Visibility</div>
+            <h3>GEO Visibility Test</h3>
+            <p>Test how visible your product is to AI-assisted buyer research. Get a visibility score and specific recommendations to improve discoverability.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Analysis Report</span>
+            </div>
+        </a>
+        
+        <a href="battlecoach.html" class="lab-card">
+            <div class="lab-icon">⚔️</div>
+            <div class="lab-unit">Unit 3: Competitive</div>
+            <h3>BattleCoach</h3>
+            <p>Turn competitive chaos into winning plays. Input a deal briefing, get battle-ready artifacts using AREA (defensive) and IDEA (offensive) frameworks.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Battle Plays</span>
+            </div>
+        </a>
+        
+        <a href="ci-brief.html" class="lab-card">
+            <div class="lab-icon">📋</div>
+            <div class="lab-unit">Unit 3: Competitive</div>
+            <h3>CI Brief Generator</h3>
+            <p>Input competitor intel and deal context. Get a sales-ready competitive brief with trap-setting questions and objection handlers.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Sales Brief</span>
+            </div>
+        </a>
+        
+        <a href="messaging.html" class="lab-card">
+            <div class="lab-icon">✨</div>
+            <div class="lab-unit">Unit 5: Sales Enablement</div>
+            <h3>Messaging Framework Generator</h3>
+            <p>Create compelling value propositions and complete messaging frameworks. Get persona variants, elevator pitches, and objection handlers.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Messaging House</span>
+            </div>
+        </a>
+        
+        <a href="enablement-bundler.html" class="lab-card">
+            <div class="lab-icon">📦</div>
+            <div class="lab-unit">Unit 5: Sales Enablement</div>
+            <h3>Enablement Bundler</h3>
+            <p>Assemble region- and persona-tuned sales kits. Input deal context, get talk tracks, proof points, objection handlers, and recommended assets.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Sales Kit</span>
+            </div>
+        </a>
+        
+        <a href="content-localization.html" class="lab-card">
+            <div class="lab-icon">🌍</div>
+            <div class="lab-unit">Unit 6: Content</div>
+            <h3>Content Localization Agent</h3>
+            <p>Adapt approved content across regions and languages. Preserves messaging intent while localizing tone, terminology, and cultural fit.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Localized Content</span>
+            </div>
+        </a>
+        
+        <a href="launch-planner.html" class="lab-card">
+            <div class="lab-icon">🚀</div>
+            <div class="lab-unit">Unit 6: Content</div>
+            <h3>Launch Planner</h3>
+            <p>From idea to launch day. Input project criteria, get a complete Bill of Materials with T-minus timeline, RACI matrix, and risk register.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Launch BOM</span>
+            </div>
+        </a>
+        
+        <a href="pricing-rationale.html" class="lab-card">
+            <div class="lab-icon">💰</div>
+            <div class="lab-unit">Unit 8: Pricing</div>
+            <h3>Pricing Rationale Builder</h3>
+            <p>Build executive-ready ROI analyses and business cases. Quantify value, compare alternatives, and arm your champion for procurement.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 ROI Document</span>
+            </div>
+        </a>
+        
+        <a href="analyst-briefing.html" class="lab-card">
+            <div class="lab-icon">📊</div>
+            <div class="lab-unit">Unit 4: Evaluators</div>
+            <h3>Analyst Briefing Simulator</h3>
+            <p>Prepare for Gartner, Forrester, or IDC briefings on SAP Application Data Clouds vs. Salesforce, Oracle, Workday. Get predicted questions and counter-evidence.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Briefing Prep</span>
+            </div>
+        </a>
+        
+        <a href="segment-builder.html" class="lab-card">
+            <div class="lab-icon">🎯</div>
+            <div class="lab-unit">Unit 9: Segmentation</div>
+            <h3>Segment Builder</h3>
+            <p>Build ICP profiles and segment definitions with AI assistance. Define your ideal customer, map buying committees, and generate targeted messaging.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 ICP Profile</span>
+            </div>
+        </a>
+        
+        <a href="persona-builder.html" class="lab-card">
+            <div class="lab-icon">👤</div>
+            <div class="lab-unit">Unit 9: Segmentation</div>
+            <h3>Persona Builder</h3>
+            <p>Create detailed buyer personas for each role in the buying committee. Generate pain points, motivations, and content preferences.</p>
+            <div class="lab-meta">
+                <span class="lab-badge active">Active</span>
+                <span class="lab-output">📄 Buyer Personas</span>
+            </div>
+        </a>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">🤖</div>
+            <div class="lab-unit">Unit 4: Evaluators</div>
+            <h3>Agent Positioning Test</h3>
+            <p>Run the "Agent Test" on your product page. See how an AI procurement agent would evaluate your positioning and get specific rewrites.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Positioning Audit</span>
+            </div>
+        </div>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">📝</div>
+            <div class="lab-unit">Unit 6: Content</div>
+            <h3>Content Layer Audit</h3>
+            <p>Classify your recent content into Commodity/Strategic/Signature layers. Get a reallocation plan to shift effort toward higher-impact work.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Content Plan</span>
+            </div>
+        </div>
+        
+        <div class="lab-card coming-soon">
+            <div class="lab-icon">🎬</div>
+            <div class="lab-unit">Unit 7: Demos</div>
+            <h3>Demo Narrative Builder</h3>
+            <p>Transform your product features into compelling transformation stories. Generate 3 ready-to-use demo narratives for your ICP.</p>
+            <div class="lab-meta">
+                <span class="lab-badge soon">Coming Soon</span>
+                <span class="lab-output">📄 Demo Scripts</span>
+            </div>
+        </div>
+        
+        <!-- Suggest a Lab Card -->
+        <a href="suggest-a-lab.html" class="lab-card suggest-card">
+            <div class="lab-icon">💡</div>
+            <div class="lab-unit">Your Ideas</div>
+            <h3>Suggest a Lab</h3>
+            <p>Have an idea for a new AI lab? Walk through our guided wizard and help us build the tools you actually need.</p>
+            <div class="lab-meta">
+                <span class="lab-badge suggest">Interactive</span>
+                <span class="lab-output">📝 Submit Idea</span>
+            </div>
+        </a>
+        
+    </div>
+    
+    <!-- LOB Customization Section -->
+    <section class="feedback-section">
+        <div class="feedback-header">
+            <h2>🎯 Customize Labs for Your Line of Business</h2>
+            <p>Our labs use general SAP examples by default. Request a customized version tailored to your specific product line.</p>
+        </div>
+        
+        <div class="feedback-form" id="lobCustomizeForm">
+            <div class="form-row">
+                <label>Which lab would you like customized?</label>
+                <select id="labSelect" class="form-select">
+                    <option value="">Select a lab...</option>
+                    <option value="positioning-stack">Positioning Stack Generator</option>
+                    <option value="battlecoach">BattleCoach</option>
+                    <option value="ci-brief">CI Brief Generator</option>
+                    <option value="messaging">Messaging Framework Generator</option>
+                    <option value="enablement-bundler">Enablement Bundler</option>
+                    <option value="content-localization">Content Localization Agent</option>
+                    <option value="launch-planner">Launch Planner</option>
+                    <option value="pricing-rationale">Pricing Rationale Builder</option>
+                    <option value="analyst-briefing">Analyst Briefing Simulator</option>
+                    <option value="segment-builder">Segment Builder</option>
+                    <option value="persona-builder">Persona Builder</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label>Which Line of Business?</label>
+                <div class="lob-chips" id="lobChips">
+                    <button type="button" class="lob-chip" data-lob="SuccessFactors">SuccessFactors</button>
+                    <button type="button" class="lob-chip" data-lob="Concur">Concur</button>
+                    <button type="button" class="lob-chip" data-lob="Ariba">Ariba</button>
+                    <button type="button" class="lob-chip" data-lob="S/4HANA">S/4HANA</button>
+                    <button type="button" class="lob-chip" data-lob="Sales & Service">Sales & Service</button>
+                    <button type="button" class="lob-chip" data-lob="Commerce">Commerce</button>
+                    <button type="button" class="lob-chip" data-lob="Emarsys">Marketing (Emarsys)</button>
+                    <button type="button" class="lob-chip" data-lob="BTP">BTP</button>
+                    <button type="button" class="lob-chip" data-lob="Analytics">Analytics</button>
+                    <button type="button" class="lob-chip" data-lob="Signavio">Signavio</button>
+                    <button type="button" class="lob-chip" data-lob="Fieldglass">Fieldglass</button>
+                    <button type="button" class="lob-chip" data-lob="IBP">IBP</button>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <label>What specific customizations would help? (optional)</label>
+                <textarea id="customNotes" class="form-textarea" placeholder="E.g., Include Workday and ADP as competitors, use HR/talent management terminology, reference SuccessFactors-specific integrations..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <label>Your Name (optional)</label>
+                <input type="text" id="customName" class="form-input" placeholder="So we can follow up">
+            </div>
+            
+            <button type="button" class="submit-btn" id="submitCustomize" disabled>
+                <span>📨 Submit Request</span>
+            </button>
+            
+            <div class="success-message" id="customizeSuccess" style="display: none;">
+                ✅ Thanks! Your customization request has been submitted. We'll prioritize based on demand.
+            </div>
+        </div>
+    </section>
+</main>
+
+<style>
+    .suggest-card {
+        background: linear-gradient(135deg, #4472C4 0%, #44546A 100%) !important;
+        color: white !important;
+    }
+    .suggest-card h3, .suggest-card p, .suggest-card .lab-unit { color: white !important; }
+    .suggest-card .lab-unit { opacity: 0.85; }
+    .suggest-card:hover { transform: translateY(-4px); }
+    .lab-badge.suggest {
+        background: rgba(255,255,255,0.2) !important;
+        color: white !important;
+    }
+    
+    .feedback-section {
+        margin-top: 4rem;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .feedback-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .feedback-header h2 {
+        font-size: 1.5rem;
+        color: #44546A;
+        margin-bottom: 0.5rem;
+    }
+    .feedback-header p {
+        color: #666;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .form-row {
+        margin-bottom: 1.5rem;
+    }
+    .form-row label {
+        display: block;
+        font-weight: 600;
+        color: #44546A;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .form-select, .form-input, .form-textarea {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+    }
+    .form-select:focus, .form-input:focus, .form-textarea:focus {
+        outline: none;
+        border-color: #4472C4;
+    }
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .lob-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .lob-chip {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 50px;
+        background: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: inherit;
+        transition: all 0.2s;
+    }
+    .lob-chip:hover { border-color: #4472C4; }
+    .lob-chip.selected {
+        border-color: #4472C4;
+        background: #4472C4;
+        color: white;
+    }
+    
+    .submit-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 1rem;
+        background: #4472C4;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .submit-btn:hover:not(:disabled) { background: #3b5998; }
+    .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .success-message {
+        text-align: center;
+        padding: 1rem;
+        background: #ecfdf5;
+        border: 1px solid #10b981;
+        border-radius: 8px;
+        color: #065f46;
+        margin-top: 1rem;
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    // LOB Chip selection
+    let selectedLOB = '';
+    document.querySelectorAll('.lob-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.lob-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            selectedLOB = chip.dataset.lob;
+            updateSubmitState();
+        });
+    });
+    
+    // Form validation
+    function updateSubmitState() {
+        const labSelected = document.getElementById('labSelect').value !== '';
+        const lobSelected = selectedLOB !== '';
+        document.getElementById('submitCustomize').disabled = !(labSelected && lobSelected);
+    }
+    
+    document.getElementById('labSelect').addEventListener('change', updateSubmitState);
+    
+    // Submit
+    document.getElementById('submitCustomize').addEventListener('click', () => {
+        const data = {
+            timestamp: new Date().toISOString(),
+            lab: document.getElementById('labSelect').value,
+            lob: selectedLOB,
+            notes: document.getElementById('customNotes').value,
+            name: document.getElementById('customName').value
+        };
+        
+        fetch('/.netlify/functions/lab-feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'lob-customize', ...data })
+        });
+        
+        // Show success
+        document.getElementById('lobCustomizeForm').style.display = 'none';
+        document.getElementById('customizeSuccess').style.display = 'block';
+    });
+</script>
+
+<script src="/assets/js/user-menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO to GEO Matching | SAP Data & Analytics Product Marketing</title>
+    <meta name="description" content="Interactive exercise: Drag SEO concepts to their GEO equivalents. From ranking to citation, from keywords to entity authority.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--dark-slate) 0%, #1e3a5f 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover { color: white; }
+        
+        .exercise-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .exercise-header {
+            background: linear-gradient(135deg, var(--dark-slate) 0%, var(--sap-blue) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .exercise-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .exercise-body {
+            padding: 2rem;
+        }
+        
+        .instructions {
+            background: #f0f7ff;
+            border-left: 4px solid var(--sap-blue);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .instructions h3 {
+            font-size: 0.9rem;
+            color: var(--sap-blue);
+            margin-bottom: 0.5rem;
+        }
+        .instructions p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 0;
+        }
+        
+        .matching-game {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .column {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .column-header {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .column-header.seo {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        .column-header.geo {
+            background: var(--sap-orange);
+            color: white;
+        }
+        
+        /* Draggable SEO items */
+        .drag-item {
+            padding: 0.875rem 1rem;
+            background: white;
+            border: 2px solid var(--sap-blue);
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .drag-item:hover {
+            box-shadow: 0 4px 12px rgba(68, 114, 196, 0.3);
+            transform: translateY(-2px);
+        }
+        .drag-item:active {
+            cursor: grabbing;
+        }
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        .drag-item .label {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .drag-item .desc {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.2rem;
+        }
+        
+        /* Drop zones */
+        .drop-zone {
+            min-height: 70px;
+            border: 2px dashed var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+            background: #fafafa;
+        }
+        .drop-zone.drag-over {
+            border-color: var(--sap-orange);
+            background: #fff5ee;
+            box-shadow: 0 0 0 3px rgba(237, 125, 49, 0.2);
+        }
+        .drop-zone.matched {
+            border: 2px solid var(--green);
+            background: #e8f5e9;
+        }
+        .drop-zone.incorrect {
+            border-color: #dc3545;
+            background: #ffebee;
+            animation: shake 0.4s ease;
+        }
+        
+        .drop-label {
+            text-align: center;
+            padding: 0.5rem;
+            color: #999;
+            font-size: 0.8rem;
+        }
+        .drop-label .geo-label {
+            font-weight: 600;
+            color: var(--sap-orange);
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        
+        /* Dropped item styling */
+        .drop-zone .drag-item {
+            margin: 0.5rem;
+            width: calc(100% - 1rem);
+            border-color: var(--green);
+            background: #e8f5e9;
+            cursor: default;
+        }
+        .drop-zone .drag-item:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Arrow column */
+        .arrow-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding-top: 3.5rem;
+            gap: 2.35rem;
+        }
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--sap-orange);
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+        .btn-secondary:hover { background: #d5d4d4; }
+        
+        .score {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+        .score strong {
+            color: var(--sap-blue);
+            font-size: 1.1rem;
+        }
+        
+        .result {
+            text-align: center;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        
+        /* Touch-friendly styles */
+        @media (pointer: coarse) {
+            .drag-item {
+                padding: 1rem 1.25rem;
+            }
+            .drop-zone {
+                min-height: 80px;
+            }
+        }
+        
+        @media (max-width: 750px) {
+            body { padding: 1rem; }
+            .matching-game { 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            .arrow-column { 
+                flex-direction: row;
+                padding: 1rem 0;
+                gap: 1rem;
+            }
+            .arrow { transform: rotate(90deg); }
+            .column { max-width: 100%; width: 100%; }
+            .exercise-header h1 { font-size: 1.4rem; }
+        }
+    
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: #3b82f6; background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; margin: 0; }
+        .nav-menu a:hover { background: #f3f4f6; color: #3b82f6; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: #1e3a5f; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            .logo img { height: 70px !important; }
+            nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: #1e3a5f; flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { display: flex !important; right: 0 !important; }
+            nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; padding: 0.75rem 0 !important; background: transparent !important; }
+            nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: white !important; }
+            .nav-menu { position: static; background: transparent; border: none; box-shadow: none; opacity: 1; visibility: visible; transform: none; padding-left: 1rem; }
+            .nav-menu a { color: rgba(255,255,255,0.7) !important; padding: 0.5rem 0; }
+            .nav-menu a:hover { background: transparent; color: white !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/curriculum/chapter-01/" class="back-link">← Back to Chapter 1</a>
+    
+    <div class="exercise-card">
+        <div class="exercise-header">
+            <h1>🔄 From SEO to GEO</h1>
+            <p>Drag each SEO concept to its GEO equivalent</p>
+        </div>
+        
+        <div class="exercise-body">
+            <div class="instructions">
+                <h3>How to Play</h3>
+                <p>Drag the SEO concepts from the left and drop them onto their matching GEO equivalent on the right. Match all 6 to complete the challenge!</p>
+            </div>
+            
+            <div class="matching-game">
+                <div class="column" id="seo-column">
+                    <div class="column-header seo">SEO Concepts</div>
+                    <div class="drag-item" draggable="true" data-match="1">
+                        <div class="label">Ranking on a list</div>
+                        <div class="desc">Optimize for position #1</div>
+                    </div>
+                    <div class="drag-item" draggable="true" data-match="2">
+                        <div class="label">Keywords</div>
+                        <div class="desc">Compete on search terms</div>
+                    </div>
+                    <div class="drag-item" draggable="true" data-match="3">
+                        <div class="label">Backlinks</div>
+                        <div class="desc">Build authority through links</div>
+                    </div>
+                    <div class="drag-item" draggable="true" data-match="4">
+                        <div class="label">Title tag</div>
+                        <div class="desc">What matters for ranking</div>
+                    </div>
+                    <div class="drag-item" draggable="true" data-match="5">
+                        <div class="label">More content helps</div>
+                        <div class="desc">Volume effect</div>
+                    </div>
+                    <div class="drag-item" draggable="true" data-match="6">
+                        <div class="label">Blue links</div>
+                        <div class="desc">What buyers see</div>
+                    </div>
+                </div>
+                
+                <div class="arrow-column">
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                    <div class="arrow">→</div>
+                </div>
+                
+                <div class="column" id="geo-column">
+                    <div class="column-header geo">GEO Equivalents</div>
+                    <div class="drop-zone" data-match="1">
+                        <div class="drop-label">
+                            <span class="geo-label">Citation in a synthesis</span>
+                            Optimize for being quoted
+                        </div>
+                    </div>
+                    <div class="drop-zone" data-match="2">
+                        <div class="drop-label">
+                            <span class="geo-label">Entity authority</span>
+                            Compete on expertise signals
+                        </div>
+                    </div>
+                    <div class="drop-zone" data-match="3">
+                        <div class="drop-label">
+                            <span class="geo-label">Structured proof points</span>
+                            Build authority through data
+                        </div>
+                    </div>
+                    <div class="drop-zone" data-match="4">
+                        <div class="drop-label">
+                            <span class="geo-label">Schema markup</span>
+                            What matters for citation
+                        </div>
+                    </div>
+                    <div class="drop-zone" data-match="5">
+                        <div class="drop-label">
+                            <span class="geo-label">Better structure helps</span>
+                            Quality over quantity
+                        </div>
+                    </div>
+                    <div class="drop-zone" data-match="6">
+                        <div class="drop-label">
+                            <span class="geo-label">Synthesized answer</span>
+                            What buyers see
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="score">Matches: <strong id="matchCount">0</strong> / 6</div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="resetGame()">🔄 Reset</button>
+            </div>
+            
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let matchedPairs = 0;
+const totalPairs = 6;
+let draggedItem = null;
+
+// Desktop drag events
+document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragend', handleDragEnd);
+});
+
+document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', handleDragOver);
+    zone.addEventListener('dragleave', handleDragLeave);
+    zone.addEventListener('drop', handleDrop);
+});
+
+function handleDragStart(e) {
+    draggedItem = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.dataset.match);
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('drag-over');
+    });
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!this.classList.contains('matched')) {
+        this.classList.add('drag-over');
+    }
+}
+
+function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    this.classList.remove('drag-over');
+    
+    if (this.classList.contains('matched') || !draggedItem) return;
+    
+    const dragMatch = draggedItem.dataset.match;
+    const dropMatch = this.dataset.match;
+    
+    if (dragMatch === dropMatch) {
+        // Correct match!
+        this.classList.add('matched');
+        this.innerHTML = '';
+        
+        const clonedItem = draggedItem.cloneNode(true);
+        clonedItem.draggable = false;
+        clonedItem.classList.remove('dragging');
+        this.appendChild(clonedItem);
+        
+        draggedItem.remove();
+        matchedPairs++;
+        updateScore();
+        
+        if (matchedPairs === totalPairs) {
+            showResult();
+        }
+    } else {
+        // Wrong match - shake and reject
+        this.classList.add('incorrect');
+        setTimeout(() => {
+            this.classList.remove('incorrect');
+        }, 500);
+    }
+    
+    draggedItem = null;
+}
+
+// Touch support for mobile
+let touchItem = null;
+let touchClone = null;
+let touchStartX, touchStartY;
+
+document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('touchstart', handleTouchStart, { passive: false });
+    item.addEventListener('touchmove', handleTouchMove, { passive: false });
+    item.addEventListener('touchend', handleTouchEnd);
+});
+
+function handleTouchStart(e) {
+    if (this.closest('.drop-zone')) return; // Already matched
+    
+    touchItem = this;
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    
+    // Create visual clone for dragging
+    touchClone = this.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.left = (touch.clientX - 100) + 'px';
+    touchClone.style.top = (touch.clientY - 30) + 'px';
+    touchClone.style.width = '200px';
+    touchClone.style.opacity = '0.9';
+    touchClone.style.zIndex = '1000';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+    document.body.appendChild(touchClone);
+    
+    this.classList.add('dragging');
+}
+
+function handleTouchMove(e) {
+    if (!touchItem || !touchClone) return;
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - 100) + 'px';
+    touchClone.style.top = (touch.clientY - 30) + 'px';
+    
+    // Highlight drop zone under finger
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = elementBelow?.closest('.drop-zone');
+    
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    if (dropZone && !dropZone.classList.contains('matched')) {
+        dropZone.classList.add('drag-over');
+    }
+}
+
+function handleTouchEnd(e) {
+    if (!touchItem) return;
+    
+    touchItem.classList.remove('dragging');
+    
+    if (touchClone) {
+        touchClone.remove();
+        touchClone = null;
+    }
+    
+    // Find drop zone under last touch position
+    const touch = e.changedTouches[0];
+    const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropZone = elementBelow?.closest('.drop-zone');
+    
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    
+    if (dropZone && !dropZone.classList.contains('matched')) {
+        const dragMatch = touchItem.dataset.match;
+        const dropMatch = dropZone.dataset.match;
+        
+        if (dragMatch === dropMatch) {
+            // Correct!
+            dropZone.classList.add('matched');
+            dropZone.innerHTML = '';
+            
+            const clonedItem = touchItem.cloneNode(true);
+            clonedItem.draggable = false;
+            dropZone.appendChild(clonedItem);
+            
+            touchItem.remove();
+            matchedPairs++;
+            updateScore();
+            
+            if (matchedPairs === totalPairs) {
+                showResult();
+            }
+        } else {
+            // Wrong
+            dropZone.classList.add('incorrect');
+            setTimeout(() => dropZone.classList.remove('incorrect'), 500);
+        }
+    }
+    
+    touchItem = null;
+}
+
+function updateScore() {
+    document.getElementById('matchCount').textContent = matchedPairs;
+}
+
+function showResult() {
+    const result = document.getElementById('result');
+    result.className = 'result show success';
+    result.innerHTML = '🎉 Perfect! You\'ve mastered the SEO → GEO shift!<br><a href="/curriculum/chapter-01/" style="color: inherit;">← Continue reading Chapter 1</a>';
+}
+
+function resetGame() {
+    matchedPairs = 0;
+    updateScore();
+    document.getElementById('result').className = 'result';
+    
+    // Restore original state
+    location.reload();
+}
+</script>
+
+</body>
+</html>

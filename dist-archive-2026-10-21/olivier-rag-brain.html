@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User of the Week: Olivier Duvelleroy — Building a Personal AI Brain with RAG | Future of PMM</title>
+    <meta name="description" content="Meet Olivier Duvelleroy, who spent a rainy Saturday building his own RAG system to query 1,000+ research documents. A masterclass in AI-augmented knowledge work.">
+    <!-- Schema.org Article markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "User of the Week: Olivier Duvelleroy — Building a Personal AI Brain with RAG",
+      "description": "Meet Olivier Duvelleroy, who spent a rainy Saturday building his own RAG system to query 1,000+ research documents.",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "url": "https://chrisohara.com",
+        "jobTitle": "VP of Product Marketing",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "SAP"
+        }
+      },
+      "datePublished": "2026-02-20",
+      "dateModified": "2026-04-23",
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://futureofpmm.com/olivier-rag-brain.html"
+      }
+    }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #fefefe;
+            --accent: #6366f1;
+            --accent-light: #e0e7ff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            font-size: 1.125rem;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: #fff;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            max-width: 800px;
+            margin: 0 auto 1rem;
+            line-height: 1.2;
+        }
+        .header .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .profile-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin: -2rem auto 3rem;
+            border-radius: 12px;
+            max-width: 720px;
+            position: relative;
+            z-index: 10;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            font-family: 'Inter', sans-serif;
+        }
+        .profile-info h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            margin: 0 0 0.25rem;
+        }
+        .profile-info .role {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .profile-info p {
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        .content {
+            padding: 2rem 0 4rem;
+        }
+        .content p {
+            margin-bottom: 1.5rem;
+        }
+        .content h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 3rem 0 1rem;
+            color: var(--ink);
+        }
+        .content h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--ink);
+        }
+        .content ul, .content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+        .content a {
+            color: var(--accent);
+        }
+        
+        .pullquote {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--accent);
+            line-height: 1.4;
+            margin: 2.5rem 0;
+            padding: 0 2rem;
+            text-align: center;
+            border-left: none;
+        }
+        
+        .highlight-box {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight-box p {
+            margin: 0;
+        }
+        
+        .quote-box {
+            background: #f8fafc;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .quote-box p {
+            margin: 0;
+            font-style: italic;
+        }
+        
+        .cta-box {
+            background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+            color: white;
+            padding: 2rem;
+            margin: 3rem 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .cta-box h3 {
+            color: white;
+            margin: 0 0 0.75rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .cta-box p {
+            margin: 0 0 1.25rem;
+            opacity: 0.9;
+        }
+        .cta-box a {
+            display: inline-block;
+            background: white;
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+        
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo img {
+            height: 50px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        footer {
+            background: var(--ink);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.8rem; }
+            .profile-card { flex-direction: column; text-align: center; margin-top: -1.5rem; }
+            .profile-avatar { margin: 0 auto; }
+            .pullquote { font-size: 1.25rem; padding: 0 1rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
+            <div class="nav-links">
+                <a href="/curriculum/">Curriculum</a>
+                <a href="/blog.html">Articles</a>
+                <a href="/newsletters.html">Newsletter</a>
+                <a href="/digests/">Digest</a>
+                <div id="user-menu"></div>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="header">
+        <div class="header-badge">🏆 User of the Week</div>
+        <h1>The SAP Designer Who Built His Own AI Brain</h1>
+        <p class="subtitle">Olivier Duvelleroy spent 30 years designing enterprise software. Then he spent a rainy Saturday building something just for himself.</p>
+    </header>
+    
+    <div class="container">
+        <div class="profile-card">
+            <img src="/assets/images/olivier-duvelleroy.jpg" alt="Olivier Duvelleroy" class="profile-avatar" style="object-fit: cover;">
+            <div class="profile-info">
+                <h3>Olivier Duvelleroy</h3>
+                <div class="role">Principal UX Designer, SAP</div>
+                <p>Olivier has been designing enterprise software for over 30 years. He joined Business Objects in 1994 as the company's first product designer and continues to work at the intersection of design, data, and intelligence.</p>
+            </div>
+        </div>
+    </div>
+    
+    <article class="content">
+        <div class="container">
+            <p>In 1994, a young French designer named Olivier Duvelleroy walked into Business Objects as the company's first product designer. Over the next three decades, he would help shape enterprise software used by millions of people—from early BI dashboards to the sophisticated analytics platforms that SAP offers today.</p>
+            
+            <p>But this isn't a story about enterprise software. It's about what happens when someone who has spent their career building tools for others finally builds something entirely for themselves.</p>
+            
+            <h2>The Problem Nobody Talks About</h2>
+            
+            <p>Like most knowledge workers in 2026, Olivier uses AI tools daily. ChatGPT, Claude, Copilot—the usual suspects. They're powerful, transformative even. But they all share a frustrating limitation that's easy to overlook until it stops you cold:</p>
+            
+            <p><strong>They can only see what you show them.</strong></p>
+            
+            <p>ChatGPT Plus lets you attach 10 files per prompt, 40 per project. Sounds generous until you're a PMM sitting on 1,000+ research documents—Gartner reports, IDC analyses, McKinsey studies, competitive briefs, internal strategy decks. The kind of institutional knowledge that takes years to accumulate.</p>
+            
+            <div class="quote-box">
+                <p>"I had an AI survey with about 40 interview transcripts. I have 20 questions like that every day. File limits mean I will always miss the document that best answers the question."</p>
+            </div>
+            
+            <p>Most people just work around it. They manually select which files to upload. They split questions across sessions. They accept that AI will never have the full picture.</p>
+            
+            <p>Olivier decided to solve it.</p>
+            
+            <h2>One Rainy Saturday</h2>
+            
+            <p>The goal was simple: build a system that could search his entire knowledge base—every research document, every internal brief, every analyst note—and pull exactly the right context for any question. No more file limits. No more guessing which documents to include.</p>
+            
+            <p>The approach: <strong>Retrieval-Augmented Generation (RAG)</strong>—a technique that retrieves relevant information from a knowledge base before sending it to an AI model. Instead of hoping the AI knows something, you give it exactly the context it needs.</p>
+            
+            <p>The timeline: one Saturday.</p>
+            
+            <p class="pullquote">"Can I do it completely for free? Yes, I did."</p>
+            
+            <p>With ChatGPT as his coding assistant, Olivier installed Ollama (a local AI runtime), pulled an open-source model, created a Python environment, set up a vector database, and ran his first RAG queries—all before dinner.</p>
+            
+            <p>He called it <strong>NEXUS</strong>: a local, private Second Brain for context-aware intelligence.</p>
+            
+            <h2>What Changed</h2>
+            
+            <p>Before NEXUS, finding the right supporting quotes for a book chapter meant multiple prompts, manual file selection, and a lot of context-switching across 40 interview transcripts and a 20-chapter structure.</p>
+            
+            <p>After NEXUS: one 30-second prompt returns the three best grounded quotes for each chapter, pulled from his entire corpus.</p>
+            
+            <div class="highlight-box">
+                <p><strong>The biggest win is speed:</strong> quickly identifying and prioritizing the right documents and snippets to ground an AI task. Not just faster—but the confidence that you're not missing the document that matters most.</p>
+            </div>
+            
+            <p>For his book versioning and reviews, market trend analysis, and internal document synthesis, the system acts as what Olivier calls a "personal context accelerator"—not replacing his judgment, but making sure he's always working with the best available information.</p>
+            
+            <h2>The Unexpected Lessons</h2>
+            
+            <p>Building NEXUS taught Olivier something important about the current moment in AI:</p>
+            
+            <div class="quote-box">
+                <p>"At no time should we be afraid of diving into the details these days. AI tools can guide you through implementation; you are mostly limited by your curiosity, creativity, and intent."</p>
+            </div>
+            
+            <p>Things that seemed too hard a year ago—running CLI commands, setting up GitHub, creating Python environments from scratch—are now achievable in an afternoon with AI guidance. The barrier isn't technical skill. It's having a clear intent and the willingness to try.</p>
+            
+            <p>Local inference also makes the tradeoffs tangible. Running a model on your laptop means experiencing the latency, the CPU cost, the fan spinning up. It demystifies what "AI" actually means and surfaces real engineering decisions about when local processing makes sense versus when to call an API.</p>
+            
+            <h2>What This Means for PMMs</h2>
+            
+            <p>Olivier's experiment points to something bigger than one person's productivity hack. Product marketers sit on enormous amounts of institutional knowledge—customer research, competitive intelligence, win/loss analyses, positioning documents, sales call transcripts. That knowledge currently lives in scattered drives, folders, and the memories of individuals.</p>
+            
+            <p>RAG systems offer a way to make that knowledge <em>queryable</em>. Not just searchable (we've had that for years) but actually usable by AI in the context of specific questions.</p>
+            
+            <p>Imagine asking:</p>
+            <ul>
+                <li>"What did our customers say about pricing in the last 20 interviews?"</li>
+                <li>"How does our positioning compare to Competitor X's latest messaging?"</li>
+                <li>"What patterns do we see in lost deals from Q4?"</li>
+            </ul>
+            
+            <p>And getting answers grounded in your actual documents—with citations, with context, with the ability to verify.</p>
+            
+            <p>That's the future Olivier built for himself in a weekend. The question is: why aren't more of us building it?</p>
+            
+            <div class="cta-box">
+                <h3>Want to Build Your Own?</h3>
+                <p>Olivier documented his entire process. We've turned it into a step-by-step guide.</p>
+                <a href="how-to-build-rag-system.html">Read the How-To Guide →</a>
+            </div>
+        </div>
+    </article>
+    
+    <footer>
+        <p><a href="/">The Future of PMM</a> · SAP Data and Analytics Product Marketing</p>
+    </footer>
+</body>
+</html>

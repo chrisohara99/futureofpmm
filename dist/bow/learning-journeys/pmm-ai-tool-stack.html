@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's In The Drawer: The PMM AI Tool Stack | NextGen PMM</title>
+    <meta name="description" content="A complete inventory of AI tools available to enterprise PMMs, organized by access tier. Includes survey results, tool descriptions, and a twelve-week curriculum.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/learning-journeys/">Learning Journeys</a>
+            </div>
+            <h1>What's In The Drawer: The PMM AI Tool Stack</h1>
+            <div class="article-meta">Learning Journeys</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <div>
+        
+        <p><strong>A significant portion of enterprise PMMs are paying out of pocket for AI tools that their company already provides for free.</strong> This pattern tells you almost everything about the current state of AI adoption inside large organizations: the tools have moved faster than internal communication about the tools, which has moved faster than training, which has moved faster than workflow integration. The result is professionals spending real money to solve problems that someone on another floor solved last quarter.</p>
+        
+        <p>The two primary blockers in most enterprise AI adoption surveys are nearly identical: "I don't know what's available" and "I can't get access." This article opens the drawer and labels everything inside.</p>
+        
+        <h2>Survey Results</h2>
+        
+        <div>
+            <div>
+                <div>54%</div>
+                <div>Use AI multiple times daily</div>
+            </div>
+            <div>
+                <div>3.4/5</div>
+                <div>Tool satisfaction score</div>
+            </div>
+            <div>
+                <div>68%</div>
+                <div>Want structured training</div>
+            </div>
+            <div>
+                <div>~30%</div>
+                <div>Paying out of pocket</div>
+            </div>
+        </div>
+        
+        <h2>Why Tool Selection Matters More Now</h2>
+        
+        <p>The context has shifted. Search has become an answer — Google returns ten blue links, LLMs return one synthesized response, and that response increasingly belongs to a competitor. Buyers arrive having already consumed three AI summaries of your category before any call. Generic content shipped last year is being paraphrased into irrelevance by the very models prospects use to research.</p>
+        
+        <p>The deliverables themselves have changed shape. Briefs, decks, and battlecards are now co-drafted with agents. The durable PMM work has moved up the stack from typing and formatting to thinking and shaping. The right tools, in the right hands, with the right amount of practice, matter more this year than they did last.</p>
+        
+        <h2>The Three Tiers</h2>
+        
+        <p>The current inventory sorts into three tiers based on <strong>access friction</strong>, not quality:</p>
+        
+        <div>
+            <div>
+                <span>Tier 1</span>
+                <span>Enterprise-Approved</span>
+            </div>
+            <div><strong>Low risk · Scalable · Preferred.</strong> Provisioned centrally. If you have a company login, you have access.</div>
+            <div>Copilot Chat · GenAI Experience Lab · CompeteGPT · ReferenceGPT · Claude Code · Joule · EKX</div>
+        </div>
+        
+        <div>
+            <div>
+                <span>Tier 2</span>
+                <span>Budget-Approved</span>
+            </div>
+            <div><strong>Moderate control · Department-managed.</strong> Requires a budget request and approval. Process is real but not painful.</div>
+            <div>Perplexity Pro · Comet Browser · Adobe AI · Canva · Synthesia · Copilot in-app (Word/PowerPoint/Teams)</div>
+        </div>
+        
+        <div>
+            <div>
+                <span>Tier 3</span>
+                <span>Pilot & Non-Onboarded</span>
+            </div>
+            <div><strong>Higher risk · Limited visibility · Six-to-nine month onboarding.</strong> Watch but don't self-onboard.</div>
+            <div>Crayon · Writer · Clozd · Copy.ai · Beautiful.ai</div>
+        </div>
+        
+        <p><strong>Standing rule across all tiers:</strong> No personal or customer data into unapproved tools. No proprietary code in uncleared systems. Always review AI output before sharing. Treat this as floor, not suggestion.</p>
+        
+        <blockquote>The drawer is fuller than most teams realize. The gap isn't budget — it's awareness.</blockquote>
+        
+        <h2>Tier 1 Tools: A Closer Look</h2>
+        
+        <div>
+            <h4>Joule</h4>
+            <p>Front door for SAP-specific transactions and answers. Use when you need a product feature explained, a customer-facing process guided, or a transactional task completed inside an SAP product. This is the path the company has invested in and the path customers will see.</p>
+        </div>
+        
+        <div>
+            <h4>Copilot Chat</h4>
+            <p>The workhorse. Free, integrated across M365 (Edge browser, M365.com, right-click "Summarize with Copilot" in Explorer). Right default for general-purpose tasks not requiring deep domain knowledge — drafting emails, summarizing meetings, brainstorming structures.</p>
+        </div>
+        
+        <div>
+            <h4>Generative AI Experience Lab</h4>
+            <p>The playground. Compare answers across foundation models, prototype prompts, try the PowerPoint generator. Data protection built in, multiple LLMs available, iOS app for mobile use.</p>
+        </div>
+        
+        <div>
+            <h4>EKX</h4>
+            <p>The knowledge graph in chat form. Use when the question is "what is the actual current truth about X." Built for enumeration and fact-checking where generic LLMs would fabricate. See the <a href="/meet-ekx.html">companion article on EKX</a>.</p>
+        </div>
+        
+        <div>
+            <h4>Perplexity Pro (Tier 2)</h4>
+            <p>The research tool. Real-time web answers with citations, rapid scanning of competitor content, triangulating market claims with sources attached. Comet Browser, the AI-first browser bundled with it, is worth installing for daily research work.</p>
+        </div>
+        
+        <div>
+            <h4>Claude Code</h4>
+            <p>The wildcard. An agentic coding assistant that reads codebases, edits files, runs commands, opens pull requests. Also writes interactive web artifacts, builds React prototypes, generates HTML for battlecards or microsites, and manipulates spreadsheets at the command line. Worth attention even if you've never opened a terminal.</p>
+        </div>
+        
+        <hr>
+        
+        <h2>The Twelve-Week Curriculum</h2>
+        
+        <p>AI tools don't get internalized in workshops — they get internalized through repeated use against real work. The curriculum moves from team-wide foundation, to function-specific tracks, to a portfolio demonstrating work produced in the new way.</p>
+        
+        <div>
+            <h3>Curriculum Map</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>When</th>
+                        <th>Unit</th>
+                        <th>Tools</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span>Week 1-2</span></td>
+                        <td>Prompting + tool stack + governance</td>
+                        <td>Joule · Copilot Chat · GenAI Lab · CompeteGPT</td>
+                    </tr>
+                    <tr>
+                        <td><span>Week 3</span></td>
+                        <td>Drafting with pushback</td>
+                        <td>Copilot Chat · GenAI Lab</td>
+                    </tr>
+                    <tr>
+                        <td><span>Week 4</span></td>
+                        <td>Research + competitive synthesis</td>
+                        <td>Perplexity Pro · CompeteGPT</td>
+                    </tr>
+                    <tr>
+                        <td><span>Week 5</span></td>
+                        <td>Function-specific co-working</td>
+                        <td>Tool mix varies by track</td>
+                    </tr>
+                    <tr>
+                        <td><span>Week 6-8</span></td>
+                        <td>Interactive artifacts</td>
+                        <td>Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td><span>Week 9-10</span></td>
+                        <td>Agent workflows</td>
+                        <td>Claude Code · Copilot Chat</td>
+                    </tr>
+                    <tr>
+                        <td><span>Week 11-12</span></td>
+                        <td>Portfolio + graduation</td>
+                        <td>Full stack</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p>The curriculum is a path, not a gate. The Tier 1 tools are open now. The Tier 2 process is tractable. If you're spending personal money on something that's already available, stop. If you can't tell whether it is, ask.</p>
+        
+        <div>
+            <h3>The Action Item</h3>
+            <p>If you're paying out of pocket for a Tier 1 tool, stop. If you can't tell which tier a tool belongs to, ask. The gap between "knows what's available" and "uses what's available" is the only one that matters now.</p>
+        </div>
+        
+    </div>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

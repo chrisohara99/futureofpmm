@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Handoff Package | Future of PMM</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.7;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav { display: flex; gap: 2rem; }
+        nav a { color: var(--text-secondary); font-size: 0.9rem; }
+        nav a:hover { color: var(--text-primary); text-decoration: none; }
+        
+        .hero {
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, #2d4a6f 100%);
+            color: white;
+        }
+        
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .section h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .section p {
+            margin-bottom: 1rem;
+        }
+        
+        .cover-letter {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .cover-letter .date {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .cover-letter .signature {
+            margin-top: 2rem;
+            font-style: italic;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .code-block {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1.5rem 0;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .checklist li {
+            padding-left: 1.75rem;
+            position: relative;
+        }
+        
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-lead {
+            background: var(--sap-blue);
+            color: white;
+        }
+        
+        .badge-support {
+            background: var(--text-secondary);
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background: var(--bg-light);
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+        }
+        
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .toc {
+            background: var(--bg-light);
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .toc ul {
+            margin: 0;
+            list-style: none;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .toc .section-num {
+            color: var(--text-secondary);
+        }
+        
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            nav { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.75rem; }
+            main { padding: 2rem 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            table { font-size: 0.85rem; }
+            th, td { padding: 0.5rem; }
+        }
+        
+        @media print {
+            header, nav { display: none; }
+            .hero { background: none; color: var(--text-primary); padding: 1rem 0; }
+            main { padding: 0; }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)">
+                        <stop offset="0" stop-color="#00B8F1"/>
+                        <stop offset="0.31" stop-color="#0D90D9"/>
+                        <stop offset="0.58" stop-color="#1775C8"/>
+                        <stop offset="0.82" stop-color="#1C65BF"/>
+                        <stop offset="1" stop-color="#1E5FBB"/>
+                    </linearGradient>
+                </defs>
+                <polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/>
+                <path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/>
+            </svg>
+            <span>Future of PMM</span>
+        </a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/bow/">Book of Work</a>
+            <a href="/newsletter/">Newsletter</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">IT Handoff Documentation</div>
+            <h1>Future of PMM Migration Package</h1>
+            <p>Complete documentation for migrating the Future of PMM site to SAP corporate infrastructure.</p>
+        </div>
+    </div>
+
+    <main>
+        <div style="background: #e8f4ff; border: 1px solid #0070f2; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h3 style="margin: 0 0 1rem 0; color: #0070f2;">📥 Download Package</h3>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="/it-handoff-package.md" download style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: #0070f2; color: white; border-radius: 6px; font-weight: 500; text-decoration: none;">
+                    <span>IT Handoff Guide (.md)</span>
+                </a>
+                <a href="/memo-sean-thomson.md" download style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: white; color: #1d2d3e; border: 1px solid #e4e7eb; border-radius: 6px; font-weight: 500; text-decoration: none;">
+                    <span>Sean Thomson Memo (.md)</span>
+                </a>
+                <a href="/provisioning-guide.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: white; color: #1d2d3e; border: 1px solid #e4e7eb; border-radius: 6px; font-weight: 500; text-decoration: none;">
+                    <span>SAP Provisioning Guide →</span>
+                </a>
+            </div>
+        </div>
+
+        <nav class="toc">
+            <h3>Contents</h3>
+            <ul>
+                <li><a href="#cover-letter">1. Cover Letter <span class="section-num">→</span></a></li>
+                <li><a href="#overview">2. Project Overview <span class="section-num">→</span></a></li>
+                <li><a href="#structure">3. Site Structure <span class="section-num">→</span></a></li>
+                <li><a href="#content">4. Content Inventory <span class="section-num">→</span></a></li>
+                <li><a href="#technical">5. Technical Specifications <span class="section-num">→</span></a></li>
+                <li><a href="#design">6. Design System <span class="section-num">→</span></a></li>
+                <li><a href="#migration">7. Migration Steps <span class="section-num">→</span></a></li>
+                <li><a href="#urls">8. URL Mapping <span class="section-num">→</span></a></li>
+            </ul>
+        </nav>
+
+        <section id="cover-letter" class="section">
+            <h2>1. Cover Letter</h2>
+            
+            <div class="cover-letter">
+                <p class="date">September 29, 2026</p>
+                
+                <p><strong>To:</strong> SAP IT / CMO Digital Team<br>
+                <strong>From:</strong> Chris O'Hara, VP Product Marketing<br>
+                <strong>Re:</strong> Future of PMM Site Migration</p>
+                
+                <p>I'm pleased to submit the Future of PMM site for migration to SAP corporate infrastructure.</p>
+                
+                <p>This site represents the culmination of a year-long pilot program that trained over 180 product marketers on AI-enhanced PMM practices. The content has been reorganized around the <strong>PMM Book of Work</strong> framework to align with how SAP structures product marketing competencies.</p>
+                
+                <p><strong>What's included:</strong></p>
+                <ul>
+                    <li>46 articles covering all 19 areas of the Book of Work</li>
+                    <li>25 newsletter issues documenting our journey</li>
+                    <li>Clean, static HTML with no external dependencies</li>
+                    <li>SAP-branded design system throughout</li>
+                </ul>
+                
+                <p><strong>What's been removed:</strong></p>
+                <ul>
+                    <li>User authentication (learning delivery moves to SuccessFactors)</li>
+                    <li>Quiz/assessment system (moves to SuccessFactors SCORM)</li>
+                    <li>AI Labs (deferred to future phase)</li>
+                    <li>Progress tracking (handled by SuccessFactors)</li>
+                </ul>
+                
+                <p>The site is ready for deployment. All files are self-contained with no database or server-side processing required.</p>
+                
+                <p class="signature">— Chris O'Hara</p>
+            </div>
+        </section>
+
+        <section id="overview" class="section">
+            <h2>2. Project Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">123</div>
+                    <div class="label">HTML Pages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">19</div>
+                    <div class="label">BoW Areas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">46</div>
+                    <div class="label">Articles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">25</div>
+                    <div class="label">Newsletters</div>
+                </div>
+            </div>
+            
+            <p>The Future of PMM site has been restructured around the <strong>PMM Book of Work</strong> — SAP's official framework defining the 19 areas of product marketing excellence.</p>
+            
+            <p>Content is organized into two categories:</p>
+            <ul>
+                <li><strong>PMM Leads</strong> (11 areas) — Core competencies where Product Marketing owns strategy and execution</li>
+                <li><strong>PMM Supports</strong> (8 areas) — Cross-functional areas where PMM contributes expertise</li>
+            </ul>
+            
+            <p><strong>Live Preview:</strong> <a href="https://bow-demo-pmm.netlify.app">https://bow-demo-pmm.netlify.app</a></p>
+        </section>
+
+        <section id="structure" class="section">
+            <h2>3. Site Structure</h2>
+            
+            <div class="code-block">
+/                               Homepage
+├── index.html                  Main landing page
+├── about.html                  About page
+├── 404.html                    Error page
+│
+├── /bow/                       Book of Work Hub
+│   ├── index.html              Hub listing all 19 areas
+│   │
+│   ├── /messaging-positioning/ PMM Lead area (8 articles)
+│   ├── /category-vision/       PMM Lead area (5 articles)
+│   ├── /market-insights/       PMM Lead area (5 articles)
+│   ├── /launch-narrative/      PMM Lead area (4 articles)
+│   ├── /personas/              PMM Lead area (4 articles)
+│   ├── /commercialization/     PMM Lead area (1 article)
+│   ├── /launch-disclosure/     PMM Lead area
+│   ├── /gtm-readiness/         PMM Lead area (2 articles)
+│   ├── /demo/                  PMM Lead area
+│   ├── /customer-reference/    PMM Lead area
+│   ├── /adoption-growth/       PMM Lead area (1 article)
+│   │
+│   ├── /marketing-planning/    PMM Support area (1 article)
+│   ├── /campaign-execution/    PMM Support area
+│   ├── /press-media/           PMM Support area
+│   ├── /partner-isv/           PMM Support area
+│   ├── /pricing-communication/ PMM Support area
+│   ├── /community/             PMM Support area (3 articles)
+│   ├── /learning-journeys/     PMM Support area (10 articles)
+│   └── /customer-journey-content/ PMM Support area (2 articles)
+│
+├── /newsletter/                Newsletter Archive (25 issues)
+│   ├── index.html              Archive listing
+│   └── issue-001.html ... issue-030.html
+│
+└── /assets/                    Static assets
+    ├── /css/
+    ├── /js/
+    └── /images/</div>
+        </section>
+
+        <section id="content" class="section">
+            <h2>4. Content Inventory</h2>
+            
+            <h3>PMM Lead Areas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>URL</th>
+                        <th>Articles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Messaging & Positioning</td>
+                        <td>/bow/messaging-positioning/</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Category & Vision</td>
+                        <td>/bow/category-vision/</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Market Insights</td>
+                        <td>/bow/market-insights/</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Launch Narrative</td>
+                        <td>/bow/launch-narrative/</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Personas</td>
+                        <td>/bow/personas/</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Commercialization</td>
+                        <td>/bow/commercialization/</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> GTM Readiness</td>
+                        <td>/bow/gtm-readiness/</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Adoption & Growth</td>
+                        <td>/bow/adoption-growth/</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Launch & Disclosure</td>
+                        <td>/bow/launch-disclosure/</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Demo</td>
+                        <td>/bow/demo/</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-lead">Lead</span> Customer Reference</td>
+                        <td>/bow/customer-reference/</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>PMM Support Areas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>URL</th>
+                        <th>Articles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Learning Journeys</td>
+                        <td>/bow/learning-journeys/</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Community</td>
+                        <td>/bow/community/</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Customer Journey Content</td>
+                        <td>/bow/customer-journey-content/</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Marketing Planning</td>
+                        <td>/bow/marketing-planning/</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Campaign Execution</td>
+                        <td>/bow/campaign-execution/</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Press & Media</td>
+                        <td>/bow/press-media/</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Partner & ISV</td>
+                        <td>/bow/partner-isv/</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-support">Support</span> Pricing Communication</td>
+                        <td>/bow/pricing-communication/</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Newsletter Archive</h3>
+            <p>25 issues from November 2025 through September 2026, documenting the evolution of AI in product marketing.</p>
+        </section>
+
+        <section id="technical" class="section">
+            <h2>5. Technical Specifications</h2>
+            
+            <h3>Hosting Requirements</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><strong>Type</strong></td>
+                        <td>Static HTML site</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Server</strong></td>
+                        <td>Any web server (Apache, Nginx, IIS, CDN)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SSL</strong></td>
+                        <td>Required (HTTPS)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database</strong></td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Server-side processing</strong></td>
+                        <td>None</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>File Summary</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>HTML pages</td>
+                        <td>123</td>
+                    </tr>
+                    <tr>
+                        <td>CSS files</td>
+                        <td>~5</td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript files</td>
+                        <td>~3 (minimal, no frameworks)</td>
+                    </tr>
+                    <tr>
+                        <td>Images</td>
+                        <td>~20</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total files</strong></td>
+                        <td>~150</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Dependencies</h3>
+            <p><strong>None.</strong> Pure HTML/CSS with minimal vanilla JavaScript. No npm packages, no build process, no external APIs. All styles are inlined or in local CSS files.</p>
+            
+            <h3>Browser Support</h3>
+            <ul>
+                <li>Chrome 90+</li>
+                <li>Firefox 88+</li>
+                <li>Safari 14+</li>
+                <li>Edge 90+</li>
+            </ul>
+        </section>
+
+        <section id="design" class="section">
+            <h2>6. Design System</h2>
+            
+            <h3>Colors</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Hex</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SAP Blue</td>
+                        <td><code>#0070f2</code></td>
+                        <td>Primary brand, links, buttons</td>
+                    </tr>
+                    <tr>
+                        <td>SAP Dark Blue</td>
+                        <td><code>#0054b4</code></td>
+                        <td>Hover states</td>
+                    </tr>
+                    <tr>
+                        <td>SAP Light Blue</td>
+                        <td><code>#e8f4ff</code></td>
+                        <td>Backgrounds, highlights</td>
+                    </tr>
+                    <tr>
+                        <td>Text Primary</td>
+                        <td><code>#1d2d3e</code></td>
+                        <td>Headings, body text</td>
+                    </tr>
+                    <tr>
+                        <td>Text Secondary</td>
+                        <td><code>#526069</code></td>
+                        <td>Captions, metadata</td>
+                    </tr>
+                    <tr>
+                        <td>Border</td>
+                        <td><code>#e4e7eb</code></td>
+                        <td>Dividers, card borders</td>
+                    </tr>
+                    <tr>
+                        <td>Background Light</td>
+                        <td><code>#f7f9fb</code></td>
+                        <td>Section backgrounds</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Typography</h3>
+            <ul>
+                <li><strong>Font:</strong> System fonts (-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto)</li>
+                <li><strong>Headings:</strong> 600-700 weight</li>
+                <li><strong>Body:</strong> 400 weight, 1.6 line-height</li>
+            </ul>
+            
+            <h3>Components</h3>
+            <ul>
+                <li><strong>Header:</strong> SAP logo + "Future of PMM" + navigation</li>
+                <li><strong>Cards:</strong> White background, 1px border, 8px radius, hover shadow</li>
+                <li><strong>Badges:</strong> Blue (#0070f2) for PMM Leads, gray (#526069) for PMM Supports</li>
+                <li><strong>Footer:</strong> Dark background (#1d2d3e) with copyright</li>
+            </ul>
+        </section>
+
+        <section id="migration" class="section">
+            <h2>7. Migration Steps</h2>
+            
+            <h3>Step 1: Download Package</h3>
+            <p>Clone or download the <code>dist-bow</code> folder from the repository. All files are contained within this directory.</p>
+            
+            <h3>Step 2: Deploy to SAP Infrastructure</h3>
+            <ul>
+                <li>Upload all files maintaining the directory structure</li>
+                <li>Configure web server to serve <code>index.html</code> for directory requests</li>
+                <li>Enable HTTPS</li>
+            </ul>
+            
+            <h3>Step 3: DNS Configuration</h3>
+            <ul>
+                <li>Point desired domain to hosting server</li>
+                <li>Update internal links if domain changes from pilot URL</li>
+            </ul>
+            
+            <h3>Step 4: Verification Checklist</h3>
+            <ul class="checklist">
+                <li>Homepage loads correctly</li>
+                <li>All 19 BoW area pages accessible</li>
+                <li>Newsletter archive accessible</li>
+                <li>All article links work</li>
+                <li>Mobile responsive design works</li>
+                <li>SSL certificate valid</li>
+            </ul>
+        </section>
+
+        <section id="urls" class="section">
+            <h2>8. URL Mapping</h2>
+            
+            <p>For reference, here's how the original curriculum URLs map to the new Book of Work structure:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Old Path</th>
+                        <th>New Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/curriculum/unit-01/</td>
+                        <td>/bow/messaging-positioning/guide-01.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-02/</td>
+                        <td>/bow/messaging-positioning/guide-02.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-03/</td>
+                        <td>/bow/category-vision/guide-03.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-04/</td>
+                        <td>/bow/customer-journey-content/guide-04.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-05/</td>
+                        <td>/bow/market-insights/guide-05.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-06/</td>
+                        <td>/bow/market-insights/guide-06.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-07/</td>
+                        <td>/bow/launch-narrative/guide-07.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-08/</td>
+                        <td>/bow/commercialization/guide-08.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-09/</td>
+                        <td>/bow/personas/guide-09.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-10/</td>
+                        <td>/bow/gtm-readiness/guide-10.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-11/</td>
+                        <td>/bow/adoption-growth/guide-11.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/unit-12/</td>
+                        <td>/bow/personas/guide-12.html</td>
+                    </tr>
+                    <tr>
+                        <td>/human-premium.html</td>
+                        <td>/bow/messaging-positioning/human-premium.html</td>
+                    </tr>
+                    <tr>
+                        <td>/the-great-bifurcation.html</td>
+                        <td>/bow/category-vision/the-great-bifurcation.html</td>
+                    </tr>
+                    <tr>
+                        <td>/competitive-battlecards-guide.html</td>
+                        <td>/bow/market-insights/competitive-battlecards-guide.html</td>
+                    </tr>
+                    <tr>
+                        <td>/newsletters/issue-XXX.html</td>
+                        <td>/newsletter/issue-XXX.html</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved. | Future of PMM Migration Package | September 29, 2026</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The AI Tools Guide for D&A PMMs | The Future of PMM</title>
+    <meta name="description" content="What's available, what's licensed, and how to start using AI tools today. A practical guide for SAP Data & Analytics Product Marketing.">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "The AI Tools Guide for D&A PMMs",
+      "description": "What's available, what's licensed, and how to start using AI tools today.",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "jobTitle": "VP of Product Marketing",
+        "worksFor": {"@type": "Organization", "name": "SAP"}
+      },
+      "datePublished": "2026-04-09",
+      "dateModified": "2026-05-21",
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      }
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pmm-blue: #3b82f6;
+            --pmm-dark: #1e3a5f;
+            --pmm-light: #f5f6f7;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --tier1: #16a34a;
+            --tier2: #ca8a04;
+            --tier3: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; color: #1e3a5f; background: #fff; line-height: 1.7; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: var(--pmm-blue); background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; }
+        .nav-menu a:hover { background: #f3f4f6; color: var(--pmm-blue); }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: var(--pmm-dark); border-radius: 2px; }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            .logo img { height: 70px !important; }
+            nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--pmm-dark); flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { display: flex !important; right: 0 !important; }
+            nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; }
+        }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #10b981 100%);
+            padding: 4rem 2rem;
+            color: white;
+        }
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--green);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: #f8fafc;
+            padding: 3rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .stats-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .stats-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin-bottom: 1.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--green);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        .stats-insight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid var(--orange);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .stats-insight p { margin: 0; color: #92400e; }
+        
+        /* Content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .content h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--green);
+            display: inline-block;
+        }
+        .content h2:first-child { margin-top: 0; }
+        .content p {
+            font-size: 1.05rem;
+            color: #4b5563;
+            margin-bottom: 1.25rem;
+        }
+        
+        /* Tier Cards */
+        .tier-card {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid var(--tier1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .tier-card.t2 { border-left-color: var(--tier2); }
+        .tier-card.t3 { border-left-color: var(--tier3); }
+        .tier-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .tier-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--tier1);
+        }
+        .tier-card.t2 .tier-badge { color: var(--tier2); }
+        .tier-card.t3 .tier-badge { color: var(--tier3); }
+        .tier-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--pmm-dark);
+        }
+        .tier-desc {
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+        .tier-tools {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--pmm-dark);
+            background: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin: 2rem 0;
+        }
+        .tool-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+        .tool-card:hover {
+            border-color: var(--green);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+        .tool-card.featured {
+            border-color: var(--tier1);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+        }
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .tool-icon {
+            font-size: 2rem;
+        }
+        .tool-info h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin: 0;
+        }
+        .tool-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--green);
+        }
+        .tool-status.licensed { color: var(--pmm-blue); }
+        .tool-status.new { color: var(--tier1); }
+        .tool-card p {
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin: 0 0 1rem 0;
+            line-height: 1.6;
+        }
+        .tool-link {
+            display: inline-block;
+            color: var(--pmm-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .tool-link:hover { text-decoration: underline; }
+        
+        /* Try Section */
+        .try-section {
+            background: #f8fafc;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+            border-radius: 16px;
+        }
+        .try-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .try-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin-bottom: 0.5rem;
+        }
+        .try-subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        .try-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .try-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .try-num {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--pmm-dark);
+            opacity: 0.15;
+            line-height: 1;
+        }
+        .try-card h4 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin: 0.5rem 0;
+        }
+        .try-card p {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        /* Use Cases */
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .use-case {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+        .use-case h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--pmm-dark);
+            margin: 0 0 0.5rem 0;
+        }
+        .use-case p {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        /* Tip Box */
+        .tip-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--orange);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        .tip-box p { margin: 0; color: #92400e; }
+        
+        /* Related Article */
+        .related-article {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            color: white;
+        }
+        .related-article h3 {
+            color: white;
+            margin: 0 0 0.5rem 0;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .related-article p {
+            opacity: 0.9;
+            margin: 0 0 1rem 0;
+            color: white;
+        }
+        .related-article a {
+            display: inline-block;
+            background: white;
+            color: var(--pmm-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .related-article a:hover { background: #f1f5f9; }
+        
+        /* Footer */
+        footer {
+            background: var(--pmm-dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        footer p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
+        footer .brand { font-size: 1.25rem; font-weight: 700; opacity: 1; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo"><img src="/assets/images/logo.svg" alt="The Future of PMM"></a>
+            <nav id="main-nav">
+                <a href="index.html">Home</a>
+                <div class="nav-dropdown">
+                    <button class="nav-trigger">Learn</button>
+                    <div class="nav-menu">
+                        <a href="curriculum/">📚 Curriculum</a>
+                        <a href="blog.html">📝 Articles</a>
+                        <a href="where-do-you-sit-article.html">🧠 Assessments</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-trigger">Resources</button>
+                    <div class="nav-menu">
+                        <a href="digests/">📰 Daily Digest</a>
+                        <a href="competitive-intel.html">🎯 Competitive Intel</a>
+                        <a href="ai-tools.html">🛠️ AI Tools Guide</a>
+                    </div>
+                </div>
+                <a href="newsletters.html">Newsletter</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="hero-badge">🛠️ Practical Guide</span>
+            <h1>The AI Tools Guide for D&A PMMs</h1>
+            <p>What's available, what's licensed, and how to start. The survey showed ~30% of the team is paying out of pocket for tools already available for free. This guide fixes that.</p>
+        </div>
+    </section>
+    
+    <!-- NEW: Joule Work Desktop -->
+    <section style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 2rem; border-bottom: 1px solid #e5e7eb;">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border: 2px solid #f59e0b;">
+                <div style="display: flex; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <span style="display: inline-block; background: #f59e0b; color: white; padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">🆕 Now Available</span>
+                        <h2 style="font-family: 'DM Sans', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--pmm-dark); margin: 0 0 0.75rem 0;">Joule Work Desktop</h2>
+                        <p style="color: #4b5563; margin: 0 0 1rem 0; line-height: 1.6;">SAP's AI-powered desktop assistant is now available internally. Joule Work Desktop brings AI directly to your day-to-day work — accessing local files, connected Outlook, and immediate work context all in one place.</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span style="background: #eff6ff; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500;">Local Files</span>
+                            <span style="background: #eff6ff; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500;">Outlook Integration</span>
+                            <span style="background: #eff6ff; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500;">Skills & Plugins</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; min-width: 220px;">
+                        <a href="https://video.sap.com/media/t/1_57ejaw5i" target="_blank" style="display: block; background: var(--pmm-dark); color: white; padding: 0.75rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: center;">▶️ Watch Overview Video</a>
+                        <a href="https://search.int.sap/results#t=joule%20work%20desktop" target="_blank" style="display: block; background: #f3f4f6; color: var(--pmm-dark); padding: 0.75rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: center;">📚 Joule Info</a>
+                        <a href="https://sap.sharepoint.com/sites/208497/SitePages/Joule-Work-Desktop.aspx" target="_blank" style="display: block; background: #f3f4f6; color: var(--pmm-dark); padding: 0.75rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: center;">📁 SharePoint</a>
+                        <a href="https://video.sap.com/media/t/1_my4khwxd" target="_blank" style="display: block; background: #f3f4f6; color: var(--pmm-dark); padding: 0.75rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: center;">🔧 Skills Tutorial</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="stats-inner">
+            <h2 class="stats-title">📊 What the Survey Told Us</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">54%</div>
+                    <div class="stat-label">use AI multiple times daily</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3.4</div>
+                    <div class="stat-label">tool satisfaction (of 5)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">want structured training</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">~30%</div>
+                    <div class="stat-label">paying out of pocket</div>
+                </div>
+            </div>
+            <div class="stats-insight">
+                <p><strong>The gap isn't budget — it's awareness.</strong> The drawer is fuller than most teams realize. If you're spending personal money on a Tier 1 tool, stop.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 5 Daily Tools -->
+    <section class="daily-tools-section" style="background: white; padding: 3rem 2rem; border-bottom: 1px solid #e5e7eb;">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h2 style="font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--pmm-dark); margin: 0 0 0.5rem 0;">🚀 AI Tools for Your Daily Business</h2>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">Start here. These six tools cover most PMM workflows.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;">
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%); border: 2px solid var(--green); border-radius: 12px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">✨</div>
+                    <div style="font-weight: 700; color: var(--pmm-dark);">SAP Joule</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">+ Joule for Consultants</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%); border: 2px solid var(--green); border-radius: 12px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🤖</div>
+                    <div style="font-weight: 700; color: var(--pmm-dark);">Microsoft Copilot Chat</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">General purpose</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%); border: 2px solid var(--green); border-radius: 12px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🧪</div>
+                    <div style="font-weight: 700; color: var(--pmm-dark);">GenAI Experience Lab</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">Multi-model playground</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%); border: 2px solid var(--green); border-radius: 12px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔍</div>
+                    <div style="font-weight: 700; color: var(--pmm-dark);">Perplexity AI</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">Research with citations</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%); border: 2px solid var(--green); border-radius: 12px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💻</div>
+                    <div style="font-weight: 700; color: var(--pmm-dark);">Claude Code</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">Agentic coding</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #fff 100%); border: 2px solid var(--pmm-blue); border-radius: 12px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🧠</div>
+                    <div style="font-weight: 700; color: var(--pmm-dark);">EKX</div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">SAP knowledge graph</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Needs Mapping -->
+    <section style="background: #f8fafc; padding: 3rem 2rem; border-bottom: 1px solid #e5e7eb;">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h2 style="font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--pmm-dark); margin: 0 0 0.5rem 0;">🎯 What You Asked For vs. What's Available</h2>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">Mapping team needs to available tools based on survey data.</p>
+            
+            <div style="background: white; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden;">
+                <div style="display: grid; grid-template-columns: 1fr auto auto 2fr; gap: 0; font-size: 0.85rem;">
+                    <!-- Header -->
+                    <div style="padding: 0.75rem 1rem; background: var(--pmm-dark); color: white; font-weight: 600;">Need</div>
+                    <div style="padding: 0.75rem 1rem; background: var(--pmm-dark); color: white; font-weight: 600; text-align: center;">Team %</div>
+                    <div style="padding: 0.75rem 1rem; background: var(--pmm-dark); color: white; font-weight: 600; text-align: center;">Status</div>
+                    <div style="padding: 0.75rem 1rem; background: var(--pmm-dark); color: white; font-weight: 600;">Available Tools</div>
+                    
+                    <!-- Row 1 -->
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: var(--pmm-dark);">Writing & Editing</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center;"><span style="background: var(--green); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">82%</span></div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center; color: var(--green);">✓</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; color: #6b7280;">Copilot Chat · GenAI Lab · Copilot in Word</div>
+                    
+                    <!-- Row 2 -->
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: var(--pmm-dark);">Auto Deck Builder</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center;"><span style="background: var(--orange); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">79%</span></div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center; color: var(--orange);">⚠</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; color: #6b7280;">Copilot in PowerPoint (licensed) — <em>partial coverage</em></div>
+                    
+                    <!-- Row 3 -->
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: var(--pmm-dark);">Content Repurposing</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center;"><span style="background: var(--green); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">64%</span></div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center; color: var(--green);">✓</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; color: #6b7280;">GenAI Lab · Copilot Chat · Writer <em>(in eval)</em></div>
+                    
+                    <!-- Row 4 -->
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: var(--pmm-dark);">Competitive Intelligence</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center;"><span style="background: var(--green); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">61%</span></div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center; color: var(--green);">✓</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; color: #6b7280;">CompeteGPT · Perplexity · Crayon <em>(onboarding)</em></div>
+                    
+                    <!-- Row 5 -->
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: var(--pmm-dark);">Research Synthesis</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center;"><span style="background: var(--green); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">57%</span></div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; text-align: center; color: var(--green);">✓</div>
+                    <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; color: #6b7280;">Perplexity · Copilot Chat · GenAI Lab</div>
+                    
+                    <!-- Row 6 -->
+                    <div style="padding: 0.75rem 1rem; font-weight: 600; color: var(--pmm-dark);">Meeting Follow-Up</div>
+                    <div style="padding: 0.75rem 1rem; text-align: center;"><span style="background: var(--green); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">43%</span></div>
+                    <div style="padding: 0.75rem 1rem; text-align: center; color: var(--green);">✓</div>
+                    <div style="padding: 0.75rem 1rem; color: #6b7280;">Copilot in Teams (licensed)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Content -->
+    <main class="content">
+        
+        <h2>🏗️ The Three Tiers</h2>
+        <p>The current inventory sorts into three tiers based on <strong>access friction</strong>, not quality:</p>
+        
+        <div class="tier-card">
+            <div class="tier-header">
+                <span class="tier-badge">Tier 1</span>
+                <span class="tier-name">Enterprise-Approved</span>
+            </div>
+            <div class="tier-desc"><strong>Low risk · Scalable · Preferred.</strong> Provisioned centrally. If you have a company login, you have access.</div>
+            <div class="tier-tools">Copilot Chat · GenAI Experience Lab · CompeteGPT · ReferenceGPT · Claude Code · Joule · EKX</div>
+        </div>
+        
+        <div class="tier-card t2">
+            <div class="tier-header">
+                <span class="tier-badge">Tier 2</span>
+                <span class="tier-name">Budget-Approved</span>
+            </div>
+            <div class="tier-desc"><strong>Moderate control · Department-managed.</strong> Requires a budget request and approval. Process is real but not painful.</div>
+            <div class="tier-tools">Perplexity Pro · Comet Browser · Adobe AI · Canva <em>(approved)</em> · Synthesia · Copilot in-app (Word/PPT/Teams)</div>
+        </div>
+        
+        <div class="tier-card t3">
+            <div class="tier-header">
+                <span class="tier-badge">Tier 3</span>
+                <span class="tier-name">Pilot & Non-Onboarded</span>
+            </div>
+            <div class="tier-desc"><strong>Higher risk · Limited visibility · Six-to-nine month onboarding.</strong> Watch but don't self-onboard.</div>
+            <div class="tier-tools">Crayon <em>(onboarding)</em> · Writer <em>(in eval)</em> · Clozd · Copy.ai · Beautiful.ai</div>
+        </div>
+        
+        <div class="tip-box">
+            <p><strong>⚠️ Standing rule across all tiers:</strong> No personal or customer data into unapproved tools. No proprietary code in uncleared systems. Always review AI output before sharing.</p>
+        </div>
+        
+        <h2>🤖 Tier 1 Tools (Start Here)</h2>
+        <p>These tools are available now with your SAP credentials. No license request needed.</p>
+        
+        <div class="tools-grid">
+            <div class="tool-card featured">
+                <div class="tool-header">
+                    <span class="tool-icon">🧠</span>
+                    <div class="tool-info">
+                        <h3>EKX</h3>
+                        <span class="tool-status new">✨ New</span>
+                    </div>
+                </div>
+                <p>The knowledge graph in chat form. Use when the question is "what is the actual current truth about X." Built for enumeration and fact-checking where generic LLMs would fabricate. The only internal LLM that actually knows SAP.</p>
+                <a href="https://ekx.cloud.sap/chat" class="tool-link" target="_blank">Open EKX Chat →</a>
+            </div>
+            
+            <div class="tool-card featured">
+                <div class="tool-header">
+                    <span class="tool-icon">✨</span>
+                    <div class="tool-info">
+                        <h3>Joule</h3>
+                        <span class="tool-status">✅ Available now</span>
+                    </div>
+                </div>
+                <p>Front door for SAP-specific transactions and answers. Use when you need a product feature explained, a customer-facing process guided, or a transactional task completed inside an SAP product. The path customers will see.</p>
+                <a href="https://one.int.sap/home?joule" class="tool-link" target="_blank">Open Joule on SAP One →</a>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🤖</span>
+                    <div class="tool-info">
+                        <h3>Microsoft Copilot</h3>
+                        <span class="tool-status">✅ Available now</span>
+                    </div>
+                </div>
+                <p>The workhorse. Free, integrated across M365 (Edge browser, M365.com, right-click "Summarize with Copilot" in Explorer). Right default for general-purpose tasks — drafting emails, summarizing meetings, brainstorming structures.</p>
+                <a href="https://m365.cloud.microsoft/chat?auth=2" class="tool-link" target="_blank">Open Copilot Chat →</a>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">⚔️</span>
+                    <div class="tool-info">
+                        <h3>CompeteGPT</h3>
+                        <span class="tool-status">✅ Available now</span>
+                    </div>
+                </div>
+                <p>SAP's internal competitive intelligence tool. Search for competitors to surface win/loss patterns, positioning shifts, and battlecard-ready insights from CRM data.</p>
+                <a href="https://cmi-competegpt.cfapps.eu10-004.hana.ondemand.com/competegpt" class="tool-link" target="_blank">Access CompeteGPT →</a>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🧪</span>
+                    <div class="tool-info">
+                        <h3>GenAI Experience Lab</h3>
+                        <span class="tool-status">✅ Available now</span>
+                    </div>
+                </div>
+                <p>The playground. Compare answers across foundation models, prototype prompts, try the PowerPoint generator. Data protection built in, multiple LLMs available, iOS app for mobile use.</p>
+                <a href="https://dh.xg.int.sap/#/hero/missions/199175" class="tool-link" target="_blank">Open GenAI Experience Lab →</a>
+            </div>
+            
+            <div class="tool-card featured">
+                <div class="tool-header">
+                    <span class="tool-icon">💻</span>
+                    <div class="tool-info">
+                        <h3>Claude Code</h3>
+                        <span class="tool-status new">✨ Powerful</span>
+                    </div>
+                </div>
+                <p>The wildcard. An agentic coding assistant that reads codebases, edits files, runs commands. Also writes interactive web artifacts, builds React prototypes, generates HTML for battlecards. Worth attention even if you've never opened a terminal.</p>
+                <a href="https://sap.sharepoint.com/sites/124706/SitePages/Claude-Code-Rollout.aspx" class="tool-link" target="_blank">Claude Code Rollout Info →</a>
+            </div>
+        </div>
+        
+        <h2>🔑 Tier 2 Tools (Licensed)</h2>
+        <p>These require a budget request but the process is tractable. D&A has allocated licenses for key tools.</p>
+        
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🔍</span>
+                    <div class="tool-info">
+                        <h3>Perplexity Pro</h3>
+                        <span class="tool-status licensed">🔑 110 licenses</span>
+                    </div>
+                </div>
+                <p>The research tool. Real-time web answers with citations, rapid scanning of competitor content, triangulating market claims with sources attached. Comet Browser bundled for daily research work.</p>
+                <a href="https://perplexity.ai/" class="tool-link" target="_blank">Open Perplexity →</a>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🎨</span>
+                    <div class="tool-info">
+                        <h3>Claude</h3>
+                        <span class="tool-status licensed">🔑 Licensed</span>
+                    </div>
+                </div>
+                <p>Anthropic's AI assistant. Particularly strong at long-form content, nuanced analysis, and following complex instructions. Great for positioning work and messaging frameworks.</p>
+                <a href="https://claude.ai/" class="tool-link" target="_blank">Open Claude →</a>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">💬</span>
+                    <div class="tool-info">
+                        <h3>ChatGPT</h3>
+                        <span class="tool-status licensed">🔑 Licensed</span>
+                    </div>
+                </div>
+                <p>OpenAI's flagship assistant. Versatile general-purpose AI for drafting, brainstorming, analysis, and creative tasks. The GPT-4 model handles complex reasoning well.</p>
+                <a href="https://chat.openai.com/" class="tool-link" target="_blank">Open ChatGPT →</a>
+            </div>
+            
+            <div class="tool-card">
+                <div class="tool-header">
+                    <span class="tool-icon">🎬</span>
+                    <div class="tool-info">
+                        <h3>Synthesia</h3>
+                        <span class="tool-status licensed">🔑 Licensed</span>
+                    </div>
+                </div>
+                <p>AI video generation with avatars. Create training videos, product explainers, and demo walkthroughs without filming. Good for internal enablement content.</p>
+                <a href="#" class="tool-link">Request access →</a>
+            </div>
+            
+            <div class="tool-card featured">
+                <div class="tool-header">
+                    <span class="tool-icon">🎨</span>
+                    <div class="tool-info">
+                        <h3>Canva</h3>
+                        <span class="tool-status new">✨ Approved</span>
+                    </div>
+                </div>
+                <p>AI-powered design platform. Create social graphics, presentations, one-pagers, and branded content. Magic Write for copy, Magic Design for layouts. €149/year via Ariba Guided Buying.</p>
+                <a href="/intro-to-canva.html" class="tool-link">Read the Canva guide →</a>
+            </div>
+        </div>
+        
+        <!-- Three Things to Try -->
+        <section class="try-section">
+            <div class="try-inner">
+                <h3 class="try-title">⚡ Three Things to Try This Week</h3>
+                <p class="try-subtitle">Pick one and spend 15 minutes with it. That's all it takes to build the muscle memory.</p>
+                
+                <div class="try-grid">
+                    <div class="try-card">
+                        <div class="try-num">01</div>
+                        <h4>Ask EKX a fact question</h4>
+                        <p>"List all SAP products with machine learning capabilities" — get enumeration that generic LLMs would hallucinate.</p>
+                    </div>
+                    <div class="try-card">
+                        <div class="try-num">02</div>
+                        <h4>Run a CompeteGPT Query</h4>
+                        <p>Search for the competitor you're currently battlecarding. See what win/loss patterns and positioning shifts surface.</p>
+                    </div>
+                    <div class="try-card">
+                        <div class="try-num">03</div>
+                        <h4>Try Perplexity with citations</h4>
+                        <p>Research a market trend. Note the source citations — they're useful for positioning docs and exec briefings.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <h2>📋 Common Use Cases</h2>
+        <p>Not sure where to start? Here's how PMMs are using these tools:</p>
+        
+        <div class="use-case-grid">
+            <div class="use-case">
+                <h4>📝 First Drafts</h4>
+                <p>Use ChatGPT or Claude to draft blog posts, email copy, or presentation outlines. Edit from there instead of starting from scratch.</p>
+            </div>
+            <div class="use-case">
+                <h4>🎯 Competitive Intel</h4>
+                <p>CompeteGPT for internal win/loss data. Perplexity for external market research with cited sources.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Fact-Checking</h4>
+                <p>EKX for SAP-specific enumeration and accuracy. "What products support X?" without hallucination.</p>
+            </div>
+            <div class="use-case">
+                <h4>📊 Document Summaries</h4>
+                <p>Drop analyst reports, earnings calls, or long PDFs into Copilot or Claude. Get key points in seconds.</p>
+            </div>
+            <div class="use-case">
+                <h4>💡 Brainstorming</h4>
+                <p>Use any of the chat tools to generate messaging variations, positioning angles, or campaign ideas.</p>
+            </div>
+            <div class="use-case">
+                <h4>🔧 Interactive Artifacts</h4>
+                <p>Claude Code for HTML battlecards, calculators, interactive demos. No coding experience required.</p>
+            </div>
+        </div>
+        
+        <div class="related-article">
+            <h3>📖 Deep Dive: The Full Tool Stack</h3>
+            <p>For the complete inventory including the twelve-week curriculum map, tool-by-tool descriptions, and the three-tier framework explained in detail.</p>
+            <a href="pmm-ai-tool-stack.html">Read the Full Article →</a>
+        </div>
+        
+        <h2>🔗 Quick Links by Tool</h2>
+        <p>Direct access to all SAP AI tools and resources:</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">🤖 Microsoft Copilot</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://m365.cloud.microsoft/chat?auth=2" target="_blank" style="color: var(--pmm-blue);">→ Copilot Chat (Direct)</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://m365.cloud.microsoft/apps/?auth=2&home=1" target="_blank" style="color: var(--pmm-blue);">→ M365 Web Apps</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/209149/SitePages/Get-started-with-Copilot-Chat.aspx" target="_blank" style="color: var(--pmm-blue);">→ Getting Started Guide</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/209149" target="_blank" style="color: var(--pmm-blue);">→ Copilot Community</a></li>
+                    <li><a href="https://apps.powerapps.com/play/e/dad02897-2870-4ba0-a2e4-06d8ca8b7a37/a/3a2c7b8d-4e5f-6a7b-8c9d-0e1f2a3b4c5d" target="_blank" style="color: var(--pmm-blue);">→ SAP Prompt Library</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">✨ SAP Joule</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://one.int.sap/home?joule" target="_blank" style="color: var(--pmm-blue);">→ SAP One + Joule</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/126802/SitePages/ONE-Joule.aspx" target="_blank" style="color: var(--pmm-blue);">→ ONE Joule Hub</a></li>
+                    <li><a href="https://scc-internal-users.eu12.sapdas-staging.cloud.sap/" target="_blank" style="color: var(--pmm-blue);">→ Joule for Consultants</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">🧪 GenAI Experience Lab</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://dh.xg.int.sap/#/hero/missions/199175" target="_blank" style="color: var(--pmm-blue);">→ Launch GenAI Lab</a></li>
+                    <li><a href="https://sap.sharepoint.com/sites/205734/SitePages/GenAI-Experience-Lab.aspx" target="_blank" style="color: var(--pmm-blue);">→ Lab Overview & Onboarding</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">🧠 EKX</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://ekx.cloud.sap/chat" target="_blank" style="color: var(--pmm-blue);">→ EKX Chat</a></li>
+                    <li><a href="https://video.sap.com/media/t/1_4mqs9vrd" target="_blank" style="color: var(--pmm-blue);">→ EKX Keynote Video</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">💻 Claude Code</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/124706/SitePages/Claude-Code-Rollout.aspx" target="_blank" style="color: var(--pmm-blue);">→ Rollout Announcement</a></li>
+                    <li><a href="https://pages.github.tools.sap/SEM/enablement/index.html" target="_blank" style="color: var(--pmm-blue);">→ Easy Installation Guide</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">🔍 Perplexity AI</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://www.perplexity.ai/" target="_blank" style="color: var(--pmm-blue);">→ Perplexity</a></li>
+                    <li><a href="https://www.perplexity.ai/comet" target="_blank" style="color: var(--pmm-blue);">→ Comet Browser</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">🛸 Hyperspace AI</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://ai-docs.portal.hyperspace.tools.sap/eater/" target="_blank" style="color: var(--pmm-blue);">→ Tech Radar – AI Tools</a></li>
+                    <li><a href="https://ai-docs.portal.hyperspace.tools.sap/eater/" target="_blank" style="color: var(--pmm-blue);">→ Hyperspace Overview</a></li>
+                </ul>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: 12px; padding: 1.25rem;">
+                <h4 style="margin: 0 0 0.75rem; color: var(--pmm-dark);">📚 Learning Resources</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/126802/SitePages/AI-Learn-Connect.aspx" target="_blank" style="color: var(--pmm-blue);">→ AI: Learn & Connect</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/208497/SitePages/AI-Essentials.aspx" target="_blank" style="color: var(--pmm-blue);">→ AI Essentials</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://sap.sharepoint.com/sites/206691/SitePages/AI-Learning-Journey.aspx" target="_blank" style="color: var(--pmm-blue);">→ AI Learning Journey</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="https://dh.xg.int.sap/#/hero/home" target="_blank" style="color: var(--pmm-blue);">→ SAP Experience Garage</a></li>
+                    <li><a href="https://learning.sap.com/" target="_blank" style="color: var(--pmm-blue);">→ SAP Learning Portal</a></li>
+                </ul>
+            </div>
+            
+        </div>
+        
+        <h2>🚀 What's Next</h2>
+        <p>This guide evolves as we roll out more tools. The <a href="curriculum/">10× PMM Curriculum</a> is now live with hands-on labs for each tool tier. Coming soon:</p>
+        <ul style="margin-left: 1.5rem; color: #4b5563;">
+            <li><strong>Prompt templates</strong> — A library of tested prompts for common PMM tasks</li>
+            <li><strong>Best practices</strong> — Tips from team members who've found effective workflows</li>
+            <li><strong>New tools</strong> — Updates as additional tools get licensed and rolled out</li>
+        </ul>
+        
+        <div class="tip-box">
+            <p><strong>The action item:</strong> If you're paying out of pocket for a Tier 1 tool, stop. If you can't tell which tier a tool belongs to, ask. The gap between "knows what's available" and "uses what's available" is the only one that matters now.</p>
+        </div>
+        
+        <p><em>Last updated: May 2026</em></p>
+        
+    </main>
+    
+    <footer>
+        <p class="brand">The Future of PMM</p>
+        <p>SAP Data and Analytics Product Marketing</p>
+    </footer>
+    
+    <script>
+    document.getElementById('hamburger').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.getElementById('main-nav').classList.toggle('open');
+    });
+    </script>
+</body>
+</html>

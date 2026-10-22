@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging Architecture | Future of PMM</title>
+    <meta name="description" content="Learn about Messaging Architecture in this comprehensive guide.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)">
+                        <stop offset="0" stop-color="#00B8F1"/>
+                        <stop offset="0.31" stop-color="#0D90D9"/>
+                        <stop offset="0.58" stop-color="#1775C8"/>
+                        <stop offset="0.82" stop-color="#1C65BF"/>
+                        <stop offset="1" stop-color="#1E5FBB"/>
+                    </linearGradient>
+                </defs>
+                <polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/>
+                <path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/>
+            </svg>
+            <span>Future of PMM</span>
+        </a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/bow/">Book of Work</a>
+            <a href="/newsletter/">Newsletter</a>
+        </nav>
+    </header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/messaging-positioning/">Messaging & Positioning</a>
+            </div>
+            <h1>Messaging Architecture</h1>
+            <div class="article-meta">Messaging & Positioning</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <div>
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand how AI agents discover and rank vendors</li>
+            <li>Learn the difference between SEO and GEO (Generative Engine Optimization)</li>
+            <li>Build structured content that LLMs can parse and cite</li>
+            <li>Test and measure your AI visibility</li>
+        </ul>
+    </div>
+    
+    <section>
+        <h2>How Agents Find You</h2>
+        
+        <p>When a buyer asks ChatGPT "What are the best enterprise data platforms?", what happens next determines whether you exist in their consideration set.</p>
+        
+        <p>AI agents don't browse websites like humans. They don't click through your navigation, skim your hero banner, or download your whitepaper. Instead, they:</p>
+        
+        <ul>
+            <li><strong>Query training data</strong> — Knowledge baked into the model from web crawls, documentation, and public content</li>
+            <li><strong>Retrieve real-time information</strong> — RAG (Retrieval-Augmented Generation) pulls from live sources</li>
+            <li><strong>Synthesize and rank</strong> — Combine multiple sources into a coherent answer with implicit rankings</li>
+        </ul>
+        
+        <div>
+            <h4>Key Insight</h4>
+            <p>You're not optimizing for a buyer to find your website. You're optimizing for an AI to <em>mention you</em> when asked about your category — and to describe you accurately when it does.</p>
+        </div>
+        
+        <h3>The Three Layers of Agent Discovery</h3>
+        
+        <div>
+            <div>
+                <h4>📚 Training Data</h4>
+                <p>Content that was crawled before the model's knowledge cutoff. Wikipedia, major publications, documentation, widely-cited sources. Hard to influence directly, but authoritative content eventually makes it in.</p>
+            </div>
+            <div>
+                <h4>🔍 Real-Time Retrieval</h4>
+                <p>RAG-enabled queries pull from live web sources. Your current website, recent press, updated documentation. This is where GEO tactics have immediate impact.</p>
+            </div>
+            <div>
+                <h4>🔗 Entity Relationships</h4>
+                <p>How you're connected to known entities — customers, partners, analysts, industry terms. Agents use knowledge graphs to validate claims and establish credibility.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>From SEO to GEO</h2>
+        
+        <p>For two decades, we optimized for Google's algorithm. Keywords, backlinks, page speed, mobile-friendliness. That playbook doesn't disappear, but it's now table stakes — not the game.</p>
+        
+        <p><strong>GEO (Generative Engine Optimization)</strong> is the new discipline. It's about structuring your content so AI agents can parse it, quote it, and cite it accurately.</p>
+        
+        <div>
+            <div>
+                <h4>SEO Mindset</h4>
+                <ul>
+                    <li>Optimize for keywords</li>
+                    <li>Build backlinks</li>
+                    <li>Drive clicks to website</li>
+                    <li>Compete for SERP position</li>
+                    <li>Measure rankings</li>
+                </ul>
+            </div>
+            <div>
+                <h4>GEO Mindset</h4>
+                <ul>
+                    <li>Optimize for entity recognition</li>
+                    <li>Build knowledge graph presence</li>
+                    <li>Get cited in AI responses</li>
+                    <li>Compete for mention quality</li>
+                    <li>Measure AI visibility</li>
+                </ul>
+            </div>
+        </div>
+        
+        <figure>
+            <img src="/diagrams/20-geo-vs-seo.svg" alt="GEO vs SEO Framework">
+            <figcaption><strong>Figure 2.1:</strong> The shift from SEO to GEO — optimizing for AI visibility</figcaption>
+        </figure>
+        
+        <h3>The GEO Playbook</h3>
+        
+        <div>
+            <div>
+                <h4>📋 Schema.org Markup</h4>
+                <p>Structured data that explicitly tells agents what your content means. Product schemas, organization data, FAQ markup, How-To content. This is machine-readable context.</p>
+            </div>
+            <div>
+                <h4>🏢 Entity Establishment</h4>
+                <p>Ensure your company and products are recognized entities. Wikipedia presence, Wikidata entries, consistent naming across the web. Agents need to know you exist as a distinct thing.</p>
+            </div>
+            <div>
+                <h4>📝 Quotable Claims</h4>
+                <p>Clear, specific statements that agents can excerpt. "SAP processes $46 trillion in commerce annually" is quotable. "We're a leading platform" is not.</p>
+            </div>
+            <div>
+                <h4>🔗 Authoritative Linking</h4>
+                <p>Citations from recognized sources. Analyst mentions, press coverage, academic references. Agents weight authoritative sources more heavily.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Content That Agents Quote</h2>
+        
+        <p>When an AI responds to "Tell me about SAP's data management capabilities," it's pulling fragments from multiple sources and synthesizing an answer. Your job is to make sure the fragments it pulls are accurate, differentiated, and favorable.</p>
+        
+        <h3>The Quotability Test</h3>
+        
+        <p>For each key claim you want agents to surface, ask:</p>
+        
+        <ul>
+            <li><strong>Is it specific?</strong> Numbers, names, concrete facts beat vague superlatives</li>
+            <li><strong>Is it standalone?</strong> Does the sentence make sense out of context?</li>
+            <li><strong>Is it unique?</strong> Could a competitor say the same thing?</li>
+            <li><strong>Is it verifiable?</strong> Can the claim be checked against other sources?</li>
+        </ul>
+        
+        <div>
+            <h4>Before & After</h4>
+            <p><strong>Weak:</strong> "We're the leading enterprise data management platform with best-in-class capabilities."<br><br>
+            <strong>Strong:</strong> "SAP Datasphere connects to 150+ data sources and processes over 2 billion transactions daily for 25,000 enterprise customers."</p>
+        </div>
+        
+        <h3>Structuring for Extraction</h3>
+        
+        <ul>
+            <li><strong>Lead with the conclusion</strong> — Put your key claim in the first sentence, not the last</li>
+            <li><strong>Use clear headers</strong> — Agents use headers to understand content hierarchy</li>
+            <li><strong>Create definitive statements</strong> — "X is..." beats "X can be described as..."</li>
+            <li><strong>Include comparison anchors</strong> — "Unlike traditional ETL tools, Datasphere provides..."</li>
+        </ul>
+    </section>
+    
+    <section>
+        <h2>Measuring AI Visibility</h2>
+        
+        <p>You can't improve what you don't measure. AI visibility testing should become a regular practice, just like tracking search rankings.</p>
+        
+        <h3>The AI Visibility Audit</h3>
+        
+        <p>Systematically query multiple AI tools about your product category and document what they surface:</p>
+        
+        <div>
+            <div>
+                <h4>🤖 ChatGPT</h4>
+                <p>Query with and without web browsing enabled. Note differences in responses. Check knowledge cutoff impact.</p>
+            </div>
+            <div>
+                <h4>🔮 Perplexity</h4>
+                <p>Strong real-time retrieval. Check citations — are you being sourced? What sources outrank you?</p>
+            </div>
+            <div>
+                <h4>🎭 Claude</h4>
+                <p>Different training corpus. May have different view of your market. Compare to ChatGPT responses.</p>
+            </div>
+            <div>
+                <h4>🔍 Gemini</h4>
+                <p>Google's integration with Search. How does AI response differ from traditional SERP?</p>
+            </div>
+        </div>
+        
+        <h3>What to Query</h3>
+        
+        <ul>
+            <li><strong>Category queries:</strong> "Best enterprise data platforms" / "Top CDP vendors"</li>
+            <li><strong>Comparison queries:</strong> "SAP vs Snowflake for data management"</li>
+            <li><strong>Problem queries:</strong> "How to unify customer data across systems"</li>
+            <li><strong>Specific queries:</strong> "What is SAP Datasphere?" / "SAP data management capabilities"</li>
+        </ul>
+        
+        <div>
+            Document every response. Track changes over time. Your AI visibility is now as important as your search visibility.
+        </div>
+    </section>
+    
+    <section>
+        <h3>🎯 Interactive Exercise: AI Visibility Audit</h3>
+        
+        <p>Complete this exercise to assess your current AI visibility:</p>
+        
+        <ol>
+            <li><strong>Choose 3 category queries</strong> relevant to your product (e.g., "best enterprise data platforms")</li>
+            <li><strong>Query each across 3 AI tools</strong> (ChatGPT, Perplexity, Claude)</li>
+            <li><strong>Document for each response:</strong>
+                <ul>
+                    <li>Are you mentioned? In what position?</li>
+                    <li>How are you described? Is it accurate?</li>
+                    <li>What competitors are mentioned alongside you?</li>
+                    <li>What sources are cited (if visible)?</li>
+                </ul>
+            </li>
+            <li><strong>Identify gaps:</strong> Where should you appear but don't?</li>
+            <li><strong>Create action items:</strong> What content changes would improve your visibility?</li>
+        </ol>
+        
+        <p><em>Time: ~20 minutes</em></p>
+    </section>
+    
+    <section>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li>AI agents discover vendors through training data, real-time retrieval, and entity relationships</li>
+            <li>GEO (Generative Engine Optimization) is the new discipline — structured content that agents can parse and cite</li>
+            <li>Schema.org markup, entity establishment, and quotable claims are your GEO foundation</li>
+            <li>Content must be specific, standalone, unique, and verifiable to get quoted</li>
+            <li>Regular AI visibility audits across multiple tools should be standard practice</li>
+        </ul>
+    </section>
+    
+    <div>
+        <h2>✓ Complete This Unit</h2>
+        <div>
+            <a href="quiz.html">
+                <span>📝</span>
+                <span>Take the Assessment</span>
+                <span>Interactive • 15 min</span>
+            </a>
+        </div>
+    </div>
+    
+    <nav>
+        <a href="/curriculum/unit-01/">← Unit 1</a>
+        <a href="/curriculum/unit-03/">Unit 3 →</a>
+    </nav>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+</body>
+</html>

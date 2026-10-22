@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMM Spotlight | NextGen PMM</title>
+    <meta name="description" content="Celebrating SAP product marketers building the future — one automation, insight, and experiment at a time.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink:           #1b2a4e;
+            --ink-muted:     #556b82;
+            --sap-blue:      #0070f2;
+            --sap-blue-soft: #e8f3ff;
+            --line:          #dce3eb;
+            --surface-muted: #f5f6f8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--ink);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ---- Header ---- */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--line);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--ink);
+            text-decoration: none;
+        }
+        .logo:hover { text-decoration: none; }
+        header nav { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        header nav a { color: var(--ink-muted); font-size: 0.9rem; }
+        header nav a:hover { color: var(--ink); text-decoration: none; }
+        header nav a.active { color: var(--sap-blue); font-weight: 600; }
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            header nav { gap: 1rem; justify-content: center; }
+        }
+
+        /* ---- Pilot badge ---- */
+        .pilot-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            background: var(--sap-blue-soft);
+            color: var(--sap-blue);
+            padding: 0.2rem 0.45rem;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
+
+        /* ---- Layout ---- */
+        .page-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 5rem;
+        }
+
+        /* ---- Hero ---- */
+        .eyebrow {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--sap-blue);
+            margin-bottom: 0.65rem;
+        }
+        .page-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .lead {
+            font-size: 1.1rem;
+            color: var(--ink-muted);
+            max-width: 680px;
+            line-height: 1.65;
+            margin-bottom: 1rem;
+        }
+        .intro-body {
+            font-size: 0.95rem;
+            color: var(--ink-muted);
+            max-width: 680px;
+            line-height: 1.7;
+            margin-bottom: 2.75rem;
+        }
+
+        /* ---- Profile cards grid ---- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 4rem;
+        }
+        @media (max-width: 860px) {
+            .cards-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 560px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.75rem; }
+        }
+
+        .profile-card {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 1.25rem;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+        .profile-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 112, 242, 0.1);
+            border-color: var(--sap-blue);
+        }
+
+        .card-identity {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .avatar-wrap {
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+        }
+        .avatar-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+        }
+        .avatar-fallback {
+            display: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .card-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        .card-role {
+            font-size: 0.78rem;
+            color: var(--ink-muted);
+            line-height: 1.4;
+        }
+
+        .card-headline {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--sap-blue);
+            margin-top: auto;
+        }
+        .card-link:hover { text-decoration: underline; }
+
+        /* ---- Nominate section ---- */
+        .nominate-section {
+            background: var(--surface-muted);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 2rem 2.25rem;
+            text-align: center;
+        }
+        .nominate-section .eyebrow {
+            margin-bottom: 0.5rem;
+        }
+        .nominate-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.75rem;
+        }
+        .nominate-body {
+            font-size: 0.92rem;
+            color: var(--ink-muted);
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.65;
+        }
+
+        /* ---- Footer ---- */
+        footer {
+            border-top: 1px solid var(--line);
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--ink-muted);
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+<!-- ====================================================
+     HEADER — identical to rest of site
+     ==================================================== -->
+<header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn active" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem" class="active">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- ====================================================
+     MAIN
+     ==================================================== -->
+<main>
+    <div class="page-wrap">
+
+        <!-- Hero -->
+        <p class="eyebrow">PMM Community</p>
+        <h1 class="page-title">PMM Spotlight</h1>
+        <p class="lead">Celebrating the SAP product marketers building the future — one automation, insight, and experiment at a time.</p>
+        <p class="intro-body">Each Spotlight features a PMM colleague who has done something worth sharing: built a tool, developed a workflow, challenged a convention, or simply brought the community forward. Nominated by peers, featured here.</p>
+
+        <!-- Profile cards -->
+        <div class="cards-grid">
+
+            <!-- 1 — Collette Ijeoma -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/spotlight/images/collette-photo.jpg" alt="Collette Ijeoma"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#0070f2;">C</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Collette Ijeoma</div>
+                        <div class="card-role">Field Marketing Lead, UKI</div>
+                    </div>
+                </div>
+                <p class="card-headline">11 Custom Claude Automations in Field Marketing</p>
+                <a href="/user-of-the-week-collette-ijeoma.html" class="card-link">Read the story &#8594;</a>
+            </div>
+
+            <!-- 2 — Jacob Brass -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/assets/images/users/jacob-brass.jpg" alt="Jacob Brass"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#7c3aed;">J</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Jacob Brass</div>
+                        <div class="card-role">VP of Product Marketing</div>
+                    </div>
+                </div>
+                <p class="card-headline">How One PMM Team Built an AI Agent to Tackle Field Inquiries</p>
+                <a href="/user-of-the-week-jacob-brass.html" class="card-link">Read the story &#8594;</a>
+            </div>
+
+            <!-- 3 — Lauren Cochrane -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/assets/images/users/lauren-cochrane.jpg" alt="Lauren Cochrane"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#059669;">L</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Lauren Cochrane</div>
+                        <div class="card-role">VP of Product Marketing, SAP Concur</div>
+                    </div>
+                </div>
+                <p class="card-headline">Building a Competitive Intelligence Engine at SAP Concur</p>
+                <a href="/user-of-the-week-lauren-cochrane.html" class="card-link">Read the story &#8594;</a>
+            </div>
+
+            <!-- 4 — Sean Thomson -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/assets/images/users/sean-thomson.jpg" alt="Sean Thomson"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#d97706;">S</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Sean Thomson</div>
+                        <div class="card-role">Product Marketing Strategist, SAP</div>
+                    </div>
+                </div>
+                <p class="card-headline">Translating Gartner's Vision for PMM's Future</p>
+                <a href="/user-of-the-week-sean-thomson.html" class="card-link">Read the story &#8594;</a>
+            </div>
+
+            <!-- 5 — Hyunsoo Shim -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/assets/images/users/soo-shim.jpg" alt="Hyunsoo Shim"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#0891b2;">H</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Hyunsoo Shim</div>
+                        <div class="card-role">SAP Product Marketing</div>
+                    </div>
+                </div>
+                <p class="card-headline">Building an AI Sales Simulator That Thinks Like a PMM</p>
+                <a href="/user-of-the-week-soo-shim.html" class="card-link">Read the story &#8594;</a>
+            </div>
+
+            <!-- 6 — Stephanie Craig -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/assets/images/users/stephanie-craig.jpg" alt="Stephanie Craig"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#be185d;">S</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Stephanie Craig</div>
+                        <div class="card-role">AI Enablement Lead, SAP SuccessFactors HCM PMM</div>
+                    </div>
+                </div>
+                <p class="card-headline">Enabling 40 Marketers for the AI Era</p>
+                <a href="/user-of-the-week-stephanie-craig.html" class="card-link">Read the story &#8594;</a>
+            </div>
+
+            <!-- 7 — Olivier Duvelleroy -->
+            <div class="profile-card">
+                <div class="card-identity">
+                    <div class="avatar-wrap">
+                        <img src="/assets/images/users/olivier-duvelleroy.jpg" alt="Olivier Duvelleroy"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div class="avatar-fallback" style="background:#0369a1;">O</div>
+                    </div>
+                    <div>
+                        <div class="card-name">Olivier Duvelleroy</div>
+                        <div class="card-role">Product Design &middot; Aix-en-Provence</div>
+                    </div>
+                </div>
+                <p class="card-headline">Built NEXUS &#8212; a Local RAG &#8220;AI Brain&#8221; &#8212; in a Weekend</p>
+                <a href="#" class="card-link" aria-disabled="true" style="opacity:0.5;cursor:default;pointer-events:none;">Story coming soon</a>
+            </div>
+
+        </div>
+        <!-- /cards-grid -->
+
+        <!-- Nominate section -->
+        <div class="nominate-section">
+            <p class="eyebrow">Nominations</p>
+            <h2 class="nominate-title">Know someone worth spotlighting?</h2>
+            <p class="nominate-body">Nominations are open. If a colleague has built something clever, shipped a workflow worth sharing, or simply moved the community forward — tell us about it. Submit a nomination via the NextGen PMM newsletter reply or mention it in the community Slack channel. Each new Spotlight is announced in the next newsletter edition.</p>
+        </div>
+
+    </div>
+</main>
+
+<!-- ====================================================
+     FOOTER
+     ==================================================== -->
+<footer>
+    <p>&#169; 2026 SAP SE. All rights reserved.</p>
+</footer>
+
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

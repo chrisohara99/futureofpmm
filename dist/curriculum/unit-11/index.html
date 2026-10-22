@@ -1,292 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="/assets/js/unit-gate.js"></script>
-<script src="/assets/js/auth-guard.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="/assets/js/curriculum-progress.js"></script>
-    <meta name="robots" content="noindex, nofollow">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 11: Skills That Survive | SAP Future of PMM Training</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --dark-slate: #44546A;
-            --sap-orange: #ED7D31;
-            --sap-blue: #4472C4;
-            --light-blue: #5B9BD5;
-            --light-gray: #E7E6E6;
-            --gold: #FFC000;
-            --green: #70AD47;
-            --red: #C00000;
-            --text: #2B3A4A;
-            --bg: #FAFAFA;
-            --purple: #7C3AED;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-        }
-        
-        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
-        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; text-decoration: none; }
-        .logo img { height: 100px; }
-        .nav { display: flex; gap: 1.5rem; align-items: center; }
-        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
-        .nav a:hover { color: white; }
-        
-        .progress-bar { background: var(--light-gray); height: 4px; }
-        .progress-fill { background: var(--sap-blue); height: 100%; width: 0%; transition: width 0.3s; }
-        
-        .hero {
-            background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
-            padding: 3rem 2rem;
-            color: white;
-        }
-        .hero-inner { max-width: 900px; margin: 0 auto; }
-        .unit-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.5rem; }
-        .funnel-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-left: 0.5rem; }
-        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; }
-        .hero .time { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; opacity: 0.9; }
-        
-        main { max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem; }
-        section { margin-bottom: 3rem; }
-        h2 { font-size: 1.4rem; color: var(--dark-slate); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--light-gray); }
-        h3 { font-size: 1.15rem; color: var(--dark-slate); margin: 2rem 0 0.75rem; }
-        p { margin-bottom: 1rem; font-size: 1.05rem; }
-        ul, ol { margin: 0.5rem 0 1.5rem 1.5rem; }
-        li { margin-bottom: 0.5rem; }
-        strong { color: var(--dark-slate); }
-        
-        .objectives-box {
-            background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--purple);
-        }
-        .objectives-box h2 { border: none; padding: 0; margin-bottom: 1rem; color: var(--purple); font-size: 1.1rem; }
-        .objectives-box ul { margin: 0; padding-left: 1.5rem; }
-        .objectives-box li { margin-bottom: 0.5rem; font-size: 0.95rem; }
-        
-        .key-concept {
-            background: white;
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin: 1.5rem 0;
-            border-left: 4px solid var(--gold);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-        }
-        .key-concept h4 { color: var(--dark-slate); margin-bottom: 0.5rem; font-size: 1rem; }
-        .key-concept p { margin: 0; font-size: 0.95rem; }
-        
-        .case-study {
-            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin: 1.5rem 0;
-            border-left: 4px solid var(--sap-orange);
-        }
-        .case-study h4 { color: var(--sap-orange); margin-bottom: 0.5rem; font-size: 1rem; }
-        .case-study p { margin-bottom: 0.5rem; font-size: 0.95rem; }
-        
-        .sap-context {
-            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin: 1.5rem 0;
-            border-left: 4px solid var(--green);
-        }
-        .sap-context h4 { color: var(--green); margin-bottom: 0.5rem; font-size: 1rem; }
-        .sap-context p { margin-bottom: 0.5rem; font-size: 0.95rem; }
-        .sap-context ul { margin: 0.5rem 0 0 1.25rem; font-size: 0.95rem; }
-        
-        /* Skills Cards */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.25rem;
-            margin: 2rem 0;
-        }
-        .skill-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border-top: 4px solid var(--sap-blue);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .skill-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-        .skill-card.judgment { border-color: #7C3AED; }
-        .skill-card.org-intel { border-color: #059669; }
-        .skill-card.narrative { border-color: #F59E0B; }
-        .skill-card.empathy { border-color: #EC4899; }
-        
-        .skill-card .emoji { font-size: 2rem; margin-bottom: 0.75rem; }
-        .skill-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--dark-slate); }
-        .skill-card p { font-size: 0.9rem; color: #666; margin: 0; line-height: 1.5; }
-        
-        /* T-Shape Diagram */
-        .t-shape-container {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .t-shape {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 1.5rem 0;
-        }
-        .t-horizontal {
-            background: linear-gradient(90deg, var(--sap-blue) 0%, var(--light-blue) 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .t-vertical {
-            background: linear-gradient(180deg, var(--purple) 0%, #9333EA 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 0 0 8px 8px;
-            width: 180px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .t-labels {
-            display: flex;
-            justify-content: space-between;
-            max-width: 600px;
-            width: 100%;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #666;
-        }
-        
-        /* Warning Box */
-        .warning-box {
-            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin: 1.5rem 0;
-            border-left: 4px solid #F59E0B;
-        }
-        .warning-box h4 { color: #B45309; margin-bottom: 0.5rem; font-size: 1rem; }
-        .warning-box p { margin-bottom: 0; font-size: 0.95rem; }
-        
-        /* Interview Box */
-        .interview-box {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-left: 4px solid var(--sap-blue);
-        }
-        .interview-box h4 { color: var(--sap-blue); margin-bottom: 0.75rem; font-size: 1rem; }
-        .interview-box blockquote {
-            font-style: italic;
-            color: #334155;
-            margin: 0;
-            padding-left: 1rem;
-            border-left: 2px solid #94A3B8;
-            font-size: 0.95rem;
-        }
-        .interview-box .attribution {
-            margin-top: 0.75rem;
-            font-size: 0.85rem;
-            color: #64748B;
-        }
-        
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--light-gray);
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .nav-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
-            background: var(--sap-blue);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .nav-btn:hover { background: var(--dark-slate); }
-        .nav-btn.secondary { background: white; color: var(--dark-slate); border: 1px solid var(--light-gray); }
-        .nav-btn.secondary:hover { background: var(--light-gray); }
-        
-        footer {
-            background: var(--dark-slate);
-            color: rgba(255,255,255,0.7);
-            padding: 2rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-        footer a { color: rgba(255,255,255,0.9); }
-        
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 1.75rem; }
-            main { padding: 2rem 1rem; }
-            .skills-grid { grid-template-columns: 1fr; }
-            .t-horizontal { font-size: 0.85rem; padding: 0.75rem 1rem; }
-            .t-vertical { width: 140px; font-size: 0.8rem; }
-        }
-    </style>
+  <script src="/assets/js/auth-guard.js"></script>
+  <script src="/assets/js/user-menu.js" defer></script>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 11: Skills That Survive: What AI Can't Touch (Yet) | NextGen PMM</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    :root {
+      --blue: #0a6ed1;
+      --blue2: #0854a0;
+      --ink: #172b4d;
+      --text: #475569;
+      --line: #e5e7eb;
+      --soft: #f6f8fb;
+      --white: #fff;
+      --green: #0f828f;
+      --purple: #6d5bd0;
+      --orange: #d97706
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth }
+    
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.96);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 0.75rem; }
+    .logo-wordmark { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-title { font-weight: 700; font-size: 1rem; color: var(--ink); }
+    .pilot-badge { background: var(--orange); color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
+    .logo small { font-size: 0.7rem; color: var(--text); }
+    nav { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text); }
+    nav a:hover { color: var(--blue); }
+    nav a.active { color: var(--blue); }
+
+    /* Progress bar */
+    .progress-bar { background: var(--line); height: 4px; }
+    .progress-fill { background: var(--blue); height: 100%; transition: width 0.3s; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--soft) 0%, #e8f4fc 100%);
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .unit-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .hero .time {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .hero .time svg { opacity: 0.7; }
+
+    /* Main content */
+    main { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+    /* Sections */
+    .section {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .section-time {
+      font-size: 0.8rem;
+      color: var(--text);
+      background: var(--soft);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+    }
+
+    /* Typography */
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--blue2);
+      margin: 1.5rem 0 0.75rem;
+    }
+    p { margin-bottom: 1rem; color: var(--ink); }
+    ul, ol { margin: 1rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    strong { font-weight: 600; }
+
+    /* Highlight boxes */
+    .highlight-box {
+      background: var(--soft);
+      border-left: 4px solid var(--blue);
+      padding: 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    .highlight-box.key-insight {
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      border-left-color: var(--orange);
+    }
+    .highlight-box h4 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Stats */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat-card {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--blue); }
+    .stat-label { font-size: 0.75rem; color: var(--text); margin-top: 0.25rem; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+    th {
+      background: var(--ink);
+      color: white;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:hover { background: var(--soft); }
+    .impact-high { color: #dc2626; font-weight: 600; }
+    .impact-moderate { color: var(--orange); font-weight: 600; }
+    .impact-low { color: var(--green); font-weight: 600; }
+    .two-col-table th:first-child,
+    .two-col-table td:first-child {
+      width: 50%;
+      border-right: 1px solid var(--line);
+    }
+
+    /* Objectives */
+    .objectives-list {
+      background: var(--soft);
+      border-radius: 8px;
+      padding: 1.25rem 1.25rem 1.25rem 2.5rem;
+      margin: 1rem 0;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--line);
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .nav-btn.primary {
+      background: var(--blue);
+      color: white;
+    }
+    .nav-btn.primary:hover { background: var(--blue2); }
+    .nav-btn.secondary {
+      background: var(--soft);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .nav-btn.secondary:hover { background: var(--line); }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text);
+      background: var(--soft);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 1rem; padding: 1rem; }
+      nav { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+      .hero h1 { font-size: 1.75rem; }
+      .section { padding: 1.5rem; }
+      table { font-size: 0.8rem; }
+      th, td { padding: 0.5rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
 </head>
 <body>
-    <header class="header">
-        <div class="header-inner">
-            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="Future of PMM"></a>
-            <nav class="nav">
-                <a href="/">Home</a>
-                <a href="/curriculum/">Curriculum</a>
-                <a href="/blog.html">Blog</a>
-            </nav>
-        </div>
-    </header>
-    
-    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-    
-    <section class="hero">
-        <div class="hero-inner">
-            <div class="unit-label">Unit 11 <span class="funnel-badge">🎯 Career Development</span></div>
-            <h1>Skills That Survive: What AI Can't Touch (Yet)</h1>
-            <div class="time">⏱️ 25 min read · 📝 Quiz included</div>
-        </div>
-    </section>
-    
-    <main>
-        <div class="objectives-box">
+  <header>
+    <a href="/" class="logo">
+      <svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP">
+        <defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs>
+        <polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/>
+        <path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/>
+      </svg>
+      <span class="logo-wordmark">
+        <span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span>
+        <small>SAP Product Marketing Community</small>
+      </span>
+    </a>
+    <nav>
+      <a href="/bow/">Book of Work</a>
+      <a href="/curriculum/" class="active">Learn</a>
+      <a href="/community/labs/">Labs</a>
+      <a href="/ai-tools.html">AI Tools</a>
+    </nav>
+  </header>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" style="width: 92%;"></div>
+  </div>
+  
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="unit-label">Unit 11</div>
+      <h1>Skills That Survive: What AI Can't Touch (Yet)</h1>
+      <div class="time">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+        </svg>
+        50 minutes
+      </div>
+    </div>
+  </section>
+  
+  <main>
+<div class="objectives-box">
             <h2>🎯 Learning Objectives</h2>
             <ul>
                 <li>Identify the four durable skills that define career trajectories in the agentic era</li>
@@ -513,20 +529,17 @@
                 <li>Technical fluency with AI tools is table stakes; the differentiator is critical thinking about what the tools produce</li>
             </ul>
         </section>
-        
-        <div class="nav-buttons">
-            <a href="/curriculum/unit-10/" class="nav-btn secondary">← Unit 10: Buyer Personas</a>
-            <a href="quiz.html" class="nav-btn">Take the Quiz →</a>
-        </div>
-    </main>
     
-    <footer>
-        <p>© 2026 The Future of PMM · <a href="/curriculum/">Back to Curriculum</a></p>
-    </footer>
-    
-    <script>
-        // Update progress bar
-        document.getElementById('progress').style.width = '91.67%'; // 11/12 complete
-    </script>
+    <div class="nav-buttons">
+      <a href="/curriculum/" class="nav-btn secondary">← Back to Curriculum</a>
+      <a href="quiz.html" class="nav-btn primary">Take the Knowledge Check →</a>
+    </div>
+  </main>
+  
+  <footer>
+    NextGen PMM · SAP Product Marketing Community · Prototype v2
+  </footer>
+  
+  <script src="/assets/js/nav-dropdown.js" defer></script>
 </body>
 </html>

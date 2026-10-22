@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The SaaS Reckoning: What It Means for PMM | NextGen PMM</title>
+    <meta name="description" content="SaaS stocks are down 35-44% YTD. HubSpot just shifted to outcome-based pricing. Here's what the market reset means for product marketers — and how to position ahead of it.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/category-vision/">Category & Vision</a>
+            </div>
+            <h1>The SaaS Reckoning: What It Means for PMM</h1>
+            <div class="article-meta">Category & Vision</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <p>The SaaS valuation reset isn't just a market correction — it's the market pricing in a fundamental shift in how enterprise software delivers and captures value.</p>
+        
+        <h2>The Numbers Tell the Story</h2>
+        
+        <p>Look at what's happened to the bellwethers in 2026:</p>
+        
+        <div>
+            <div>
+                <div>-37%</div>
+                <div>Salesforce YTD</div>
+            </div>
+            <div>
+                <div>-44%</div>
+                <div>Snowflake YTD</div>
+            </div>
+            <div>
+                <div>-35%</div>
+                <div>Adobe YTD</div>
+            </div>
+        </div>
+        
+        <p>The narrative driving this isn't a recession or a tech bubble. It's something more specific: <strong>AI copilots and agents are compressing growth and pricing power across CRM and adjacent categories.</strong></p>
+        
+        <p>In other words, the market believes that AI is about to commoditize a lot of what enterprise software does — and that the old pricing models won't survive.</p>
+        
+        <h2>The HubSpot Signal</h2>
+        
+        <p>While other vendors are watching their stock prices fall, HubSpot did something interesting: they changed the game.</p>
+        
+        <div>
+            <h4>🚨 HubSpot's New Pricing (Live April 14, 2026)</h4>
+            <p><strong>Breeze Customer Agent:</strong> $0.50 per resolved conversation (was $1.00 per conversation)<br>
+            <strong>Breeze Prospecting Agent:</strong> $1.00 per lead recommended for outreach</p>
+        </div>
+        
+        <p>This is the first major vendor to fully embrace <strong>"pay for results"</strong> AI pricing. Not per seat. Not per usage. Per <em>outcome</em>.</p>
+        
+        <p>Think about what this means:</p>
+        
+        <ul>
+            <li><strong>Value is tied to results</strong> — If the AI doesn't resolve the conversation, you don't pay.</li>
+            <li><strong>Risk shifts to the vendor</strong> — HubSpot is betting their AI actually works.</li>
+            <li><strong>ROI becomes transparent</strong> — No more "we think it's helping" — you can calculate exactly what each resolution costs.</li>
+        </ul>
+        
+        <h2>Why This Matters for PMM</h2>
+        
+        <p>If you're in product marketing, this isn't just a pricing story. It's a <strong>positioning story</strong>, a <strong>commercial strategy story</strong>, and an <strong>enablement story</strong> all wrapped into one.</p>
+        
+        <p>Here's how the market signals map to the skills PMMs need to develop:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Market Signal</th>
+                    <th>PMM Skill Area</th>
+                    <th>The Connection</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SaaS meltdown (-35% to -44%)</td>
+                    <td><span>Understanding the Shift</span></td>
+                    <td>The "why" — the market is forcing a reckoning on how we articulate value. Old playbooks are being repriced.</td>
+                </tr>
+                <tr>
+                    <td>Outcome-based pricing ($0.50/resolution)</td>
+                    <td><span>Commercial Strategy</span></td>
+                    <td>Pricing models are shifting from seats → usage → outcomes. PMMs need new commercial narratives.</td>
+                </tr>
+                <tr>
+                    <td>AI "compresses pricing power"</td>
+                    <td><span>AI-Ready Positioning</span></td>
+                    <td>When AI can comparison shop, positioning must survive summarization AND justify pricing premium.</td>
+                </tr>
+                <tr>
+                    <td>"Pay for results" expectation</td>
+                    <td><span>Champion Enablement</span></td>
+                    <td>Champions now need ROI proof, not feature lists. Outcome metrics are the new battleground.</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>The Old Model vs. The New Model</h2>
+        
+        <div>
+            <div>
+                <h4>❌ The Old Model</h4>
+                <ul>
+                    <li>Price per seat/user</li>
+                    <li>"Features and capabilities"</li>
+                    <li>ROI is theoretical</li>
+                    <li>Value assumed at purchase</li>
+                    <li>Champions sell vision</li>
+                </ul>
+            </div>
+            <div>
+                <h4>✅ The New Model</h4>
+                <ul>
+                    <li>Price per outcome/resolution</li>
+                    <li>"Results and impact"</li>
+                    <li>ROI is measurable</li>
+                    <li>Value proven continuously</li>
+                    <li>Champions sell metrics</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div>
+            <h4>The Core Thesis</h4>
+            <p>PMMs who understand this shift can position ahead of it. The question isn't "how do we respond to outcome-based pricing?" — it's "how do we make our value story so clear that outcome-based pricing works in our favor?"</p>
+        </div>
+        
+        <h2>What This Means for SAP</h2>
+        
+        <p>We're not immune to this shift. Our competitors are moving:</p>
+        
+        <ul>
+            <li><strong>Salesforce</strong> is bundling Slack with everything and pushing Agentforce ($800M ARR) as "digital labor"</li>
+            <li><strong>Microsoft</strong> is building the "IQ Layer" — Fabric IQ, Work IQ, Agent365 — to own the intelligence stack</li>
+            <li><strong>Workday</strong> launched Sana with 300+ pre-built AI skills and "24 tasks collapsed into a conversation"</li>
+        </ul>
+        
+        <p>The market is moving toward a model where <strong>AI agents do the work</strong> and <strong>customers pay for results</strong>. If our positioning is still "features and capabilities," we're speaking a language buyers are starting to tune out.</p>
+        
+        <h2>Three Things to Do This Week</h2>
+        
+        <div>
+            <h4>Immediate Actions</h4>
+            <ol>
+                <li><strong>Audit your value metrics.</strong> Can you articulate the outcome of your product in a single, measurable number? If not, start there.</li>
+                <li><strong>Stress-test your positioning.</strong> Ask: "If a competitor offered outcome-based pricing, would our value story still hold?" If not, you have work to do.</li>
+                <li><strong>Equip your champions.</strong> Make sure they can answer: "What's the ROI?" with specific, defensible numbers — not vague productivity claims.</li>
+            </ol>
+        </div>
+        
+        <h2>The Bottom Line</h2>
+        
+        <p>The SaaS reckoning isn't about AI replacing software. It's about AI changing <em>how software proves its value</em>.</p>
+        
+        <p>HubSpot's move to $0.50/resolution is a signal. The stock price drops are a signal. The shift to agentic AI across every major vendor is a signal.</p>
+        
+        <p>PMMs who read these signals and adapt their playbooks will thrive. Those who keep running the old playbook will find themselves explaining why their positioning sounds like everyone else's — and why their pricing doesn't match the value buyers can now measure.</p>
+        
+        <p><strong>The reckoning is here. Time to position ahead of it.</strong></p>
+        
+        <div>
+            <h3>What We're Building</h3>
+            <p>We're developing a hands-on learning program that teaches these exact skills — from AI-ready positioning to commercial strategy for the outcome-based era. Stay tuned.</p>
+            <a href="/index.html">Explore Future of PMM →</a>
+        </div>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

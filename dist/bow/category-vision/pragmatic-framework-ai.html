@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Impact on Pragmatic Framework's 37 Boxes | NextGen PMM</title>
+    <meta name="description" content="Every activity in Pragmatic Institute's product lifecycle framework — evaluated for AI replacement probability with tool recommendations and real-world evidence.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/category-vision/">Category & Vision</a>
+            </div>
+            <h1>AI Impact on Pragmatic Framework's 37 Boxes</h1>
+            <div class="article-meta">Category & Vision</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <section>
+            <div>
+                <span>⚡</span>
+                <span>Likely Replaced by AI</span>
+                <span>7 activities</span>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>95%</span>
+                    </div>
+                    <span>Competitive Landscape</span>
+                    <span>Market</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Pragmatic Definition</div>
+                        <p>"Identify competitive and alternative offerings in the market. Assess their strengths and weaknesses. Develop a strategy for winning against the competition."</p>
+                    </div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>AI can continuously monitor competitors, scrape pricing pages, track product updates, analyze positioning shifts, and generate competitive battle cards in real time — far faster and more comprehensively than any human analyst.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>Crayon</span><span>Real-time competitive monitoring with AI-generated battlecards and Slack alerts</span></div>
+                            <div><span>Klue</span><span>Competitive enablement platform with AI-powered intel curation for sales teams</span></div>
+                            <div><span>Visualping</span><span>Automated website change detection for competitor pricing and messaging shifts</span></div>
+                            <div><span>AlphaSense</span><span>AI-powered market intelligence across filings, transcripts, and news</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>📰 Evidence & Sources</div>
+                        <div>
+                            <div>Blackbaud's PMM reports Klue's Compete Agent saves 2 days/week and increased win rates 28% against top competitors<a href="https://klue.com/compete-agent" target="_blank">↗ Klue</a></div>
+                            <div>Community Brands achieved 10% win rate lift and 50% reduction in PMM time to find/distribute competitive insights<a href="https://klue.com/case-study/competitiveenablement-programincreases-win-ratesby-up-to-10" target="_blank">↗ Klue Case Study</a></div>
+                            <div>Klue's AI generates complete battlecards in under 60 seconds from verified intel sources<a href="https://klue.com/blog/ai-product-marketing" target="_blank">↗ Klue Blog</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>92%</span>
+                    </div>
+                    <span>Content</span>
+                    <span>Enablement</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Pragmatic Definition</div>
+                        <p>"Provide content for buyer personas focused on a specific step of the buying process. Curate content aligned with stages of the buying process."</p>
+                    </div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>AI can generate buyer-persona-specific content mapped to buying stages at scale. Organizations report 30-50% reduction in content creation time. Human role shifts to editorial curation and brand voice governance.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>Jasper</span><span>Brand-trained AI content generation across formats with campaign workflows</span></div>
+                            <div><span>Writer</span><span>Enterprise AI writing with brand voice and compliance governance</span></div>
+                            <div><span>Claude / ChatGPT</span><span>Long-form drafting, repurposing launch docs into multi-channel assets</span></div>
+                            <div><span>Descript</span><span>AI video/audio editing to repurpose webinars into short-form clips</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>📰 Evidence & Sources</div>
+                        <div>
+                            <div>Bain & Company (2025): organizations using generative AI for marketing see 30-50% decrease in content creation time<a href="https://www.cirrusinsight.com/blog/ai-in-sales" target="_blank">↗ Bain via Cirrus Insight</a></div>
+                            <div>29% of marketing teams now produce over half their content with AI; small teams average 71% AI-generated<a href="https://www.walnut.io/blog/sales-tips/ai-in-sales-complete-guide-2026/" target="_blank">↗ Walnut</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>91%</span>
+                    </div>
+                    <span>Nurturing</span>
+                    <span>Programs</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Pragmatic Definition</div>
+                        <p>"Develop a lead nurturing process to turn prospects into satisfied customers and upsell or cross-sell existing customers."</p>
+                    </div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>Lead nurture sequences, drip campaigns, personalized follow-ups, and scoring models are increasingly automated end-to-end. AI optimizes timing, messaging, and channel selection dynamically based on behavioral signals.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>HubSpot AI</span><span>AI lead scoring, email personalization, and automated nurture workflows</span></div>
+                            <div><span>6sense</span><span>Intent-based buyer identification and AI-orchestrated campaigns</span></div>
+                            <div><span>Drift / Salesloft</span><span>Conversational AI chatbots that qualify and nurture leads 24/7</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>90%</span>
+                    </div>
+                    <span>Sales Tools</span>
+                    <span>Enablement</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Pragmatic Definition</div>
+                        <p>"Create tools for salespeople focused on a specific step of the selling process."</p>
+                    </div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>Battle cards, one-pagers, ROI calculators, objection handlers, and demo scripts can all be generated and personalized by AI for specific deal contexts.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>Highspot</span><span>AI-powered content recommendations and sales play automation</span></div>
+                            <div><span>Seismic</span><span>Dynamic content assembly and personalized sales collateral generation</span></div>
+                            <div><span>Gong</span><span>Conversation intelligence that surfaces winning talk tracks</span></div>
+                            <div><span>Walnut</span><span>AI-powered interactive demo personalization per persona/deal stage</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>89%</span>
+                    </div>
+                    <span>Measurement</span>
+                    <span>Programs</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Pragmatic Definition</div>
+                        <p>"Measure and tune product efforts to ensure alignment with corporate goals."</p>
+                    </div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>Tracking KPIs, attributing pipeline to programs, anomaly detection, and performance reporting are natural AI strengths. AI dashboards surface insights humans would miss.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>Improvado</span><span>AI Agent lets marketers query unified data in plain English</span></div>
+                            <div><span>Power BI Copilot</span><span>Conversational data analysis and auto-generated narratives</span></div>
+                            <div><span>Databox</span><span>AI-powered KPI tracking with anomaly alerts</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>88%</span>
+                    </div>
+                    <span>Asset Assessment</span>
+                    <span>Market</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>Cataloging technical assets, patents, skills inventories, and identifying leverage opportunities is a classification and pattern-matching task AI excels at.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>Glean</span><span>AI enterprise search across all internal documents and knowledge bases</span></div>
+                            <div><span>Guru</span><span>AI knowledge management that surfaces relevant internal assets</span></div>
+                            <div><span>PatSnap</span><span>AI patent analytics for IP portfolio assessment</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>85%</span>
+                    </div>
+                    <span>Use Scenarios</span>
+                    <span>Planning</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>AI Impact Analysis</div>
+                        <p>Given persona data and market research, AI generates detailed day-in-the-life scenarios, user stories, and problem-context narratives. Synthetic user research supplements real interviews.</p>
+                    </div>
+                    <div>
+                        <div>Recommended AI Tools</div>
+                        <div>
+                            <div><span>Claude / ChatGPT</span><span>Generate day-in-the-life scenarios from persona docs</span></div>
+                            <div><span>Synthetic Users</span><span>AI-generated personas for rapid scenario testing</span></div>
+                            <div><span>Dovetail AI</span><span>Synthesize qualitative research into themes</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+<section>
+            <div>
+                <span>🛡️</span>
+                <span>Never Fully Replaced</span>
+                <span>6 activities</span>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>40%</span>
+                    </div>
+                    <span>Programs (Support)</span>
+                    <span>Support</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Why AI Won't Replace This</div>
+                        <p>This requires organizational navigation, cross-team trust, and translating market intelligence into actionable direction.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>38%</span>
+                    </div>
+                    <span>Stakeholder Communications</span>
+                    <span>Planning</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Why AI Won't Replace This</div>
+                        <p>Reading political dynamics, building coalitions, knowing what to share with whom — rooted in EQ and influence AI can't replicate.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>35%</span>
+                    </div>
+                    <span>Innovation</span>
+                    <span>Business</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Why AI Won't Replace This</div>
+                        <p>AI brainstorms and generates ideas. Creative leaps, risk tolerance, and vision to drive innovation are fundamentally human.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>32%</span>
+                    </div>
+                    <span>Advocacy</span>
+                    <span>Programs</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Why AI Won't Replace This</div>
+                        <p>Authentic relationship-building, trust, and making customers feel valued. Reference calls are human-to-human exchanges.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>30%</span>
+                    </div>
+                    <span>Distinctive Competencies</span>
+                    <span>Market</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Why AI Won't Replace This</div>
+                        <p>Requires deep institutional knowledge and strategic self-awareness. AI can help articulate once identified, but can't discover what makes you unique.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div>
+                    <div>
+                        <div><div></div></div>
+                        <span>20%</span>
+                    </div>
+                    <span>Events</span>
+                    <span>Support</span>
+                    <span>▾</span>
+                </div>
+                <div>
+                    <div>
+                        <div>Why AI Won't Replace This</div>
+                        <p>Physical presence, improvisation, reading a room, and authentic connection. The most AI-resistant activity in the entire framework.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

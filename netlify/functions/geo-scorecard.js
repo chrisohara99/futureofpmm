@@ -26,6 +26,19 @@ exports.handler = async (event, context) => {
         const inputs = JSON.parse(event.body);
         const { company, category, buyer, positioning, pageContent, queries, competitors } = inputs;
 
+        // Check if any API keys are configured
+        const hasApiKeys = process.env.OPENAI_API_KEY || process.env.LAB_ANTHROPIC_KEY || 
+                          process.env.ANTHROPIC_API_KEY || process.env.GOOGLE_API_KEY;
+        
+        // If no API keys, return mock scorecard
+        if (!hasApiKeys) {
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify(getMockScorecard(company, category, competitors))
+            };
+        }
+
         // Use the first query for LLM testing
         const testQuery = queries[0] || `What are the best ${category} solutions?`;
 
@@ -447,4 +460,83 @@ async function getCompetitorScores(query, competitors, yourScores) {
         name: comp,
         score: Math.round((yourAvg + (Math.random() * 2 - 1)) * 10) / 10
     }));
+}
+
+// Mock scorecard for demo mode (no API keys configured)
+function getMockScorecard(company, category, competitors) {
+    const companyName = company || 'Your Product';
+    const catName = category || 'enterprise software';
+    
+    return {
+        _mock: true,
+        _note: 'Demo mode — connect API keys for live multi-LLM analysis',
+        overallScore: 6.2,
+        testQuery: `What are the best ${catName} solutions for enterprise?`,
+        llmScores: {
+            chatgpt: {
+                score: 6.5,
+                mentioned: true,
+                prominenceNote: 'Mentioned in top 5',
+                response: `When asked about ${catName} solutions, ChatGPT mentioned ${companyName} as a notable option, though with less detail than market leaders. The response noted strong integration capabilities but lacked specific outcome data.`,
+                error: null
+            },
+            claude: {
+                score: 5.8,
+                mentioned: true,
+                prominenceNote: 'Brief mention',
+                response: `Claude included ${companyName} in a broader discussion of ${catName} vendors, but noted limited specific evidence for claims. Would benefit from quantified customer outcomes.`,
+                error: null
+            },
+            gemini: {
+                score: 6.2,
+                mentioned: true,
+                prominenceNote: 'Mentioned with context',
+                response: `Gemini referenced ${companyName} when discussing ${catName}, highlighting integration capabilities but seeking more quantified outcomes and third-party validation.`,
+                error: null
+            }
+        },
+        competitors: (competitors || ['Competitor A', 'Competitor B']).map((comp, i) => ({
+            name: comp,
+            score: 7.2 - (i * 0.5)
+        })),
+        issues: [
+            {
+                severity: 'high',
+                title: 'Vague Value Claims',
+                description: 'Hero statement uses generic language ("leading", "best-in-class") that AI systems cannot verify or cite confidently.'
+            },
+            {
+                severity: 'medium',
+                title: 'Missing Quantified Outcomes',
+                description: 'No specific metrics (ROI, time savings, cost reduction) that AI can use to compare against competitors.'
+            },
+            {
+                severity: 'medium',
+                title: 'Limited Third-Party Validation',
+                description: 'No analyst quotes, awards, or independent benchmarks that would increase AI confidence in claims.'
+            }
+        ],
+        quickWins: [
+            'Add 3-5 specific customer outcomes with quantified results (e.g., "40% reduction in processing time")',
+            'Include named customer references with permission (Fortune 500 logos + brief quotes)',
+            'Specify integration certifications and partner ecosystem size'
+        ],
+        rewrites: [
+            {
+                context: 'Hero Statement',
+                before: 'The leading platform for modern enterprises.',
+                after: `Trusted by 500+ enterprises including [Company], [Company], and [Company] — delivering average 40% efficiency gains within 90 days of deployment.`
+            },
+            {
+                context: 'Capability Claim',
+                before: 'Seamless integration with your existing tools.',
+                after: `Native integrations with 150+ enterprise tools including Salesforce, SAP, and Workday — typically deployed in under 4 weeks with dedicated implementation support.`
+            },
+            {
+                context: 'Social Proof',
+                before: 'Trusted by thousands of customers worldwide.',
+                after: `Used by 2,500+ enterprises across 40 countries, including 35% of the Fortune 500 — with 4.7/5 average satisfaction rating from 10,000+ users.`
+            }
+        ]
+    };
 }

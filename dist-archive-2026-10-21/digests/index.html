@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-LL6G27YPXX');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Digest Archive | The Future of PMM</title>
+    <meta name="description" content="Daily AI + Product Marketing news digest with trends dashboard. Track emerging topics, keyword intensity, and industry shifts.">
+    <link rel="canonical" href="https://futureofpmm.com/digests/">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+    <style>
+        :root{--pmm-blue:#3b82f6;--pmm-dark:#1e3a5f;--pmm-light:#F5F6F7;--text-primary:#1D2D3E;--text-secondary:#5A6978;--border:#E5E7EB;--green:#10b981;--red:#ef4444}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Inter',-apple-system,sans-serif;color:var(--text-primary);background:var(--pmm-light);line-height:1.6}
+        
+        
+        
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+
+        
+        .header{background:linear-gradient(135deg,var(--pmm-dark) 0%,#0f172a 100%);color:white;padding:40px 24px 30px;text-align:center}
+        .header h1{font-size:32px;font-weight:700;margin-bottom:8px}
+        .header p{font-size:16px;opacity:0.9;max-width:600px;margin:0 auto}
+        .container{max-width:1100px;margin:0 auto;padding:30px 24px}
+        
+        /* Dashboard Styles */
+        .dashboard{background:white;border-radius:16px;padding:24px;margin-bottom:30px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+        .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+        .dashboard-title{font-size:20px;font-weight:700;color:var(--pmm-dark)}
+        .dashboard-subtitle{font-size:13px;color:var(--text-secondary)}
+        .dashboard-stats{display:flex;gap:12px;flex-wrap:wrap}
+        .stat-box{background:var(--pmm-light);padding:10px 14px;border-radius:8px;text-align:center;min-width:80px}
+        .stat-value{font-size:20px;font-weight:700;color:var(--pmm-blue)}
+        .stat-label{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px}
+        
+        .dashboard-grid{display:flex;flex-direction:column;gap:16px}
+        
+        .dashboard-section{background:var(--pmm-light);border-radius:12px;padding:16px;overflow:hidden}
+        .dashboard-section.chart-section{height:auto;max-height:380px}
+        .section-title{font-size:13px;font-weight:600;color:var(--pmm-dark);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .section-title span{font-size:14px}
+        
+        #wordcloud-container{width:100%;height:320px;background:#fff;border-radius:8px;overflow:hidden}
+        .chart-wrapper{position:relative;height:300px;width:100%;background:#fff;border-radius:8px;padding:8px}
+        .chart-wrapper canvas{width:100%!important;height:100%!important}
+        
+        /* Rising/Falling Terms */
+        .movers-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+        @media(max-width:600px){.movers-grid{grid-template-columns:1fr}}
+        .movers-section{background:var(--pmm-light);border-radius:12px;padding:16px}
+        .mover-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+        .mover-item:last-child{border-bottom:none}
+        .mover-term{font-weight:500;font-size:13px}
+        .mover-change{font-weight:700;font-size:12px;padding:2px 8px;border-radius:12px}
+        .mover-change.up{background:#dcfce7;color:#166534}
+        .mover-change.down{background:#fef2f2;color:#dc2626}
+        
+        /* Source Leaderboard */
+        .source-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+        .source-item:last-child{border-bottom:none}
+        .source-rank{width:20px;font-weight:700;color:var(--pmm-blue);font-size:12px}
+        .source-name{flex:1;font-size:13px}
+        .source-count{background:var(--pmm-blue);color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+        
+        /* Google Trends link handled inline */
+        
+        /* Hot Terms Pills */
+        .top-terms{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+        .term-pill{background:white;border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px}
+        .term-pill .count{background:var(--pmm-blue);color:white;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600}
+        .term-pill .arrow{font-size:10px}
+        .term-pill .arrow.up{color:var(--green)}
+        .term-pill .arrow.down{color:var(--red)}
+        
+        /* Digest List */
+        .digest-section-title{font-size:18px;font-weight:600;color:var(--pmm-dark);margin:30px 0 16px;display:flex;align-items:center;gap:8px}
+        .digest-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+        .digest-card{background:white;border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;color:inherit;transition:box-shadow 0.2s,transform 0.2s;display:block}
+        .digest-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1);transform:translateY(-2px)}
+        .digest-date{font-size:11px;color:var(--pmm-blue);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+        .digest-title{font-size:14px;font-weight:600;margin-bottom:6px;line-height:1.4}
+        .digest-stories{display:flex;gap:4px;flex-wrap:wrap}
+        .story-tag{font-size:10px;background:var(--pmm-light);color:var(--text-secondary);padding:2px 6px;border-radius:4px}
+        .subscribe-box{background:linear-gradient(135deg,var(--pmm-dark) 0%,#0f172a 100%);color:white;padding:32px;border-radius:12px;text-align:center;margin-top:30px}
+        .subscribe-box h3{font-size:22px;margin-bottom:10px}
+        .subscribe-box p{opacity:0.9;margin-bottom:16px}
+        .subscribe-box a{display:inline-block;background:var(--pmm-blue);color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600}
+        footer{text-align:center;padding:30px 24px;color:var(--text-secondary);font-size:14px}
+        footer a{color:var(--pmm-blue);text-decoration:none}
+    
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: #3b82f6; background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; margin: 0; }
+        .nav-menu a:hover { background: #f3f4f6; color: #3b82f6; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: #1e3a5f; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            .logo img { height: 70px !important; }
+            nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: #1e3a5f; flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { display: flex !important; right: 0 !important; }
+            nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; padding: 0.75rem 0 !important; background: transparent !important; }
+            nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: white !important; }
+            .nav-menu { position: static; background: transparent; border: none; box-shadow: none; opacity: 1; visibility: visible; transform: none; padding-left: 1rem; }
+            .nav-menu a { color: rgba(255,255,255,0.7) !important; padding: 0.5rem 0; }
+            .nav-menu a:hover { background: transparent; color: white !important; }
+        }
+
+    </style>
+
+    <!-- Schema.org NewsArticle for GEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "Daily Digest Archive | The Future of PMM",
+      "description": "Daily AI + Product Marketing news digest with trends dashboard. Track emerging topics, keyword intensity, and industry shifts.",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "jobTitle": "VP Product Marketing",
+        "worksFor": {"@type": "Organization", "name": "SAP"}
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      },
+      "datePublished": "2026-03-01",
+      "mainEntityOfPage": "https://futureofpmm.com/digests/index.html",
+      "inLanguage": "en"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container header-inner">
+            <a href="/" class="logo"><img src="/assets/images/logo.svg" alt="The Future of PMM"></a>
+            <nav id="main-nav">
+                <a href="/">Home</a>
+                <div class="nav-dropdown">
+                    <button class="nav-trigger">Learn</button>
+                    <div class="nav-menu">
+                        <a href="/curriculum/">📚 Curriculum</a>
+                        <a href="/blog.html">📝 Articles</a>
+                        <a href="/where-do-you-sit-article.html">🧠 Assessments</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-trigger">Resources</button>
+                    <div class="nav-menu">
+                        <a href="/digests/">📰 Daily Digest</a>
+                        <a href="/competitive-intel.html">🎯 Competitive Intel</a>
+                        <a href="/ai-tools.html">🛠️ AI Tools Guide</a>
+                    </div>
+                </div>
+                <a href="/newsletters.html">Newsletter</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+    <script>
+    document.getElementById('hamburger').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.getElementById('main-nav').classList.toggle('open');
+    });
+    </script>
+    <div class="header">
+        <h1>📰 Daily Digest</h1>
+        <p>AI + Product Marketing news with real-time trend tracking</p>
+    </div>
+    <div class="container">
+        <!-- Trends Dashboard -->
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">📊 Trends Dashboard</div>
+                    <div class="dashboard-subtitle">Updated daily • <span id="digest-count">53</span> digests analyzed</div>
+                </div>
+                <div class="dashboard-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="total-digests">53</div>
+                        <div class="stat-label">Digests</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="date-range">53d</div>
+                        <div class="stat-label">Tracked</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="top-rising">—</div>
+                        <div class="stat-label">🔥 Rising</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Word Cloud -->
+                <div class="dashboard-section chart-section">
+                    <div class="section-title"><span>☁️</span> Topic Cloud</div>
+                    <div id="wordcloud-container"></div>
+                </div>
+                
+                <!-- Trends Chart -->
+                <div class="dashboard-section chart-section">
+                    <div class="section-title"><span>📈</span> Keyword Trends (7-day avg)</div>
+                    <div class="chart-wrapper">
+                        <canvas id="trends-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rising/Falling + Sources -->
+            <div class="movers-grid">
+                <!-- Rising Terms -->
+                <div class="movers-section">
+                    <div class="section-title"><span>🚀</span> Rising This Week</div>
+                    <div id="rising-terms">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Source Leaderboard -->
+                <div class="movers-section">
+                    <div class="section-title"><span>📰</span> Top Sources</div>
+                    <div id="source-leaderboard">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Google Trends Embed -->
+            <div class="dashboard-section" style="margin-top:16px;height:auto;max-height:none;overflow:visible">
+                <div class="section-title"><span>🔍</span> Google Trends: AI Marketing</div>
+                <div style="background:#fff;border-radius:8px;overflow:hidden">
+                    <iframe src="https://trends.google.com/trends/embed/explore/TIMESERIES?req=%7B%22comparisonItem%22%3A%5B%7B%22keyword%22%3A%22AI%20marketing%22%2C%22geo%22%3A%22US%22%2C%22time%22%3A%22today%203-m%22%7D%2C%7B%22keyword%22%3A%22AI%20agents%22%2C%22geo%22%3A%22US%22%2C%22time%22%3A%22today%203-m%22%7D%2C%7B%22keyword%22%3A%22agentic%20AI%22%2C%22geo%22%3A%22US%22%2C%22time%22%3A%22today%203-m%22%7D%5D%2C%22category%22%3A0%2C%22property%22%3A%22%22%7D&tz=300" width="100%" height="400" frameborder="0" scrolling="no"></iframe>
+                </div>
+            </div>
+            
+            <!-- Hot Terms This Week -->
+            <div style="margin-top:16px">
+                <div class="section-title"><span>🔥</span> Hot Terms (with trend)</div>
+                <div class="top-terms" id="top-terms">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Digest Archive -->
+        <div class="digest-section-title">📚 Archive</div>
+        <div class="digest-list" id="digest-list">
+            <a href="/digests/2026-09-12.html" class="digest-card">
+                <div class="digest-date">Saturday, September 12, 2026</div>
+                <div class="digest-title">AI MarTech to Triple to $74B, Birdeye Ships 27 AI Coworkers, 79% Face Adoption Challenges</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AI MarTech $74B</span>
+                    <span class="story-tag">Birdeye AI Coworkers</span>
+                    <span class="story-tag">79% Challenges</span>
+                    <span class="story-tag">68% Disconnected</span>
+                    <span class="story-tag">Enterprise AI $206B</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-11.html" class="digest-card">
+                <div class="digest-date">Friday, September 11, 2026</div>
+                <div class="digest-title">Writer Ships Enterprise Brain, Klaviyo Goes Headless, Google Forces AI Max Migration</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Enterprise Brain</span>
+                    <span class="story-tag">Klaviyo MCP</span>
+                    <span class="story-tag">96% AI Adoption</span>
+                    <span class="story-tag">Google AI Max</span>
+                    <span class="story-tag">ChatGPT Ads $1B</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-10.html" class="digest-card">
+                <div class="digest-date">Thursday, September 10, 2026</div>
+                <div class="digest-title">"AI Claws" Signal Next Phase, BCG Warns of Cognitive Lock-In, Magnite Proves Agentic Ads Work</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AI Claws</span>
+                    <span class="story-tag">Enterprise Cortex</span>
+                    <span class="story-tag">Magnite Agentic</span>
+                    <span class="story-tag">B2B AI Fails</span>
+                    <span class="story-tag">Triple Whale</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-09.html" class="digest-card">
+                <div class="digest-date">Wednesday, September 9, 2026</div>
+                <div class="digest-title">68% of Marketers Are "Disconnected" in AI Strategy, Google + Accenture Launch FDE Unit, Dark Data Wrecks AI Stacks</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Adobe AI Maturity</span>
+                    <span class="story-tag">Google FDE</span>
+                    <span class="story-tag">Knowledge Mesh</span>
+                    <span class="story-tag">Dark Data</span>
+                    <span class="story-tag">Klaviyo Enterprise</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-08.html" class="digest-card">
+                <div class="digest-date">Tuesday, September 8, 2026</div>
+                <div class="digest-title">Voicing AI Ships "Knowledge Mesh," Anthropic Scrambles for Compute, Google Merges AI Mode Into Search</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Knowledge Mesh</span>
+                    <span class="story-tag">Anthropic IPO</span>
+                    <span class="story-tag">Google AI Mode</span>
+                    <span class="story-tag">40% Agents</span>
+                    <span class="story-tag">PyTorch China</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-07.html" class="digest-card">
+                <div class="digest-date">Monday, September 7, 2026</div>
+                <div class="digest-title">"The Marketing Stack Is Dead," 96% Use AI But Hiring Shifts to Judgment, 6sense Routes Intent to AI Agents</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Martech Dead</span>
+                    <span class="story-tag">96% AI Adoption</span>
+                    <span class="story-tag">6sense Agents</span>
+                    <span class="story-tag">Sitefire YC</span>
+                    <span class="story-tag">Meta Hatch</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-06.html" class="digest-card">
+                <div class="digest-date">Sunday, September 6, 2026</div>
+                <div class="digest-title">CMOs Spend 15.3% on AI But Only 30% Ready, 96% Use AI But Hiring Shifts to Judgment, The Measurement Gap Widens</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner CMO</span>
+                    <span class="story-tag">AI Readiness</span>
+                    <span class="story-tag">Salesloft 20.6%</span>
+                    <span class="story-tag">GEO Measurement</span>
+                    <span class="story-tag">ChatGPT Ads</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-05.html" class="digest-card">
+                <div class="digest-date">Saturday, September 5, 2026</div>
+                <div class="digest-title">AI Tool Rollout Done—Now Comes Governance, Meta Ships "Hatch," The Marketing Stack Is Dead</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AI Governance</span>
+                    <span class="story-tag">Meta Hatch</span>
+                    <span class="story-tag">Martech Dead</span>
+                    <span class="story-tag">PwC Palantir</span>
+                    <span class="story-tag">OpenAI Roadmaps</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-04.html" class="digest-card">
+                <div class="digest-date">Friday, September 4, 2026</div>
+                <div class="digest-title">"The Marketing Stack Is Dead," McKinsey: 32% Skip Software, JetStream Ships Agent Authorization</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Martech Stack Dead</span>
+                    <span class="story-tag">McKinsey 32%</span>
+                    <span class="story-tag">JetStream Clearance</span>
+                    <span class="story-tag">Adobe Rilo</span>
+                    <span class="story-tag">Salesforce Platform</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-03.html" class="digest-card">
+                <div class="digest-date">Thursday, September 3, 2026</div>
+                <div class="digest-title">Adobe Acquires Rilo, Webflow Unveils Source, JetStream Ships Agent Governance</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Adobe Rilo</span>
+                    <span class="story-tag">Webflow Source</span>
+                    <span class="story-tag">JetStream Clearance</span>
+                    <span class="story-tag">Claude Fable 5.1</span>
+                    <span class="story-tag">Meta AI Pipeline</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-02.html" class="digest-card">
+                <div class="digest-date">Wednesday, September 2, 2026</div>
+                <div class="digest-title">ChatGPT Ads Hits $1B in 200 Days, 51% of B2B Buyers Skip Google, Gemini Pro Delay Creates Enterprise Gap</div>
+                <div class="digest-stories">
+                    <span class="story-tag">ChatGPT Ads $1B</span>
+                    <span class="story-tag">B2B AI Discovery</span>
+                    <span class="story-tag">Claudeforce</span>
+                    <span class="story-tag">Gemini Pro</span>
+                    <span class="story-tag">Marketing AI Month</span>
+                </div>
+            </a>
+            <a href="/digests/2026-09-01.html" class="digest-card">
+                <div class="digest-date">Tuesday, September 1, 2026</div>
+                <div class="digest-title">Salesforce Winter '27: Agents Run Workflows, Yale: Data Is the Moat, AI Giants Hit $115B ARR</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce Winter '27</span>
+                    <span class="story-tag">Data Moat</span>
+                    <span class="story-tag">Anthropic $65B</span>
+                    <span class="story-tag">IA40</span>
+                    <span class="story-tag">Agent Costs</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-31.html" class="digest-card">
+                <div class="digest-date">Monday, August 31, 2026</div>
+                <div class="digest-title">1,200 AI Agents Coordinate Cyberattack, AMA Redefines Marketing Skills, Vertical ML Outperforms CDPs</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI Security</span>
+                    <span class="story-tag">AMA 2026</span>
+                    <span class="story-tag">CDP vs ML</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Agent Payments</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-30.html" class="digest-card">
+                <div class="digest-date">Sunday, August 30, 2026</div>
+                <div class="digest-title">AMA Redefines Marketing Skills, Claudeforce Launches, Enterprise Software Winners Diverge</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AMA 2026</span>
+                    <span class="story-tag">Claudeforce</span>
+                    <span class="story-tag">ServiceNow</span>
+                    <span class="story-tag">Nvidia Agents</span>
+                    <span class="story-tag">WashPost</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-29.html" class="digest-card">
+                <div class="digest-date">Saturday, August 29, 2026</div>
+                <div class="digest-title">Enterprise Software Up 13%, But AI's Winners and Losers Are Diverging Fast</div>
+                <div class="digest-stories">
+                    <span class="story-tag">IDC</span>
+                    <span class="story-tag">AWS Bedrock</span>
+                    <span class="story-tag">GEO</span>
+                    <span class="story-tag">Monetate</span>
+                    <span class="story-tag">Aziron</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-28.html" class="digest-card">
+                <div class="digest-date">Friday, August 28, 2026</div>
+                <div class="digest-title">Gartner: AI Is a Governance Problem, OpenAI Courts Enterprise Advertisers, The $2T SaaS Reality Check</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner Hype Cycle</span>
+                    <span class="story-tag">OpenAI Ads</span>
+                    <span class="story-tag">SaaSpocalypse</span>
+                    <span class="story-tag">Agentic AI</span>
+                    <span class="story-tag">Holiday AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-27.html" class="digest-card">
+                <div class="digest-date">Thursday, August 27, 2026</div>
+                <div class="digest-title">Nvidia's $40B Enterprise AI Quarter, McKinsey Exposes the Impact Gap, Arga Labs Raises $10M</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Nvidia</span>
+                    <span class="story-tag">McKinsey</span>
+                    <span class="story-tag">Arga Labs</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">AI Governance</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-26.html" class="digest-card">
+                <div class="digest-date">Wednesday, August 26, 2026</div>
+                <div class="digest-title">Gartner: AI Is a Governance Problem, OpenAI Gains on Anthropic, Claude Goes Deeper in Workspace</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner Hype Cycle</span>
+                    <span class="story-tag">OpenAI vs Anthropic</span>
+                    <span class="story-tag">Claude Workspace</span>
+                    <span class="story-tag">Microsoft AI Max</span>
+                    <span class="story-tag">GEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-25.html" class="digest-card">
+                <div class="digest-date">Tuesday, August 25, 2026</div>
+                <div class="digest-title">OpenAI Targets Enterprise Advertisers, Claude Expands Google Workspace, Goldman Maps AI Job Impact</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI Ads</span>
+                    <span class="story-tag">Claude Cowork</span>
+                    <span class="story-tag">Goldman Sachs</span>
+                    <span class="story-tag">SAP Governance</span>
+                    <span class="story-tag">CDP + AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-24.html" class="digest-card">
+                <div class="digest-date">Monday, August 24, 2026</div>
+                <div class="digest-title">AI Agents Disrupt Enterprise Pricing, 40% of Apps Embed Agents, LinkedIn's AI Marketing Playbook</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Enterprise Pricing</span>
+                    <span class="story-tag">Agentic AI</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">A2A + MCP</span>
+                    <span class="story-tag">LinkedIn AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-23.html" class="digest-card">
+                <div class="digest-date">Sunday, August 23, 2026</div>
+                <div class="digest-title">OpenAI Gains on Anthropic, The 52-Point Data Gap, Structured Data Is the New Homepage</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI vs Anthropic</span>
+                    <span class="story-tag">Data Infrastructure</span>
+                    <span class="story-tag">Agentic B2B</span>
+                    <span class="story-tag">AI ROI</span>
+                    <span class="story-tag">Structured Data</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-22.html" class="digest-card">
+                <div class="digest-date">Saturday, August 22, 2026</div>
+                <div class="digest-title">The 52-Point Data Readiness Gap, SaaS Pricing Pivots, ChatGPT Ads Go Beta</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">Data Infrastructure</span>
+                    <span class="story-tag">J.P. Morgan</span>
+                    <span class="story-tag">ChatGPT Ads</span>
+                    <span class="story-tag">Gemini</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-21.html" class="digest-card">
+                <div class="digest-date">Friday, August 21, 2026</div>
+                <div class="digest-title">80% of B2B Buyers Use AI Agents, 96% Use AI But Only 44% Have the Data, Uniphore Moves Beyond CDP</div>
+                <div class="digest-stories">
+                    <span class="story-tag">IDC</span>
+                    <span class="story-tag">AI Agents</span>
+                    <span class="story-tag">Data Infrastructure</span>
+                    <span class="story-tag">Uniphore</span>
+                    <span class="story-tag">Multi-Agent</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-20.html" class="digest-card">
+                <div class="digest-date">Thursday, August 20, 2026</div>
+                <div class="digest-title">Forbes AI 50 Crowns Anthropic, ChatGPT Ads Hit Europe, B2B Discovery Shifts to AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">ChatGPT Ads</span>
+                    <span class="story-tag">B2B Buyers</span>
+                    <span class="story-tag">GEO</span>
+                    <span class="story-tag">Cohesity</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-19.html" class="digest-card">
+                <div class="digest-date">Wednesday, August 19, 2026</div>
+                <div class="digest-title">Google Forces AI Max Migration, $2T SaaSpocalypse Deepens, GEO Is the New SEO</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google AI Max</span>
+                    <span class="story-tag">SaaSpocalypse</span>
+                    <span class="story-tag">GEO</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">Claude Cowork</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-18.html" class="digest-card">
+                <div class="digest-date">Tuesday, August 18, 2026</div>
+                <div class="digest-title">Agent Adoption Tripled, Only 5% Ready, Frontier Firms Pull Away</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Deloitte</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">Data Leaders</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-17.html" class="digest-card">
+                <div class="digest-date">Monday, August 17, 2026</div>
+                <div class="digest-title">Silver Lake Eyes $51B Workday Buyout, Gen Z Punishes AI Marketing, Agentic AI Dominates Enterprise Usage</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Silver Lake</span>
+                    <span class="story-tag">Workday</span>
+                    <span class="story-tag">Gen Z</span>
+                    <span class="story-tag">Agentic AI</span>
+                    <span class="story-tag">Multi-Agent</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-16.html" class="digest-card">
+                <div class="digest-date">Sunday, August 16, 2026</div>
+                <div class="digest-title">DeepSeek V4-Pro Goes GA, Grok Bot Creates AI Coworkers, Gartner: 40% of Agentic Projects Will Fail</div>
+                <div class="digest-stories">
+                    <span class="story-tag">DeepSeek V4-Pro</span>
+                    <span class="story-tag">Grok Bot</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Klaviyo</span>
+                    <span class="story-tag">Identity Resolution</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-15.html" class="digest-card">
+                <div class="digest-date">Saturday, August 15, 2026</div>
+                <div class="digest-title">Salesforce: Agent Deployments More Than Doubled, Writer X6 Cuts Costs 52%, OpenAI Shake-Up Rattles Enterprise</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce Index</span>
+                    <span class="story-tag">Writer X6</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Tech Stacks</span>
+                    <span class="story-tag">JPMorgan</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-14.html" class="digest-card">
+                <div class="digest-date">Friday, August 14, 2026</div>
+                <div class="digest-title">IBM + OpenAI Partner for Enterprise AI, ChatGPT Ads Go Global, Enterprise AI Faces ROI Reckoning</div>
+                <div class="digest-stories">
+                    <span class="story-tag">IBM + OpenAI</span>
+                    <span class="story-tag">ChatGPT Ads</span>
+                    <span class="story-tag">ROI Reckoning</span>
+                    <span class="story-tag">Thrive Holdings</span>
+                    <span class="story-tag">Writer X6</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-13.html" class="digest-card">
+                <div class="digest-date">Thursday, August 13, 2026</div>
+                <div class="digest-title">Skan AI's $63M "Context Layer," The Toggle Tax, Grok Bot Goes Persistent, River AI's $1.1B</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Skan AI</span>
+                    <span class="story-tag">Toggle Tax</span>
+                    <span class="story-tag">Grok Bot</span>
+                    <span class="story-tag">River AI</span>
+                    <span class="story-tag">Nvidia</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-12.html" class="digest-card">
+                <div class="digest-date">Wednesday, August 12, 2026</div>
+                <div class="digest-title">Enterprise Brain Replaces AI Agents, Salesforce: Deployments 3x YoY, Anthropic Hits $30B</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Enterprise Brain</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">SoftBank</span>
+                    <span class="story-tag">Gartner</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-11.html" class="digest-card">
+                <div class="digest-date">Tuesday, August 11, 2026</div>
+                <div class="digest-title">DeepMind Restructures for AGI, AI Compute to $702B, 95% of GenAI Pilots Fail</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google DeepMind</span>
+                    <span class="story-tag">IDC</span>
+                    <span class="story-tag">GenAI Pilots</span>
+                    <span class="story-tag">6sense MCP</span>
+                    <span class="story-tag">AI Agents</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-10.html" class="digest-card">
+                <div class="digest-date">Monday, August 10, 2026</div>
+                <div class="digest-title">Salesforce: AI Agent Deployments Nearly Tripled, Claude's Rough Week, Google Ads Resets Bid Targets</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Google Ads</span>
+                    <span class="story-tag">LinkedIn</span>
+                    <span class="story-tag">AI Adoption</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-09.html" class="digest-card">
+                <div class="digest-date">Sunday, August 9, 2026</div>
+                <div class="digest-title">Google DeepMind Restructures for AGI, CTM Closes ChatGPT Attribution Gap, HubSpot Agents Go Autonomous</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google DeepMind</span>
+                    <span class="story-tag">CTM</span>
+                    <span class="story-tag">HubSpot</span>
+                    <span class="story-tag">Cloud Market</span>
+                    <span class="story-tag">AI Search</span>
+                </div>
+            </a>
+            <a href="/digests/2026-08-05.html" class="digest-card">
+                <div class="digest-date">Wednesday, August 5, 2026</div>
+                <div class="digest-title">Microsoft's $100B Azure Year Goes Multi-Model, ADWEEK Names AI Marketing Winners, 90-Tool Stacks Still Broken</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">ADWEEK</span>
+                    <span class="story-tag">CMSWire</span>
+                    <span class="story-tag">AI Agents</span>
+                    <span class="story-tag">Enterprise AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-28.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 28, 2026</div>
+                <div class="digest-title">72% of B2B Buyers Vet Vendors on ChatGPT, Forbes: Only 1% AI-Mature, GR0 Acquires Ultimate AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">GEO</span>
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">GR0 AI</span>
+                    <span class="story-tag">Frost & Sullivan</span>
+                    <span class="story-tag">MCP</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-27.html" class="digest-card">
+                <div class="digest-date">Monday, July 27, 2026</div>
+                <div class="digest-title">OpenAI Launches Presence, HubSpot Unifies Agent Hub, Wall Street Downgrades Adobe and Salesforce</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">HubSpot</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-26.html" class="digest-card">
+                <div class="digest-date">Sunday, July 26, 2026</div>
+                <div class="digest-title">84% of AI News is Noise, 72% of Buyers Use ChatGPT, China's First AI Agent Regulations</div>
+                <div class="digest-stories">
+                    <span class="story-tag">RELVE</span>
+                    <span class="story-tag">Forrester</span>
+                    <span class="story-tag">CMI</span>
+                    <span class="story-tag">China AI</span>
+                    <span class="story-tag">Agentic Email</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-25.html" class="digest-card">
+                <div class="digest-date">Friday, July 25, 2026</div>
+                <div class="digest-title">Zero-Click Searches Hit 68%, Google Liable for AI Overviews, Observe.AI + AWS Scale Agentic CX</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Zero-Click</span>
+                    <span class="story-tag">Observe.AI</span>
+                    <span class="story-tag">HubSpot</span>
+                    <span class="story-tag">GEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-24.html" class="digest-card">
+                <div class="digest-date">Friday, July 24, 2026</div>
+                <div class="digest-title">HubSpot Launches Agent Hub, Only 18% See AI Revenue Impact, First Fully Agentic Ad Campaign</div>
+                <div class="digest-stories">
+                    <span class="story-tag">HubSpot</span>
+                    <span class="story-tag">HCLTech</span>
+                    <span class="story-tag">Broadsign</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">OpenAI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-23.html" class="digest-card">
+                <div class="digest-date">Wednesday, July 23, 2026</div>
+                <div class="digest-title">CMO Council Exposes Martech Gap, OpenAI Launches "Presence," $234B at Risk from Agents</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CMO Council</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Screendragon</span>
+                    <span class="story-tag">SAP</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-22.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 22, 2026</div>
+                <div class="digest-title">Marketing's AI Stalls at Scale, CMOs Risk Jobs Over AI Literacy, Microsoft Repositions</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Screendragon</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">Agentic AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-21.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 21, 2026</div>
+                <div class="digest-title">Databricks Hits $188B, Ex-Microsoft Leaders Bet $1M AI Can Replace CEOs, The Fight for Intelligence</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Databricks</span>
+                    <span class="story-tag">Skyfall AI</span>
+                    <span class="story-tag">DMNews</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Enterprise AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-20.html" class="digest-card">
+                <div class="digest-date">Monday, July 20, 2026</div>
+                <div class="digest-title">The Intelligence Layer Battle, Google Makes Images in AI Overviews, AI Mode Ads Hit 30%</div>
+                <div class="digest-stories">
+                    <span class="story-tag">DMNews</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Accenture</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">AI Adoption</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-19.html" class="digest-card">
+                <div class="digest-date">Saturday, July 19, 2026</div>
+                <div class="digest-title">Gemini Notebook Runs Code, Agentforce Hits Wall, AI Ads Hit $32B</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">eMarketer</span>
+                    <span class="story-tag">DeepSeek</span>
+                    <span class="story-tag">AI Search</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-18.html" class="digest-card">
+                <div class="digest-date">Saturday, July 18, 2026</div>
+                <div class="digest-title">Navos 2.0 Brings Multi-Agent Commerce, Workato Ships 60+ MCP Servers, KPMG: 75% Expect Enterprise Agents Within a Year</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Tec-Do</span>
+                    <span class="story-tag">Workato</span>
+                    <span class="story-tag">Monotype</span>
+                    <span class="story-tag">Fireworks AI</span>
+                    <span class="story-tag">KPMG</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-17.html" class="digest-card">
+                <div class="digest-date">Friday, July 17, 2026</div>
+                <div class="digest-title">Enterprise AI Belongs to Systems That Can Act, Formal Strategies Triple Impact, 75% of Marketers Now Use AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">Info-Tech</span>
+                    <span class="story-tag">Sprinklr</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Salesforce</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-16.html" class="digest-card">
+                <div class="digest-date">Wednesday, July 16, 2026</div>
+                <div class="digest-title">Anthropic Bets $1.5B on Implementation, 85% Lack AI Strategy, Marketing Faces Existential Questions</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Supermetrics</span>
+                    <span class="story-tag">AI Readiness</span>
+                    <span class="story-tag">B2B SEO</span>
+                    <span class="story-tag">Agentic Internet</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-15.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 15, 2026</div>
+                <div class="digest-title">200+ Leaders Sign "We Must Act Now," 85% Have No AI Strategy, Agentic Marketing Ships</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AI Warning</span>
+                    <span class="story-tag">Supermetrics</span>
+                    <span class="story-tag">Agentic AI</span>
+                    <span class="story-tag">Itramei</span>
+                    <span class="story-tag">JPMorgan</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-14.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 14, 2026</div>
+                <div class="digest-title">GPT-5.6 Drops in Three Tiers, Starbucks Ditches Enterprise Software, AI SDR Workflows Cut Costs 38%</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Starbucks</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Deloitte</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-13.html" class="digest-card">
+                <div class="digest-date">Monday, July 13, 2026</div>
+                <div class="digest-title">AI Chatbots Own Discovery, Microsoft's Teams AI U-Turn, Google Hammers Thin Content</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AI Discovery</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">TikTok</span>
+                    <span class="story-tag">Salesforce</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-12.html" class="digest-card">
+                <div class="digest-date">Sunday, July 12, 2026</div>
+                <div class="digest-title">Salesforce Bets $1B on Swiss AI, Adobe's First-Party DSP, Marketing Cloud Next Demands T-Shaped Talent</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">Marketing Cloud Next</span>
+                    <span class="story-tag">ManageEngine</span>
+                    <span class="story-tag">Enterprise AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-11.html" class="digest-card">
+                <div class="digest-date">Saturday, July 11, 2026</div>
+                <div class="digest-title">Google Labels AI-Made Ads, 75% Plan Agentic AI, Zero-Click Search Rewrites B2B Playbook</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Deloitte</span>
+                    <span class="story-tag">AI Search</span>
+                    <span class="story-tag">Gemini 3.5</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-10.html" class="digest-card">
+                <div class="digest-date">Friday, July 10, 2026</div>
+                <div class="digest-title">24% of SaaS Won't Survive AI, Accenture Edge Targets Mid-Market, AI Search Demands New Playbook</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AlixPartners</span>
+                    <span class="story-tag">Accenture Edge</span>
+                    <span class="story-tag">AI Search</span>
+                    <span class="story-tag">OpenAI GPT-5.6</span>
+                    <span class="story-tag">Martech Disruption</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-09.html" class="digest-card">
+                <div class="digest-date">Wednesday, July 9, 2026</div>
+                <div class="digest-title">Adobe's CX Coworker Goes Live, Microsoft's $2.5B Frontier Bet, The CMS Becomes AI's Control Layer</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">CMS</span>
+                    <span class="story-tag">AI Measurement</span>
+                    <span class="story-tag">Agentic Commerce</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-08.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 8, 2026</div>
+                <div class="digest-title">Cognizant's 10K Gemini Engineers, Smarsh's Governance Alarm, Cloudflare's Pay-Per-Use Vision</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Cognizant</span>
+                    <span class="story-tag">Smarsh</span>
+                    <span class="story-tag">Cloudflare</span>
+                    <span class="story-tag">Klaviyo</span>
+                    <span class="story-tag">Pipedrive MCP</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-07.html" class="digest-card">
+                <div class="digest-date">Tuesday, July 7, 2026</div>
+                <div class="digest-title">Cloudflare Blocks AI Crawlers by Default, Klaviyo Deploys Coordinated Agents, Only 8% of CMOs Run Multi-Agent Campaigns</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Cloudflare</span>
+                    <span class="story-tag">Klaviyo</span>
+                    <span class="story-tag">BCG</span>
+                    <span class="story-tag">AI Models</span>
+                    <span class="story-tag">GenAI Adoption</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-06.html" class="digest-card">
+                <div class="digest-date">Monday, July 6, 2026</div>
+                <div class="digest-title">Zoom Acquires Common Room, Profound Launches Agentic Marketing Agent, Cloudflare Blocks AI Crawlers by Default</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Zoom</span>
+                    <span class="story-tag">Profound</span>
+                    <span class="story-tag">Cloudflare</span>
+                    <span class="story-tag">Klaviyo</span>
+                    <span class="story-tag">Visa</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-05.html" class="digest-card">
+                <div class="digest-date">Sunday, July 5, 2026</div>
+                <div class="digest-title">Microsoft's $2.5B Frontier Co., AWS Embeds AI as Core Infrastructure, Agentic AI Threatens $234B in SaaS</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">AWS</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Agentic OS</span>
+                    <span class="story-tag">AI Agents</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-04.html" class="digest-card">
+                <div class="digest-date">Saturday, July 4, 2026</div>
+                <div class="digest-title">Microsoft's $2.5B Frontier Bet, Gong Goes Deep on MCP, Enterprise AI Shapes Consumer Habits</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Gong</span>
+                    <span class="story-tag">PYMNTS</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-03.html" class="digest-card">
+                <div class="digest-date">Friday, July 3, 2026</div>
+                <div class="digest-title">Microsoft's $2B "Frontier" Org Deploys 6K Workers, Klaviyo Launches Autonomous Marketing Agents, Cloudflare Blocks AI Crawlers by Default</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Klaviyo</span>
+                    <span class="story-tag">Cloudflare</span>
+                    <span class="story-tag">Meta</span>
+                    <span class="story-tag">Gong</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-02.html" class="digest-card">
+                <div class="digest-date">Thursday, July 2, 2026</div>
+                <div class="digest-title">Gartner: $234B at Risk from Agentic AI, CiteLens Launches GEO Platform, Canva Goes Full Marketing Automation</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Agentic AI</span>
+                    <span class="story-tag">CiteLens</span>
+                    <span class="story-tag">Canva</span>
+                    <span class="story-tag">GEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-07-01.html" class="digest-card">
+                <div class="digest-date">Wednesday, July 1, 2026</div>
+                <div class="digest-title">OpenAI Previews GPT-5.6 Sol, PwC Reveals 40% AI Productivity Gap, Chinese AI Closes In</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">PwC</span>
+                    <span class="story-tag">GPT-5.6</span>
+                    <span class="story-tag">Amperity</span>
+                    <span class="story-tag">AI Startups</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-30.html" class="digest-card">
+                <div class="digest-date">Tuesday, June 30, 2026</div>
+                <div class="digest-title">Enterprise AI Demands ROI, 64.8% of Marketing Automatable, OpenAI vs Anthropic IPO Race Heats Up</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Enterprise AI</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">AI Automation</span>
+                    <span class="story-tag">Semrush</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-29.html" class="digest-card">
+                <div class="digest-date">Monday, June 29, 2026</div>
+                <div class="digest-title">Enterprise AI Demands ROI, Samsung's $648B Bet, OpenAI vs. Anthropic IPO Race</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Enterprise AI</span>
+                    <span class="story-tag">Samsung</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Agentic AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-28.html" class="digest-card">
+                <div class="digest-date">Sunday, June 28, 2026</div>
+                <div class="digest-title">JustAI Raises $17M for Coordinated Agents, Enterprise AI Goes Production, Agentic Governance Gap Widens</div>
+                <div class="digest-stories">
+                    <span class="story-tag">JustAI</span>
+                    <span class="story-tag">Deloitte</span>
+                    <span class="story-tag">NVIDIA</span>
+                    <span class="story-tag">Zeta Global</span>
+                    <span class="story-tag">Palantir</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-27.html" class="digest-card">
+                <div class="digest-date">Saturday, June 27, 2026</div>
+                <div class="digest-title">ChatGPT Hits 1B Users, Amazon Rufus Doubles Conversions, CMO AI Hub Launches</div>
+                <div class="digest-stories">
+                    <span class="story-tag">ChatGPT</span>
+                    <span class="story-tag">Sensor Tower</span>
+                    <span class="story-tag">Amazon Rufus</span>
+                    <span class="story-tag">CMO AI Hub</span>
+                    <span class="story-tag">AI Governance</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-26.html" class="digest-card">
+                <div class="digest-date">Friday, June 26, 2026</div>
+                <div class="digest-title">Zeta + Palantir Build Agentic Stack, Forrester Warns on AI-for-Efficiency Trap, Agentforce Commerce Goes GA</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Zeta Global</span>
+                    <span class="story-tag">Palantir</span>
+                    <span class="story-tag">Forrester</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Adobe GenStudio</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-25.html" class="digest-card">
+                <div class="digest-date">Thursday, June 25, 2026</div>
+                <div class="digest-title">Gap's AI Marketing Overhaul, Salesforce Agentforce Goes GA, AI Search Makes SEO Obsolete</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gap Inc.</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Agentforce</span>
+                    <span class="story-tag">AI Search</span>
+                    <span class="story-tag">AEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-24.html" class="digest-card">
+                <div class="digest-date">Wednesday, June 24, 2026</div>
+                <div class="digest-title">Palantir + Zeta Build Agentic Marketing, B2B Buying Committees Hit 13+, AI Content Volume Up 184%</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Palantir</span>
+                    <span class="story-tag">Zeta Global</span>
+                    <span class="story-tag">B2B Buyer Paradox</span>
+                    <span class="story-tag">Deloitte</span>
+                    <span class="story-tag">AI Infrastructure</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-23.html" class="digest-card">
+                <div class="digest-date">Tuesday, June 23, 2026</div>
+                <div class="digest-title">Samsung's Giant ChatGPT Rollout, Visa Wires AI Payments, EU Retailers Fight Transparency Rules</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Samsung</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Visa</span>
+                    <span class="story-tag">EU Regulation</span>
+                    <span class="story-tag">Agentic Commerce</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-22.html" class="digest-card">
+                <div class="digest-date">Monday, June 22, 2026</div>
+                <div class="digest-title">Microsoft Drops AI Ad Suite at Cannes, Nobel Laureate Defects to Anthropic, Ramp Reveals Where AI Spend Is Going</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Web IQ</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Ramp</span>
+                    <span class="story-tag">AI Traffic</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-21.html" class="digest-card">
+                <div class="digest-date">Sunday, June 21, 2026</div>
+                <div class="digest-title">WBD Goes All-In on Agentic Ad-Tech, BCG Maps the CMO Gap, The B2B Buyer Paradox Deepens</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Warner Bros.</span>
+                    <span class="story-tag">BCG</span>
+                    <span class="story-tag">Yext</span>
+                    <span class="story-tag">B2B Visibility</span>
+                    <span class="story-tag">Agentic Marketing</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-20.html" class="digest-card">
+                <div class="digest-date">Saturday, June 20, 2026</div>
+                <div class="digest-title">SAP + Google Cloud Deploy Agentic Commerce, Forbes AI 50 Drops, a16z Shares "Go Direct" Playbook</div>
+                <div class="digest-stories">
+                    <span class="story-tag">SAP</span>
+                    <span class="story-tag">Google Cloud</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">a16z</span>
+                    <span class="story-tag">Agentic Commerce</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-19.html" class="digest-card">
+                <div class="digest-date">Friday, June 19, 2026</div>
+                <div class="digest-title">OpenAI Gives Enterprise Real Controls, BCG Maps Agentic CMO Gap, 80% of AI Projects Still Fail</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">BCG</span>
+                    <span class="story-tag">Enterprise AI</span>
+                    <span class="story-tag">Agentic Marketing</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-18.html" class="digest-card">
+                <div class="digest-date">Thursday, June 18, 2026</div>
+                <div class="digest-title">Mastercard's Former CMO Predicts "Golden Era," Only 5% Have AI in Workflows, The New Marketer Profile</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Mastercard</span>
+                    <span class="story-tag">AI Integration</span>
+                    <span class="story-tag">Databricks</span>
+                    <span class="story-tag">Marketing Strategy</span>
+                    <span class="story-tag">Enterprise AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-17.html" class="digest-card">
+                <div class="digest-date">Wednesday, June 17, 2026</div>
+                <div class="digest-title">SpaceX Acquires Cursor for $60B, Salesforce Buys Fin for $3.6B, Enterprise AI Adoption Hits "Power User Gap"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">SpaceX</span>
+                    <span class="story-tag">Cursor</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Enterprise AI</span>
+                    <span class="story-tag">Adyen</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-16.html" class="digest-card">
+                <div class="digest-date">Tuesday, June 16, 2026</div>
+                <div class="digest-title">Gemini Runs Google's Ad Stack, PwC's 40% Productivity Gap, Social Commerce Hits $1T</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Gemini</span>
+                    <span class="story-tag">PwC</span>
+                    <span class="story-tag">AI Productivity</span>
+                    <span class="story-tag">Social Commerce</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-15.html" class="digest-card">
+                <div class="digest-date">Monday, June 15, 2026</div>
+                <div class="digest-title">HBR: Gen AI Disrupts B2B Buying. The 15%/30% Readiness Gap Persists. Google Spark Goes 24/7.</div>
+                <div class="digest-stories">
+                    <span class="story-tag">HBR</span>
+                    <span class="story-tag">B2B Buying</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Google Spark</span>
+                    <span class="story-tag">AEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-14.html" class="digest-card">
+                <div class="digest-date">Sunday, June 14, 2026</div>
+                <div class="digest-title">The AI Readiness Gap Widens: 15% Budget, 30% Ready. AI Search Goes Additive. Career Stakes Rise.</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">AI Readiness</span>
+                    <span class="story-tag">AI Search</span>
+                    <span class="story-tag">Contentstack</span>
+                    <span class="story-tag">Career</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-13.html" class="digest-card">
+                <div class="digest-date">Saturday, June 13, 2026</div>
+                <div class="digest-title">OpenAI Acquires Ona for Persistent Agents, CMOs Face 15%/30% Readiness Gap, MarTech's Answer Economy Shift</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Ona</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">AI Readiness</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-12.html" class="digest-card">
+                <div class="digest-date">Friday, June 12, 2026</div>
+                <div class="digest-title">TCS Bets Big on Anthropic, MarTech's SaaSpocalypse Report Card, Enterprise AI Cost Crisis Deepens</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TCS</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">AI Costs</span>
+                    <span class="story-tag">G2</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-11.html" class="digest-card">
+                <div class="digest-date">Thursday, June 11, 2026</div>
+                <div class="digest-title">Adobe's CX Coworker Goes GA, AI Search Eyes 53% Traffic, TCS Bets on Anthropic</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">AI Search</span>
+                    <span class="story-tag">TCS</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">AI Skills</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-10.html" class="digest-card">
+                <div class="digest-date">Wednesday, June 10, 2026</div>
+                <div class="digest-title">AI Search Hits 53% Traffic, Enterprise Budgets Get a Reality Check, Agents Solve Real Problems</div>
+                <div class="digest-stories">
+                    <span class="story-tag">AI Search</span>
+                    <span class="story-tag">Enterprise Marketing</span>
+                    <span class="story-tag">AI Agents</span>
+                    <span class="story-tag">B2B Sales</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-09.html" class="digest-card">
+                <div class="digest-date">Tuesday, June 9, 2026</div>
+                <div class="digest-title">OpenAI Files for IPO at $852B, Apple Overhauls Siri at Tim Cook's Final WWDC, Salesforce Gives Every Marketer an AI Team</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Apple WWDC</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Forbes AI 50</span>
+                    <span class="story-tag">Retail AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-08.html" class="digest-card">
+                <div class="digest-date">Monday, June 8, 2026</div>
+                <div class="digest-title">31% of Enterprises Have AI Agents in Production, Autonomous Ad Agents Arrive, Measurement Can't Keep Up</div>
+                <div class="digest-stories">
+                    <span class="story-tag">McKinsey</span>
+                    <span class="story-tag">Apptad</span>
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">Attentive</span>
+                    <span class="story-tag">Microsoft Build</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-07.html" class="digest-card">
+                <div class="digest-date">Sunday, June 7, 2026</div>
+                <div class="digest-title">McKinsey: Agentic AI to Power Two-Thirds of Marketing, UK Gives Publishers AI Controls, AI Agents Buy Ads</div>
+                <div class="digest-stories">
+                    <span class="story-tag">McKinsey</span>
+                    <span class="story-tag">UK CMA</span>
+                    <span class="story-tag">InMobi</span>
+                    <span class="story-tag">EDO</span>
+                    <span class="story-tag">Brand Monitoring</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-06.html" class="digest-card">
+                <div class="digest-date">Saturday, June 6, 2026</div>
+                <div class="digest-title">Microsoft Build Drops 7 MAI Models, AI Marketing's ROI Crisis, B2B Buying Goes AI-First</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft Build</span>
+                    <span class="story-tag">MAI Models</span>
+                    <span class="story-tag">Agent 365</span>
+                    <span class="story-tag">AI ROI</span>
+                    <span class="story-tag">GEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-05.html" class="digest-card">
+                <div class="digest-date">Friday, June 5, 2026</div>
+                <div class="digest-title">Microsoft Build Launches "Bing for Bots," UK Gives Publishers AI Kill Switch, Enterprise AI Goes Production-Ready</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">UK CMA</span>
+                    <span class="story-tag">Sema4.ai</span>
+                    <span class="story-tag">Attentive</span>
+                    <span class="story-tag">InMobi</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-04.html" class="digest-card">
+                <div class="digest-date">Thursday, June 4, 2026</div>
+                <div class="digest-title">Fluvio: AI Is Hiding PMM Hiring's Broken Foundation. Sitecore Bets $225M on GEO. Agents Replace Tools.</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Fluvio</span>
+                    <span class="story-tag">Sitecore</span>
+                    <span class="story-tag">GEO</span>
+                    <span class="story-tag">AI Agents</span>
+                    <span class="story-tag">PMM Hiring</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-03.html" class="digest-card">
+                <div class="digest-date">Wednesday, June 3, 2026</div>
+                <div class="digest-title">Snowflake CoCo Goes Enterprise, Microsoft Teases Project Solara, Anthropic Files S-1</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Snowflake</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Sentra</span>
+                    <span class="story-tag">Enterprise AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-02.html" class="digest-card">
+                <div class="digest-date">Tuesday, June 2, 2026</div>
+                <div class="digest-title">AI Pricing Crisis Shocks Enterprise, Marketing Automation Power Shifts, Meta Eyes Full Ad Automation</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Josh Bersin</span>
+                    <span class="story-tag">AI Costs</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Meta</span>
+                    <span class="story-tag">CDPs</span>
+                </div>
+            </a>
+            <a href="/digests/2026-06-01.html" class="digest-card">
+                <div class="digest-date">Monday, June 1, 2026</div>
+                <div class="digest-title">ChatGPT Conversion Ads Launch, Meta Dethrones Google, AI Citations Decouple from Rankings</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Meta</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Agentic Ads</span>
+                    <span class="story-tag">Attribution</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-31.html" class="digest-card">
+                <div class="digest-date">Sunday, May 31, 2026</div>
+                <div class="digest-title">72% of Enterprise Marketing Is AI-Embedded, Google Lets Users Shape AI Search, Okta Exposes Shadow AI Crisis</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Growth Hakka</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Okta</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Agentic AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-30.html" class="digest-card">
+                <div class="digest-date">Saturday, May 30, 2026</div>
+                <div class="digest-title">$500M Claude Bill Shocks Enterprise, SAP Goes "Autonomous," Salesforce Swaps 4K Jobs for AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">SAP</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Camunda</span>
+                    <span class="story-tag">AI Costs</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-29.html" class="digest-card">
+                <div class="digest-date">Friday, May 29, 2026</div>
+                <div class="digest-title">Microsoft Unveils AI Coding Models, Google Lets Users Shape AI Search, SOCi Dominates G2 AI Rankings</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">SOCi</span>
+                    <span class="story-tag">Attentive</span>
+                    <span class="story-tag">Agentic AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-28.html" class="digest-card">
+                <div class="digest-date">Thursday, May 28, 2026</div>
+                <div class="digest-title">GPTBots.ai Bridges Chat-to-Execution Gap, Skan AI's ABCF Framework, IAB Tackles AI Bot Problem</div>
+                <div class="digest-stories">
+                    <span class="story-tag">GPTBots.ai</span>
+                    <span class="story-tag">Skan AI</span>
+                    <span class="story-tag">IAB Tech Lab</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Agentic AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-27.html" class="digest-card">
+                <div class="digest-date">Wednesday, May 27, 2026</div>
+                <div class="digest-title">Claude Laps OpenAI in Enterprise (Up 128%), Agentic AI's Trust Gap, Adaptive UX Engines Arrive</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">Enterprise AI</span>
+                    <span class="story-tag">Adaptive UX</span>
+                    <span class="story-tag">B2B</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-26.html" class="digest-card">
+                <div class="digest-date">Tuesday, May 26, 2026</div>
+                <div class="digest-title">Google's "Ask Advisor" Agent Goes Cross-Platform, KPMG Deploys Claude to 276K, HSBC Says "Don't Fight AI"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">KPMG</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">HSBC</span>
+                    <span class="story-tag">GEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-25.html" class="digest-card">
+                <div class="digest-date">Monday, May 25, 2026</div>
+                <div class="digest-title">Google AI Mode Hits 1B Users, Publicis Acquires LiveRamp for $2.5B, TikTok Shop Eyes $23B</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Publicis</span>
+                    <span class="story-tag">LiveRamp</span>
+                    <span class="story-tag">TikTok</span>
+                    <span class="story-tag">Pacvue</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-24.html" class="digest-card">
+                <div class="digest-date">Sunday, May 24, 2026</div>
+                <div class="digest-title">Walmart's Sparky AI Delivers 35% AOV Lift, Microsoft Agents Operate Software Directly, 58% of Searches Now Zero-Click</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Walmart</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">6sense</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">GEO</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-23.html" class="digest-card">
+                <div class="digest-date">Saturday, May 23, 2026</div>
+                <div class="digest-title">Salesforce's Agentforce Reality Check, $5.5B Enterprise AI Race, Zero-Click Search Hits 58%</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Clay</span>
+                    <span class="story-tag">Klaviyo</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-22.html" class="digest-card">
+                <div class="digest-date">Friday, May 22, 2026</div>
+                <div class="digest-title">Microsoft + EY Bet $1B on Enterprise AI, Salesforce Goes Headless, Pilot-to-Production Moment Arrives</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">EY</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Informatica</span>
+                    <span class="story-tag">Gartner</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-21.html" class="digest-card">
+                <div class="digest-date">Thursday, May 21, 2026</div>
+                <div class="digest-title">Google's "Ask Advisor" Agent Goes Live, HCLTech: 43% of AI Will Fail, Meltwater Takes Top PR AI Honors</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">HCLTech</span>
+                    <span class="story-tag">Meltwater</span>
+                    <span class="story-tag">Tech Wonders</span>
+                    <span class="story-tag">GrowthNavigate</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-19.html" class="digest-card">
+                <div class="digest-date">Tuesday, May 19, 2026</div>
+                <div class="digest-title">Google Marketing Live Unveils Agentic Commerce, ChatGPT Ads Open to All, Meta Poised to Dethrone Google</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">Meta</span>
+                    <span class="story-tag">Jonomor</span>
+                    <span class="story-tag">B2the7</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-18.html" class="digest-card">
+                <div class="digest-date">Monday, May 18, 2026</div>
+                <div class="digest-title">OpenAI's $4B Enterprise Push, 51% of B2B Buyers Start with ChatGPT, Legacy SaaS Crashing</div>
+                <div class="digest-stories">
+                    <span class="story-tag">OpenAI</span>
+                    <span class="story-tag">G2</span>
+                    <span class="story-tag">SaaStr</span>
+                    <span class="story-tag">Improvado</span>
+                    <span class="story-tag">Anthropic</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-17.html" class="digest-card">
+                <div class="digest-date">Sunday, May 17, 2026</div>
+                <div class="digest-title">Gartner: AI Automation to Double by 2028, GrowthLoop: 77% of Winning Tests Fail at Scale, Marketing's CFO Era</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">GrowthLoop</span>
+                    <span class="story-tag">Salesforce</span>
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">POSSIBLE 2026</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-16.html" class="digest-card">
+                <div class="digest-date">Saturday, May 16, 2026</div>
+                <div class="digest-title">Notion Becomes AI Agent Hub, Wrapper Economy Collapses, AI Agents Found Exposed on Kubernetes</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">Medium</span>
+                    <span class="story-tag">AI Agent Store</span>
+                    <span class="story-tag">Kore.ai</span>
+                    <span class="story-tag">Improvado</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-15.html" class="digest-card">
+                <div class="digest-date">Friday, May 15, 2026</div>
+                <div class="digest-title">SAP Unveils "Autonomous Enterprise," AI Agents Go Rogue in Research, Pacvue Opens Commerce Data to AI Tools</div>
+                <div class="digest-stories">
+                    <span class="story-tag">SAP Sapphire</span>
+                    <span class="story-tag">The Guardian</span>
+                    <span class="story-tag">Pacvue</span>
+                    <span class="story-tag">HBR</span>
+                    <span class="story-tag">GlobeNewswire</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-14.html" class="digest-card">
+                <div class="digest-date">Thursday, May 14, 2026</div>
+                <div class="digest-title">SAP Launches "Autonomous Enterprise," GrowthLoop: 77% of Winning Tests Fail at Scale, POSSIBLE 2026 Declares AI "Tectonic"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">SAP</span>
+                    <span class="story-tag">GrowthLoop</span>
+                    <span class="story-tag">POSSIBLE 2026</span>
+                    <span class="story-tag">UiPath</span>
+                    <span class="story-tag">Insider One</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-13.html" class="digest-card">
+                <div class="digest-date">Wednesday, May 13, 2026</div>
+                <div class="digest-title">McKinsey Declares "Superagency" Era, Adobe Finds Agentic Ambitions Outpace Foundations, Agencies Go AI-Native</div>
+                <div class="digest-stories">
+                    <span class="story-tag">McKinsey</span>
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">Robotic Marketer</span>
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">American Bazaar</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-12.html" class="digest-card">
+                <div class="digest-date">Tuesday, May 12, 2026</div>
+                <div class="digest-title">Gartner: Marketing AI Automation to Double by 2028, CMO Budgets Can't Keep Up, Rise of the CAIO</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Marketing Dive</span>
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">Product Hunt</span>
+                    <span class="story-tag">DiGen AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-11.html" class="digest-card">
+                <div class="digest-date">Monday, May 11, 2026</div>
+                <div class="digest-title">Nvidia Tops $40B in AI Bets, First Ad Drops on ChatGPT, AI Visibility Becomes Its Own Discipline</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">ADSQUIRE</span>
+                    <span class="story-tag">TrySight</span>
+                    <span class="story-tag">Windows News</span>
+                    <span class="story-tag">Forbes</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-10.html" class="digest-card">
+                <div class="digest-date">Sunday, May 10, 2026</div>
+                <div class="digest-title">Nvidia Tops $40B in AI Bets, Moonshot Hits $20B, Forbes Declares "Rise of the Super CMO"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">Asanify</span>
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">KiteChase</span>
+                    <span class="story-tag">AICC Report</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-09.html" class="digest-card">
+                <div class="digest-date">Saturday, May 9, 2026</div>
+                <div class="digest-title">Amplitude Absorbs Statsig, Atlassian Flex Reimagines AI Pricing, Marketers Race to Optimize for LLMs</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">TechnoSports</span>
+                    <span class="story-tag">Growth Hakka</span>
+                    <span class="story-tag">Kore.ai</span>
+                    <span class="story-tag">LogIQ Curve</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-08.html" class="digest-card">
+                <div class="digest-date">Friday, May 8, 2026</div>
+                <div class="digest-title">HubSpot Launches AEO for AI Visibility, Meta's "Hatch" Agents Go Autonomous, RPA Evolves to AI-Driven Outcomes</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Motley Fool</span>
+                    <span class="story-tag">Optimixed</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Industry Analysts</span>
+                    <span class="story-tag">Noah News</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-07.html" class="digest-card">
+                <div class="digest-date">Thursday, May 7, 2026</div>
+                <div class="digest-title">Anthropic's $200B Google Bet, Meta's "Hatch" Agents Go Autonomous, ServiceNow Declares "Agentic Business" Era</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Optimixed</span>
+                    <span class="story-tag">Weekly Voice</span>
+                    <span class="story-tag">Shopify</span>
+                    <span class="story-tag">TrySight</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-06.html" class="digest-card">
+                <div class="digest-date">Wednesday, May 6, 2026</div>
+                <div class="digest-title">The SaaSpocalypse Arrives: AI-Native Up 94%, SaaS Stuck at 8%. Microsoft Defines "Frontier Firms."</div>
+                <div class="digest-stories">
+                    <span class="story-tag">The Next Web</span>
+                    <span class="story-tag">Technology Record</span>
+                    <span class="story-tag">Business Insider</span>
+                    <span class="story-tag">Mean CEO</span>
+                    <span class="story-tag">CXOToday</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-05.html" class="digest-card">
+                <div class="digest-date">Tuesday, May 5, 2026</div>
+                <div class="digest-title">Meta Overtakes Google, AI Mode Kills 93% of Clicks, Creatio Kills Per-Seat Pricing</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Marketing Dive</span>
+                    <span class="story-tag">B2the7</span>
+                    <span class="story-tag">IAB</span>
+                    <span class="story-tag">MarTech Series</span>
+                    <span class="story-tag">McKinsey</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-04.html" class="digest-card">
+                <div class="digest-date">Monday, May 4, 2026</div>
+                <div class="digest-title">Meta Overtakes Google, AI Mode Kills 93% of Clicks, CMOs Become "Chief Growth Officers"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Marketing Dive</span>
+                    <span class="story-tag">B2the7</span>
+                    <span class="story-tag">Campaign</span>
+                    <span class="story-tag">IAB</span>
+                    <span class="story-tag">NVECTA</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-03.html" class="digest-card">
+                <div class="digest-date">Sunday, May 3, 2026</div>
+                <div class="digest-title">Adobe Summit Scales Agentic AI, Mistral Goes Enterprise, 54% of B2B Buyers Now AI-First</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Economic Times CIO</span>
+                    <span class="story-tag">MarketingProfs</span>
+                    <span class="story-tag">Growth Hakka</span>
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">Chief Marketer</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-02.html" class="digest-card">
+                <div class="digest-date">Saturday, May 2, 2026</div>
+                <div class="digest-title">Adobe CX Enterprise Goes Live, OpenAI Turns Free Users Into Ad Targets, Possible 2026 Signals AI Reckoning</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Economic Times</span>
+                    <span class="story-tag">eMarketer</span>
+                    <span class="story-tag">WIRED</span>
+                    <span class="story-tag">Mean CEO</span>
+                    <span class="story-tag">Adweek</span>
+                </div>
+            </a>
+            <a href="/digests/2026-05-01.html" class="digest-card">
+                <div class="digest-date">Friday, May 1, 2026</div>
+                <div class="digest-title">Hightouch Raises $150M for "Agentic Marketing," SAP's 5 Make-or-Break AI Moments, Marketing's AI Adoption Stalls</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech Edge</span>
+                    <span class="story-tag">SAP News</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">NY Times</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-30.html" class="digest-card">
+                <div class="digest-date">Thursday, April 30, 2026</div>
+                <div class="digest-title">Walmart Hits 73% AI-Enabled Marketing, Forrester Redefines CMO Role, Human+AI "Power Partners" Outperform 3x</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Chief Marketer</span>
+                    <span class="story-tag">Campaign</span>
+                    <span class="story-tag">CMO Council</span>
+                    <span class="story-tag">Swace News</span>
+                    <span class="story-tag">ABM Alliance</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-29.html" class="digest-card">
+                <div class="digest-date">Wednesday, April 29, 2026</div>
+                <div class="digest-title">$250M Startup Challenges Salesforce, Microsoft Goes Agentic, Adobe-NVIDIA-WPP Deepen Partnership</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">CX Today</span>
+                    <span class="story-tag">Simply Wall St</span>
+                    <span class="story-tag">Reuters</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-28.html" class="digest-card">
+                <div class="digest-date">Tuesday, April 28, 2026</div>
+                <div class="digest-title">China Blocks Meta's $2B Manus Deal, MIT EmTech Declares 2026 "The Year AI Goes to Work"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">TechTarget</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">McKinsey</span>
+                    <span class="story-tag">Reuters</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-27.html" class="digest-card">
+                <div class="digest-date">Monday, April 27, 2026</div>
+                <div class="digest-title">Google Rebrands to Gemini Enterprise, GEO Signals End of Click Era, AI Marketing Goes Learning-Based</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Digital Agency Network</span>
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Google Cloud</span>
+                    <span class="story-tag">Improvado</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-26.html" class="digest-card">
+                <div class="digest-date">Sunday, April 26, 2026</div>
+                <div class="digest-title">Google's $40B Anthropic Bet, Ulta + Gemini Go Agentic, CrowdStrike Secures the AI Agent Era</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">CrowdStrike</span>
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Cloudflare</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-25.html" class="digest-card">
+                <div class="digest-date">Saturday, April 25, 2026</div>
+                <div class="digest-title">GPT-5.5 Eyes "Super App" Vision, Adobe + NVIDIA Launch Agentic Marketing, 80% of CEOs Brace for AI Overhaul</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">NVIDIA</span>
+                    <span class="story-tag">TechEdge AI</span>
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Gumloop</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-24.html" class="digest-card">
+                <div class="digest-date">Friday, April 24, 2026</div>
+                <div class="digest-title">OpenAI's "Super App" Vision Arrives, Consensus + Peel Reshape B2B Demos, 70% of Enterprises Go Multi-Model</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">TechEdge AI</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">OpenPR</span>
+                    <span class="story-tag">OpenAI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-23.html" class="digest-card">
+                <div class="digest-date">Thursday, April 23, 2026</div>
+                <div class="digest-title">Google Cloud NEXT: AI Agents Are the Enterprise Play. Adobe CX Enterprise Goes GA. WPP Bridges Digital and Physical.</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Cloud News</span>
+                    <span class="story-tag">PRNewswire</span>
+                    <span class="story-tag">Yahoo Finance</span>
+                    <span class="story-tag">OpenAI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-22.html" class="digest-card">
+                <div class="digest-date">Wednesday, April 22, 2026</div>
+                <div class="digest-title">Adobe Kills Experience Cloud, Births "CX Enterprise." Omnicom Goes Agentic. OpenAI Courts Consulting Giants.</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Stock Titan</span>
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">AI Invest</span>
+                    <span class="story-tag">FL0</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-21.html" class="digest-card">
+                <div class="digest-date">Tuesday, April 21, 2026</div>
+                <div class="digest-title">Adobe Goes All-In on AI Agents, Enterprise AI Adoption Outpaces the Internet, MarTech Bloat Hits Breaking Point</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Asanify</span>
+                    <span class="story-tag">Demand Gen Report</span>
+                    <span class="story-tag">Anthropic</span>
+                    <span class="story-tag">Stanford HAI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-19.html" class="digest-card">
+                <div class="digest-date">Sunday, April 19, 2026</div>
+                <div class="digest-title">EY Deploys AI Agents to 130K Auditors, Microsoft Eyes Enterprise AI Crown, Stanford Values GenAI at $172B</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Asanify</span>
+                    <span class="story-tag">Josh Bersin</span>
+                    <span class="story-tag">Stanford HAI</span>
+                    <span class="story-tag">OX Security</span>
+                    <span class="story-tag">StartupNews</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-18.html" class="digest-card">
+                <div class="digest-date">Saturday, April 18, 2026</div>
+                <div class="digest-title">Salesforce Goes Headless for AI Agents, Stanford Warns Governance Can't Keep Up, Mozilla Enters Enterprise AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">VentureBeat</span>
+                    <span class="story-tag">Stanford HAI</span>
+                    <span class="story-tag">Dataconomy</span>
+                    <span class="story-tag">Trew Knowledge</span>
+                    <span class="story-tag">RAG About It</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-17.html" class="digest-card">
+                <div class="digest-date">Friday, April 17, 2026</div>
+                <div class="digest-title">Canva AI 2.0 Declares Design-Tool Era Over, Adobe vs Canva Heats Up, HubSpot Goes Agentic</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CMSWire</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">HubSpot</span>
+                    <span class="story-tag">GrowthLoop</span>
+                    <span class="story-tag">ALM Corp</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-16.html" class="digest-card">
+                <div class="digest-date">Thursday, April 16, 2026</div>
+                <div class="digest-title">Canva Create Unveils "Biggest Evolution Ever," Salesforce Goes API-First, Wharton's AI Reality Check</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CMSWire</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Wharton</span>
+                    <span class="story-tag">TradingView</span>
+                    <span class="story-tag">Improvado</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-15.html" class="digest-card">
+                <div class="digest-date">Wednesday, April 15, 2026</div>
+                <div class="digest-title">Canva's $1B+ Agentic AI Bet, Claude Overtakes ChatGPT, MarTech's "Agentic" Shift</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">HumAI</span>
+                    <span class="story-tag">MarTech Cube</span>
+                    <span class="story-tag">Colony Spark</span>
+                    <span class="story-tag">eMarketer</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-14.html" class="digest-card">
+                <div class="digest-date">Tuesday, April 14, 2026</div>
+                <div class="digest-title">Google's CMO: 2026 Separates AI Scalers from Testers. Gallup Hits 50% AI Adoption. Adobe CEO Exits.</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Brandsynario</span>
+                    <span class="story-tag">Gallup</span>
+                    <span class="story-tag">Computerworld</span>
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Improvado</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-13.html" class="digest-card">
+                <div class="digest-date">Monday, April 13, 2026</div>
+                <div class="digest-title">SAP's License Model Under Siege, Anthropic Surges Past OpenAI, Enterprise AI Goes Agent-First</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Ad-Hoc News</span>
+                    <span class="story-tag">Business Insider</span>
+                    <span class="story-tag">KPMG</span>
+                    <span class="story-tag">Times of India</span>
+                    <span class="story-tag">Mistral AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-12.html" class="digest-card">
+                <div class="digest-date">Sunday, April 12, 2026</div>
+                <div class="digest-title">CoreWeave Lands Anthropic, AI Agents Hit 80% Ticket Resolution, Canva Acquires the Full Stack</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">PRNewswire</span>
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">Marketing Brew</span>
+                    <span class="story-tag">Reuters</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-11.html" class="digest-card">
+                <div class="digest-date">Saturday, April 11, 2026</div>
+                <div class="digest-title">Canva Acquires Its Way to Full Marketing Stack, Accenture Bets on Replit, Enterprise AI Scales Beyond Pilots</div>
+                <div class="digest-stories">
+                    <span class="story-tag">DailyOilFutures</span>
+                    <span class="story-tag">StartupNews</span>
+                    <span class="story-tag">AI Daily</span>
+                    <span class="story-tag">Techaeris</span>
+                    <span class="story-tag">ArticlEdge</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-10.html" class="digest-card">
+                <div class="digest-date">Friday, April 10, 2026</div>
+                <div class="digest-title">Canva Goes Full Marketing Platform, ServiceNow Opens to Claude Code, AI Shifts to ROI Accountability</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Dataconomy</span>
+                    <span class="story-tag">SiliconANGLE</span>
+                    <span class="story-tag">CIO</span>
+                    <span class="story-tag">MarTech Cube</span>
+                    <span class="story-tag">NY Times</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-09.html" class="digest-card">
+                <div class="digest-date">Thursday, April 9, 2026</div>
+                <div class="digest-title">Anthropic Makes AI Agents Turnkey, Canva Becomes a Marketing Platform, The Executive-Manager AI Gap</div>
+                <div class="digest-stories">
+                    <span class="story-tag">WIRED</span>
+                    <span class="story-tag">Prism News</span>
+                    <span class="story-tag">HBR</span>
+                    <span class="story-tag">OutSystems</span>
+                    <span class="story-tag">Stability AI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-08.html" class="digest-card">
+                <div class="digest-date">Wednesday, April 8, 2026</div>
+                <div class="digest-title">Meta's AI Black Box Takes Over, BCG Maps Agentic Scenarios, B2B Pays the B2C AI Tax</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Marketing Brew</span>
+                    <span class="story-tag">BCG</span>
+                    <span class="story-tag">CMSWire</span>
+                    <span class="story-tag">Business Insider</span>
+                    <span class="story-tag">Forrester</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-07.html" class="digest-card">
+                <div class="digest-date">Tuesday, April 7, 2026</div>
+                <div class="digest-title">AI Chatbots "Going Rogue" at 5x Rate, Google Virtual Try-On Goes Live, The AI Adoption Paradox</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">eMarketer</span>
+                    <span class="story-tag">BuildEZ</span>
+                    <span class="story-tag">AISepedia</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-06.html" class="digest-card">
+                <div class="digest-date">Monday, April 6, 2026</div>
+                <div class="digest-title">Microsoft Declares AI Independence, Copilot's Trust Crisis, Marketing Scientists Go "Strategic"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Microsoft</span>
+                    <span class="story-tag">Windows News</span>
+                    <span class="story-tag">AdExchanger</span>
+                    <span class="story-tag">DestinationCRM</span>
+                    <span class="story-tag">Softwired</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-05.html" class="digest-card">
+                <div class="digest-date">Sunday, April 5, 2026</div>
+                <div class="digest-title">Google Embeds Gemini Across Marketing Platform, Oracle Layoffs Signal AI Shift, 93% of CMOs See GenAI ROI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Google</span>
+                    <span class="story-tag">Forrester</span>
+                    <span class="story-tag">GreenMo</span>
+                    <span class="story-tag">LA Times</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-04.html" class="digest-card">
+                <div class="digest-date">Saturday, April 4, 2026</div>
+                <div class="digest-title">Microsoft Launches MAI Models with WPP First, Google Vids Becomes AI Studio, Voice AI Goes Mainstream</div>
+                <div class="digest-stories">
+                    <span class="story-tag">VentureBeat</span>
+                    <span class="story-tag">WebProNews</span>
+                    <span class="story-tag">LA Times</span>
+                    <span class="story-tag">Yahoo Finance</span>
+                    <span class="story-tag">DailyOilFutures</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-03.html" class="digest-card">
+                <div class="digest-date">Friday, April 3, 2026</div>
+                <div class="digest-title">Slack Becomes AI's Front Door, AISepedia Launches PMM Workspace, B2B Consolidation Accelerates</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">Digital Commerce 360</span>
+                    <span class="story-tag">Redpoint</span>
+                    <span class="story-tag">Apollo.io</span>
+                    <span class="story-tag">Zapier</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-02.html" class="digest-card">
+                <div class="digest-date">Thursday, April 2, 2026</div>
+                <div class="digest-title">Slack Becomes Enterprise AI's Front Door, Agentic AI Hits Inflection Point, Marketing Goes Modular</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">BuildEZ</span>
+                    <span class="story-tag">Mean CEO</span>
+                    <span class="story-tag">Adobe</span>
+                    <span class="story-tag">TrySight</span>
+                </div>
+            </a>
+            <a href="/digests/2026-04-01.html" class="digest-card">
+                <div class="digest-date">Wednesday, April 1, 2026</div>
+                <div class="digest-title">AI Vendor Reality Check, Governance Hits Marketing, 59% Bet on Semantic Layers</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MindFinders</span>
+                    <span class="story-tag">Improvado</span>
+                    <span class="story-tag">WorkfxAI</span>
+                    <span class="story-tag">Sentinel</span>
+                    <span class="story-tag">Futurum</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-31.html" class="digest-card">
+                <div class="digest-date">Tuesday, March 31, 2026</div>
+                <div class="digest-title">$65M Seed for Enterprise AI Agents, MarTech's ROI Confidence Collapse, Lucidya Goes Arabic-Native</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">MarTech.org</span>
+                    <span class="story-tag">MarTech Cube</span>
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Demand Gen Report</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-30.html" class="digest-card">
+                <div class="digest-date">Monday, March 30, 2026</div>
+                <div class="digest-title">Apple Poaches Google Exec for AI Marketing, HBR: Treat AI Agents Like Team Members, Gartner: 40% of Apps Get Agents</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">HBR</span>
+                    <span class="story-tag">Manila Times</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Robotic Marketer</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-29.html" class="digest-card">
+                <div class="digest-date">Sunday, March 29, 2026</div>
+                <div class="digest-title">CIOs Brace for 'SaaSpocalypse,' 79% Boost GenAI Spend, Gartner Predicts $58B Shake-Up</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CIO</span>
+                    <span class="story-tag">eMarketer</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Birdeye</span>
+                    <span class="story-tag">Business Upturn</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-28.html" class="digest-card">
+                <div class="digest-date">Saturday, March 28, 2026</div>
+                <div class="digest-title">Google's Gemini Powers DV360 "Ads Advisor," The Synthetic Prospect Crisis Hits B2B, 67% of Budgets Include AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">The AI Marketers</span>
+                    <span class="story-tag">IT Munch</span>
+                    <span class="story-tag">Digital Applied</span>
+                    <span class="story-tag">Datamatics BPM</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-27.html" class="digest-card">
+                <div class="digest-date">Friday, March 27, 2026</div>
+                <div class="digest-title">MCP Hits 97M Installs, 67% of Marketing Budgets Include AI, Gartner Warns of "AI-Free" Assessments</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Digital Applied</span>
+                    <span class="story-tag">eMarketer</span>
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">RAG About It</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-26.html" class="digest-card">
+                <div class="digest-date">Thursday, March 26, 2026</div>
+                <div class="digest-title">Granola Hits $1.5B, Zeta's "Superintelligent" Athena Goes GA, OpenAI Kills Sora for Enterprise Focus</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">MarTech Cube</span>
+                    <span class="story-tag">WIRED</span>
+                    <span class="story-tag">MarTech Series</span>
+                    <span class="story-tag">FinancialContent</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-25.html" class="digest-card">
+                <div class="digest-date">Wednesday, March 25, 2026</div>
+                <div class="digest-title">Zeta's Athena Goes GA, Snowflake Launches SnowWork, OpenAI Kills Sora & Pivots to Enterprise</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Web And IT News</span>
+                    <span class="story-tag">BizToday</span>
+                    <span class="story-tag">Hindu Business Line</span>
+                    <span class="story-tag">IT Munch</span>
+                    <span class="story-tag">Gartner</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-24.html" class="digest-card">
+                <div class="digest-date">Tuesday, March 24, 2026</div>
+                <div class="digest-title">Entry-Level Roles Shift to AI Oversight, Claude Grows 14% Quarterly, Sorrell: Agency AI Platforms Fading</div>
+                <div class="digest-stories">
+                    <span class="story-tag">MarTech</span>
+                    <span class="story-tag">First Page Sage</span>
+                    <span class="story-tag">Marketing Dive</span>
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">HubSpot</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-23.html" class="digest-card">
+                <div class="digest-date">Monday, March 23, 2026</div>
+                <div class="digest-title">McKinsey: 10% of Enterprise Functions Use AI Agents, OpenAI Doubles Workforce, Google Drops CMO AI Playbook</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forbes</span>
+                    <span class="story-tag">WinBuzzer</span>
+                    <span class="story-tag">Think with Google</span>
+                    <span class="story-tag">Storyboard18</span>
+                    <span class="story-tag">Senior Executive</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-22.html" class="digest-card">
+                <div class="digest-date">Sunday, March 22, 2026</div>
+                <div class="digest-title">OpenAI Doubles Workforce to 8K, Google Pomelli Goes Global, HubSpot's AI "Intelligence Layer" Arrives</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Mint</span>
+                    <span class="story-tag">Tech Insider</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-21.html" class="digest-card">
+                <div class="digest-date">Saturday, March 21, 2026</div>
+                <div class="digest-title">AI Adoption Hits 91%, But Only 41% Can Prove ROI — The "Accountability Era" Has Arrived</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Real Internet Sales</span>
+                    <span class="story-tag">IndexBox</span>
+                    <span class="story-tag">TeluguNow</span>
+                    <span class="story-tag">MarkHub24</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-20.html" class="digest-card">
+                <div class="digest-date">Friday, March 20, 2026</div>
+                <div class="digest-title">Salesforce Bets $25B on Agentforce, GPT-5.4 Gets "Computer-Use" Skills, Marketing Automation Goes Hybrid</div>
+                <div class="digest-stories">
+                    <span class="story-tag">DailyOilFutures</span>
+                    <span class="story-tag">RiskInfo.AI</span>
+                    <span class="story-tag">Cometly</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-19.html" class="digest-card">
+                <div class="digest-date">Thursday, March 19, 2026</div>
+                <div class="digest-title">Adobe + NVIDIA Target Agentic Marketing, IBM Bets $11B on Real-Time Data, AI Won't Replace Marketers</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Indian Express</span>
+                    <span class="story-tag">TechMonitor</span>
+                    <span class="story-tag">IBM Think</span>
+                    <span class="story-tag">Improvado</span>
+                    <span class="story-tag">ITWeb</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-18.html" class="digest-card">
+                <div class="digest-date">Wednesday, March 18, 2026</div>
+                <div class="digest-title">Alibaba Launches Wukong, AI Maturity Gap Hits 47%, Adobe + NVIDIA Target Marketing</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Economic Times</span>
+                    <span class="story-tag">TechGenyz</span>
+                    <span class="story-tag">Salsify</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-17.html" class="digest-card">
+                <div class="digest-date">Tuesday, March 17, 2026</div>
+                <div class="digest-title">NVIDIA Launches AI Agent Platform at GTC, OpenAI Courts PE Giants</div>
+                <div class="digest-stories">
+                    <span class="story-tag">VentureBeat</span>
+                    <span class="story-tag">Reuters</span>
+                    <span class="story-tag">Forrester</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-16.html" class="digest-card">
+                <div class="digest-date">Monday, March 16, 2026</div>
+                <div class="digest-title">"Brand Twins" & A2A Commerce Arrive, Microsoft Copilot Hits 15M Seats</div>
+                <div class="digest-stories">
+                    <span class="story-tag">JB Impact</span>
+                    <span class="story-tag">Motley Fool</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-15.html" class="digest-card">
+                <div class="digest-date">Sunday, March 15, 2026</div>
+                <div class="digest-title">NVIDIA: 64% of Enterprises Using AI, Gartner Predicts $58B Productivity Shift</div>
+                <div class="digest-stories">
+                    <span class="story-tag">NVIDIA</span>
+                    <span class="story-tag">Gartner</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-14.html" class="digest-card">
+                <div class="digest-date">Saturday, March 14, 2026</div>
+                <div class="digest-title">ServiceNow CEO: Grad Unemployment Could Hit 30%+, Perplexity Claims 3.25 Years</div>
+                <div class="digest-stories">
+                    <span class="story-tag">CNBC</span>
+                    <span class="story-tag">PYMNTS</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-13.html" class="digest-card">
+                <div class="digest-date">Friday, March 13, 2026</div>
+                <div class="digest-title">Gartner: AI Skills Mandatory by 2027, Mastercard + Google "Verifiable Intent"</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Gartner</span>
+                    <span class="story-tag">Mastercard</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-12.html" class="digest-card">
+                <div class="digest-date">Thursday, March 12, 2026</div>
+                <div class="digest-title">Salesforce Rebrands to "Agentforce Marketing," NVIDIA: 64% Using AI</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Salesforce Ben</span>
+                    <span class="story-tag">NVIDIA</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-11.html" class="digest-card">
+                <div class="digest-date">Wednesday, March 11, 2026</div>
+                <div class="digest-title">Perplexity's "Computer" Replaces $225K Stack, 42% B2B Buyers Use AI Search</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Moneycontrol</span>
+                    <span class="story-tag">GrackerAI</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-10.html" class="digest-card">
+                <div class="digest-date">Tuesday, March 10, 2026</div>
+                <div class="digest-title">Mega Raises $11.5M for AI Marketing Agents, AI Threatens $38B Retail Media</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Forrester</span>
+                    <span class="story-tag">Digiday</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-09.html" class="digest-card">
+                <div class="digest-date">Monday, March 9, 2026</div>
+                <div class="digest-title">Karpathy's Autoresearch Runs 100 Experiments Overnight, Pro-Human AI Declaration</div>
+                <div class="digest-stories">
+                    <span class="story-tag">TechCrunch</span>
+                    <span class="story-tag">DigiTimes</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-08.html" class="digest-card">
+                <div class="digest-date">Sunday, March 8, 2026</div>
+                <div class="digest-title">Search Shifts from Answers to Actions, Identity Resolution Gets ML-Powered</div>
+                <div class="digest-stories">
+                    <span class="story-tag">WordStream</span>
+                    <span class="story-tag">MarTech</span>
+                </div>
+            </a>
+            <a href="/digests/2026-03-07.html" class="digest-card">
+                <div class="digest-date">Saturday, March 7, 2026</div>
+                <div class="digest-title">AI Agents Become Enterprise "Coworkers," Wharton Says AI Reshaping SaaS</div>
+                <div class="digest-stories">
+                    <span class="story-tag">Wharton</span>
+                    <span class="story-tag">Josh Bersin</span>
+                </div>
+            </a>
+        </div>
+        
+        <p style="text-align:center;margin-top:20px"><a href="/digests/archive.html" style="color:var(--pmm-blue);font-weight:600">View full archive →</a></p>
+        
+        <div class="subscribe-box">
+            <h3>Get the D&A PMM Weekly</h3>
+            <p>Every Friday, we send the top 5 stories from the week. No spam, unsubscribe anytime.</p>
+            <a href="https://futureofpmm.beehiiv.com/subscribe">Subscribe →</a>
+        </div>
+    </div>
+    <footer><p>The Future of PMM by <a href="https://chrisohara.com">Chris O'Hara</a> · <a href="/">Home</a></p></footer>
+
+    <script>
+    // Load trends data and render dashboard
+    let trendsData = null;
+    
+    async function loadTrendsData() {
+        try {
+            const response = await fetch('/digests/trends-data.json');
+            trendsData = await response.json();
+            renderDashboard();
+        } catch (e) {
+            console.error('Failed to load trends data:', e);
+        }
+    }
+    
+    function renderDashboard() {
+        if (!trendsData) return;
+        
+        // Update stats
+        document.getElementById('total-digests').textContent = trendsData.total_digests;
+        document.getElementById('digest-count').textContent = trendsData.total_digests;
+        
+        // Calculate days tracked
+        const start = new Date(trendsData.date_range.start);
+        const end = new Date(trendsData.date_range.end);
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        document.getElementById('date-range').textContent = days + 'd';
+        
+        // Top rising term
+        if (trendsData.rising_terms && trendsData.rising_terms.length > 0) {
+            document.getElementById('top-rising').textContent = trendsData.rising_terms[0].term;
+        }
+        
+        // Render word cloud
+        renderWordCloud();
+        
+        // Render trends chart
+        renderTrendsChart();
+        
+        // Render rising terms
+        renderRisingTerms();
+        
+        // Render source leaderboard
+        renderSourceLeaderboard();
+        
+        // Render top terms with arrows
+        renderTopTerms();
+    }
+    
+    function renderWordCloud() {
+        const container = document.getElementById('wordcloud-container');
+        // Scale words more aggressively for visibility
+        const maxValue = Math.max(...trendsData.word_cloud.slice(0, 40).map(w => w.value));
+        const words = trendsData.word_cloud.slice(0, 40).map(w => [w.text, (w.value / maxValue) * 60 + 12]);
+        
+        WordCloud(container, {
+            list: words,
+            gridSize: 6,
+            weightFactor: 1,
+            fontFamily: 'Inter, sans-serif',
+            color: function(word, weight) {
+                const colors = ['#3b82f6', '#1e3a5f', '#7c3aed', '#059669', '#dc2626', '#f59e0b'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            },
+            rotateRatio: 0.2,
+            backgroundColor: '#fff',
+            shuffle: true,
+            drawOutOfBound: false
+        });
+    }
+    
+    function renderTrendsChart() {
+        const ctx = document.getElementById('trends-chart').getContext('2d');
+        
+        // Get top 5 terms for the chart
+        const terms = Object.keys(trendsData.tracked_trends).slice(0, 5);
+        const colors = ['#3b82f6', '#7c3aed', '#059669', '#f59e0b', '#dc2626'];
+        
+        // Get last 30 days of data
+        const datasets = terms.map((term, i) => {
+            const data = trendsData.tracked_trends[term].slice(-30);
+            return {
+                label: term,
+                data: data.map(d => d.rolling_avg),
+                borderColor: colors[i],
+                backgroundColor: colors[i] + '20',
+                tension: 0.4,
+                fill: false,
+                borderWidth: 2,
+                pointRadius: 0
+            };
+        });
+        
+        // Get labels (dates)
+        const labels = trendsData.tracked_trends[terms[0]].slice(-30).map(d => {
+            const date = new Date(d.date);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, padding: 6, font: { size: 9 } }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 8 }, maxTicksLimit: 5 }
+                    },
+                    y: {
+                        grid: { color: '#f0f0f0' },
+                        ticks: { font: { size: 8 } },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    function renderRisingTerms() {
+        const container = document.getElementById('rising-terms');
+        const rising = trendsData.rising_terms || [];
+        
+        if (rising.length === 0) {
+            container.innerHTML = '<p style="color:#666;font-size:12px">No significant movers this week</p>';
+            return;
+        }
+        
+        container.innerHTML = rising.map(t => `
+            <div class="mover-item">
+                <span class="mover-term">${t.term}</span>
+                <span class="mover-change up">↑ ${t.change > 0 ? '+' : ''}${t.change}%</span>
+            </div>
+        `).join('');
+    }
+    
+    function renderSourceLeaderboard() {
+        const container = document.getElementById('source-leaderboard');
+        const sources = trendsData.sources || [];
+        
+        if (sources.length === 0) {
+            container.innerHTML = '<p style="color:#666;font-size:12px">No source data available</p>';
+            return;
+        }
+        
+        container.innerHTML = sources.slice(0, 8).map((s, i) => `
+            <div class="source-item">
+                <span class="source-rank">${i + 1}</span>
+                <span class="source-name">${s.name}</span>
+                <span class="source-count">${s.count}</span>
+            </div>
+        `).join('');
+    }
+    
+    function renderTopTerms() {
+        const container = document.getElementById('top-terms');
+        const terms = trendsData.word_cloud.slice(0, 12);
+        
+        container.innerHTML = terms.map(t => {
+            const arrow = t.change > 10 ? '<span class="arrow up">▲</span>' : 
+                          t.change < -10 ? '<span class="arrow down">▼</span>' : '';
+            return `
+                <div class="term-pill">
+                    ${t.text}
+                    <span class="count">${t.value}</span>
+                    ${arrow}
+                </div>
+            `;
+        }).join('');
+    }
+    
+    // Initialize
+    loadTrendsData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying... | SAP Future of PMM</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #4472C4;
+            --bg: #FAFAFA;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        .icon { font-size: 3rem; margin-bottom: 1rem; }
+        h1 { color: var(--dark-slate); font-size: 1.5rem; margin-bottom: 0.5rem; }
+        p { color: #666; margin-bottom: 1.5rem; }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e5e7eb;
+            border-top-color: var(--sap-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--sap-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div id="loading">
+            <div class="spinner"></div>
+            <h1>Verifying your email...</h1>
+            <p>Please wait a moment.</p>
+        </div>
+        <div id="success" style="display: none;">
+            <div class="icon">✅</div>
+            <h1>Email Verified!</h1>
+            <p>Your account has been created. Redirecting to the curriculum...</p>
+        </div>
+        <div id="error" style="display: none;">
+            <div class="icon">❌</div>
+            <h1>Verification Failed</h1>
+            <p id="errorMsg">The link may have expired. Please try signing up again.</p>
+            <a href="/curriculum/signup.html" class="btn">Back to Signup</a>
+        </div>
+    </div>
+
+<script>
+async function verifyToken() {
+    try {
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        if (!token) {
+            throw new Error('No verification token found');
+        }
+        
+        // Verify token via serverless function
+        const res = await fetch('/.netlify/functions/send-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'verify', token })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            throw new Error(result.error);
+        }
+        
+        if (!result.success) {
+            throw new Error('Verification failed');
+        }
+        
+        // Store in localStorage for direct access going forward
+        localStorage.setItem('pmm_direct_user', JSON.stringify({
+            email: result.email,
+            firstName: result.firstName || '',
+            lastName: result.lastName || '',
+            id: result.id
+        }));
+        
+        // Show success and redirect
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+        
+        setTimeout(() => {
+            window.location.href = '/curriculum/intro.html';
+        }, 2000);
+        
+    } catch (err) {
+        console.error('Verification error:', err);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('errorMsg').textContent = err.message || 'Verification failed. Please try again.';
+    }
+}
+
+// Run on page load
+verifyToken();
+</script>
+</body>
+</html>

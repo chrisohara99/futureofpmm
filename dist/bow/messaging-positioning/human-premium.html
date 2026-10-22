@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Human Premium | NextGen PMM</title>
+    <meta name="description" content="What I've learned from building AI training for product marketers. Companies are counting tokens while ignoring the only thing that actually matters.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/messaging-positioning/">Messaging & Positioning</a>
+            </div>
+            <h1>The Human Premium</h1>
+            <div class="article-meta">Messaging & Positioning</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <p>Part of my role involves helping roll out AI tools to product marketing teams, and over the past year I've noticed a pattern that I think explains why so many AI enablement efforts plateau. The conversation in most organizations has become entirely about consumption—token usage, cost per query, utilization dashboards with red and green zones—when it should be about capability. We're measuring how much AI people are using without asking whether the work is actually getting better.</p>
+
+            <p>What I keep seeing is that tool access is essentially universal at this point, with everyone having some combination of Copilot, ChatGPT, or Claude at their disposal, but actual capability follows a much more uneven distribution. A relatively small percentage of marketers are using AI to genuinely elevate their strategic work, while the majority are using it as a faster way to produce outputs that aren't meaningfully different from what they would have created before—just more of them, and quicker.</p>
+
+            <p>The marketers who break through this plateau share something in common, and it has almost nothing to do with their prompting technique or their comfort with the tools. What distinguishes them is that they have strong foundations in the underlying craft—they understand positioning frameworks deeply enough to know when the AI's suggestions are off-target, they can identify weak messaging without needing someone else to point it out, and they have a clear mental model for what good work looks like that allows them to evaluate AI outputs with real discernment. When these people collaborate with AI, the output sounds like them, carries their perspective, and reflects genuine strategic thinking rather than a kind of averaged synthesis of everything the model was trained on.</p>
+
+            <blockquote>
+                "Are you outsourcing to AI, or co-authoring with it? That's the question that determines whether you're building capability or just building dependency."
+            </blockquote>
+
+            <p>That observation has become a working thesis for me. AI amplifies whatever capability you bring to it. If you have strong foundations, AI becomes a genuine thought partner that helps you explore more alternatives, pressure-test your assumptions, and refine your thinking faster than you could alone. If your foundations are shaky, AI becomes a way to produce plausible-sounding work that you can't actually evaluate—and you may not even recognize the gap between what looks good and what actually is good.</p>
+
+            <h2>Two Kinds of Assessment</h2>
+            
+            <p>This is what led us to build assessment into the center of an AI curriculum we've been developing, and to think carefully about what we're actually testing for. We use two distinct types of assessment, and each one reveals something different about where people are and what they need.</p>
+            
+            <p>The first is a baseline assessment of how teams are actually using AI today across the core domains of product marketing work—content development, competitive intelligence, and corporate marketing. We want to understand where people are starting from: Are they using AI primarily to check their work and catch errors? To generate first drafts they then heavily edit? To brainstorm ideas they wouldn't have thought of on their own? The baseline gives us a clear picture of current practice, which is essential for measuring growth over time.</p>
+            
+            <p>What we typically find is a wide gap between where most people are and where they could be. The majority start somewhere around "having AI review my drafts" or "using AI to generate bullet points I then rewrite." The destination we're aiming for is something more like "co-authoring GEO-optimized positioning statements" or "building competitive narratives that synthesize market intelligence in real time." That's a meaningful journey, and you can't navigate it without knowing your starting point. The baseline assessment creates that honest self-awareness, and it also helps people see concretely what more sophisticated AI collaboration actually looks like.</p>
+            
+            <p>The second assessment is what we call the cognitive assessment, and it focuses on how people actually think and collaborate with AI. This is where we explore the difference between delegation and co-authorship—between treating AI as a task-completion machine and treating it as a genuine thinking partner.</p>
+            
+            <p>Most people start on the delegation side of that spectrum. They prompt AI to "write me a positioning statement" or "draft a competitive overview" and then accept or lightly edit whatever comes back. The co-author model is fundamentally different: you bring your own hypothesis to the conversation, you ask the AI to challenge your assumptions, you generate multiple alternatives and evaluate them against criteria you can articulate, and you treat the first draft as the beginning of a dialogue rather than the end of a task. The cognitive assessment helps people see where they fall on this spectrum, and in my experience that moment of recognition—realizing that there's a different way to work with these tools—is often what creates genuine interest in developing new capabilities. People get curious once they understand there's something more to learn.</p>
+
+            <h2>Where Do You Sit?</h2>
+            
+            <p>The cognitive assessment we use is adapted from Helen Edwards' research at the Artificiality Institute, which studied how over 1,200 professionals integrate AI into their cognitive work. What Edwards found—and what we've seen play out in our own cohorts—is that the relationship between AI depth and professional capability isn't what most people assume.</p>
+            
+            <p>The framework maps people across three dimensions: whether AI has entered your actual reasoning process (not just your workflow), whether your professional identity has reorganized around AI, and whether your definitions of what good work looks like are evolving. Those three dimensions produce distinct integration patterns, and the results are counterintuitive.</p>
+            
+            <p>The <strong>Doer</strong> uses AI as an execution layer—queries it, reviews the output, takes what's useful, moves on—but keeps strategic reasoning firmly in their own head. There's nothing wrong with this posture, and many highly effective professionals operate here deliberately. But the question worth asking is whether you're keeping AI outside your reasoning because you've made a conscious choice, or because you haven't yet discovered what happens when you let it in.</p>
+            
+            <p>The <strong>Partner</strong> is the pattern that best describes what we're aiming for with this curriculum. Partners let AI into their thinking and let it change what they think good work looks like—but their professional identity holds steady. This is the advanced practitioner: someone who brainstorms positioning in dialogue with AI, discovers that competitive analysis can be more dynamic than they ever imagined, rethinks what a launch plan should even contain—and still knows exactly who they are. The Partner has expanded their capability dramatically through AI collaboration without losing the judgment, taste, and strategic sense that makes them valuable.</p>
+            
+            <p>The <strong>Co-Author</strong> goes even further. Everything is in play: AI is inside the reasoning, professional identity has reorganized, meanings are actively evolving. And here's the paradox that anchors the entire Edwards research—Co-Authors are also the most sovereign. The act of actively shaping deep AI collaboration requires so much awareness, agency, and accountability that it builds the very cognitive muscles it seems like it should erode. These are the people with the strongest grip on who they are precisely because they've engaged most deeply.</p>
+            
+            <p>The pattern that should worry you is the <strong>Outsourcer</strong>. Outsourcers have let their professional identity reorganize around AI, but they haven't actually let AI into their reasoning process, and their definitions of success haven't evolved either. This is a red flag: the identity shift happened externally—job market pressure, org restructuring, the sense that you need to be "AI-native" to stay relevant—rather than through deliberate cognitive engagement. For a product marketer, this might look like someone who's rebranded themselves as an AI-native marketer while still using AI as a glorified text generator. They've adopted the label without doing the work, and that's where sovereignty erodes.</p>
+            
+            <p>What makes this framework valuable is the clarity it brings to a confusing landscape. Most people assume that deeper AI integration means more risk to their professional identity and judgment. The research shows the opposite: depth of engagement isn't the risk. Passive identity coupling without cognitive engagement is. The people who've gone furthest in integrating AI into their cognitive processes aren't the ones losing themselves—they're the ones who know most clearly who they are.</p>
+
+            <h2>Creating Safe Spaces to Learn</h2>
+
+            <p>One thing we've learned is that the learning environment matters enormously. People are reluctant to experiment with AI when every prompt costs money, gets logged somewhere, and might be used in their deliverables before they've had a chance to develop real fluency. They play it safe, accept the first reasonable output, and never build the muscle memory for pushing back, iterating, and genuinely collaborating.</p>
+            
+            <p>This is why we built what we call AI Labs—hands-on exercises where people can work through real marketing problems with AI as a collaborator, but in a designed environment where they're not burning through tokens, not producing anything that will be evaluated, and not afraid to make mistakes. The labs create a space where you can try prompting approaches that might not work, see what happens when you push back on the AI's first suggestion, and build intuition for the back-and-forth of real collaboration without any stakes attached.</p>
+
+            <p>This turns out to matter more than I expected. When people feel safe to experiment, they learn faster and develop more sophisticated mental models for how to work with AI effectively. They start to internalize the patterns—when to accept, when to push back, when to reframe the question entirely—in a way that transfers to their real work. By the time they're applying these skills to deliverables that matter, the fundamentals are already in muscle memory.</p>
+
+            <h2>What's Actually Working</h2>
+
+            <p>I want to be clear about something: this approach is working. The people who engage seriously with the curriculum come out different, and the difference shows up in their outputs. They produce work that has a point of view, that reflects genuine strategic thinking, and that sounds like it came from a human with something to say rather than from a sophisticated autocomplete. They also report feeling more confident—not because they've learned tricks for getting better outputs from AI, but because they've strengthened their own foundations and can now collaborate with AI from a position of expertise rather than dependence.</p>
+
+            <p>What strikes me most, though, is how much people <em>want</em> this kind of development. There's been remarkably little resistance to the idea that foundational skills matter, or that assessment is a valuable part of the learning process. If anything, people seem relieved to be offered something more substantial than another prompt-engineering cheat sheet or lunch-and-learn about the art of the possible. They want to get better at their craft. They want to be genuinely capable, not just more productive. They want to be valued for their judgment and strategic thinking, not just for their ability to generate more outputs with better tools.</p>
+
+            <p>That's the human premium, and I think it's what this moment actually calls for. The companies that invest in building real capability—not just distributing licenses and tracking consumption—will develop an advantage that compounds over time. Better people using AI become more effective, which frees them to learn more, which makes them better at using AI. But you have to kick-start that flywheel with genuine investment in human development, not just technology procurement.</p>
+            
+            <p>Here's what I've come to believe: yes, tokens are getting cheaper, but the lack of guidance, education, and governance around AI is costing companies real money. People are spending hours producing work that doesn't meet the bar, or accepting outputs they can't properly evaluate, or reinventing wheels that a structured curriculum could have handed them on day one. The waste isn't in the API costs—it's in the human time and organizational capability that's being squandered without proper investment in development.</p>
+            
+            <p>That's what this curriculum is designed to stop. It gives people a clear baseline, shows them what co-authorship actually looks like, creates safe spaces to build the skills, and moves them deliberately from wherever they are toward genuine fluency. The human premium is real, and it's finally possible to invest in it systematically.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

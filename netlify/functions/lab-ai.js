@@ -40,16 +40,23 @@ exports.handler = async (event, context) => {
     }
 
     const apiKey = process.env.LAB_ANTHROPIC_KEY || process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-        return { 
-            statusCode: 500, 
-            headers, 
-            body: JSON.stringify({ error: 'API key not configured' }) 
-        };
-    }
-
+    
     try {
         const { labType, inputs } = JSON.parse(event.body);
+        
+        // If no API key, return type-specific mock responses
+        if (!apiKey) {
+            const mockResult = getMockResponse(labType, inputs);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    result: mockResult,
+                    _mock: true,
+                    _note: 'Demo mode — connect Claude API for live analysis'
+                })
+            };
+        }
         
         // Build prompt based on lab type
         const systemPrompt = getSystemPrompt(labType);
@@ -99,6 +106,256 @@ exports.handler = async (event, context) => {
         };
     }
 };
+
+// Mock responses for demo mode (when no API key is configured)
+function getMockResponse(labType, inputs) {
+    const mockResponses = {
+        'messaging-lab': `## Value Proposition
+**${inputs.product || 'Your Product'}** transforms how ${inputs.persona || 'your buyers'} manage ${inputs.category || 'their workflows'} — eliminating manual effort while delivering measurable outcomes.
+
+## Messaging Pillars
+
+### Pillar 1: Efficiency at Scale
+**Key Message:** Reduce operational overhead by 40% while handling 3x the volume.
+**Proof Points:**
+- Customer A achieved 45% efficiency gains in Q1
+- Average time-to-value: 6 weeks
+- 99.9% uptime SLA
+
+### Pillar 2: Intelligent Automation
+**Key Message:** AI-powered workflows that learn from your data, not generic templates.
+**Proof Points:**
+- Proprietary ML models trained on industry data
+- Continuous improvement loop
+- Human-in-the-loop for critical decisions
+
+### Pillar 3: Enterprise Integration
+**Key Message:** Native connections to your existing stack — no middleware required.
+**Proof Points:**
+- 200+ pre-built connectors
+- Open API architecture
+- SOC 2 Type II certified
+
+## Elevator Pitches
+**10-second:** "${inputs.product || 'We'} help ${inputs.persona || 'teams'} do more with less through intelligent automation."
+
+**30-second:** "Every ${inputs.persona || 'team'} struggles with ${inputs.painPoints || 'manual processes that drain productivity'}. ${inputs.product || 'Our solution'} uses AI to automate the routine work so your team can focus on what matters — and we integrate natively with your existing tools."
+
+---
+*📋 Demo Mode — Connect Claude API for personalized analysis*`,
+
+        'battlecoach': `## 🛡️ FUD Response Sheet: vs. ${inputs.competitor || 'Competitor'}
+
+| What They'll Say | The Truth | Your Response |
+|---|---|---|
+| "SAP is complex and expensive" | SAP's unified platform actually reduces TCO vs. point solutions | "I hear that concern. What we're seeing is that companies who've consolidated onto SAP actually spend 30% less over 3 years than those managing multiple vendors. Would it help to walk through a TCO comparison?" |
+| "Their implementation takes forever" | Modern SAP implementations average 4-6 months for core functionality | "Fair question. We've significantly accelerated our methodology — our ${inputs.industry || 'enterprise'} customers typically go live in under 6 months. Let me share a recent example..." |
+| "They don't innovate fast enough" | SAP releases quarterly updates with AI capabilities built in | "Actually, SAP now releases quarterly, and we've embedded Joule AI across the platform. Want to see what's new in the latest release?" |
+
+## ⚔️ IDEA Talking Points
+
+### Network Scale
+- **Insight:** 80% of global commerce flows through SAP systems
+- **Differentiator:** SAP Business Network connects 5.5M+ organizations — that's network effects ${inputs.competitor || 'competitors'} can't replicate
+- **Evidence:** $6T+ in commerce annually, 90%+ supplier participation at zero cost
+- **Ask:** "How important is it that your suppliers are already on the network vs. having to onboard them?"
+
+---
+*📋 Demo Mode — Connect Claude API for deal-specific coaching*`,
+
+        'battlecoach-fud': `## FUD Response Sheet: ${inputs.competitor || 'Competitor'} vs. SAP
+
+| What ${inputs.competitor || 'They'} Will Say | The Truth | Your Response |
+|---|---|---|
+| "SAP is too expensive" | Total cost of ownership favors unified platforms | "I understand cost is a concern. What we typically see is that the hidden costs of managing multiple vendors — integration, maintenance, training — actually exceed SAP's investment. Should I walk through a TCO comparison?" |
+| "We're more innovative" | SAP ships quarterly releases with embedded AI | "That's an interesting perception. SAP actually releases quarterly now, and we've embedded Joule AI across the entire suite. Let me show you what shipped last quarter..." |
+| "SAP implementations are slow" | Modern SAP uses accelerators and pre-built content | "Implementation speed has transformed. Our ${inputs.industry || 'industry'} customers now go live in 4-6 months using pre-configured templates. Want to see a reference?" |
+| "Our UX is better" | SAP Fiori provides consumer-grade enterprise UX | "User experience is important. Have you seen SAP Fiori? It's been completely redesigned around how people actually work. Let me show you..." |
+| "We're cloud-native, SAP isn't" | SAP runs entirely in hyperscale cloud | "Actually, SAP has been cloud-first for years — we run on AWS, Azure, and GCP with the same architecture you'd expect from any modern SaaS. The difference is we also handle the complexity of global enterprise scale." |
+
+---
+*📋 Demo Mode — Connect Claude API for ${inputs.customerName || 'customer'}-specific responses*`,
+
+        'activity-audit': `## AI Transformation Roadmap
+
+### AI Readiness Score: 6/10
+You're at the "AI Curious" stage — using some tools but not yet systematically. Good foundation to build from.
+
+### Activity Analysis
+
+| Activity | AI Potential | Recommended Action | Tool |
+|---|---|---|---|
+| Competitive monitoring | High | Automate daily scans | CompeteGPT |
+| Content drafts | High | AI first draft, human polish | Claude / Copilot |
+| Sales battlecards | High | Template + AI refresh | CompeteGPT |
+| Market research | Medium | AI synthesis, human insight | Perplexity Pro |
+| Executive presentations | Medium | AI outline, human narrative | Copilot in PPT |
+| Customer conversations | Low | Keep human | — |
+
+### Quick Wins (This Week)
+1. **Set up CompeteGPT alerts** for your top 3 competitors — 15 min setup, saves 2hr/week
+2. **Use Copilot Chat** for first-draft emails and meeting summaries
+3. **Try Perplexity Pro** for your next research brief — it cites sources automatically
+
+### 30-Day Pilot: Competitive Battlecard Refresh
+- Week 1: Set up CompeteGPT, configure competitor tracking
+- Week 2: Use AI to refresh one battlecard, compare to manual process
+- Week 3-4: Scale to full competitive set, measure time savings
+
+---
+*📋 Demo Mode — Connect Claude API for personalized roadmap*`,
+
+        'geo-audit': `## GEO Visibility Audit: ${inputs.company || 'Your Product'}
+
+### Overall Score: 5.5/10 ⚠️
+
+Your content has gaps that would cause AI systems to hedge when recommending you to buyers.
+
+### Specificity Analysis
+**Vague claims that hurt you:**
+- "Industry-leading solution" → What industry? Leading by what metric?
+- "Trusted by thousands" → How many exactly? Which companies?
+- "Seamless integration" → With what systems? How long does it take?
+
+### Quick Wins (Do This Week)
+1. **Add specific numbers**: Replace "fast implementation" with "average 6-week deployment"
+2. **Name your customers**: "Trusted by Fortune 500" → "Used by Coca-Cola, Unilever, and 200+ enterprises"
+3. **Quantify outcomes**: "Improves efficiency" → "Reduces processing time by 40%"
+
+### Rewrite Examples
+
+**Before:** "Our platform helps companies streamline operations."
+**After:** "Our platform reduced operational costs by 35% for 150+ manufacturing companies, with average payback in 4 months."
+
+**Before:** "Easy to use interface."
+**After:** "90% user adoption in first 30 days, with 4.6/5 satisfaction score from 10,000+ daily users."
+
+---
+*📋 Demo Mode — Connect Claude API for full analysis*`,
+
+        'persona-builder': `## Buyer Persona: ${inputs.personas || 'Target Buyer'}
+
+### 📋 Role Overview
+- **Typical Titles:** VP/Director of ${inputs.category || 'Operations'}, Head of ${inputs.category || 'Transformation'}
+- **Reports To:** C-Suite (COO, CFO, or CEO depending on company size)
+- **Team Size:** 5-50 direct reports
+- **Key Responsibilities:** Strategy, budget, vendor selection, change management
+
+### 🎯 Top 3 Priorities
+1. **Reduce operational costs** by 15-20% without cutting headcount
+2. **Improve visibility** into cross-functional processes
+3. **Demonstrate ROI** on technology investments to the board
+
+### 😰 Pain Points
+- Drowning in manual processes that don't scale
+- Can't get accurate data when executives ask for it
+- Previous technology investments haven't delivered promised value
+- Team is burned out on "transformation initiatives"
+
+### 💬 Messaging Hooks
+- Lead with **time-to-value** — they've been burned by long implementations
+- Show **peer validation** — they trust what similar companies have done
+- Quantify **risk reduction** — they're personally accountable for failures
+
+### 🛒 Buying Role
+**Economic Buyer** — Controls budget, needs board-level justification, focused on 3-year TCO and strategic fit.
+
+---
+*📋 Demo Mode — Connect Claude API for detailed persona profiles*`,
+
+        'launch-planner': `## Launch Bill of Materials: ${inputs.launchName || 'Product Launch'}
+
+### T-8 to T-4 Weeks: Foundation
+| Task | Owner | Status |
+|---|---|---|
+| Finalize messaging framework | PMM | ⬜ |
+| Create MPF (Master Project File) | PMM | ⬜ |
+| Brief web team on page requirements | Web | ⬜ |
+| Draft video script | Content | ⬜ |
+| Identify launch references | Customer Marketing | ⬜ |
+
+### T-4 to T-2 Weeks: Production
+| Task | Owner | Status |
+|---|---|---|
+| Build landing page | Web | ⬜ |
+| Produce launch video | Creative | ⬜ |
+| Create sales enablement deck | PMM | ⬜ |
+| Draft press release | Comms | ⬜ |
+| Build email nurture sequence | Demand Gen | ⬜ |
+
+### T-2 to Launch: Activation
+| Task | Owner | Status |
+|---|---|---|
+| Final review all assets | PMM | ⬜ |
+| Enable sales team | Enablement | ⬜ |
+| Queue social posts | Social | ⬜ |
+| Analyst pre-briefings | AR | ⬜ |
+| Go/no-go decision | Leadership | ⬜ |
+
+### Launch Week
+| Task | Owner | Status |
+|---|---|---|
+| Publish all assets | Web/Content | ⬜ |
+| Send launch email | Demand Gen | ⬜ |
+| Post social content | Social | ⬜ |
+| Issue press release | Comms | ⬜ |
+| Monitor and respond | All | ⬜ |
+
+---
+*📋 Demo Mode — Connect Claude API for customized launch plan*`,
+
+        'analyst-briefing': `## Analyst Briefing Prep: ${inputs.analyst || 'Gartner/Forrester'}
+
+### Predicted Questions
+1. **"What's your AI strategy?"** — They'll probe for specifics beyond marketing claims
+2. **"How do you compare to [top competitor]?"** — Be ready with honest differentiation
+3. **"What are customers actually saying?"** — Have 2-3 reference stories ready
+4. **"What's on the roadmap?"** — Balance transparency with competitive sensitivity
+5. **"Where are you weakest?"** — Honesty builds credibility; have a "working on it" story
+
+### Likely "Cautions" They'll Write
+- Implementation complexity for mid-market
+- Integration depth vs. breadth trade-offs  
+- Pricing transparency concerns
+- Regional support coverage
+
+### Evidence Package
+**Prepare these before the briefing:**
+- [ ] 3 customer references with quantified outcomes
+- [ ] Competitive win/loss data (aggregated)
+- [ ] Roadmap highlights (next 12 months)
+- [ ] Third-party validation (benchmarks, awards)
+- [ ] Honest assessment of gaps and plans
+
+### Pre-Briefing Checklist
+- [ ] Review analyst's recent published research
+- [ ] Check their social media for current focus areas
+- [ ] Prepare 2-3 questions to ask THEM
+- [ ] Rehearse tough question responses
+- [ ] Have demo environment ready (if showing product)
+
+---
+*📋 Demo Mode — Connect Claude API for analyst-specific prep*`
+    };
+
+    // Return type-specific mock or generic response
+    return mockResponses[labType] || mockResponses['messaging-lab'] || `## Analysis Results
+
+Thank you for your input. Here's a sample analysis:
+
+### Key Findings
+- Your approach shows strong potential for improvement
+- Several quick wins are available
+- Strategic opportunities exist for differentiation
+
+### Recommendations
+1. Start with the highest-impact, lowest-effort changes
+2. Build measurement systems to track progress
+3. Iterate based on feedback
+
+---
+*📋 Demo Mode — Connect Claude API for personalized analysis*`;
+}
 
 function getSystemPrompt(labType) {
     const prompts = {

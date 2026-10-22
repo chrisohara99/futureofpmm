@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enroll | SAP Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 2rem; max-width: 400px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #1a1a2e; margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .subtitle { color: #666; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-weight: 500; margin-bottom: 0.3rem; color: #333; }
+        input, select { width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #4472C4; }
+        .btn { width: 100%; padding: 0.9rem; background: #4472C4; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .btn:hover { background: #3461b3; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .error { background: #ffe6e6; color: #c00; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+        .error.show { display: block; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎓 Enroll in the Curriculum</h1>
+        <p class="subtitle">Enter your SAP email to get started</p>
+        
+        <div class="error" id="error"></div>
+        
+        <form id="form">
+            <div class="row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>SAP Email</label>
+                <input type="email" id="email" placeholder="you@sap.com" required>
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="role" required>
+                    <option value="">Select...</option>
+                    <option value="pmm">Product Marketing Manager</option>
+                    <option value="senior_pmm">Senior PMM / Director</option>
+                    <option value="vp_pmm">VP Product Marketing</option>
+                    <option value="pm">Product Manager</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <button type="submit" class="btn" id="btn">Start Learning →</button>
+        </form>
+    </div>
+
+<script>
+const SUPABASE_URL = 'https://yyqzkczutlidhgyiyawc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI';
+
+// Pre-fill email if coming from login redirect
+const urlParams = new URLSearchParams(window.location.search);
+const prefillEmail = urlParams.get('email');
+if (prefillEmail) {
+    document.getElementById('email').value = prefillEmail;
+}
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('btn');
+    const error = document.getElementById('error');
+    
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const role = document.getElementById('role').value;
+    
+    // Validate SAP email (with test exceptions)
+    const allowedEmails = ['chrisohara1968@gmail.com', 'christopher.ohara@sap.com'];
+    if (!email.endsWith('@sap.com') && !allowedEmails.includes(email)) {
+        error.textContent = 'Please use your @sap.com email address.';
+        error.classList.add('show');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+    error.classList.remove('show');
+    
+    try {
+        // First check if user already exists (grandfathered)
+        const checkRes = await fetch('/.netlify/functions/check-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        
+        const checkResult = await checkRes.json();
+        
+        if (checkResult.exists) {
+            // User already exists - they can use direct access via login
+            localStorage.setItem('pmm_direct_user', JSON.stringify({
+                email: email,
+                firstName: checkResult.firstName || firstName,
+                lastName: checkResult.lastName || lastName,
+                role: role,
+                id: checkResult.id
+            }));
+            window.location.href = '/curriculum/intro.html';
+            return;
+        }
+        
+        // New user - send verification email (custom, not Supabase)
+        btn.textContent = 'Sending verification email...';
+        
+        const res = await fetch('/.netlify/functions/send-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: 'send',
+                email, 
+                firstName, 
+                lastName, 
+                role
+            })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            throw new Error(result.error);
+        }
+        
+        // Show success message
+        document.querySelector('.card').innerHTML = `
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📧</div>
+                <h1 style="color: #1a1a2e; margin-bottom: 0.5rem;">Check Your Email</h1>
+                <p style="color: #666; margin-bottom: 1.5rem;">
+                    We've sent a verification link to <strong>${email}</strong>
+                </p>
+                <p style="color: #888; font-size: 0.9rem;">
+                    Click the link in the email to complete your enrollment.<br>
+                    Check your spam folder if you don't see it.
+                </p>
+            </div>
+        `;
+        
+    } catch (err) {
+        console.error('Signup error:', err);
+        error.textContent = 'Error: ' + (err.message || 'Failed to send verification email');
+        error.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Start Learning →';
+    }
+});
+</script>
+</body>
+</html>

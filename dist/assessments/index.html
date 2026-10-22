@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/assets/js/auth-guard.js"></script>
+  <script src="/assets/js/user-menu.js" defer></script>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessments | NextGen PMM</title>
+  <meta name="description" content="Know where you stand as a product marketer. Two assessments that map your capability maturity and cognitive integration profile.">
+
+  <style>
+    :root {
+      --blue:     #0a6ed1;
+      --blue2:    #0854a0;
+      --blue-bg:  #e8f3ff;
+      --ink:      #172b4d;
+      --text:     #475569;
+      --line:     #e5e7eb;
+      --soft:     #f6f8fb;
+      --teal:     #0f9f92;
+      --teal2:    #0a7a6f;
+      --teal-bg:  #e4f8f4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #fff;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ─── Header ──────────────────────────────────────────────────── */
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .96);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+    }
+
+    .header-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 750;
+      font-size: 19px;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+
+    .brand span { display: flex; flex-direction: column; line-height: 1.2; }
+    .brand small { font-weight: 500; color: #64748b; font-size: 12px; }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    nav a { color: #475569; transition: color .15s; }
+    nav a:hover { color: var(--blue); }
+    nav a.active { color: var(--blue); }
+
+    /* ─── Page header ─────────────────────────────────────────────── */
+
+    .page-header {
+      background: linear-gradient(180deg, #fff 0%, var(--soft) 100%);
+      border-bottom: 1px solid var(--line);
+      padding: 52px 0 48px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 18px;
+    }
+
+    .breadcrumb a { color: var(--blue); }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb .sep { color: #cbd5e1; }
+
+    .page-header h1 {
+      font-size: 40px;
+      font-weight: 750;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .page-header .lead {
+      font-size: 17px;
+      color: #52637a;
+      max-width: 580px;
+      line-height: 1.65;
+    }
+
+    /* ─── Buttons ─────────────────────────────────────────────────── */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 13px 22px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    .btn-blue {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-blue:hover { background: var(--blue2); color: #fff; }
+
+    .btn-teal {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .btn-teal:hover { background: var(--teal2); color: #fff; }
+
+    /* ─── Assessment cards section ────────────────────────────────── */
+
+    .assessments-section {
+      padding: 72px 0 64px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: -.015em;
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--text);
+      max-width: 580px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* assessment card */
+    .assess-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 32px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow .2s, border-color .2s;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .assess-card::before {
+      content: "";
+      display: block;
+      height: 4px;
+      margin: -32px -32px 28px;
+    }
+
+    .assess-card.card-capability::before { background: var(--blue); }
+    .assess-card.card-cognitive::before  { background: var(--teal); }
+
+    .assess-card:hover {
+      box-shadow: 0 8px 32px rgba(15, 23, 42, .07);
+      border-color: #d1d5db;
+    }
+
+    /* type badge */
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+
+    .badge-capability { background: var(--blue-bg);  color: #0854a0; }
+    .badge-cognitive  { background: var(--teal-bg);  color: #0a6b63; }
+
+    .assess-card h2 {
+      font-size: 23px;
+      font-weight: 750;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .assess-card .card-desc {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 26px;
+    }
+
+    /* what you'll learn */
+    .card-learns {
+      flex: 1;
+      margin-bottom: 28px;
+    }
+
+    .learns-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+
+    .learns-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .learns-list li {
+      font-size: 14px;
+      color: #334155;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.55;
+    }
+
+    .learns-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      font-size: 12px;
+      top: 1px;
+    }
+
+    .card-capability .learns-list li::before { color: var(--blue); }
+    .card-cognitive  .learns-list li::before { color: var(--teal); }
+
+    /* card meta strip */
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+      margin-bottom: 20px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .meta-icon { font-size: 15px; }
+
+    /* ─── Assess → Learn → Apply ──────────────────────────────────── */
+
+    .journey-section {
+      background: var(--soft);
+      border-top: 1px solid var(--line);
+      padding: 72px 0 64px;
+    }
+
+    .journey-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .journey-header .section-label { display: block; }
+
+    .journey-header h2 {
+      font-size: 26px;
+      font-weight: 750;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+
+    .journey-header p {
+      font-size: 15px;
+      color: var(--text);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    .journey-grid {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr 40px 1fr;
+      align-items: start;
+    }
+
+    .journey-connector {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 36px;
+      color: #cbd5e1;
+      font-size: 22px;
+      font-weight: 300;
+    }
+
+    .journey-step {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px 24px;
+      background: #fff;
+    }
+
+    .journey-step.step-live {
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+      border-color: #d1d5db;
+    }
+
+    .journey-step.step-future {
+      background: #fdfdfd;
+      border-style: dashed;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .step-live   .step-num { background: var(--blue); color: #fff; }
+    .step-future .step-num { background: #f1f5f9;    color: #94a3b8; }
+
+    .step-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-live   .step-eyebrow { color: var(--blue); }
+    .step-future .step-eyebrow { color: #94a3b8; }
+
+    .soon-pill {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: #f1f5f9;
+      color: #94a3b8;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .journey-step h3 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      margin-bottom: 8px;
+    }
+
+    .step-future h3 { color: #64748b; }
+
+    .journey-step p {
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .step-live   p { color: var(--text); }
+    .step-future p { color: #94a3b8; }
+
+    .step-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .step-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .step-live   .step-tag { background: var(--blue-bg); color: #0854a0; }
+    .step-future .step-tag { background: #f1f5f9;        color: #94a3b8; }
+
+    /* ─── Footer ──────────────────────────────────────────────────── */
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a { color: #94a3b8; }
+    .footer-links a:hover { color: var(--blue); }
+
+    /* ─── Responsive ──────────────────────────────────────────────── */
+
+    @media (max-width: 860px) {
+      .cards-row {
+        grid-template-columns: 1fr;
+      }
+
+      .journey-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .journey-connector { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .page-header h1    { font-size: 30px; }
+      .page-header .lead { font-size: 15px; }
+      .container         { padding: 0 20px; }
+      .assessments-section { padding: 48px 0 44px; }
+      .journey-section   { padding: 48px 0 44px; }
+      .assess-card       { padding: 28px 24px; }
+      .assess-card::before { margin: -28px -24px 24px; }
+      nav { gap: 18px; font-size: 13px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+  <!-- ─── Header ──────────────────────────────────────────────────── -->
+  <header>
+    <a class="logo" href="/">
+        <svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP">
+          <defs>
+            <linearGradient id="sapGradAssess" x1="206.19" y1="206" x2="206.19" y2="2"
+              gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)">
+              <stop offset="0"    stop-color="#00B8F1"/>
+              <stop offset="0.31" stop-color="#0D90D9"/>
+              <stop offset="0.58" stop-color="#1775C8"/>
+              <stop offset="0.82" stop-color="#1C65BF"/>
+              <stop offset="1"    stop-color="#1E5FBB"/>
+            </linearGradient>
+          </defs>
+          <polyline fill="url(#sapGradAssess)" points="0,204 208.4,204 412.4,0 0,0 0,204"/>
+          <path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4
+            C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5
+            c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7
+            C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13
+            c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4
+            c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123
+            l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1
+            c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z
+            M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z
+            M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/>
+        </svg>
+        <span>NextGen PMM<small>SAP Product Marketing Community</small></span><span class="pilot-badge">PILOT</span>
+    </a>
+      <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+  <!-- ─── Page header ─────────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a href="/index.html">Home</a>
+        <span class="sep">›</span>
+        <span>Assessments</span>
+      </nav>
+      <h1>Know Where You Stand</h1>
+      <p class="lead">Understand your strengths, how you work, and where to focus next — the foundation for a personalized PMM development path.</p>
+    </div>
+  </div>
+
+  <!-- ─── Assessment cards ─────────────────────────────────────────── -->
+  <section class="assessments-section">
+    <div class="container">
+      <div class="section-label">Choose your assessment</div>
+      <h2 class="section-title">Start with one or complete both</h2>
+      <p class="section-desc">Each assessment takes under fifteen minutes and gives you a different lens on your PMM practice. Together they provide the full picture.</p>
+
+      <div class="cards-row">
+
+        <!-- Your AI Persona (formerly Where Do You Sit?) -->
+        <div class="assess-card card-cognitive">
+          <span class="type-badge badge-cognitive">AI Collaboration Style</span>
+          <h2>Your AI Persona</h2>
+          <p class="card-desc">
+            Nine scenario-based questions that map your cognitive relationship with AI: how you think alongside it, how it shapes your professional identity, and whether it has changed what good PMM work means to you. Based on the Artificiality Institute's Cognitive Sovereignty research.
+          </p>
+          <div class="card-learns">
+            <div class="learns-label">What you'll learn</div>
+            <ul class="learns-list">
+              <li>Which of eight integration archetypes describes how you work with AI</li>
+              <li>Your Cognitive Sovereignty score and what it means for your practice</li>
+              <li>Where to focus your development based on your current cognitive posture</li>
+            </ul>
+          </div>
+          <div class="card-meta">
+            <div class="meta-item">
+              <span class="meta-icon">⏱</span>
+              <span>3–5 min · 9 questions · one of eight profiles</span>
+            </div>
+          </div>
+          <a href="/assessments/ai-persona/" class="btn btn-teal">Take the Assessment →</a>
+        </div>
+
+        <!-- 10x PMM Scorecard -->
+        <div class="assess-card card-capability">
+          <span class="type-badge badge-capability">Capability Assessment</span>
+          <h2>The 10x PMM Scorecard</h2>
+          <p class="card-desc">
+            A maturity assessment across the three dimensions of PMM most transformed by AI: content production, competitive intelligence, and demand generation. See where you are today — and the gap to 10x performance.
+          </p>
+          <div class="card-learns">
+            <div class="learns-label">What you'll learn</div>
+            <ul class="learns-list">
+              <li>Your AI readiness score across Content, Competitive Intel, and Demand Gen</li>
+              <li>How you compare to the average PMM team and the 10x high-performer benchmark</li>
+              <li>Your strongest and weakest dimensions — and what it takes to reach the next level</li>
+            </ul>
+          </div>
+          <div class="card-meta">
+            <div class="meta-item">
+              <span class="meta-icon">⏱</span>
+              <span>5 min (Content only) · up to 15 min for all three areas</span>
+            </div>
+          </div>
+          <a href="/assessments/10x/" class="btn btn-blue">Start the Scorecard →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Assess → Learn → Apply journey ──────────────────────────── -->
+  <section class="journey-section">
+    <div class="container">
+
+      <div class="journey-header">
+        <span class="section-label">The development journey</span>
+        <h2>From Assessment to Execution</h2>
+        <p>Assessments are the starting point. The goal is a connected experience that takes you from knowing where you stand to developing real capability — and applying it in your daily work.</p>
+      </div>
+
+      <div class="journey-grid">
+
+        <!-- Step 1: Assess — live now -->
+        <div class="journey-step step-live">
+          <div class="step-num">1</div>
+          <div class="step-eyebrow">Assess</div>
+          <h3>Know Where You Stand</h3>
+          <p>Complete both assessments to establish your baseline — your capability maturity across key PMM dimensions and your cognitive integration profile.</p>
+          <div class="step-tags">
+            <span class="step-tag">Your AI Persona</span>
+            <span class="step-tag">10x PMM Scorecard</span>
+          </div>
+        </div>
+
+        <div class="journey-connector" aria-hidden="true">→</div>
+
+        <!-- Step 2: Learn — coming soon -->
+        <div class="journey-step step-future">
+          <div class="step-num">2</div>
+          <div class="step-eyebrow">Learn <span class="soon-pill">Coming soon</span></div>
+          <h3>Recommended Learning Path</h3>
+          <p>Get a personalized curriculum recommendation based on your combined results — mapped to the modules and skills with the highest impact for where you are today.</p>
+          <div class="step-tags">
+            <span class="step-tag">Curriculum modules</span>
+            <span class="step-tag">Guided exercises</span>
+          </div>
+        </div>
+
+        <div class="journey-connector" aria-hidden="true">→</div>
+
+        <!-- Step 3: Apply — coming soon -->
+        <div class="journey-step step-future">
+          <div class="step-num">3</div>
+          <div class="step-eyebrow">Apply <span class="soon-pill">Coming soon</span></div>
+          <h3>Put Insights Into Practice</h3>
+          <p>Access Book of Work resources, AI-assisted tools, and hands-on activities mapped directly to your development areas — so learning translates into day-to-day PMM execution.</p>
+          <div class="step-tags">
+            <span class="step-tag">Book of Work</span>
+            <span class="step-tag">AI tools</span>
+            <span class="step-tag">Templates</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ──────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container footer-inner">
+      <span>© 2026 SAP SE. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="/index.html">Home</a>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/blog/">Blog</a>
+      </div>
+    </div>
+  </footer>
+
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Office Hours — Week 30 | Future of PMM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f172a;
+            color: white;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+        .slide {
+            min-height: 100vh;
+            padding: 4rem;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+        .slide-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .slide-title {
+            background: linear-gradient(135deg, #1e3a5f 0%, #3b82f6 100%);
+        }
+        .slide-title h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .slide-title p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+        .slide-title .highlight-box {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-top: 2rem;
+            display: inline-block;
+        }
+        .slide-title .highlight-box span {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        h2 .emoji { font-size: 2rem; }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 2rem 0 1rem;
+        }
+        p { 
+            font-size: 1.25rem; 
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
+        }
+        
+        /* Unit 9 announcement */
+        .announcement {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .announcement h3 {
+            color: white;
+            font-size: 2.5rem;
+            margin: 0 0 1rem;
+        }
+        .announcement p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.3rem;
+            margin: 0;
+        }
+        .unit-topics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        .unit-topic {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+        
+        /* Framework image */
+        .framework-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .framework-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        /* Champion */
+        .champion-card {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            color: #1a1a2e;
+        }
+        .champion-card .trophy {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+        .champion-card h3 {
+            color: #1a1a2e;
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem;
+        }
+        .champion-card .subtitle {
+            font-size: 1.3rem;
+            color: rgba(0,0,0,0.7);
+            margin: 0;
+        }
+        .champion-card .achievement {
+            background: rgba(0,0,0,0.1);
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+        
+        /* Leaderboard */
+        .leaderboard {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .leaderboard-item:last-child { border-bottom: none; }
+        .leaderboard-item.new { background: rgba(34, 197, 94, 0.15); }
+        .leaderboard-rank { font-size: 1.5rem; margin-right: 1rem; width: 40px; }
+        .leaderboard-name { flex: 1; font-weight: 600; font-size: 1.1rem; }
+        .leaderboard-progress { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin-right: 1rem; }
+        .leaderboard-score { font-size: 1.3rem; font-weight: 800; color: #3b82f6; }
+        .new-badge {
+            background: #22c55e;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .perfect-score {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .perfect-score span {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        /* Survey Results */
+        .survey-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .survey-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .survey-card .label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .survey-card .value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .survey-card .value.green { color: #22c55e; }
+        .survey-card .value.blue { color: #3b82f6; }
+        .survey-card .value.yellow { color: #eab308; }
+        .survey-card .sub {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.5rem;
+        }
+        
+        .nps-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0 1rem;
+        }
+        .nps-promoters { background: #22c55e; }
+        .nps-passive { background: #eab308; }
+        .nps-detractors { background: #ef4444; }
+        .nps-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.95rem;
+        }
+        .nps-legend span { display: flex; align-items: center; gap: 0.5rem; }
+        .nps-legend .dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        /* Lab Tools */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .tool-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        .tool-card h4 {
+            font-size: 1.4rem;
+            color: #c4b5fd;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .tool-card p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .tool-card .link {
+            color: #a78bfa;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        /* UOTW */
+        .uotw-cta {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .uotw-cta h3 {
+            color: white;
+            font-size: 2rem;
+            margin: 0 0 1rem;
+        }
+        .uotw-cta p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        .uotw-cta .date {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+        
+        .demo-ideas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .demo-idea {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Final CTA */
+        .cta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .cta-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .cta-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .cta-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .cta-card h4 {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .cta-card p {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.6);
+            margin: 0;
+        }
+        
+        .final-message {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            z-index: 100;
+        }
+        .nav button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+        .nav button:hover { background: rgba(255,255,255,0.2); }
+        .nav button:disabled { opacity: 0.3; cursor: default; }
+        .nav .progress-text {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .slide { padding: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .survey-grid { grid-template-columns: 1fr; }
+            .tool-grid { grid-template-columns: 1fr; }
+            .cta-grid { grid-template-columns: 1fr; }
+            .demo-ideas { grid-template-columns: 1fr; }
+            .unit-topics { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide slide-title active" data-slide="0">
+        <div class="slide-inner">
+            <h1>Office Hours</h1>
+            <p>Week 30 — July 2026</p>
+            <div class="highlight-box">
+                <span>🎉 Unit 9 Now Live • New Lab Tools • User of the Week</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 2: Unit 9 Announcement -->
+    <div class="slide" data-slide="1">
+        <div class="slide-inner">
+            <h2><span class="emoji">🚀</span> New: Unit 9 Is Live!</h2>
+            
+            <div class="announcement">
+                <h3>Segmentation & Sizing</h3>
+                <p>The newest unit in the curriculum is ready for you</p>
+            </div>
+            
+            <h3>What You'll Learn</h3>
+            <div class="unit-topics">
+                <div class="unit-topic">🎯 Market segmentation frameworks</div>
+                <div class="unit-topic">📊 TAM/SAM/SOM sizing with AI</div>
+                <div class="unit-topic">👥 Customer & buyer segmentation</div>
+                <div class="unit-topic">🏢 Buyer tier strategy (SMB to Enterprise)</div>
+                <div class="unit-topic">📈 Growth quadrant analysis</div>
+                <div class="unit-topic">🔍 Competitive landscape mapping</div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.2rem;">
+                <strong>Start Unit 9 today</strong> → futureofpmm.com/curriculum/unit-09
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 3: PMM Framework -->
+    <div class="slide" data-slide="2">
+        <div class="slide-inner">
+            <h2><span class="emoji">🎯</span> PMM Roles & Functions</h2>
+            
+            <p>An interactive map of the product marketing discipline. Click any function to access training, assessments, labs, and resources.</p>
+            
+            <div class="framework-container">
+                <img src="images/pmm-framework.jpg" alt="PMM Roles & Functions Framework">
+            </div>
+            
+            <p style="text-align: center; margin-top: 1rem; font-size: 1rem; color: rgba(255,255,255,0.6);">
+                🔵 Training Available — Click to explore &nbsp;&nbsp;|&nbsp;&nbsp; ⚪ Coming Soon
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 4: Leaderboard Champion -->
+    <div class="slide" data-slide="3">
+        <div class="slide-inner">
+            <h2><span class="emoji">🏆</span> Leaderboard Champion</h2>
+            
+            <div class="champion-card">
+                <div class="trophy">🥇</div>
+                <h3>Sean Thomson</h3>
+                <p class="subtitle">First to complete the 8-unit curriculum with a perfect score</p>
+                <div class="achievement">Unit 8 ✓ — 100%</div>
+            </div>
+            
+            <h3>Also Completed Unit 8</h3>
+            <div class="leaderboard">
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥇</span>
+                    <span class="leaderboard-name">Venkata Giduthuri</span>
+                    <span class="leaderboard-progress">Unit 8 ✓</span>
+                    <span class="leaderboard-score">100%</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥇</span>
+                    <span class="leaderboard-name">Axel Schuller</span>
+                    <span class="leaderboard-progress">Unit 8 ✓</span>
+                    <span class="leaderboard-score">100%</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">🥈</span>
+                    <span class="leaderboard-name">Corrie Birkeness</span>
+                    <span class="leaderboard-progress">Unit 8 ✓</span>
+                    <span class="leaderboard-score">96%</span>
+                </div>
+                <div class="leaderboard-item new">
+                    <span class="leaderboard-rank">🆕</span>
+                    <span class="leaderboard-name">Dante Ricci<span class="new-badge">Today!</span></span>
+                    <span class="leaderboard-progress">Unit 8 ✓</span>
+                    <span class="leaderboard-score">96%</span>
+                </div>
+            </div>
+            
+            <h3>🏅 Perfect Scores Club</h3>
+            <div class="perfect-score">
+                <span>Peter Baskin</span>
+                <span>Tara Rogers</span>
+                <span>Cathy Citarelli</span>
+                <span>Jacob Brass</span>
+                <span>Liam Clarke</span>
+                <span>Stuart Giles</span>
+                <span>Kara Reed</span>
+                <span>Tiffany Baker</span>
+                <span>Teuta Elezaj</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 5: Survey Results -->
+    <div class="slide" data-slide="4">
+        <div class="slide-inner">
+            <h2><span class="emoji">📊</span> Survey Results</h2>
+            
+            <div class="survey-grid">
+                <div class="survey-card">
+                    <div class="label">Net Promoter Score</div>
+                    <div class="value yellow">56</div>
+                    <div class="sub">37 responses</div>
+                </div>
+                <div class="survey-card">
+                    <div class="label">Overall Satisfaction</div>
+                    <div class="value blue">8.6</div>
+                    <div class="sub">out of 10</div>
+                </div>
+                <div class="survey-card">
+                    <div class="label">Lesson Value</div>
+                    <div class="value blue">4.1</div>
+                    <div class="sub">out of 5</div>
+                </div>
+            </div>
+            
+            <h3>NPS Breakdown</h3>
+            <div class="nps-bar">
+                <div class="nps-promoters" style="flex: 22;"></div>
+                <div class="nps-passive" style="flex: 12;"></div>
+                <div class="nps-detractors" style="flex: 3;"></div>
+            </div>
+            <div class="nps-legend">
+                <span><span class="dot" style="background: #22c55e;"></span> 22 Promoters (9-10)</span>
+                <span><span class="dot" style="background: #eab308;"></span> 12 Passive (7-8)</span>
+                <span><span class="dot" style="background: #ef4444;"></span> 3 Detractors (0-6)</span>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.2rem; color: rgba(255,255,255,0.7);">
+                <strong>Haven't taken the survey yet?</strong> Your feedback shapes the program!
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 6: Lab Suggestion Tools -->
+    <div class="slide" data-slide="5">
+        <div class="slide-inner">
+            <h2><span class="emoji">🧪</span> New: Lab Suggestion Tools</h2>
+            
+            <p>Want a lab that doesn't exist yet? Now you can request it!</p>
+            
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h4>💡 Suggest a Lab</h4>
+                    <p>Have an idea for a new AI-powered lab? Tell us what problem you're trying to solve and we'll build it.</p>
+                    <p>5-step guided wizard walks you through:</p>
+                    <p style="font-size: 1rem; color: rgba(255,255,255,0.6);">Problem → LOB → Current Tools → Success Metrics → Contact</p>
+                    <div class="link">futureofpmm.com/curriculum/labs/suggest-a-lab.html</div>
+                </div>
+                <div class="tool-card">
+                    <h4>🏢 LOB Customization</h4>
+                    <p>Need existing labs tailored to your specific line of business? Request a customized variant.</p>
+                    <p style="font-size: 1rem; color: rgba(255,255,255,0.6);">Available for: ERP, HCM, Analytics, CX (Sales, Commerce, Marketing), BTP, Signavio, Concur, Ariba</p>
+                    <div class="link">futureofpmm.com/curriculum/labs/lob-customization.html</div>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem;">
+                Your suggestions go directly to the development queue — we review them weekly!
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 7: User of the Week -->
+    <div class="slide" data-slide="6">
+        <div class="slide-inner">
+            <h2><span class="emoji">⭐</span> User of the Week</h2>
+            
+            <div class="uotw-cta">
+                <h3>🌟 Want to Be Featured?</h3>
+                <p>Present your work at the next Office Hours!</p>
+                <div class="date">📅 Tuesday, August 4th @ 10AM</div>
+            </div>
+            
+            <h3>Ideas for Your Demo</h3>
+            <div class="demo-ideas">
+                <div class="demo-idea">🎯 Show a framework you applied to a real project</div>
+                <div class="demo-idea">📝 Walk through a positioning exercise you completed</div>
+                <div class="demo-idea">🧪 Demo an AI lab that helped you solve a problem</div>
+                <div class="demo-idea">💡 Share a lesson learned or "aha moment"</div>
+                <div class="demo-idea">📊 Present competitive intel you gathered</div>
+                <div class="demo-idea">✍️ Show content you created using the frameworks</div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.2rem;">
+                <strong>5-10 minutes is all you need.</strong> Reply to this invite to volunteer!
+            </p>
+        </div>
+    </div>
+    
+    <!-- Slide 8: Final CTA -->
+    <div class="slide" data-slide="7">
+        <div class="slide-inner">
+            <h2><span class="emoji">📣</span> Your Turn!</h2>
+            
+            <div class="cta-grid">
+                <div class="cta-card">
+                    <div class="icon">📋</div>
+                    <h4>Take the Survey</h4>
+                    <p>Help us improve the program with your feedback</p>
+                </div>
+                <div class="cta-card">
+                    <div class="icon">💡</div>
+                    <h4>Suggest a Lab</h4>
+                    <p>Tell us what tools would help you most</p>
+                </div>
+                <div class="cta-card">
+                    <div class="icon">⭐</div>
+                    <h4>Be a UOTW</h4>
+                    <p>Present at Office Hours next Tuesday</p>
+                </div>
+            </div>
+            
+            <p class="final-message">
+                See you Tuesday @ 10AM! 🚀
+            </p>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="nav">
+        <button id="prev" onclick="changeSlide(-1)">←</button>
+        <span class="progress-text"><span id="current">1</span> / <span id="total">8</span></span>
+        <button id="next" onclick="changeSlide(1)">→</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides.forEach(s => s.classList.remove('active'));
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = currentSlide + 1;
+            document.getElementById('prev').disabled = currentSlide === 0;
+            document.getElementById('next').disabled = currentSlide === totalSlides - 1;
+        }
+        
+        function changeSlide(dir) {
+            showSlide(currentSlide + dir);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+        
+        // Click to advance (except on interactive elements)
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav') || e.target.closest('button')) return;
+            changeSlide(1);
+        });
+        
+        showSlide(0);
+    </script>
+</body>
+</html>

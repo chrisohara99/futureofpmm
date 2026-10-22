@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMM Pulse | NextGen PMM</title>
+    <meta name="description" content="Ideas, insights, and updates shaping the future of Product Marketing — articles, best practices, digests, and community stories in one unified feed.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --sap-blue:      #0070f2;
+            --sap-blue-dark: #0054b4;
+            --sap-blue-bg:   #e8f4ff;
+            --text-primary:  #1d2d3e;
+            --text-secondary:#526069;
+            --border:        #e4e7eb;
+            --bg-light:      #f5f7fa;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text-primary); line-height: 1.6; background: #fff; }
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ---- Header ---- */
+        header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; border-bottom: 1px solid var(--border); background: #fff; position: sticky; top: 0; z-index: 100; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; font-size: 1.1rem; color: var(--text-primary); text-decoration: none; }
+        .logo:hover { text-decoration: none; }
+        header nav { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+        header nav a { color: var(--text-secondary); font-size: 0.9rem; }
+        header nav a:hover { color: var(--text-primary); text-decoration: none; }
+        header nav a.active { color: var(--sap-blue); font-weight: 600; }
+        @media (max-width: 768px) { header { flex-direction: column; gap: 1rem; padding: 1rem; } header nav { gap: 1rem; justify-content: center; } }
+
+        /* ---- Hero ---- */
+        .pulse-hero { background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%); border-bottom: 1px solid var(--border); padding: 3.5rem 0 3rem; }
+        .pulse-hero .inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        .eyebrow { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sap-blue); }
+        .pulse-hero h1 { font-size: 2.75rem; font-weight: 800; line-height: 1.12; margin: 0.75rem 0 1rem; }
+        .pulse-hero .lead { font-size: 1.05rem; color: var(--text-secondary); max-width: 640px; line-height: 1.65; }
+        .pulse-hero .meta-note { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.75rem; }
+
+        /* ---- Controls ---- */
+        .pulse-controls { padding: 1.25rem 0; border-bottom: 1px solid var(--border); background: #fff; position: sticky; top: 65px; z-index: 90; }
+        .pulse-controls .inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 0.7rem; }
+        .search-wrap { position: relative; }
+        .search-icon { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9aa5b1; width: 15px; height: 15px; pointer-events: none; }
+        #pulse-search { width: 100%; padding: 0.6rem 2.5rem 0.6rem 2.5rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; color: var(--text-primary); background: #fff; outline: none; transition: border-color 0.15s; }
+        #pulse-search:focus { border-color: var(--sap-blue); box-shadow: 0 0 0 3px rgba(0,112,242,0.1); }
+        #pulse-search::placeholder { color: #9aa5b1; }
+        .search-clear { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 1.1rem; line-height: 1; padding: 0.2rem 0.3rem; }
+        .search-clear:hover { color: var(--text-primary); }
+        .filter-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+        .filter-row select { padding: 0.4rem 1.75rem 0.4rem 0.7rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text-primary); background: #fff; cursor: pointer; outline: none; }
+        .filter-row select:focus { border-color: var(--sap-blue); }
+        .btn-clear-all { background: none; border: none; font-size: 0.82rem; color: var(--text-secondary); cursor: pointer; padding: 0.3rem 0.4rem; border-radius: 4px; }
+        .btn-clear-all:hover { color: var(--sap-blue); text-decoration: underline; }
+        .result-count { font-size: 0.8rem; color: var(--text-secondary); margin-left: auto; }
+        @media (max-width: 600px) { .filter-row { gap: 0.4rem; } .result-count { width: 100%; margin-left: 0; } }
+
+        /* ---- Feed body ---- */
+        .pulse-body { padding: 2rem 0 5rem; }
+        .pulse-body .inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        .feed-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        /* Feed row — matches archive-horizon .archive-row design */
+        .feed-row { border: 1px solid var(--border); border-radius: 14px; background: #fff; padding: 1.1rem 1.5rem; display: grid; grid-template-columns: 7rem 1fr auto; gap: 1rem; align-items: start; text-decoration: none; transition: border-color 0.15s, transform 0.1s; }
+        .feed-row:hover { border-color: rgba(0,112,242,0.4); transform: translateY(-1px); text-decoration: none; }
+        .row-datecol { display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.15rem; }
+        .row-date { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-secondary); line-height: 1.3; }
+
+        /* Blue content-type tag */
+        .tag-type { display: inline-block; font-size: 0.63rem; font-weight: 700; padding: 0.16rem 0.55rem; border-radius: 20px; background: var(--sap-blue); color: #fff; letter-spacing: 0.03em; white-space: nowrap; }
+
+        /* Green BoW tag */
+        .tag-bow { display: inline-block; font-size: 0.67rem; font-weight: 600; padding: 0.16rem 0.58rem; border-radius: 20px; background: #dcfce7; border: 1px solid rgba(22,163,74,0.2); color: #166534; white-space: nowrap; }
+
+        .feed-row h2 { font-size: 1.02rem; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.35; }
+        .row-summary { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin-top: 0.3rem; }
+        .row-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+        .row-cta { font-size: 0.82rem; font-weight: 700; color: var(--sap-blue); white-space: nowrap; padding-top: 0.35rem; }
+
+        /* Empty state */
+        #feed-empty { padding: 3rem 0; text-align: center; display: none; }
+        #feed-empty p { color: var(--text-secondary); font-size: 0.95rem; }
+        .btn-reset { background: none; border: none; color: var(--sap-blue); cursor: pointer; font-size: 0.95rem; text-decoration: underline; }
+        .btn-reset:hover { text-decoration: none; }
+
+        /* Archive link */
+        .archive-link { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.9rem; color: var(--text-secondary); }
+        .archive-link a { color: var(--sap-blue); font-weight: 600; }
+
+        /* Footer */
+        footer { background: var(--text-primary); color: #fff; padding: 2rem; text-align: center; }
+        footer p { color: rgba(255,255,255,0.55); font-size: 0.85rem; }
+
+        @media (max-width: 700px) { .feed-row { grid-template-columns: 1fr; } .row-cta { display: none; } .row-datecol { flex-direction: row; align-items: center; gap: 0.5rem; flex-wrap: wrap; } }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+<!-- ====================================================
+     HEADER
+     ==================================================== -->
+<header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn active" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem" class="active">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- ====================================================
+     HERO
+     ==================================================== -->
+<div class="pulse-hero">
+    <div class="inner">
+        <p class="eyebrow">PMM Community</p>
+        <h1>PMM Pulse</h1>
+        <p class="lead">Ideas, insights, and updates shaping the future of Product Marketing.</p>
+        <p class="meta-note">Articles, best practices, community stories, and daily digests &mdash; all in one feed.</p>
+    </div>
+</div>
+
+<!-- ====================================================
+     CONTROLS
+     ==================================================== -->
+<div class="pulse-controls">
+    <div class="inner">
+        <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" id="pulse-search" placeholder="Search articles, topics, or keywords..." autocomplete="off">
+            <button class="search-clear" id="search-clear" type="button" aria-label="Clear search" style="display:none">&#215;</button>
+        </div>
+        <div class="filter-row">
+            <select id="filter-bow" aria-label="Filter by Book of Work topic">
+                <option value="">All Topics</option>
+                <option value="Category Vision">Category Vision</option>
+                <option value="Community">Community</option>
+                <option value="Demo">Demo</option>
+                <option value="GTM Readiness">GTM Readiness</option>
+                <option value="Launch Narrative">Launch Narrative</option>
+                <option value="Market Insights">Market Insights</option>
+                <option value="Marketing Planning">Marketing Planning</option>
+                <option value="Messaging &amp; Positioning">Messaging &amp; Positioning</option>
+                <option value="Personas">Personas</option>
+            </select>
+            <select id="filter-type" aria-label="Filter by content type">
+                <option value="">All Content</option>
+                <option value="Insight">Insight</option>
+                <option value="Best Practice">Best Practice</option>
+                <option value="Community Story">Community Story</option>
+                <option value="Digest">Digest</option>
+            </select>
+            <button class="btn-clear-all" id="btn-clear-all" type="button">Clear filters</button>
+            <span class="result-count" id="result-count"></span>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================
+     FEED
+     ==================================================== -->
+<div class="pulse-body">
+    <div class="inner">
+        <div class="feed-list" id="feed-list">
+
+<!-- Oct 15, 2026 — SAP Knowledge Graph article -->
+<a class="feed-row" href="/ai-tools/articles/sap-knowledge-graph/"
+   data-type="Insight" data-bow="Market Insights,GTM Readiness" data-date="2026-10-15"
+   data-search="sap competitive ai advantage knowledge graph insight market insights gtm readiness context-aware enterprise knowledge graph ekx joule rag retrieval">
+    <div class="row-datecol">
+        <span class="row-date">Oct 15, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>SAP&#8217;s Competitive AI Advantage: The Knowledge Graph</h2>
+        <p class="row-summary">Context-aware AI is the next step beyond basic LLMs. How SAP&#8217;s Knowledge Graph turns structured relationships into a competitive advantage for enterprise AI &mdash; and what it means for product marketers.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span><span class="tag-bow">GTM Readiness</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Oct 15, 2026 — Agentic buyer article -->
+<a class="feed-row" href="/bow/launch-narrative/agentic-pmm-buyer-hired-agent.html"
+   data-type="Insight" data-bow="Launch Narrative,Category Vision" data-date="2026-10-15"
+   data-search="your buyer just hired an agent now what insight launch narrative category vision agentic pmm buyers positioning go-to-market agentic era">
+    <div class="row-datecol">
+        <span class="row-date">Oct 15, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>Your Buyer Just Hired an Agent. Now What?</h2>
+        <p class="row-summary">Everything product marketers assumed about buyers, positioning, and go-to-market is breaking. Here&#8217;s what the agentic era actually changes &mdash; and how to reposition before the market moves without you.</p>
+        <div class="row-tags"><span class="tag-bow">Launch Narrative</span><span class="tag-bow">Category Vision</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 15, 2026 — AI visibility article -->
+<a class="feed-row" href="/bow/messaging-positioning/is-your-brand-ai-visible.html"
+   data-type="Best Practice" data-bow="Messaging &amp; Positioning,Market Insights" data-date="2026-09-15"
+   data-search="is your brand ai-visible testing framework best practice messaging positioning market insights geo generative engine chatgpt perplexity claude ai search brand visibility">
+    <div class="row-datecol">
+        <span class="row-date">Sep 15, 2026</span>
+        <span class="tag-type">Best Practice</span>
+    </div>
+    <div>
+        <h2>Is Your Brand AI-Visible? A Testing Framework</h2>
+        <p class="row-summary">How to test whether ChatGPT, Perplexity, and Claude know your brand exists &mdash; and describe it correctly. A practical framework for measuring and improving AI visibility.</p>
+        <div class="row-tags"><span class="tag-bow">Messaging &amp; Positioning</span><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 12, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-12.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-12"
+   data-search="ai martech to triple to $74b birdeye ships 27 ai coworkers 79% face adoption challenges digest market insights ai martech birdeye enterprise adoption">
+    <div class="row-datecol">
+        <span class="row-date">Sep 12, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>AI MarTech to Triple to $74B, Birdeye Ships 27 AI Coworkers, 79% Face Adoption Challenges</h2>
+        <p class="row-summary">AI MarTech Market to triple to $74B by 2031. Birdeye ships 27 AI coworkers. 79% of enterprises face adoption challenges despite high investment.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 11, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-11.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-11"
+   data-search="writer ships enterprise brain klaviyo goes headless google forces ai max migration digest market insights writer klaviyo mcp 96% ai adoption">
+    <div class="row-datecol">
+        <span class="row-date">Sep 11, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Writer Ships Enterprise Brain, Klaviyo Goes Headless, Google Forces AI Max Migration</h2>
+        <p class="row-summary">Writer ships universal context layer, Klaviyo opens 260+ MCP tools to external agents, Google forces AI Max migration across search campaigns.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 10, 2026 — BCG article + Digest -->
+<a class="feed-row" href="/bow/marketing-planning/bcg-agentic-headwinds.html"
+   data-type="Insight" data-bow="Marketing Planning,Category Vision" data-date="2026-09-10"
+   data-search="bcg six agentic headwinds tailwinds sap insight marketing planning category vision bcg agentic ai enterprise uncertainty positioning">
+    <div class="row-datecol">
+        <span class="row-date">Sep 10, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>BCG&#8217;s Six Agentic Headwinds &mdash; And Why They&#8217;re Tailwinds for SAP</h2>
+        <p class="row-summary">BCG identifies six dimensions of uncertainty for the agentic AI future. SAP has a specific answer to each &mdash; here&#8217;s the PMM playbook for turning the headwinds into positioning.</p>
+        <div class="row-tags"><span class="tag-bow">Marketing Planning</span><span class="tag-bow">Category Vision</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-09-10.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-10"
+   data-search="ai claws signal next phase bcg warns cognitive lock-in magnite proves agentic ads work digest market insights abi research bcg magnite">
+    <div class="row-datecol">
+        <span class="row-date">Sep 10, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>&#8220;AI Claws&#8221; Signal Next Phase, BCG Warns of Cognitive Lock-In, Magnite Proves Agentic Ads Work</h2>
+        <p class="row-summary">ABI Research names AI Claws. BCG warns of cognitive lock-in. Magnite proves agentic ad campaigns work.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 9, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-09.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-09"
+   data-search="68% marketers disconnected ai strategy google accenture fde unit dark data wrecks ai stacks digest market insights adobe ai maturity disconnected dark data">
+    <div class="row-datecol">
+        <span class="row-date">Sep 9, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>68% of Marketers Are &#8220;Disconnected&#8221; in AI Strategy, Google + Accenture Launch FDE Unit, Dark Data Wrecks AI Stacks</h2>
+        <p class="row-summary">Adobe: 68% of marketers disconnected from AI strategy. Google races to catch up with Accenture FDE deal. Dark data breaks AI stacks.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 8, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-08.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-08"
+   data-search="voicing ai ships knowledge mesh anthropic scrambles compute google merges ai mode search digest market insights knowledge mesh anthropic ipo google ai mode">
+    <div class="row-datecol">
+        <span class="row-date">Sep 8, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Voicing AI Ships &#8220;Knowledge Mesh,&#8221; Anthropic Scrambles for Compute, Google Merges AI Mode Into Search</h2>
+        <p class="row-summary">Voicing AI ships context layer for agents. Anthropic scrambles for compute ahead of IPO. Google merges AI Mode into core search.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 7, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-07.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-07"
+   data-search="marketing stack is dead 96% use ai but hiring shifts to judgment 6sense routes intent to ai agents digest market insights martech dead 96% ai adoption 6sense agents">
+    <div class="row-datecol">
+        <span class="row-date">Sep 7, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>&#8220;The Marketing Stack Is Dead,&#8221; 96% Use AI But Hiring Shifts to Judgment, 6sense Routes Intent to AI Agents</h2>
+        <p class="row-summary">Totaligent declares martech dead. B2B marketers hit 96% AI adoption but face talent gap. 6sense feeds intent data to AI agents.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 6, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-06.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-06"
+   data-search="cmos spend 15.3% on ai but only 30% ready measurement gap widens digest market insights gartner cmo ai readiness measurement gap">
+    <div class="row-datecol">
+        <span class="row-date">Sep 6, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>CMOs Spend 15.3% on AI But Only 30% Ready, 96% Use AI But Hiring Shifts to Judgment, The Measurement Gap Widens</h2>
+        <p class="row-summary">The AI readiness gap exposed. CMOs spending big but struggling to scale. Revenue teams face a widening measurement gap.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 5, 2026 — SaaS Reckoning article + Digest -->
+<a class="feed-row" href="/bow/category-vision/saas-reckoning-pmm-playbook.html"
+   data-type="Insight" data-bow="Category Vision,Marketing Planning" data-date="2026-09-05"
+   data-search="saas reckoning what it means for pmm insight category vision marketing planning saas stocks down hubspot outcome-based pricing product marketers">
+    <div class="row-datecol">
+        <span class="row-date">Sep 5, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>The SaaS Reckoning: What It Means for PMM</h2>
+        <p class="row-summary">SaaS stocks are down 35&ndash;44% YTD. HubSpot just shifted to outcome-based pricing. Here&#8217;s what the market reset means for product marketers navigating the transition.</p>
+        <div class="row-tags"><span class="tag-bow">Category Vision</span><span class="tag-bow">Marketing Planning</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-09-05.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-05"
+   data-search="ai tool rollout done now comes governance meta ships hatch marketing stack is dead digest market insights ai governance meta hatch martech">
+    <div class="row-datecol">
+        <span class="row-date">Sep 5, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>AI Tool Rollout Done&mdash;Now Comes Governance, Meta Ships &#8220;Hatch,&#8221; The Marketing Stack Is Dead</h2>
+        <p class="row-summary">AI adoption near-universal but governance lags. Meta ships consumer AI agent. Totaligent declares martech dead.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 4, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-04.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-04"
+   data-search="marketing stack is dead mckinsey 32% skip software jetstream ships agent authorization digest market insights mckinsey software purchases jetstream governance">
+    <div class="row-datecol">
+        <span class="row-date">Sep 4, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>&#8220;The Marketing Stack Is Dead,&#8221; McKinsey: 32% Skip Software, JetStream Ships Agent Authorization</h2>
+        <p class="row-summary">Totaligent declares the marketing stack dead. McKinsey finds 32% of orgs skipping software purchases. JetStream ships agent governance.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 3, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-03.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-03"
+   data-search="adobe acquires rilo webflow unveils source jetstream ships agent governance digest market insights adobe rilo webflow source jetstream">
+    <div class="row-datecol">
+        <span class="row-date">Sep 3, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Adobe Acquires Rilo, Webflow Unveils Source, JetStream Ships Agent Governance</h2>
+        <p class="row-summary">Adobe acquires Rilo for agentic workflows. Webflow unveils Source for marketing teams. JetStream ships per-action governance.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 2, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-09-02.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-02"
+   data-search="chatgpt ads hits $1b in 200 days 51% b2b buyers skip google gemini pro delay creates enterprise gap digest market insights chatgpt ads b2b discovery claudeforce">
+    <div class="row-datecol">
+        <span class="row-date">Sep 2, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>ChatGPT Ads Hits $1B in 200 Days, 51% of B2B Buyers Skip Google, Gemini Pro Delay Creates Enterprise Gap</h2>
+        <p class="row-summary">ChatGPT Ads hits $1B ARR. B2B buyers abandon Google for AI chatbots. Salesforce and Anthropic deepen Claudeforce partnership.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Sep 1, 2026 — Great Bifurcation article + Digest -->
+<a class="feed-row" href="/bow/category-vision/the-great-bifurcation.html"
+   data-type="Insight" data-bow="Category Vision" data-date="2026-09-01"
+   data-search="great bifurcation where pmm goes from here insight category vision product marketing splitting ai disruptive middle ground">
+    <div class="row-datecol">
+        <span class="row-date">Sep 1, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>The Great Bifurcation: Where PMM Goes From Here</h2>
+        <p class="row-summary">Product marketing is splitting into two distinct paths. The middle ground &mdash; competent execution of standard tasks &mdash; is exactly where AI is most disruptive.</p>
+        <div class="row-tags"><span class="tag-bow">Category Vision</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-09-01.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-09-01"
+   data-search="salesforce winter 27 agents run workflows yale data is the moat ai giants hit $115b arr digest market insights salesforce winter 27 data moat anthropic">
+    <div class="row-datecol">
+        <span class="row-date">Sep 1, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Salesforce Winter &#8217;27: Agents Run Workflows, Yale: Data Is the Moat, AI Giants Hit $115B ARR</h2>
+        <p class="row-summary">Salesforce unleashes workflow-running agents. Yale argues data beats models. AI giants hit $115B combined ARR.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 31, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-31.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-31"
+   data-search="1200 ai agents coordinate cyberattack ama redefines marketing skills vertical ml outperforms cdps digest market insights openai security ama cdp ml">
+    <div class="row-datecol">
+        <span class="row-date">Aug 31, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>1,200 AI Agents Coordinate Cyberattack, AMA Redefines Marketing Skills, Vertical ML Outperforms CDPs</h2>
+        <p class="row-summary">AI agents self-organize for cyberattack. AMA reveals marketing skills shift. Vertical ML beats CDPs for intent scoring.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 30, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-30.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-30"
+   data-search="ama redefines marketing skills claudeforce launches enterprise software winners diverge digest market insights claudeforce salesforce anthropic enterprise software">
+    <div class="row-datecol">
+        <span class="row-date">Aug 30, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>AMA Redefines Marketing Skills, Claudeforce Launches, Enterprise Software Winners Diverge</h2>
+        <p class="row-summary">AMA redefines marketing skills for the AI era. Salesforce and Anthropic launch Claudeforce. Enterprise software winners pull ahead of laggards.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 29, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-29.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-29"
+   data-search="enterprise software up 13% ai winners losers diverging fast digest market insights idc aws bedrock geo enterprise software">
+    <div class="row-datecol">
+        <span class="row-date">Aug 29, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Enterprise Software Up 13%, But AI&#8217;s Winners and Losers Are Diverging Fast</h2>
+        <p class="row-summary">Enterprise software grows but AI reshapes categories unevenly. AWS launches managed web search for agents. GEO gains momentum.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 28, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-28.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-28"
+   data-search="gartner ai is governance problem openai courts enterprise advertisers $2t saas reality check digest market insights gartner hype cycle openai ads saas selloff">
+    <div class="row-datecol">
+        <span class="row-date">Aug 28, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Gartner: AI Is a Governance Problem, OpenAI Courts Enterprise Advertisers, The $2T SaaS Reality Check</h2>
+        <p class="row-summary">Gartner reframes AI as governance, not tooling. OpenAI builds enterprise ad infrastructure. The $2T SaaS selloff deepens.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 27, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-27.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-27"
+   data-search="nvidia $40b enterprise ai quarter mckinsey exposes impact gap arga labs raises $10m digest market insights nvidia mckinsey impact gap">
+    <div class="row-datecol">
+        <span class="row-date">Aug 27, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Nvidia&#8217;s $40B Enterprise AI Quarter, McKinsey Exposes the Impact Gap, Arga Labs Raises $10M</h2>
+        <p class="row-summary">Nvidia posts record enterprise AI sales. McKinsey reveals gap between individual productivity and enterprise impact.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 26, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-26.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-26"
+   data-search="gartner ai governance problem openai gains on anthropic claude goes deeper workspace digest market insights gartner hype cycle claude workspace">
+    <div class="row-datecol">
+        <span class="row-date">Aug 26, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Gartner: AI Is a Governance Problem, OpenAI Gains on Anthropic, Claude Goes Deeper in Workspace</h2>
+        <p class="row-summary">Gartner reframes AI as governance challenge. OpenAI extends enterprise lead. Claude gets deeper Google Workspace integration.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 25, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-25.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-25"
+   data-search="openai targets enterprise advertisers claude expands google workspace goldman maps ai job impact digest market insights openai ads claude goldman sachs job impact">
+    <div class="row-datecol">
+        <span class="row-date">Aug 25, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>OpenAI Targets Enterprise Advertisers, Claude Expands Google Workspace, Goldman Maps AI Job Impact</h2>
+        <p class="row-summary">OpenAI builds out enterprise ad tools. Claude gets Gmail/Drive integration. Goldman maps where AI is actually cutting jobs.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 24, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-24.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-24"
+   data-search="ai agents disrupt enterprise pricing 40% apps embed agents linkedin ai marketing playbook digest market insights enterprise pricing agentic ai gartner linkedin">
+    <div class="row-datecol">
+        <span class="row-date">Aug 24, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>AI Agents Disrupt Enterprise Pricing, 40% of Apps Embed Agents, LinkedIn&#8217;s AI Marketing Playbook</h2>
+        <p class="row-summary">AI agents disrupt enterprise software pricing. 40% of apps to embed agents by year-end. LinkedIn publishes AI marketing playbook.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 23, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-23.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-23"
+   data-search="openai gains on anthropic 52-point data gap structured data is new homepage digest market insights openai anthropic data infrastructure agentic b2b">
+    <div class="row-datecol">
+        <span class="row-date">Aug 23, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>OpenAI Gains on Anthropic, The 52-Point Data Gap, Structured Data Is the New Homepage</h2>
+        <p class="row-summary">Enterprise AI market volatility, the 52-point data readiness gap, and why structured data beats your homepage for AI discovery.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 22, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-22.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-22"
+   data-search="52-point data readiness gap saas pricing pivots chatgpt ads go beta digest market insights adobe data infrastructure jp morgan saas pricing">
+    <div class="row-datecol">
+        <span class="row-date">Aug 22, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>The 52-Point Data Readiness Gap, SaaS Pricing Pivots, ChatGPT Ads Go Beta</h2>
+        <p class="row-summary">The 52-point readiness gap. SaaS pricing shifts to outcomes. ChatGPT Ads go beta.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 21, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-21.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-21"
+   data-search="80% b2b buyers use ai agents 96% use ai only 44% have data uniphore moves beyond cdp digest market insights idc ai agents data infrastructure">
+    <div class="row-datecol">
+        <span class="row-date">Aug 21, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>80% of B2B Buyers Use AI Agents, 96% Use AI But Only 44% Have the Data, Uniphore Moves Beyond CDP</h2>
+        <p class="row-summary">80% of B2B buyers use AI agents in purchasing. 96% of marketers use AI but only 44% have data infrastructure ready.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 20, 2026 — What is MCP + Digest -->
+<a class="feed-row" href="/bow/learning-journeys/what-is-mcp-explainer.html"
+   data-type="Insight" data-bow="GTM Readiness,Market Insights" data-date="2026-08-20"
+   data-search="what is mcp protocol that will change how ai finds your product insight gtm readiness market insights model context protocol agents discovery structured knowledge">
+    <div class="row-datecol">
+        <span class="row-date">Aug 20, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>What is MCP? The Protocol That Will Change How AI Finds Your Product</h2>
+        <p class="row-summary">The protocol that is changing how AI agents discover and use products &mdash; and what PMMs need to understand about structured knowledge exposure and MCP positioning.</p>
+        <div class="row-tags"><span class="tag-bow">GTM Readiness</span><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-08-20.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-20"
+   data-search="forbes ai 50 crowns anthropic chatgpt ads hit europe b2b discovery shifts to ai digest market insights forbes ai 50 chatgpt ads europe b2b">
+    <div class="row-datecol">
+        <span class="row-date">Aug 20, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Forbes AI 50 Crowns Anthropic, ChatGPT Ads Hit Europe, B2B Discovery Shifts to AI</h2>
+        <p class="row-summary">Forbes AI 50 crowns Anthropic. ChatGPT Ads expand to Europe. B2B buyer discovery shifts to AI chatbots.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 19, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-19.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-19"
+   data-search="google forces ai max migration $2t saaspocalypse deepens geo is the new seo digest market insights google ai max saas selloff geo seo">
+    <div class="row-datecol">
+        <span class="row-date">Aug 19, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Google Forces AI Max Migration, $2T SaaSpocalypse Deepens, GEO Is the New SEO</h2>
+        <p class="row-summary">Google forces AI Max migration. $2T SaaS selloff deepens. GEO officially becomes the new SEO.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 18, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-18.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-18"
+   data-search="agent adoption tripled only 5% ready frontier firms pull away digest market insights salesforce deloitte openai frontier firms">
+    <div class="row-datecol">
+        <span class="row-date">Aug 18, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Agent Adoption Tripled, Only 5% Ready, Frontier Firms Pull Away</h2>
+        <p class="row-summary">Agent adoption tripled. Only 5% are ready. Frontier firms pull away from the rest of the enterprise market.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 17, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-17.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-17"
+   data-search="silver lake eyes $51b workday buyout gen z punishes ai marketing agentic ai dominates enterprise usage digest market insights silver lake workday gen z ai marketing">
+    <div class="row-datecol">
+        <span class="row-date">Aug 17, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Silver Lake Eyes $51B Workday Buyout, Gen Z Punishes AI Marketing, Agentic AI Dominates Enterprise Usage</h2>
+        <p class="row-summary">Silver Lake explores $51B Workday acquisition. Gen Z consumers punish AI-generated marketing. Agentic AI dominates enterprise usage patterns.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 16, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-16.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-16"
+   data-search="deepseek v4-pro goes ga grok bot creates ai coworkers gartner 40% agentic projects will fail digest market insights deepseek grok bot gartner agentic failure">
+    <div class="row-datecol">
+        <span class="row-date">Aug 16, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>DeepSeek V4-Pro Goes GA, Grok Bot Creates AI Coworkers, Gartner: 40% of Agentic Projects Will Fail</h2>
+        <p class="row-summary">DeepSeek V4-Pro ships agent-ready reasoning. Grok Bot creates persistent AI teammates. Gartner warns 40% of agentic projects will fail.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 15, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-15.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-15"
+   data-search="salesforce agent deployments more than doubled writer x6 cuts costs 52% openai shake-up rattles enterprise digest market insights salesforce writer x6 openai">
+    <div class="row-datecol">
+        <span class="row-date">Aug 15, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Salesforce: Agent Deployments More Than Doubled, Writer X6 Cuts Costs 52%, OpenAI Shake-Up Rattles Enterprise</h2>
+        <p class="row-summary">Salesforce: AI Agent Deployments More Than Doubled. Writer X6 cuts inference costs 52%. OpenAI leadership shake-up rattles enterprise customers.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 14, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-14.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-14"
+   data-search="ibm openai partner enterprise ai chatgpt ads go global enterprise ai faces roi reckoning digest market insights ibm openai partnership chatgpt ads roi">
+    <div class="row-datecol">
+        <span class="row-date">Aug 14, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>IBM + OpenAI Partner for Enterprise AI, ChatGPT Ads Go Global, Enterprise AI Faces ROI Reckoning</h2>
+        <p class="row-summary">IBM + OpenAI Partner for Enterprise AI. ChatGPT Ads Go Global. Enterprise AI Faces ROI Reckoning.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 13, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-13.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-13"
+   data-search="skan ai $63m context layer toggle tax grok bot goes persistent river ai $1.1b digest market insights skan ai toggle tax grok bot river ai">
+    <div class="row-datecol">
+        <span class="row-date">Aug 13, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Skan AI&#8217;s $63M &#8220;Context Layer,&#8221; The Toggle Tax, Grok Bot Goes Persistent, River AI&#8217;s $1.1B</h2>
+        <p class="row-summary">Skan AI Raises $63M for context layer. Toggle Tax emerges as productivity killer. Grok Bot goes persistent.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 12, 2026 — GEO Playbook article + Digest -->
+<a class="feed-row" href="/bow/market-insights/geo-playbook.html"
+   data-type="Best Practice" data-bow="Market Insights" data-date="2026-08-12"
+   data-search="geo playbook how to get cited by ai best practice market insights generative engine optimization schema markup entity establishment quotable claims ai visibility seo geo">
+    <div class="row-datecol">
+        <span class="row-date">Aug 12, 2026</span>
+        <span class="tag-type">Best Practice</span>
+    </div>
+    <div>
+        <h2>The GEO Playbook: How to Get Cited by AI</h2>
+        <p class="row-summary">A tactical guide to Generative Engine Optimization. Schema markup, entity establishment, quotable claims, and the techniques that get your brand mentioned by AI tools.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-08-12.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-12"
+   data-search="enterprise brain replaces ai agents salesforce deployments 3x yoy anthropic hits $30b digest market insights enterprise brain salesforce anthropic">
+    <div class="row-datecol">
+        <span class="row-date">Aug 12, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Enterprise Brain Replaces AI Agents, Salesforce: Deployments 3x YoY, Anthropic Hits $30B</h2>
+        <p class="row-summary">Enterprise Brain Replaces AI Agents. Salesforce: Agent Deployments 3x YoY. Anthropic Hits $30B Run Rate.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 11, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-11.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-11"
+   data-search="deepmind restructures for agi ai compute $702b 95% genai pilots fail digest market insights google deepmind agi compute genai pilots">
+    <div class="row-datecol">
+        <span class="row-date">Aug 11, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>DeepMind Restructures for AGI, AI Compute to $702B, 95% of GenAI Pilots Fail</h2>
+        <p class="row-summary">Google DeepMind Restructures for AGI. IDC: AI Compute to Hit $702B. 95% of GenAI Pilots Fail to scale.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 10, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-10.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-10"
+   data-search="salesforce ai agent deployments nearly tripled claude rough week google ads resets bid targets digest market insights salesforce anthropic claude google ads">
+    <div class="row-datecol">
+        <span class="row-date">Aug 10, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Salesforce: AI Agent Deployments Nearly Tripled, Claude&#8217;s Rough Week, Google Ads Resets Bid Targets</h2>
+        <p class="row-summary">Salesforce: AI Agent Deployments Nearly Tripled. Claude&#8217;s rough week rattles enterprise trust. Google Ads resets bid targets for AI era.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 9, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-08-09.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-09"
+   data-search="google deepmind restructures for agi ctm closes chatgpt attribution gap hubspot agents go autonomous digest market insights deepmind ctm hubspot agentic">
+    <div class="row-datecol">
+        <span class="row-date">Aug 9, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Google DeepMind Restructures for AGI, CTM Closes ChatGPT Attribution Gap, HubSpot Agents Go Autonomous</h2>
+        <p class="row-summary">Google DeepMind Restructures for AGI. CTM Closes ChatGPT Attribution Gap. HubSpot Agents Go Autonomous.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Aug 5, 2026 — The Human Premium article + Digest -->
+<a class="feed-row" href="/bow/messaging-positioning/human-premium.html"
+   data-type="Insight" data-bow="Messaging &amp; Positioning" data-date="2026-08-05"
+   data-search="human premium insight messaging positioning ai training product marketers company counting tokens what actually matters human creativity judgment">
+    <div class="row-datecol">
+        <span class="row-date">Aug 5, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>The Human Premium</h2>
+        <p class="row-summary">What I&#8217;ve learned from building AI training for product marketers. Companies are counting tokens while ignoring the only thing that actually matters.</p>
+        <div class="row-tags"><span class="tag-bow">Messaging &amp; Positioning</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-08-05.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-08-05"
+   data-search="microsoft $100b azure year goes multi-model adweek names ai marketing winners 90-tool stacks still broken digest market insights microsoft azure adweek cmsWire">
+    <div class="row-datecol">
+        <span class="row-date">Aug 5, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Microsoft&#8217;s $100B Azure Year Goes Multi-Model, ADWEEK Names AI Marketing Winners, 90-Tool Stacks Still Broken</h2>
+        <p class="row-summary">Azure crosses $100B with 11,000+ AI models. ADWEEK names AI marketing winners. 90-tool stacks remain broken despite AI investments.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 28, 2026 — The Data Layer Wins article + Digest -->
+<a class="feed-row" href="/bow/messaging-positioning/data-layer-wins-positioning-guide.html"
+   data-type="Insight" data-bow="Messaging &amp; Positioning,Category Vision" data-date="2026-07-28"
+   data-search="data layer wins positioning age of ai acquisitions insight messaging positioning category vision ai acquisitions enterprise data foundations agentic ai pmm playbook">
+    <div class="row-datecol">
+        <span class="row-date">Jul 28, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>The Data Layer Wins: Positioning in the Age of AI Acquisitions</h2>
+        <p class="row-summary">The AI shopping sprees at major vendors are effectively admissions that their data foundations weren&#8217;t ready for agentic AI. Here&#8217;s your PMM playbook for positioning the data advantage.</p>
+        <div class="row-tags"><span class="tag-bow">Messaging &amp; Positioning</span><span class="tag-bow">Category Vision</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-07-28.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-28"
+   data-search="72% b2b buyers vet vendors on chatgpt forbes only 1% ai-mature gr0 acquires ultimate ai digest market insights geo forbes gr0 ai frost sullivan mcp">
+    <div class="row-datecol">
+        <span class="row-date">Jul 28, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>72% of B2B Buyers Vet Vendors on ChatGPT, Forbes: Only 1% AI-Mature, GR0 Acquires Ultimate AI</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 26, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-26.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-26"
+   data-search="84% ai news is noise 72% buyers use chatgpt china first ai agent regulations digest market insights forrester cmi china ai agentic email">
+    <div class="row-datecol">
+        <span class="row-date">Jul 26, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>84% of AI News is Noise, 72% of Buyers Use ChatGPT, China&#8217;s First AI Agent Regulations</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 23, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-23.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-23"
+   data-search="cmo council exposes martech gap openai launches presence $234b at risk from agents digest market insights cmo council openai gartner screendragon sap">
+    <div class="row-datecol">
+        <span class="row-date">Jul 23, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>CMO Council Exposes Martech Gap, OpenAI Launches &#8216;Presence,&#8217; $234B at Risk from Agents</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 21, 2026 — Third Commercial Transformation article + Digest -->
+<a class="feed-row" href="/bow/category-vision/third-commercial-transformation.html"
+   data-type="Insight" data-bow="Category Vision" data-date="2026-07-21"
+   data-search="third commercial transformation insight category vision enterprise software transformation agentic era pricing packaging go-to-market">
+    <div class="row-datecol">
+        <span class="row-date">Jul 21, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>The Third Commercial Transformation</h2>
+        <p class="row-summary">Enterprise software is in its third major transformation. The agentic era challenges everything we know about pricing, packaging, and go-to-market strategy.</p>
+        <div class="row-tags"><span class="tag-bow">Category Vision</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-07-21.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-21"
+   data-search="databricks hits $188b ex-microsoft leaders bet $1m ai can replace ceos fight for intelligence digest market insights databricks skyfall ai enterprise ai">
+    <div class="row-datecol">
+        <span class="row-date">Jul 21, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Databricks Hits $188B, Ex-Microsoft Leaders Bet $1M AI Can Replace CEOs, The Fight for Intelligence</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 19, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-19.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-19"
+   data-search="gemini notebook runs code agentforce hits wall ai ads hit $32b digest market insights google salesforce emarketer deepseek ai search">
+    <div class="row-datecol">
+        <span class="row-date">Jul 19, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Gemini Notebook Runs Code, Agentforce Hits Wall, AI Ads Hit $32B</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 17, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-17.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-17"
+   data-search="enterprise ai belongs to systems that can act formal strategies triple impact 75% marketers now use ai digest market insights forbes info-tech sprinklr salesforce">
+    <div class="row-datecol">
+        <span class="row-date">Jul 17, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Enterprise AI Belongs to Systems That Can Act, Formal Strategies Triple Impact, 75% of Marketers Now Use AI</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 14, 2026 — From Keywords to Entities article + Digest -->
+<a class="feed-row" href="/bow/messaging-positioning/from-keywords-to-entities.html"
+   data-type="Best Practice" data-bow="Messaging &amp; Positioning,Market Insights" data-date="2026-07-14"
+   data-search="from keywords to entities seo to geo shift best practice messaging positioning market insights entity recognition b2b marketers geo generative engine optimization">
+    <div class="row-datecol">
+        <span class="row-date">Jul 14, 2026</span>
+        <span class="tag-type">Best Practice</span>
+    </div>
+    <div>
+        <h2>From Keywords to Entities: The SEO to GEO Shift</h2>
+        <p class="row-summary">Why traditional SEO isn&#8217;t enough anymore. The fundamental shift from keyword optimization to entity recognition &mdash; and what it means for B2B marketers building AI-era positioning.</p>
+        <div class="row-tags"><span class="tag-bow">Messaging &amp; Positioning</span><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-07-14.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-14"
+   data-search="gpt-5.6 drops in three tiers starbucks ditches enterprise software ai sdr workflows cut costs 38% digest market insights openai starbucks salesforce deloitte">
+    <div class="row-datecol">
+        <span class="row-date">Jul 14, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>GPT-5.6 Drops in Three Tiers, Starbucks Ditches Enterprise Software, AI SDR Workflows Cut Costs 38%</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 12, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-12.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-12"
+   data-search="salesforce bets $1b on swiss ai adobe first-party dsp marketing cloud next demands t-shaped talent digest market insights salesforce adobe marketing cloud enterprise ai">
+    <div class="row-datecol">
+        <span class="row-date">Jul 12, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Salesforce Bets $1B on Swiss AI, Adobe&#8217;s First-Party DSP, Marketing Cloud Next Demands T-Shaped Talent</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 10, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-10.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-10"
+   data-search="24% saas won't survive ai accenture edge targets mid-market ai search demands new playbook digest market insights alixpartners accenture ai search openai martech">
+    <div class="row-datecol">
+        <span class="row-date">Jul 10, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>24% of SaaS Won&#8217;t Survive AI, Accenture Edge Targets Mid-Market, AI Search Demands New Playbook</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 7, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-07.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-07"
+   data-search="cloudflare blocks ai crawlers by default klaviyo deploys coordinated agents only 8% cmos run multi-agent campaigns digest market insights cloudflare klaviyo bcg genai adoption">
+    <div class="row-datecol">
+        <span class="row-date">Jul 7, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Cloudflare Blocks AI Crawlers by Default, Klaviyo Deploys Coordinated Agents, Only 8% of CMOs Run Multi-Agent Campaigns</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 4, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-04.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-04"
+   data-search="microsoft $2.5b frontier bet gong goes deep on mcp enterprise ai shapes consumer habits digest market insights microsoft gong mcp forbes ai 50">
+    <div class="row-datecol">
+        <span class="row-date">Jul 4, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Microsoft&#8217;s $2.5B Frontier Bet, Gong Goes Deep on MCP, Enterprise AI Shapes Consumer Habits</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 2, 2026 — Digest -->
+<a class="feed-row" href="/digests/2026-07-02.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-02"
+   data-search="gartner $234b at risk from agentic ai citelens launches geo platform canva goes full marketing automation digest market insights gartner agentic ai citelens canva geo">
+    <div class="row-datecol">
+        <span class="row-date">Jul 2, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>Gartner: $234B at Risk from Agentic AI, CiteLens Launches GEO Platform, Canva Goes Full Marketing Automation</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jul 1, 2026 — Where Do You Sit + Digest -->
+<a class="feed-row" href="/bow/personas/where-do-you-sit-article.html"
+   data-type="Insight" data-bow="Personas" data-date="2026-07-01"
+   data-search="where do you sit eight ways pmms integrate ai insight personas cognitive sovereignty helen edwards ai integration pmm archetypes">
+    <div class="row-datecol">
+        <span class="row-date">Jul 1, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>Where Do You Sit? Eight Ways PMMs Integrate AI</h2>
+        <p class="row-summary">Eight ways product marketers integrate AI into their cognition &mdash; and why the deepest users aren&#8217;t the ones losing themselves. Based on Helen Edwards&#8217; Cognitive Sovereignty research.</p>
+        <div class="row-tags"><span class="tag-bow">Personas</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<a class="feed-row" href="/digests/2026-07-01.html"
+   data-type="Digest" data-bow="Market Insights" data-date="2026-07-01"
+   data-search="openai previews gpt-5.6 sol pwc reveals 40% ai productivity gap chinese ai closes in digest market insights openai pwc gpt-5.6 amperity ai startups">
+    <div class="row-datecol">
+        <span class="row-date">Jul 1, 2026</span>
+        <span class="tag-type">Digest</span>
+    </div>
+    <div>
+        <h2>OpenAI Previews GPT-5.6 Sol, PwC Reveals 40% AI Productivity Gap, Chinese AI Closes In</h2>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jun 20, 2026 — Pragmatic Framework AI -->
+<a class="feed-row" href="/bow/category-vision/pragmatic-framework-ai.html"
+   data-type="Insight" data-bow="Category Vision,Marketing Planning" data-date="2026-06-20"
+   data-search="ai impact pragmatic framework 37 boxes insight category vision marketing planning pragmatic institute product lifecycle ai replacement probability">
+    <div class="row-datecol">
+        <span class="row-date">Jun 20, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>AI Impact on Pragmatic Framework&#8217;s 37 Boxes</h2>
+        <p class="row-summary">Every activity in Pragmatic Institute&#8217;s product lifecycle framework &mdash; evaluated for AI replacement probability with tool recommendations and real-world evidence.</p>
+        <div class="row-tags"><span class="tag-bow">Category Vision</span><span class="tag-bow">Marketing Planning</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jun 15, 2026 — Joule Inbox Triage -->
+<a class="feed-row" href="/bow/launch-narrative/joule-inbox-triage-skill.html"
+   data-type="Best Practice" data-bow="GTM Readiness" data-date="2026-06-15"
+   data-search="triaging inbox with joule desktop best practice gtm readiness joule desktop skill email classification draft replies sap ai">
+    <div class="row-datecol">
+        <span class="row-date">Jun 15, 2026</span>
+        <span class="tag-type">Best Practice</span>
+    </div>
+    <div>
+        <h2>I&#8217;m Triaging My Inbox with Joule Desktop</h2>
+        <p class="row-summary">How we built a custom Joule Desktop skill to classify emails, surface what&#8217;s urgent, and generate draft replies &mdash; without engineering support or infrastructure.</p>
+        <div class="row-tags"><span class="tag-bow">GTM Readiness</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Jun 10, 2026 — Evertune Vendor Spotlight -->
+<a class="feed-row" href="/bow/community/vendor-of-the-week-evertune.html"
+   data-type="Community Story" data-bow="Market Insights,GTM Readiness" data-date="2026-06-10"
+   data-search="evertune trade desk vets building bloomberg terminal for ai search community story market insights gtm readiness brian stempeck geo ai search channel vendor">
+    <div class="row-datecol">
+        <span class="row-date">Jun 10, 2026</span>
+        <span class="tag-type">Community Story</span>
+    </div>
+    <div>
+        <h2>Evertune: The Trade Desk Vets Building the Bloomberg Terminal for AI Search</h2>
+        <p class="row-summary">Brian Stempeck scaled a $50B adtech company. Now he&#8217;s betting GEO will become the most important channel no PMM is thinking about yet.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span><span class="tag-bow">GTM Readiness</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- May 28, 2026 — Why Stories Still Win -->
+<a class="feed-row" href="/bow/messaging-positioning/why-stories-still-win.html"
+   data-type="Insight" data-bow="Messaging &amp; Positioning,Launch Narrative" data-date="2026-05-28"
+   data-search="why stories still win insight messaging positioning launch narrative narrative enduring power ai agents thought leadership storytelling">
+    <div class="row-datecol">
+        <span class="row-date">May 28, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>Why Stories Still Win</h2>
+        <p class="row-summary">On the enduring power of narrative &mdash; and why it matters more than ever in the age of AI agents. The counterintuitive case for doubling down on story.</p>
+        <div class="row-tags"><span class="tag-bow">Messaging &amp; Positioning</span><span class="tag-bow">Launch Narrative</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- May 20, 2026 — The Full-Stack Buyer -->
+<a class="feed-row" href="/bow/personas/deep-dive-full-stack-buyer.html"
+   data-type="Insight" data-bow="Personas,Category Vision" data-date="2026-05-20"
+   data-search="full-stack buyer from erp to ai checkout insight personas category vision buyers erp ai agents checkout enterprise software collapse">
+    <div class="row-datecol">
+        <span class="row-date">May 20, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>The Full-Stack Buyer: From ERP to AI Checkout</h2>
+        <p class="row-summary">For 20 years, marketing, sales, and ERP operated separately. That separation is collapsing. Here&#8217;s how AI agents are connecting the full stack.</p>
+        <div class="row-tags"><span class="tag-bow">Personas</span><span class="tag-bow">Category Vision</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- May 12, 2026 — Competitive Battlecards Guide -->
+<a class="feed-row" href="/bow/market-insights/competitive-battlecards-guide.html"
+   data-type="Best Practice" data-bow="Market Insights,GTM Readiness" data-date="2026-05-12"
+   data-search="how to build competitive battlecards that actually win deals best practice market insights gtm readiness battlecards win deals application data cloud competitive intelligence">
+    <div class="row-datecol">
+        <span class="row-date">May 12, 2026</span>
+        <span class="tag-type">Best Practice</span>
+    </div>
+    <div>
+        <h2>How to Build Competitive Battlecards That Actually Win Deals</h2>
+        <p class="row-summary">A practical guide for product marketers on building effective competitive battlecards, with real-world examples from the Application Data Cloud wars.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span><span class="tag-bow">GTM Readiness</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- May 5, 2026 — Klue Vendor Spotlight -->
+<a class="feed-row" href="/bow/community/vendor-of-the-week-klue.html"
+   data-type="Community Story" data-bow="Market Insights,GTM Readiness" data-date="2026-05-05"
+   data-search="klue competitive intelligence platform that wants to kill your spreadsheet community story market insights gtm readiness jason smith compete agent competitive battlecard">
+    <div class="row-datecol">
+        <span class="row-date">May 5, 2026</span>
+        <span class="tag-type">Community Story</span>
+    </div>
+    <div>
+        <h2>Klue: The Competitive Intelligence Platform That Wants to Kill Your Spreadsheet</h2>
+        <p class="row-summary">Jason Smith spent 15 years watching enterprise sales teams lose winnable deals because nobody could find the battlecard. Now his AI-powered Compete Agent delivers intel before reps even ask.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span><span class="tag-bow">GTM Readiness</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Apr 15, 2026 — ChatGPT vs Claude on Competitive Analysis -->
+<a class="feed-row" href="/bow/market-insights/battlecard-ai-showdown.html"
+   data-type="Insight" data-bow="Market Insights" data-date="2026-04-15"
+   data-search="i compared chatgpt and claude on competitive analysis insight market insights chatgpt claude battlecard competitive intelligence same prompt different results">
+    <div class="row-datecol">
+        <span class="row-date">Apr 15, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>I Compared ChatGPT and Claude on Competitive Analysis</h2>
+        <p class="row-summary">Same prompt, dramatically different results. I asked both AI assistants to build a competitive battlecard. The outputs reveal two completely different philosophies.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Apr 5, 2026 — Demo Stack Guide -->
+<a class="feed-row" href="/bow/gtm-readiness/demo-stack-guide.html"
+   data-type="Best Practice" data-bow="GTM Readiness,Demo" data-date="2026-04-05"
+   data-search="demo stack pmm guide to demo automation tools best practice gtm readiness demo demostack reprise supademo arcade demo automation platforms evaluation">
+    <div class="row-datecol">
+        <span class="row-date">Apr 5, 2026</span>
+        <span class="tag-type">Best Practice</span>
+    </div>
+    <div>
+        <h2>The Demo Stack: A PMM&#8217;s Guide to Demo Automation Tools</h2>
+        <p class="row-summary">A deep evaluation of demo automation platforms for enterprise PMMs &mdash; from Demostack and Reprise to Supademo and Arcade. What to use, when, and why.</p>
+        <div class="row-tags"><span class="tag-bow">GTM Readiness</span><span class="tag-bow">Demo</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Mar 25, 2026 — Five Ways Curriculum Prepared You -->
+<a class="feed-row" href="/bow/launch-narrative/five-ways-ready-for-agentic.html"
+   data-type="Insight" data-bow="GTM Readiness" data-date="2026-03-25"
+   data-search="five ways this curriculum prepared you for whats coming insight gtm readiness gartner agentic ai 2028 curriculum learning ahead of curve">
+    <div class="row-datecol">
+        <span class="row-date">Mar 25, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>Five Ways This Curriculum Prepared You for What&#8217;s Coming</h2>
+        <p class="row-summary">Gartner says 33% of enterprise software will include agentic AI by 2028. Here&#8217;s why you&#8217;re already ahead of the curve.</p>
+        <div class="row-tags"><span class="tag-bow">GTM Readiness</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Mar 20, 2026 — Month of AI + PMM Stories -->
+<a class="feed-row" href="/bow/customer-journey-content/month-of-ai-pmm-stories.html"
+   data-type="Insight" data-bow="Market Insights,Marketing Planning" data-date="2026-03-20"
+   data-search="i read every ai pmm story for a month heres whats actually coming insight market insights marketing planning 35 editions 180 articles buyers agents thought leadership 6%">
+    <div class="row-datecol">
+        <span class="row-date">Mar 20, 2026</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>I Read Every AI + PMM Story for a Month. Here&#8217;s What&#8217;s Actually Coming.</h2>
+        <p class="row-summary">After 35 editions and 180 articles, the pattern is unmistakable: buyers are becoming agents, thought leadership is dead, and only 6% of marketers are ready.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span><span class="tag-bow">Marketing Planning</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Mar 15, 2026 — Tiled Vendor Spotlight -->
+<a class="feed-row" href="/bow/community/vendor-of-the-week-tiled.html"
+   data-type="Community Story" data-bow="Community" data-date="2026-03-15"
+   data-search="vendor of the week tiled when design becomes a learning advantage community story community tiled microapp platform curriculum immersive learning a/b test">
+    <div class="row-datecol">
+        <span class="row-date">Mar 15, 2026</span>
+        <span class="tag-type">Community Story</span>
+    </div>
+    <div>
+        <h2>Vendor of the Week: Tiled &mdash; When Design Becomes a Learning Advantage</h2>
+        <p class="row-summary">How Tiled&#8217;s microapp platform is transforming the Future of PMM curriculum into an immersive learning experience &mdash; and why we&#8217;re A/B testing to prove it works.</p>
+        <div class="row-tags"><span class="tag-bow">Community</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+<!-- Mar 11, 2025 — Three Things About Knowledge Graphs -->
+<a class="feed-row" href="/ai-tools/articles/three-things-knowledge-graphs/"
+   data-type="Insight" data-bow="Market Insights" data-date="2025-03-11"
+   data-search="three things to know about knowledge graphs insight market insights knowledge graph relationships sap ekx joule machine-interpretable context-aware ai">
+    <div class="row-datecol">
+        <span class="row-date">Mar 11, 2025</span>
+        <span class="tag-type">Insight</span>
+    </div>
+    <div>
+        <h2>Three Things To Know About Knowledge Graphs</h2>
+        <p class="row-summary">Knowledge graphs turn relationships into machine-interpretable knowledge &mdash; the foundation behind SAP&#8217;s context-aware AI, from EKX to Joule.</p>
+        <div class="row-tags"><span class="tag-bow">Market Insights</span></div>
+    </div>
+    <span class="row-cta">Read &rarr;</span>
+</a>
+
+        </div><!-- /feed-list -->
+
+        <div id="feed-empty">
+            <p>No results match your search. <button class="btn-reset" type="button" id="btn-reset">Clear all filters</button></p>
+        </div>
+
+        <div class="archive-link">
+            Looking for older digests? <a href="/digests/index.html">View the full digest archive</a> &mdash; 100+ digests from January 2026.
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================
+     FOOTER
+     ==================================================== -->
+<footer>
+    <p>&#169; 2026 SAP SE. All rights reserved.</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+(function () {
+    var rows = [].slice.call(document.querySelectorAll('.feed-row'));
+    var searchEl = document.getElementById('pulse-search');
+    var clearBtn = document.getElementById('search-clear');
+    var bowSel   = document.getElementById('filter-bow');
+    var typeSel  = document.getElementById('filter-type');
+    var clearAll = document.getElementById('btn-clear-all');
+    var resetBtn = document.getElementById('btn-reset');
+    var countEl  = document.getElementById('result-count');
+    var emptyEl  = document.getElementById('feed-empty');
+
+    function apply() {
+        var q    = searchEl.value.toLowerCase().trim();
+        var bow  = bowSel.value;
+        var type = typeSel.value;
+        clearBtn.style.display = q ? '' : 'none';
+        var n = 0;
+        rows.forEach(function (r) {
+            var ok = (!q    || r.dataset.search.indexOf(q) !== -1)
+                  && (!bow  || r.dataset.bow.indexOf(bow) !== -1)
+                  && (!type || r.dataset.type === type);
+            r.style.display = ok ? '' : 'none';
+            if (ok) n++;
+        });
+        countEl.textContent = n + (n === 1 ? ' article' : ' articles');
+        emptyEl.style.display = n > 0 ? 'none' : 'block';
+    }
+
+    searchEl.addEventListener('input', apply);
+    clearBtn.addEventListener('click', function () { searchEl.value = ''; apply(); searchEl.focus(); });
+    bowSel.addEventListener('change', apply);
+    typeSel.addEventListener('change', apply);
+    clearAll.addEventListener('click', function () { searchEl.value = ''; bowSel.value = ''; typeSel.value = ''; apply(); });
+    if (resetBtn) resetBtn.addEventListener('click', function () { searchEl.value = ''; bowSel.value = ''; typeSel.value = ''; apply(); });
+
+    apply();
+}());
+</script>
+</body>
+</html>

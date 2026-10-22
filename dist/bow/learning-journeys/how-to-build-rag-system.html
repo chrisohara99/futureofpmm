@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Build a Personal RAG System: A Weekend Project | NextGen PMM</title>
+    <meta name="description" content="A step-by-step guide to building your own local, private context engine using Ollama, FAISS, and Python. No cloud APIs required.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/learning-journeys/">Learning Journeys</a>
+            </div>
+            <h1>How to Build a Personal RAG System: A Weekend Project</h1>
+            <div class="article-meta">Learning Journeys</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <h1>How to Build a Personal RAG System</h1>
+            <p>A step-by-step guide to building your own local, private context engine. No cloud APIs, no monthly fees, no data leaving your machine.</p>
+        </div>
+    </div>
+    
+    <div>
+        <div>
+            <p>This guide is based on <a href="olivier-rag-brain.html">Olivier Duvelleroy's NEXUS project</a>—a personal RAG system he built in a single weekend to solve the file-limit problem with AI tools. If you haven't read that story, start there for context on why this matters.</p>
+            
+            <p>Here, we'll walk through exactly how to build your own version.</p>
+            
+            <div>
+                <h4>What You'll Need</h4>
+                <ul>
+                    <li><strong>A computer with 16GB+ RAM</strong> (the model runs locally)</li>
+                    <li><strong>~10GB free disk space</strong> (for the model and index)</li>
+                    <li><strong>Basic comfort with the terminal</strong> (you'll copy/paste commands)</li>
+                    <li><strong>Documents to index</strong> (PDFs, Word docs, text files)</li>
+                    <li><strong>2-4 hours</strong> (mostly waiting for downloads)</li>
+                </ul>
+            </div>
+            
+            <h2>The Architecture</h2>
+            
+            <p>Before we start, let's understand what we're building:</p>
+            
+            <div>
+                <pre>
+┌─────────────────────────────────────────────────────────────┐
+│                      YOUR DOCUMENTS                         │
+│            (PDFs, Word docs, text files, etc.)              │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    CHUNKING & EMBEDDING                     │
+│         Split into paragraphs → Convert to vectors          │
+│              (sentence-transformers library)                │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     FAISS VECTOR INDEX                      │
+│       Fast similarity search across all your chunks         │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+              ┌───────────┴───────────┐
+              │                       │
+              ▼                       ▼
+┌─────────────────────┐   ┌───────────────────────────────────┐
+│    YOUR QUESTION    │   │         RETRIEVED CHUNKS          │
+│                     │──▶│    (Top 5-10 most relevant)       │
+└─────────────────────┘   └───────────────────┬───────────────┘
+                                              │
+                                              ▼
+                          ┌───────────────────────────────────┐
+                          │         LOCAL LLM (Ollama)        │
+                          │   Question + Context → Answer     │
+                          │           (Qwen3:8b)              │
+                          └───────────────────────────────────┘
+                </pre>
+                <p>NEXUS Architecture: Index once, query instantly</p>
+            </div>
+            
+            <p>The key insight: <strong>retrieval is fast</strong> (a few seconds), while <strong>generation is slower</strong> (1-2 minutes on local hardware). This is fine because you're trading speed for privacy and unlimited context.</p>
+            
+            <h2>Step 1: Install Ollama <span>~10 min</span></h2>
+            
+            <div>
+                <div>
+                    <p>Ollama is a local AI runtime that makes it dead simple to run open-source models. Think of it as "Docker for LLMs."</p>
+                    
+                    <p><strong>On Mac or Linux:</strong></p>
+                    <div>curl -fsSL https://ollama.com/install.sh | sh</div>
+                    
+                    <p><strong>On Windows:</strong> Download from <a href="https://ollama.com/download" target="_blank">ollama.com/download</a></p>
+                    
+                    <p>Verify it's working:</p>
+                    <div>ollama --version</div>
+                </div>
+            </div>
+            
+            <h2>Step 2: Pull a Model <span>~20 min</span></h2>
+            
+            <div>
+                <div>
+                    <p>We'll use Qwen3:8b—a capable model that runs well on consumer hardware. It's 4-bit quantized, meaning it's compressed to use less memory while maintaining quality.</p>
+                    
+                    <div>ollama pull qwen3:8b</div>
+                    
+                    <p>This downloads about 5GB. Go grab coffee.</p>
+                    
+                    <p>Test it:</p>
+                    <div>ollama run qwen3:8b "What is RAG in AI?"</div>
+                    
+                    <p>You should see a response about Retrieval-Augmented Generation. If your fan starts spinning, that's normal—your CPU is doing the work.</p>
+                </div>
+            </div>
+            
+            <div>
+                <h4>⚠️ Performance Note</h4>
+                <p>Local inference is slower than cloud APIs. Expect 1-2 minutes per response on a typical laptop. This is the tradeoff for privacy and no API costs. If you need speed, you can swap in a cloud API later.</p>
+            </div>
+            
+            <h2>Step 3: Set Up Python Environment <span>~15 min</span></h2>
+            
+            <div>
+                <div>
+                    <p>Create a clean Python environment for the project:</p>
+                    
+                    <div># Create project directory
+mkdir nexus && cd nexus
+
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+source venv/bin/activate  # Mac/Linux
+# or: venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install langchain langchain-community sentence-transformers faiss-cpu pypdf python-docx</div>
+                    
+                    <p>What we're installing:</p>
+                    <ul>
+                        <li><strong>langchain:</strong> Orchestration framework for LLM pipelines</li>
+                        <li><strong>sentence-transformers:</strong> Creates embeddings from text</li>
+                        <li><strong>faiss-cpu:</strong> Facebook's vector similarity search</li>
+                        <li><strong>pypdf, python-docx:</strong> Document parsers</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2>Step 4: Create the Indexing Script <span>~30 min</span></h2>
+            
+            <div>
+                <div>
+                    <p>This script reads your documents, splits them into chunks, creates embeddings, and stores them in a FAISS index.</p>
+                    
+                    <p>Create <span>index_documents.py</span>:</p>
+                    
+                    <div>import os
+from pathlib import Path
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+
+# Configuration
+DOCS_PATH = "./documents"  # Put your docs here
+INDEX_PATH = "./faiss_index"
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
+
+def load_documents(docs_path):
+    """Load all documents from the specified directory."""
+    documents = []
+    
+    for file_path in Path(docs_path).rglob("*"):
+        if file_path.suffix.lower() == ".pdf":
+            loader = PyPDFLoader(str(file_path))
+        elif file_path.suffix.lower() in [".docx", ".doc"]:
+            loader = Docx2txtLoader(str(file_path))
+        elif file_path.suffix.lower() in [".txt", ".md"]:
+            loader = TextLoader(str(file_path))
+        else:
+            continue
+            
+        try:
+            documents.extend(loader.load())
+            print(f"Loaded: {file_path.name}")
+        except Exception as e:
+            print(f"Error loading {file_path.name}: {e}")
+    
+    return documents
+
+def main():
+    print("Loading documents...")
+    documents = load_documents(DOCS_PATH)
+    print(f"Loaded {len(documents)} document pages")
+    
+    print("Splitting into chunks...")
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        separators=["\n\n", "\n", " ", ""]
+    )
+    chunks = text_splitter.split_documents(documents)
+    print(f"Created {len(chunks)} chunks")
+    
+    print("Creating embeddings (this takes a while)...")
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+    
+    print("Building FAISS index...")
+    vectorstore = FAISS.from_documents(chunks, embeddings)
+    
+    print(f"Saving index to {INDEX_PATH}...")
+    vectorstore.save_local(INDEX_PATH)
+    
+    print("Done! Index ready for queries.")
+
+if __name__ == "__main__":
+    main()</div>
+                </div>
+            </div>
+            
+            <h2>Step 5: Create the Query Script <span>~30 min</span></h2>
+            
+            <div>
+                <div>
+                    <p>This script loads the index, retrieves relevant chunks for your question, and sends them to the local LLM.</p>
+                    
+                    <p>Create <span>query.py</span>:</p>
+                    
+                    <div>import sys
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.llms import Ollama
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
+
+INDEX_PATH = "./faiss_index"
+MODEL_NAME = "qwen3:8b"
+TOP_K = 5  # Number of chunks to retrieve
+
+PROMPT_TEMPLATE = """Use the following context to answer the question. 
+If you cannot answer based on the context, say so. 
+Always cite which documents support your answer.
+
+Context:
+{context}
+
+Question: {question}
+
+Answer:"""
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python query.py 'Your question here'")
+        sys.exit(1)
+    
+    question = " ".join(sys.argv[1:])
+    
+    print("Loading index...")
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+    vectorstore = FAISS.load_local(
+        INDEX_PATH, embeddings, allow_dangerous_deserialization=True
+    )
+    
+    print("Connecting to Ollama...")
+    llm = Ollama(model=MODEL_NAME, temperature=0.1)
+    
+    prompt = PromptTemplate(
+        template=PROMPT_TEMPLATE,
+        input_variables=["context", "question"]
+    )
+    
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=vectorstore.as_retriever(search_kwargs={"k": TOP_K}),
+        chain_type_kwargs={"prompt": prompt},
+        return_source_documents=True
+    )
+    
+    print(f"\nQuestion: {question}\n")
+    print("Thinking... (this takes 1-2 minutes)\n")
+    
+    result = qa_chain({"query": question})
+    
+    print("=" * 60)
+    print("ANSWER:")
+    print("=" * 60)
+    print(result["result"])
+    
+    print("\n" + "=" * 60)
+    print("SOURCES:")
+    print("=" * 60)
+    for doc in result["source_documents"]:
+        source = doc.metadata.get("source", "Unknown")
+        print(f"- {source}")
+
+if __name__ == "__main__":
+    main()</div>
+                </div>
+            </div>
+            
+            <h2>Step 6: Index Your Documents</h2>
+            
+            <div>
+                <div>
+                    <p>Create a <span>documents</span> folder and add your files:</p>
+                    
+                    <div>mkdir documents
+# Copy your PDFs, Word docs, and text files here</div>
+                    
+                    <p>Run the indexing script:</p>
+                    
+                    <div>python index_documents.py</div>
+                    
+                    <p>This will take a while depending on how many documents you have. For 100 documents, expect 10-20 minutes.</p>
+                </div>
+            </div>
+            
+            <div>
+                <h4>✓ Checkpoint</h4>
+                <p>You should now have a <code>faiss_index</code> folder containing your vectorized knowledge base. This only needs to be rebuilt when you add new documents.</p>
+            </div>
+            
+            <h2>Step 7: Query Your Knowledge Base</h2>
+            
+            <div>
+                <div>
+                    <p>Now the fun part. Ask questions:</p>
+                    
+                    <div>python query.py "What did customers say about pricing in our research?"
+
+python query.py "Summarize the main themes from the Gartner reports"
+
+python query.py "Find quotes about AI adoption challenges"</div>
+                    
+                    <p>The system will:</p>
+                    <ol>
+                        <li>Convert your question to an embedding (instant)</li>
+                        <li>Find the 5 most relevant chunks (instant)</li>
+                        <li>Send question + context to the local LLM (1-2 min)</li>
+                        <li>Return a grounded answer with sources</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <h3>Real Example: What NEXUS Actually Outputs</h3>
+            
+            <p>Here's a real example from Olivier's system. He asked NEXUS to find relevant quotes for each chapter of a book he's writing about the "context problem" in enterprise data:</p>
+            
+            <div>
+                <p>Part 6 — Context problem</p>
+                <p>Data exists, but meaning is lost across systems</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chapter</th>
+                            <th>Expanded quote</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Setup</td>
+                            <td>"If a user is spending their time in Outlook or in CRM, how do you take that insight and make sure it gets to them in that application? Otherwise, it just stays disconnected from action."</td>
+                            <td>Qual Transcript 2</td>
+                        </tr>
+                        <tr>
+                            <td>Exploration</td>
+                            <td>"All these tools have siloed, contextual metadata. A lot of the understanding sits in one person's head. When they leave or switch roles, that context disappears."</td>
+                            <td>Qual Transcript 1</td>
+                        </tr>
+                        <tr>
+                            <td>Practical</td>
+                            <td>"We are very clear that Confluence is the source for documentation. If you want to understand definitions or logic, there is one place to go. That consistency matters when people start self-serving."</td>
+                            <td>Qual Transcript 5</td>
+                        </tr>
+                        <tr>
+                            <td>Synthesis</td>
+                            <td>"AI models don't understand business rules or why decisions were made. Without decision memory and context, agents will act quickly but incorrectly."</td>
+                            <td>Qual Transcript 5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <p><strong>This is the magic:</strong> In 30 seconds, NEXUS retrieved the most relevant quotes from 40+ interview transcripts, matched them to book chapters, and cited the exact source. No manual searching. No missed documents.</p>
+            
+            <h2>What's Next</h2>
+            
+            <p>This is a working foundation. Here's how to extend it:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Improvement</th>
+                        <th>Difficulty</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Add a simple web UI (Gradio/Streamlit)</td>
+                        <td>Easy</td>
+                        <td>Much better UX</td>
+                    </tr>
+                    <tr>
+                        <td>Swap in GPT-4 for faster inference</td>
+                        <td>Easy</td>
+                        <td>10x faster responses</td>
+                    </tr>
+                    <tr>
+                        <td>Add incremental indexing</td>
+                        <td>Medium</td>
+                        <td>Faster updates</td>
+                    </tr>
+                    <tr>
+                        <td>Support images/diagrams (vision model)</td>
+                        <td>Hard</td>
+                        <td>Much richer context</td>
+                    </tr>
+                    <tr>
+                        <td>Add memory across sessions</td>
+                        <td>Medium</td>
+                        <td>Conversational queries</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>The Hybrid Future</h2>
+            
+            <p>Olivier's insight: this doesn't have to be all-local forever. The architecture supports a <strong>hybrid approach</strong>:</p>
+            
+            <ul>
+                <li><strong>Local retrieval</strong> for governance (your documents never leave your machine)</li>
+                <li><strong>Optional cloud inference</strong> for speed/quality when content is non-sensitive</li>
+            </ul>
+            
+            <p>You control the tradeoff. That's the point.</p>
+            
+            <div>
+                <p>"At no time should we be afraid of diving into the details these days. AI tools can guide you through implementation; you are mostly limited by your curiosity, creativity, and intent."</p>
+                <p>— Olivier Duvelleroy</p>
+            </div>
+            
+            <p>You now have your own context engine. What will you ask it?</p>
+        </div>
+    </div>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

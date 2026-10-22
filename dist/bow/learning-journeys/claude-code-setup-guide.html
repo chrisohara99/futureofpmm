@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started with Claude Code at SAP | NextGen PMM</title>
+    <meta name="description" content="A step-by-step guide to installing and using Claude Code at SAP. Part of the CE³ Agentic AI Enablement program.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/learning-journeys/">Learning Journeys</a>
+            </div>
+            <h1>Getting Started with Claude Code at SAP</h1>
+            <div class="article-meta">Learning Journeys</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <div>
+            <p><strong>What is this?</strong> SAP's CE³ team has released the <strong>Claude Code Automated Installer Bundle</strong> — a one-click setup that installs Claude Code and Cline on your machine. This is part of SAP's broader Agentic AI Enablement program, designed to help everyone from business innovators to engineers work faster with AI.</p>
+        </div>
+        
+        <h2>Who Is This For?</h2>
+        
+        <p>The installer works for three personas — no matter your technical background:</p>
+        
+        <div>
+            <div>
+                <span>Business AI Innovator</span>
+                <h4>Process & Product Leaders</h4>
+                <p>Define value, shape MVPs. You don't code — but you can use AI to build decks, analyze feedback, draft proposals, and summarize meetings.</p>
+            </div>
+            <div>
+                <span>Citizen Developer</span>
+                <h4>Domain Experts</h4>
+                <p>You know the process. Build simple automations, workflows, and dashboards without writing production code.</p>
+            </div>
+            <div>
+                <span>AI Engineer</span>
+                <h4>Builders</h4>
+                <p>Ship code daily. Use the toolchain for faster development, automated testing, migrations, and code reviews.</p>
+            </div>
+        </div>
+        
+        <h2>What Can You Do With It?</h2>
+        
+        <p>Here are real scenarios from SAP teams — showing what used to take hours or days, now takes minutes:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Before</th>
+                    <th>With AI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Build a status deck from emails, sprint data, and last week's slides</td>
+                    <td>~1.5 hours</td>
+                    <td>~10 min</td>
+                </tr>
+                <tr>
+                    <td>Analyze 3 Excel exports of customer feedback for themes</td>
+                    <td>~3 hours</td>
+                    <td>~15 min</td>
+                </tr>
+                <tr>
+                    <td>Draft an MVP proposal from strategy docs</td>
+                    <td>~1 week</td>
+                    <td>~1 day</td>
+                </tr>
+                <tr>
+                    <td>Compare 3 vendor proposals and write recommendation</td>
+                    <td>~4 hours</td>
+                    <td>~20 min</td>
+                </tr>
+                <tr>
+                    <td>Build an expense approval workflow (&gt;10K needs manager sign-off)</td>
+                    <td>~2 days</td>
+                    <td>~2 hours</td>
+                </tr>
+                <tr>
+                    <td>Set up automated Friday Slack summary of Jira sprint status</td>
+                    <td>~1 day</td>
+                    <td>~1 hour</td>
+                </tr>
+                <tr>
+                    <td>Migrate 30 CDS files from CAP v5 to v7 syntax</td>
+                    <td>~1 day</td>
+                    <td>~1 hour</td>
+                </tr>
+                <tr>
+                    <td>Review a colleague's 800-line PR across 15 files</td>
+                    <td>~2 hours</td>
+                    <td>~20 min</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div>
+            <p><strong>💡 Key insight:</strong> The pattern isn't "AI writes everything." It's: drop your files, describe what you want, review the output. You stay in control — AI handles the grunt work.</p>
+        </div>
+        
+        <h2>How to Install</h2>
+        
+        <div>
+            <div>1</div>
+            <div>
+                <h4>Access the CE³ Enablement Portal</h4>
+                <p>Go to the CE³ Agentic AI Enablement Products page (internal SAP link). Find the <strong>"Claude Code Automated Installer Bundle"</strong> card.</p>
+            </div>
+        </div>
+        
+        <div>
+            <div>2</div>
+            <div>
+                <h4>Download the Installer for Your OS</h4>
+                <p>Choose Windows or macOS. The bundle includes everything: Claude Code, Cline, and required dependencies.</p>
+            </div>
+        </div>
+        
+        <div>
+            <div>3</div>
+            <div>
+                <h4>Run the Script</h4>
+                <p><strong>Windows:</strong> Open PowerShell as Administrator, navigate to the download folder, run the installer script.</p>
+                <p><strong>macOS:</strong> Open Terminal, navigate to the download folder, run <code>chmod +x install.sh && ./install.sh</code></p>
+            </div>
+        </div>
+        
+        <div>
+            <div>4</div>
+            <div>
+                <h4>Authenticate</h4>
+                <p>Follow the prompts to sign in with your SAP credentials. This connects you to the licensed API endpoints.</p>
+            </div>
+        </div>
+        
+        <div>
+            <div>5</div>
+            <div>
+                <h4>Start Using It</h4>
+                <p>Open VS Code or your terminal. Try a simple task: "Summarize this document" or "Compare these two files."</p>
+            </div>
+        </div>
+        
+        <div>
+            <p><strong>✅ That's it.</strong> One script installs everything. No manual dependency management, no API key configuration, no waiting for IT tickets.</p>
+        </div>
+        
+        <h2>What's Coming Next</h2>
+        
+        <p>The Claude Code installer is just the first module. Here's the full CE³ Agentic AI roadmap:</p>
+        
+        <ul>
+            <li><strong>April:</strong> MCP Server Implementation Reference Guide</li>
+            <li><strong>After April:</strong> Agentic Skills Repository, Skills for Teams/Outlook data</li>
+            <li><strong>July:</strong> AI Testing Foundations for QA Professionals</li>
+            <li><strong>August:</strong> Testing Agentic Systems with Tool Chains</li>
+        </ul>
+        
+        <h2>Questions?</h2>
+        
+        <p>Check the CE³ Enablement Portal for documentation, FAQs, and support channels. The team is actively collecting feedback to improve the installer and add new capabilities.</p>
+        
+        <p><em>Last updated: April 2026</em></p>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

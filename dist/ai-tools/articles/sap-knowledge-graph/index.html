@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP's Competitive AI Advantage: The Knowledge Graph | AI Tools | NextGen PMM</title>
+    <meta name="description" content="Context-aware AI is the next step for business AI. Here's how the SAP Knowledge Graph powers Joule Work Desktop, EKX, and Joule — and what PMMs should actually use.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --sap-blue:      #0070f2;
+            --sap-blue-dark: #0054b4;
+            --sap-blue-bg:   #e8f4ff;
+            --text-primary:  #1d2d3e;
+            --text-secondary:#526069;
+            --border:        #e4e7eb;
+            --bg-light:      #f5f7fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .logo:hover { text-decoration: none; }
+        header nav { display: flex; gap: 2rem; align-items: center; }
+        header nav a { color: var(--text-secondary); font-size: 0.9rem; }
+        header nav a:hover { color: var(--text-primary); text-decoration: none; }
+        header nav a.active { color: var(--sap-blue); font-weight: 600; }
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            header nav { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        }
+
+        /* ---- Article layout ---- */
+        .article-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 5rem;
+        }
+
+        .article-breadcrumb {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .article-breadcrumb a { color: var(--sap-blue); }
+
+        .article-cat {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--sap-blue);
+            margin-bottom: 0.6rem;
+        }
+
+        .article-wrap h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .article-dek {
+            font-size: 1.08rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 0.75rem;
+            max-width: 640px;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .article-source {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .article-hero-img {
+            margin-bottom: 2.5rem;
+        }
+        .article-hero-img img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+            border: 1px solid var(--border);
+        }
+        .article-hero-img figcaption {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+            line-height: 1.55;
+        }
+
+        /* ---- Article body ---- */
+        .article-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sap-blue);
+            margin-bottom: 0.4rem;
+        }
+
+        .article-section h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.85rem;
+            line-height: 1.25;
+        }
+
+        .article-section p {
+            font-size: 0.97rem;
+            color: var(--text-primary);
+            line-height: 1.72;
+            margin-bottom: 0.8rem;
+        }
+
+        .article-section ul {
+            margin: 0.5rem 0 0.8rem 1.25rem;
+        }
+        .article-section ul li {
+            font-size: 0.97rem;
+            color: var(--text-primary);
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .callout-box {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.25rem 0;
+        }
+        .callout-box .callout-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #92400e;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+        }
+        .callout-box p {
+            font-size: 0.9rem;
+            color: #78350f;
+            line-height: 1.65;
+            margin: 0;
+        }
+        .callout-box a { color: #b45309; }
+        .callout-box a:hover { text-decoration: underline; }
+
+        .article-figure {
+            margin: 1.5rem 0 2rem;
+        }
+        .article-figure img {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: block;
+        }
+        .article-figure figcaption {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+            line-height: 1.55;
+        }
+
+        /* ---- Useful links ---- */
+        .useful-links-panel {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem 1.75rem;
+            margin: 3rem 0 1.5rem;
+        }
+        .useful-links-panel h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .useful-links-panel ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+        .useful-links-panel li {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.4rem;
+            font-size: 0.875rem;
+        }
+        .useful-links-panel a {
+            font-weight: 700;
+            color: var(--sap-blue);
+        }
+        .link-note {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* ---- Related / Back ---- */
+        .article-related {
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .article-related .related-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        .article-related a {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--sap-blue);
+        }
+        .article-back {
+            margin-bottom: 2rem;
+        }
+        .article-back a {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .article-back a:hover { color: var(--sap-blue); }
+
+        /* ---- Footer ---- */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        footer p { color: rgba(255,255,255,.55); font-size: 0.85rem; }
+
+        @media (max-width: 600px) {
+            .article-wrap h1 { font-size: 1.65rem; }
+            .article-dek { font-size: 0.97rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+<header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html" class="active">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="article-wrap">
+
+        <div class="article-back">
+            <a href="/ai-tools.html">&#8592; Back to AI Tools</a>
+        </div>
+
+        <!-- Article header -->
+        <p class="article-cat">Tools of the Trade</p>
+        <h1>SAP&#8217;s Competitive AI Advantage: The Knowledge Graph</h1>
+        <p class="article-dek">Context-aware AI is the next step for business AI. Here&#8217;s how the SAP Knowledge Graph powers Joule Work Desktop, EKX, and Joule &#8212; and what PMMs should actually use.</p>
+        <div class="article-meta">
+            <span>October 15, 2026</span>
+            <span>5 min read</span>
+        </div>
+        <p class="article-source">Adapted for Future of PMM from Stefanie Glenk&#8217;s SAP News article (Oct 15, 2026). <a href="https://news.sap.com/" target="_blank">Source</a></p>
+
+        <!-- Hero image -->
+        <figure class="article-hero-img">
+            <img src="/articles/sap-knowledge-graph-launch.png" alt="Paul Ehrhard on stage at the October 2026 SAP Knowledge Graph release, beside a diagram of the graph connecting Joule Studio, EKX, SAP Cloud ALM, Joule Work, Joule Work Spaces, and Joule Work Desktop">
+            <figcaption>Paul Ehrhard at the October 2026 SAP Knowledge Graph release &#8212; the graph as the hub connecting EKX, Joule Work Desktop, and related AI services.</figcaption>
+        </figure>
+
+        <!-- Section 1: intro -->
+        <div class="article-section">
+            <p>As AI expands across enterprise work, <strong>context-aware AI</strong> becomes the differentiator. Meaningful results require agents to understand how systems work, how processes run, which APIs matter, and how technical and business knowledge relate.</p>
+            <p>At SAP, that related knowledge is modeled in a <strong>knowledge graph</strong>. The company has now consolidated prior enterprise and business knowledge graph efforts into one <strong>SAP Knowledge Graph</strong> &#8212; a shared foundation behind Joule Work Desktop, EKX, Joule, and a growing set of SAP AI services.</p>
+            <p>Strategically, that gives SAP a unified foundation and one team behind a capability central to the company&#8217;s AI ambitions. For PMMs, the shift clarifies why EKX, Joule Work Desktop, and Joule are parts of the <strong>same story</strong>: making SAP&#8217;s AI offerings aware of the knowledge, systems, and processes that define the business.</p>
+        </div>
+
+        <!-- Section 2: Primer -->
+        <div class="article-section">
+            <p class="section-eyebrow">Primer</p>
+            <h2>What is a knowledge graph?</h2>
+            <p>A knowledge graph turns data into machine-interpretable knowledge by modeling <strong>relationships between objects</strong> as a network of connected points &#8212; not just rows in a table. That structure is what lets AI answer in business language and still stay grounded in how SAP systems actually connect.</p>
+            <ul>
+                <li><strong>Integration</strong> &#8212; connect disparate sources into one queryable view of processes, APIs, configuration, and context.</li>
+                <li><strong>Scale</strong> &#8212; graphs grow as new sources are added without forcing a rewrite of how you ask questions.</li>
+                <li><strong>Business context</strong> &#8212; semantic linking helps AI return answers humans can trust and explain.</li>
+            </ul>
+            <figure class="article-figure">
+                <img src="/articles/sap-knowledge-graph-stats.png" alt="SAP Knowledge Graph stats: more than one billion triples, 43 sources, all industries — and counting">
+                <figcaption>Scale of the SAP Knowledge Graph: &gt;1B triples across 43 sources, spanning all industries.</figcaption>
+            </figure>
+            <div class="callout-box">
+                <p class="callout-title">Why PMMs should care</p>
+                <p>Generic LLMs guess. The Knowledge Graph is SAP&#8217;s content layer for reasoning &#8212; so EKX and Joule answers can reflect real product, process, and API relationships instead of plausible fiction. New to the concept? Read the companion primer: <a href="/ai-tools/articles/three-things-knowledge-graphs/">Three Things To Know About Knowledge Graphs</a>.</p>
+            </div>
+        </div>
+
+        <!-- Section 3: One platform, three ways to work -->
+        <div class="article-section">
+            <p class="section-eyebrow">Why this matters for PMMs</p>
+            <h2>One platform, three ways to work</h2>
+            <p>How you consume the graph is less about competing tools and more about <strong>intent in the moment</strong>. Jan Portisch, head of Knowledge Graph within AI Engineering at SAP, describes it as a stack with the Knowledge Graph as the shared platform &#8212; and called this release &#8220;the largest update to date for both the SAP Knowledge Graph and EKX.&#8221;</p>
+            <ul>
+                <li><strong>EKX</strong> &#8212; web experience for knowledge exploration; creating dashboards, pages, and knowledge apps; plus technical graph work.</li>
+                <li><strong>Joule Work Desktop</strong> &#8212; everyday productivity workspace for meetings, editorial support, and general or graph-based Q&amp;A via MCP (a standard that lets AI models connect to external tools and data).</li>
+                <li><strong>Joule</strong> &#8212; transactional assistant embedded in SAP applications, using context to determine which API to call.</li>
+            </ul>
+            <div class="callout-box">
+                <p class="callout-title">PMM takeaway</p>
+                <p>Use EKX when you need SAP-accurate facts and shareable knowledge assets. Use Joule Work Desktop for day-to-day drafting and research at your desk. Use Joule when you&#8217;re already inside an SAP app and need action, not exploration.</p>
+            </div>
+        </div>
+
+        <!-- Section 4: A billion triples -->
+        <div class="article-section">
+            <p class="section-eyebrow">AI reasoning and context</p>
+            <h2>A billion triples &#8212; and a real user base</h2>
+            <p>At SAP, the Knowledge Graph is the <strong>content layer</strong> AI systems reason over. &#8220;The key differentiator of graphs is integration&#8212;and building bridges between process and technical domains, APIs, configuration, business rules, and contextual knowledge,&#8221; Jan said.</p>
+            <p>The graph connects <strong>data, apps, and agents</strong> with the underlying <strong>SAP Business AI Platform</strong> &#8212; the trusted foundation for autonomous AI.</p>
+            <figure class="article-figure">
+                <img src="/articles/sap-knowledge-graph-architecture.png" alt="Diagram of the SAP Knowledge Graph bridging Agents, Apps, and Data above with the SAP Business AI Platform below">
+                <figcaption>SAP Knowledge Graph as the bridge between Agents / Apps / Data and the SAP Business AI Platform.</figcaption>
+            </figure>
+        </div>
+
+        <!-- Section 5: Scale and user base (continued) -->
+        <div class="article-section">
+            <p>With the latest consolidation, the graph contains <strong>more than one billion reference-knowledge triples</strong> across <strong>43 sources</strong>. Fourteen new sources were added in the latest release, including the SAP API Hub, SAP Unified Metadata Service, and the SAP Signavio Company Memory.</p>
+            <p>Beyond Joule and Joule Work Desktop, services drawing on the graph for reasoning and context now include <strong>Joule Studio</strong>, <strong>SAP Cloud ALM (CALM)</strong>, <strong>Joule for Consultants (J4C)</strong>, and <strong>SAP Signavio</strong>.</p>
+            <p>EKX has grown far beyond its early pilot of ~1,500 users: <strong>80,000</strong> SAP employees have accessed it, with <strong>55,000</strong> active in the past 90 days, and about <strong>one million requests per month</strong>. Roughly <strong>10%</strong> of conversations happen on mobile.</p>
+            <p>&#8220;People create to share,&#8221; Jan noted &#8212; which drove <strong>EKX Pages</strong>: structured web experiences connected to live APIs that reflect data changes instantly.</p>
+        </div>
+
+        <!-- Section 6: Knowledge apps -->
+        <div class="article-section">
+            <p class="section-eyebrow">New for builders and marketers</p>
+            <h2>Knowledge apps and custom graphs</h2>
+            <p>The October EKX release introduced <strong>knowledge apps</strong>: reusable packages that combine graph knowledge with external APIs (GitHub, Microsoft tools, and more). Users can keep apps private, share with a group, or submit them to a marketplace that launched with about <strong>20 curated apps</strong>.</p>
+            <p>Sophia Hammes, EKX developer, framed these as a way to stop re-prompting the same recurring tasks &#8212; package instructions, context, and system connections once, then reuse.</p>
+            <p>The team also opened EKX to technical workflows after <strong>200+ requests</strong> for knowledge-aware code generation and realistic sample data for simulations.</p>
+            <p>Separately, the <strong>SAP Knowledge Graph foundation</strong> offering lets teams assemble <strong>custom graphs</strong> from selected sources on SAP BTP and expose them through APIs, chat, search, and SPARQL &#8212; useful when authorization, governance, or relevance requires a narrower slice of SAP knowledge.</p>
+        </div>
+
+        <!-- Section 7: Roadmap -->
+        <div class="article-section">
+            <p class="section-eyebrow">Roadmap</p>
+            <h2>From SAP knowledge to customer knowledge</h2>
+            <p>The current release opens the graph to more users and applications inside SAP. The 2027 direction goes further: an SAP-managed <strong>customer knowledge graph</strong> that understands not only standard SAP knowledge, but a customer&#8217;s actual environment &#8212; system versions, modified or disabled APIs, and local ontologies.</p>
+            <p>&#8220;The number-one question we get from customers is to be able to edit the context of the SAP Knowledge Graph and to reference their own data,&#8221; Jan said. The roadmap advances content, supports Joule and <strong>200+</strong> SAP applications, and builds a stronger knowledge platform for internal and external customers.</p>
+            <div class="callout-box">
+                <p class="callout-title">How to act on this in the AI Tools guide</p>
+                <p>Start with EKX for SAP-accurate competitive and product facts. Add Joule Work Desktop to your daily starter stack. Treat generic LLMs as drafting partners &#8212; not as the source of truth for SAP product, process, or API claims.</p>
+            </div>
+        </div>
+
+        <!-- Useful links -->
+        <div class="useful-links-panel">
+            <h2>Useful links</h2>
+            <ul>
+                <li><a href="https://ekx.cloud.sap/chat" target="_blank">Open EKX Chat</a> <span class="link-note">SAP sign-in</span></li>
+                <li><a href="https://search.int.sap/results#t=joule%20work%20desktop" target="_blank">Joule Work Desktop info</a> <span class="link-note">Internal search</span></li>
+                <li><a href="https://sap.sharepoint.com/sites/208497/SitePages/Joule-Work-Desktop.aspx" target="_blank">Joule Work Desktop SharePoint</a></li>
+                <li><a href="https://one.int.sap/home?joule" target="_blank">SAP One + Joule</a></li>
+                <li><a href="https://static.ekx.cloud.sap/74a9dade-a80e-478c-a282-617a922c1eed/" target="_blank">EKX October 2026 release replay</a> <span class="link-note">Shared in SAP News comments</span></li>
+            </ul>
+        </div>
+
+        <!-- Related article -->
+        <div class="article-related">
+            <p class="related-label">Related reading</p>
+            <a href="/ai-tools/articles/three-things-knowledge-graphs/">Three Things To Know About Knowledge Graphs &#8594;</a>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <p>&#169; 2026 SAP SE. All rights reserved.</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

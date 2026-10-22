@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools for Product Marketing | NextGen PMM</title>
+    <meta name="description" content="How to evaluate, test, and deploy AI tools for your product marketing team. A practical framework.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/learning-journeys/">Learning Journeys</a>
+            </div>
+            <h1>AI Tools for Product Marketing</h1>
+            <div class="article-meta">Learning Journeys</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        </section>
+
+    <article>
+        <div>
+            
+            <div>
+                <p><strong>AI tools are coming to make your job easier.</strong> This guide gives you a preview of what we're evaluating, why certain tools made the list, and what to expect when they roll out. Our goal is to get you the right tools — properly licensed and supported — so you can work smarter.</p>
+            </div>
+            
+            <div>
+                <p><strong>⚠️ Important:</strong> Please don't sign up for AI tools on your own using work information. We're actively evaluating options and will provide approved, licensed tools to the team. Using unauthorized tools creates security, compliance, and data privacy risks. This guide is about what's coming — not what to go buy today.</p>
+            </div>
+            
+            <div>
+                <h4>📑 In This Guide</h4>
+                <ul>
+                    <li><a href="#part1">What Problems Can AI Solve?</a></li>
+                    <li><a href="#part2">How We're Testing Tools</a></li>
+                    <li><a href="#part3">The Tools We're Evaluating</a></li>
+                    <li><a href="#approach">Our Evaluation & Rollout Approach</a></li>
+                    <li><a href="#pricing">Quick Reference: 2026 Pricing</a></li>
+                </ul>
+            </div>
+
+            <h2>Part 1: What Problems Can AI Actually Solve?</h2>
+            
+            <p>AI tools aren't magic — they're good at specific things. Here's where they can genuinely help with day-to-day PMM work:</p>
+            
+            <table>
+                <tr>
+                    <th>Pain Point</th>
+                    <th>AI Solution Category</th>
+                    <th>Example Tools</th>
+                </tr>
+                <tr>
+                    <td>"I spend 2+ hours on first drafts"</td>
+                    <td>Content generation</td>
+                    <td>ChatGPT, Claude, Jasper</td>
+                </tr>
+                <tr>
+                    <td>"Competitive intel is always stale"</td>
+                    <td>CI automation</td>
+                    <td>Klue, Crayon, Perplexity</td>
+                </tr>
+                <tr>
+                    <td>"Our messaging isn't consistent"</td>
+                    <td>Brand voice tools</td>
+                    <td>Writer, Jasper Brand Voice</td>
+                </tr>
+                <tr>
+                    <td>"Research synthesis takes forever"</td>
+                    <td>Analysis/summarization</td>
+                    <td>Claude, NotebookLM</td>
+                </tr>
+                <tr>
+                    <td>"Sales asks for the same content repeatedly"</td>
+                    <td>Sales enablement</td>
+                    <td>Seismic, Highspot + AI</td>
+                </tr>
+            </table>
+            
+            <div>
+                <p><strong>🚫 Red flag:</strong> If you can't articulate the specific problem, you're not ready to buy a tool.</p>
+            </div>
+            
+            <h3>Not Every Problem Needs a Fancy Tool</h3>
+            
+            <p>Sometimes a simple prompt in ChatGPT does the job. Here's how we think about it:</p>
+            
+            <div>
+                <h4>Prompt (Free/Cheap)</h4>
+                <p>Can you solve this with ChatGPT/Claude + a good prompt template?</p>
+                <ul>
+                    <li>✅ One-off tasks, variable inputs</li>
+                    <li>✅ Exploration phase</li>
+                    <li>Example: Generating messaging variations</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4>Buy (Subscription)</h4>
+                <p>Does this need specialized training, integrations, or workflow automation?</p>
+                <ul>
+                    <li>✅ Recurring high-volume tasks</li>
+                    <li>✅ Team-wide consistency needed</li>
+                    <li>✅ Integration with existing tools</li>
+                    <li>Example: Competitive intelligence monitoring</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4>Build (Custom)</h4>
+                <p>Is this so specific to your business that nothing off-the-shelf works?</p>
+                <ul>
+                    <li>✅ Proprietary data/processes</li>
+                    <li>✅ Unique compliance requirements</li>
+                    <li>Example: Custom product configurator assistant</li>
+                </ul>
+            </div>
+            
+            <h3>How We Decide What's Worth It</h3>
+            
+            <p>Before we invest in any tool, we ask:</p>
+            
+            <ol>
+                <li><strong>What does it do that ChatGPT/Claude can't?</strong><br>If the answer is "nothing much," save your money</li>
+                <li><strong>Who else on the team would use this?</strong><br>Single-user tools rarely justify the cost</li>
+                <li><strong>What's the learning curve?</strong><br>Complex tools with low adoption = wasted budget</li>
+                <li><strong>How does it integrate with our stack?</strong><br>Standalone tools create friction</li>
+                <li><strong>What's the real total cost?</strong><br>Seats, overages, training time, IT overhead</li>
+            </ol>
+
+            <h2>How We're Testing Tools</h2>
+            
+            <h3>Our Pilot Framework</h3>
+            
+            <p>Before rolling out any tool, we run structured pilots to ensure it actually delivers value. Here's our approach:</p>
+            
+            <div>
+                <h4>Week 1: Learn</h4>
+                <ul>
+                    <li>Day 1-2: Setup, basic training</li>
+                    <li>Day 3-5: Use for real tasks (not toy examples)</li>
+                    <li>Document: What works? What's frustrating?</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4>Week 2: Stress Test</h4>
+                <ul>
+                    <li>Day 6-8: Push the edge cases</li>
+                    <li>Day 9-10: Have others try it (fresh eyes)</li>
+                    <li>Document: Would you miss this if it disappeared?</li>
+                </ul>
+            </div>
+            
+            <h4>Decision Criteria</h4>
+            <ul>
+                <li>⏱️ Did it save measurable time? (Track it)</li>
+                <li>📈 Was the output quality acceptable? (Grade samples)</li>
+                <li>😤 Was the friction worth it? (Be honest)</li>
+                <li>💰 Does the ROI math work? (Do the calculation)</li>
+            </ul>
+            
+            <h3>Testing by Category</h3>
+            
+            <h4>General AI Assistants (ChatGPT, Claude, Gemini)</h4>
+            <p><strong>Test:</strong> Give all three the same complex PMM task (e.g., "Create a competitive positioning framework for [product] against [3 competitors]")</p>
+            <p><strong>Evaluate:</strong> Quality, speed, follow-up capability, context retention</p>
+            <p><strong>Timeline:</strong> 1 week of daily use</p>
+            
+            <h4>Content Generation (Jasper, Copy.ai, Writer)</h4>
+            <p><strong>Test:</strong> Generate 10 pieces of the same content type you produce regularly</p>
+            <p><strong>Evaluate:</strong> % usable without major edits, brand voice match, time saved</p>
+            <p><strong>Timeline:</strong> 2 weeks, minimum 20 outputs</p>
+            
+            <h4>Competitive Intelligence (Klue, Crayon, Kompyte)</h4>
+            <p><strong>Test:</strong> Set up monitoring for 3 key competitors</p>
+            <p><strong>Evaluate:</strong> Signal-to-noise ratio, actionability of alerts, integration with your workflow</p>
+            <p><strong>Timeline:</strong> 30 days (CI tools need time to show value)</p>
+            
+            <h4>Research/Analysis (Perplexity, NotebookLM, Elicit)</h4>
+            <p><strong>Test:</strong> Use for 5 real research tasks you'd normally do manually</p>
+            <p><strong>Evaluate:</strong> Accuracy (verify claims), source quality, time saved</p>
+            <p><strong>Timeline:</strong> 2 weeks</p>
+
+            <h2>The Tools We're Evaluating</h2>
+            
+            <h3>Tier 1: High-Priority Evaluation</h3>
+            
+            <p>These tools are at the top of our evaluation list based on potential impact for PMM workflows:</p>
+            
+            <div>
+                <div>
+                    <h4>ChatGPT Plus or Claude Pro</h4>
+                    <span>$20/month per seat</span>
+                </div>
+                <p>General-purpose AI assistant</p>
+                <p>The foundation of any PMM AI stack. These tools excel at first drafts of content, brainstorming and ideation, summarizing long documents, creating frameworks and outlines, and quick competitive research.</p>
+                <div>
+                    <p><strong>What we're evaluating:</strong> Which platform better fits our workflows, enterprise licensing options, and data privacy controls.</p>
+                </div>
+                <p><strong>When rolled out:</strong> We'll provide a shared prompt library for common PMM tasks to help everyone get value quickly.</p>
+            </div>
+            
+            <div>
+                <div>
+                    <h4>Perplexity Pro</h4>
+                    <span>$20/month per seat</span>
+                </div>
+                <p>Research with citations</p>
+                <p>Unlike ChatGPT, Perplexity is built for research — it searches the web and cites sources. Critical for competitive intelligence, market research, fact-checking claims, and finding recent news/announcements.</p>
+                <div>
+                    <p><strong>What we're evaluating:</strong> Source accuracy, enterprise features, and how it compares to dedicated CI tools.</p>
+                </div>
+                <p><strong>When rolled out:</strong> We'll set up shared Collections organized by competitor and research topic.</p>
+            </div>
+            
+            <div>
+                <div>
+                    <h4>Notion AI</h4>
+                    <span>$10/month add-on per seat</span>
+                </div>
+                <p>Documentation and collaboration</p>
+                <p>An AI add-on for Notion that can summarize meeting notes, draft PRDs and briefs, generate action items from docs, and answer questions against your knowledge base.</p>
+                <div>
+                    <p><strong>What we're evaluating:</strong> Whether this fits our workflow, integration with Microsoft Teams/365, and value vs. general AI assistants.</p>
+                </div>
+                <p><strong>When rolled out:</strong> Will be enabled team-wide if approved, with guidance on best use cases.</p>
+            </div>
+            
+            <h3>Tier 2: Specialized Tools Under Consideration</h3>
+            
+            <p>These tools address specific pain points and may be rolled out to relevant team members:</p>
+            
+            <h4>For Heavy Content Production</h4>
+            
+            <div>
+                <div>
+                    <h4>Jasper AI</h4>
+                    <span>$59-69/month</span>
+                </div>
+                <p>High-volume content with brand consistency</p>
+                <p><strong>Test:</strong> Generate 20 pieces, measure edit time vs. from-scratch</p>
+                <p><strong>Worth it if:</strong> You produce 10+ content pieces/month</p>
+            </div>
+            
+            <div>
+                <div>
+                    <h4>Writer</h4>
+                    <span>Custom pricing</span>
+                </div>
+                <p>Enterprise teams needing governance</p>
+                <p><strong>Test:</strong> Evaluate brand voice accuracy across team</p>
+                <p><strong>Worth it if:</strong> Brand consistency is a top priority</p>
+            </div>
+            
+            <h4>For Competitive Intelligence</h4>
+            
+            <div>
+                <div>
+                    <h4>Klue</h4>
+                    <span>Custom pricing</span>
+                </div>
+                <p>Battlecard automation, sales enablement</p>
+                <p><strong>Test:</strong> 30-day pilot, measure sales team adoption</p>
+                <p><strong>Worth it if:</strong> You maintain 5+ competitor battlecards</p>
+            </div>
+            
+            <div>
+                <div>
+                    <h4>Crayon</h4>
+                    <span>Custom pricing</span>
+                </div>
+                <p>Real-time competitive monitoring</p>
+                <p><strong>Test:</strong> Set up alerts, measure actionable intel ratio</p>
+                <p><strong>Worth it if:</strong> Competitive landscape changes frequently</p>
+            </div>
+            
+            <h4>For Visual Content</h4>
+            
+            <div>
+                <div>
+                    <h4>Canva Magic Studio</h4>
+                    <span>$15/month (Canva Pro)</span>
+                </div>
+                <p>Quick graphics, social content</p>
+                <p><strong>Test:</strong> Create 10 assets, compare to your current process</p>
+                <p><strong>Worth it if:</strong> You create visual content regularly</p>
+            </div>
+            
+            <h3>Tier 3: Emerging/Niche</h3>
+            
+            <p>Keep an eye on, but don't rush to adopt:</p>
+            
+            <table>
+                <tr>
+                    <th>Tool</th>
+                    <th>Use Case</th>
+                    <th>Why Wait</th>
+                </tr>
+                <tr>
+                    <td><strong>Gamma</strong></td>
+                    <td>AI presentations</td>
+                    <td>Good for drafts, not final decks</td>
+                </tr>
+                <tr>
+                    <td><strong>Descript</strong></td>
+                    <td>Video editing</td>
+                    <td>Learning curve, niche use case</td>
+                </tr>
+                <tr>
+                    <td><strong>Otter.ai</strong></td>
+                    <td>Meeting transcription</td>
+                    <td>Many alternatives, check what you have</td>
+                </tr>
+                <tr>
+                    <td><strong>Copy.ai</strong></td>
+                    <td>GTM workflows</td>
+                    <td>Overlap with general AI tools</td>
+                </tr>
+            </table>
+
+            <h2>Our Evaluation & Rollout Approach</h2>
+            
+            <p>Here's how we approach bringing new AI tools to the team:</p>
+            
+            <ul>
+                <li><strong>Identify the pain point first</strong> — We start with real workflow problems, not shiny tools</li>
+                <li><strong>Pilot before committing</strong> — Small group tests with real work before any broad rollout</li>
+                <li><strong>Proper licensing & security</strong> — Enterprise agreements that protect our data and comply with company policy</li>
+                <li><strong>Training & templates</strong> — Nobody gets a tool without guidance on how to actually use it</li>
+                <li><strong>Ongoing feedback</strong> — We'll check in regularly to see what's working and what's not</li>
+            </ul>
+            
+            <p>The goal is to give you tools that genuinely help — not to add complexity or check a box.</p>
+
+            <h2>Quick Reference: 2026 Pricing</h2>
+            
+            <table>
+                <tr>
+                    <th>Tool</th>
+                    <th>Monthly Cost</th>
+                    <th>Best For</th>
+                </tr>
+                <tr>
+                    <td>ChatGPT Plus</td>
+                    <td>$20</td>
+                    <td>General AI assistant</td>
+                </tr>
+                <tr>
+                    <td>Claude Pro</td>
+                    <td>$20</td>
+                    <td>Long-form, nuanced content</td>
+                </tr>
+                <tr>
+                    <td>Perplexity Pro</td>
+                    <td>$20</td>
+                    <td>Research with citations</td>
+                </tr>
+                <tr>
+                    <td>Notion AI</td>
+                    <td>$10 (add-on)</td>
+                    <td>Doc workflows</td>
+                </tr>
+                <tr>
+                    <td>Jasper AI</td>
+                    <td>$59-69</td>
+                    <td>High-volume content</td>
+                </tr>
+                <tr>
+                    <td>Canva Pro</td>
+                    <td>$15</td>
+                    <td>Visual content</td>
+                </tr>
+                <tr>
+                    <td>Writer</td>
+                    <td>Custom</td>
+                    <td>Enterprise brand governance</td>
+                </tr>
+                <tr>
+                    <td>Klue</td>
+                    <td>Custom</td>
+                    <td>Competitive intelligence</td>
+                </tr>
+                <tr>
+                    <td>Crayon</td>
+                    <td>Custom</td>
+                    <td>CI monitoring</td>
+                </tr>
+            </table>
+
+            <h2>What's Next</h2>
+            
+            <p>We're actively working through this process:</p>
+            <ol>
+                <li><strong>Now:</strong> Gathering input via our AI tools assessment survey</li>
+                <li><strong>Next:</strong> Running pilots on top-priority tools</li>
+                <li><strong>Then:</strong> Rolling out approved tools with proper training and support</li>
+            </ol>
+            
+            <div>
+                <p><strong>We want your input!</strong> <a href="ai-survey.html">Take our AI Tools Survey</a> to tell us which pain points matter most to you and what tools you've heard about. Your feedback directly shapes our priorities.</p>
+            </div>
+            
+            <p>Questions? Reach out to the PMM leadership team. We'll keep this guide updated as we make decisions and roll out tools.</p>
+            
+            <p><em>Last updated: February 2026</em></p>
+
+        </div>
+    </article>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

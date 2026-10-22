@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEO Visibility Lab | LLM Scorecard | SAP Future of PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sap-blue: #0070F2;
+            --sap-dark: #1B2A4E;
+            --sap-orange: #E85D04;
+            --sap-green: #188038;
+            --sap-red: #D93025;
+            --sap-yellow: #F9AB00;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --border: #E5E7EB;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header { 
+            background: var(--sap-dark); 
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .logo img { height: 80px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+        .nav a:hover { color: white; }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--sap-dark) 0%, #2D4A7C 50%, var(--sap-blue) 100%);
+            padding: 3rem 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-inner { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge { 
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15); 
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .hero h1 { 
+            font-size: 2.75rem; 
+            font-weight: 800; 
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .hero p { 
+            font-size: 1.2rem; 
+            opacity: 0.9; 
+            max-width: 700px;
+            line-height: 1.7;
+        }
+        
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--card);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .mode-toggle label {
+            font-weight: 600;
+            color: var(--sap-dark);
+        }
+        .mode-switch {
+            display: flex;
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .mode-switch button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .mode-switch button.active {
+            background: var(--sap-blue);
+            color: white;
+        }
+        .mode-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-left: auto;
+        }
+        
+        /* Main Layout */
+        main { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 2rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sap-blue);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Product Selection */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .product-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .product-card:hover {
+            border-color: var(--sap-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.15);
+        }
+        .product-card.selected {
+            border-color: var(--sap-blue);
+            background: #EFF6FF;
+        }
+        .product-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .product-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--sap-dark); margin: 0; }
+        .product-card p { font-size: 0.75rem; color: var(--text-light); margin: 0.25rem 0 0; }
+        
+        /* Input Section */
+        .input-section {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .input-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--sap-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--sap-dark);
+        }
+        .form-group .hint {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: white;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--sap-blue);
+            box-shadow: 0 0 0 3px rgba(0,112,242,0.1);
+        }
+        textarea { min-height: 140px; resize: vertical; }
+        
+        /* Run Button */
+        .run-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .run-btn {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, #0052CC 100%);
+            color: white;
+            border: none;
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 14px rgba(0,112,242,0.4);
+        }
+        .run-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(0,112,242,0.5);
+        }
+        .run-btn:disabled { 
+            background: #94A3B8;
+            cursor: not-allowed; 
+            transform: none;
+            box-shadow: none;
+        }
+        .run-btn .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .results-section.show { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Demo Banner */
+        .demo-banner {
+            background: linear-gradient(90deg, #7C3AED 0%, #DB2777 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+        .demo-banner .icon { font-size: 1.25rem; }
+        .demo-banner strong { font-weight: 600; }
+        
+        /* Live Mode Loading Animation */
+        .loading-overlay {
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1B2A4E 0%, #2D4A7C 50%, #0070F2 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .loading-overlay::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.1) 60deg, transparent 120deg);
+            animation: rotateGlow 3s linear infinite;
+        }
+        @keyframes rotateGlow {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .loading-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        .llm-loading-grid {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .llm-loading-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            min-width: 100px;
+            transition: all 0.3s;
+        }
+        .llm-loading-item.active {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+        .llm-loading-item.done {
+            background: rgba(24,128,56,0.4);
+        }
+        .llm-loading-item.error {
+            background: rgba(217,48,37,0.4);
+        }
+        
+        .llm-loading-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .llm-loading-icon.chatgpt { background: #10A37F; }
+        .llm-loading-icon.claude { background: #D97706; }
+        .llm-loading-icon.perplexity { background: #1FB8CD; }
+        .llm-loading-icon.gemini { background: #4285F4; }
+        
+        .llm-loading-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .llm-loading-status {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        .llm-loading-item.active .llm-loading-status {
+            opacity: 1;
+        }
+        
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10A37F, #D97706, #1FB8CD, #4285F4);
+            background-size: 300% 100%;
+            border-radius: 3px;
+            animation: progressShimmer 2s ease-in-out infinite;
+            transition: width 0.5s ease;
+        }
+        @keyframes progressShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 8px;
+        }
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: dotPulse 1.4s infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotPulse {
+            0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+            40% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* LLM Scorecard */
+        .scorecard {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .scorecard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .scorecard-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sap-dark);
+        }
+        
+        /* Overall Score Gauge */
+        .overall-score {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+            border-radius: 16px;
+        }
+        .score-gauge {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1rem;
+        }
+        .score-gauge svg {
+            transform: rotate(-90deg);
+        }
+        .score-gauge .bg {
+            fill: none;
+            stroke: #E5E7EB;
+            stroke-width: 12;
+        }
+        .score-gauge .progress {
+            fill: none;
+            stroke: var(--sap-blue);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            transition: stroke-dashoffset 1.5s ease-out, stroke 0.5s;
+        }
+        .score-gauge .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .score-gauge .score-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--sap-dark);
+            line-height: 1;
+        }
+        .score-gauge .score-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+        .overall-score h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin-bottom: 0.5rem;
+        }
+        .overall-score p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* LLM Grid */
+        .llm-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 1000px) {
+            .llm-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .llm-grid { grid-template-columns: 1fr; }
+        }
+        
+        .llm-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .llm-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .llm-card .llm-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .llm-card .llm-icon.chatgpt { background: #10A37F; color: white; }
+        .llm-card .llm-icon.claude { background: #D97706; color: white; }
+        .llm-card .llm-icon.perplexity { background: #1FB8CD; color: white; }
+        .llm-card .llm-icon.gemini { background: #4285F4; color: white; }
+        
+        .llm-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .llm-card .score-badge {
+            display: inline-block;
+            font-size: 1.75rem;
+            font-weight: 800;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .llm-card .score-badge.high { background: #D1FAE5; color: #065F46; }
+        .llm-card .score-badge.medium { background: #FEF3C7; color: #92400E; }
+        .llm-card .score-badge.low { background: #FEE2E2; color: #991B1B; }
+        
+        .llm-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            text-align: left;
+        }
+        .llm-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .llm-metric .icon { font-size: 1rem; }
+        .llm-metric.positive { color: var(--sap-green); }
+        .llm-metric.neutral { color: var(--sap-yellow); }
+        .llm-metric.negative { color: var(--sap-red); }
+        
+        .llm-card .expand-btn {
+            margin-top: 1rem;
+            background: none;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .llm-card .expand-btn:hover {
+            background: var(--bg);
+            color: var(--sap-blue);
+            border-color: var(--sap-blue);
+        }
+        
+        .llm-response {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .llm-response.show { display: block; }
+        
+        /* Analysis Sections */
+        .analysis-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .analysis-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--sap-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Issue Cards */
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .issue-item {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--border);
+        }
+        .issue-item.high { border-left-color: var(--sap-red); }
+        .issue-item.medium { border-left-color: var(--sap-yellow); }
+        .issue-item.low { border-left-color: var(--sap-green); }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .issue-title { font-weight: 600; color: var(--sap-dark); }
+        .severity-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .severity-badge.high { background: #FEE2E2; color: #991B1B; }
+        .severity-badge.medium { background: #FEF3C7; color: #92400E; }
+        .severity-badge.low { background: #D1FAE5; color: #065F46; }
+        
+        .issue-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+        .issue-fix {
+            font-size: 0.85rem;
+            color: var(--sap-green);
+            font-weight: 500;
+        }
+        
+        /* Before/After */
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .before-after { grid-template-columns: 1fr; }
+        }
+        .before-box, .after-box {
+            padding: 1.25rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        .before-box {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+        }
+        .after-box {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+        }
+        .before-box h4, .after-box h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+        .before-box h4 { color: #991B1B; }
+        .after-box h4 { color: #166534; }
+        
+        /* Competitor Section */
+        .competitor-compare {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 800px) {
+            .competitor-compare { grid-template-columns: 1fr; }
+        }
+        .competitor-card {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .competitor-card.you {
+            background: #EFF6FF;
+            border: 2px solid var(--sap-blue);
+        }
+        .competitor-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin-bottom: 0.5rem;
+        }
+        .competitor-card .comp-score {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .competitor-card.you .comp-score { color: var(--sap-blue); }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 0.875rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-btn:hover {
+            border-color: var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        .action-btn.primary {
+            background: var(--sap-blue);
+            border-color: var(--sap-blue);
+            color: white;
+        }
+        .action-btn.primary:hover {
+            background: #0052CC;
+        }
+        
+        /* Query Selector */
+        .query-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .query-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .query-card:hover {
+            border-color: var(--sap-blue);
+            background: #F8FAFF;
+        }
+        .query-card.selected {
+            border-color: var(--sap-blue);
+            background: #EFF6FF;
+        }
+        .query-card .query-type {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--sap-blue);
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+        .query-card .query-text {
+            font-size: 0.95rem;
+            color: var(--sap-dark);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        /* Deep Dive Sections */
+        .deep-dive-header {
+            background: linear-gradient(135deg, var(--sap-dark) 0%, #2D4A7C 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 16px 16px 0 0;
+            margin-top: 3rem;
+        }
+        .deep-dive-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .deep-dive-header p {
+            opacity: 0.9;
+            margin: 0.5rem 0 0;
+            font-size: 0.95rem;
+        }
+        
+        .deep-dive-content {
+            background: var(--card);
+            border-radius: 0 0 16px 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        /* Specificity Table */
+        .specificity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .specificity-table th {
+            background: var(--bg);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--sap-dark);
+            border-bottom: 2px solid var(--border);
+        }
+        .specificity-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        .specificity-table tr:hover {
+            background: #F8FAFC;
+        }
+        .claim-vague { color: var(--sap-red); }
+        .claim-ok { color: var(--sap-yellow); }
+        .claim-good { color: var(--sap-green); }
+        
+        /* Test Queries List */
+        .test-query-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .test-query-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+        .test-query-item .status {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .test-query-item .query-content {
+            flex: 1;
+        }
+        .test-query-item .query {
+            font-weight: 500;
+            color: var(--sap-dark);
+            margin-bottom: 0.25rem;
+        }
+        .test-query-item .note {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        /* Action Checklist */
+        .action-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--sap-blue);
+        }
+        .action-item .priority {
+            background: var(--sap-blue);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .action-item .action-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--sap-dark);
+            margin: 0 0 0.25rem;
+        }
+        .action-item .action-content p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .section-tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-light);
+        }
+        .section-tab:hover {
+            border-color: var(--sap-blue);
+            color: var(--sap-blue);
+        }
+        .section-tab.active {
+            background: var(--sap-blue);
+            border-color: var(--sap-blue);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media print {
+            .header, .nav, .run-section, .action-buttons, .back-link, .mode-toggle { display: none; }
+            .scorecard, .analysis-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">
+            <span>🔬</span>
+            <span>Interactive Lab • Multi-LLM Analysis</span>
+        </div>
+        <h1>GEO Visibility Scorecard</h1>
+        <p>Test how visible your product is across ChatGPT, Claude, and Gemini. Get specific recommendations to improve your AI discoverability.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+        <label>Analysis Mode:</label>
+        <div class="mode-switch">
+            <button id="demoModeBtn" class="active" onclick="setMode('demo')">🎯 Demo</button>
+            <button id="liveModeBtn" onclick="setMode('live')">⚡ Live</button>
+        </div>
+        <span class="mode-hint" id="modeHint">Pre-analyzed results for reliable demos</span>
+    </div>
+    
+    <!-- Product Selection -->
+    <div class="input-section">
+        <h2>📦 Select a Product</h2>
+        <div class="product-grid" id="productGrid">
+            <div class="product-card" data-product="ariba" onclick="selectProduct('ariba')">
+                <div class="icon">🛒</div>
+                <h3>SAP Ariba</h3>
+                <p>Procurement & Spend</p>
+            </div>
+            <div class="product-card" data-product="successfactors" onclick="selectProduct('successfactors')">
+                <div class="icon">👥</div>
+                <h3>SAP SuccessFactors</h3>
+                <p>Human Capital Mgmt</p>
+            </div>
+            <div class="product-card" data-product="datasphere" onclick="selectProduct('datasphere')">
+                <div class="icon">📊</div>
+                <h3>SAP Datasphere</h3>
+                <p>Data Management</p>
+            </div>
+            <div class="product-card" data-product="s4hana" onclick="selectProduct('s4hana')">
+                <div class="icon">⚙️</div>
+                <h3>SAP S/4HANA Cloud</h3>
+                <p>Cloud ERP</p>
+            </div>
+            <div class="product-card" data-product="btp" onclick="selectProduct('btp')">
+                <div class="icon">☁️</div>
+                <h3>SAP BTP</h3>
+                <p>Business Technology</p>
+            </div>
+            <div class="product-card" data-product="signavio" onclick="selectProduct('signavio')">
+                <div class="icon">🔄</div>
+                <h3>SAP Signavio</h3>
+                <p>Process Intelligence</p>
+            </div>
+            <div class="product-card" data-product="concur" onclick="selectProduct('concur')">
+                <div class="icon">✈️</div>
+                <h3>SAP Concur</h3>
+                <p>Travel & Expense</p>
+            </div>
+            <div class="product-card" data-product="custom" onclick="selectProduct('custom')">
+                <div class="icon">✏️</div>
+                <h3>Custom Product</h3>
+                <p>Enter your own</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Query Selector (Demo Mode) -->
+    <div class="input-section" id="querySection" style="display: none;">
+        <h2>🔍 Select Test Query</h2>
+        <p class="hint" style="margin-bottom: 1rem;">Choose a buyer query to see how your product appears in AI responses</p>
+        <div class="query-grid" id="queryGrid">
+            <!-- Populated by JS based on selected product -->
+        </div>
+    </div>
+    
+    <!-- Custom Input Form (hidden by default) -->
+    <form id="labForm">
+        <div class="input-section" id="customInputs" style="display: none;">
+            <h2>📝 Product Details</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="company">Product Name</label>
+                    <input type="text" id="company" name="company" placeholder="e.g., SAP Ariba">
+                </div>
+                <div class="form-group">
+                    <label for="category">Product Category</label>
+                    <input type="text" id="category" name="category" placeholder="e.g., Procurement Software">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="buyer">Target Buyer</label>
+                <p class="hint">Who researches solutions like yours?</p>
+                <input type="text" id="buyer" name="buyer" placeholder="e.g., Chief Procurement Officer at enterprise manufacturing companies">
+            </div>
+            
+            <div class="form-group">
+                <label for="positioning">Positioning Statement</label>
+                <textarea id="positioning" name="positioning" placeholder="e.g., SAP Ariba is the world's largest B2B network..."></textarea>
+            </div>
+        </div>
+        
+        <div class="run-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>🚀 Run Analysis</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+    </form>
+    
+    <!-- Results Section -->
+    <div class="results-section" id="resultsSection">
+        
+        <!-- Live Loading Animation -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-title">Querying AI Models<span class="loading-dots"><span></span><span></span><span></span></span></div>
+                <div class="loading-subtitle">Testing your visibility across major LLMs</div>
+                
+                <div class="llm-loading-grid">
+                    <div class="llm-loading-item" id="loading-chatgpt">
+                        <div class="llm-loading-icon chatgpt">🤖</div>
+                        <div class="llm-loading-name">ChatGPT</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                    <div class="llm-loading-item" id="loading-claude">
+                        <div class="llm-loading-icon claude">🧠</div>
+                        <div class="llm-loading-name">Claude</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                    <div class="llm-loading-item" id="loading-perplexity" style="display:none;">
+                        <div class="llm-loading-icon perplexity">🔍</div>
+                        <div class="llm-loading-name">Perplexity</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                    <div class="llm-loading-item" id="loading-gemini">
+                        <div class="llm-loading-icon gemini">✨</div>
+                        <div class="llm-loading-name">Gemini</div>
+                        <div class="llm-loading-status">Waiting...</div>
+                    </div>
+                </div>
+                
+                <div class="loading-progress">
+                    <div class="loading-progress-bar" id="loadingProgress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo Banner -->
+        <div class="demo-banner" id="demoBanner">
+            <span class="icon">🎯</span>
+            <span><strong>Demo Mode</strong> — Showing pre-analyzed results for reliable presentation. Switch to Live Mode to query LLMs in real-time.</span>
+        </div>
+        
+        <!-- LLM Scorecard -->
+        <div class="scorecard">
+            <div class="scorecard-header">
+                <h2>📊 LLM Visibility Scorecard</h2>
+                <div>
+                    <button class="action-btn" onclick="exportPDF()">📄 Export PDF</button>
+                </div>
+            </div>
+            
+            <!-- Overall Score -->
+            <div class="overall-score">
+                <div class="score-gauge">
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle class="bg" cx="100" cy="100" r="90"/>
+                        <circle class="progress" id="scoreProgress" cx="100" cy="100" r="90"/>
+                    </svg>
+                    <div class="score-text">
+                        <div class="score-number" id="overallScore">--</div>
+                        <div class="score-label">out of 10</div>
+                    </div>
+                </div>
+                <h3 id="scoreTitle">Calculating...</h3>
+                <p id="scoreSummary">Analyzing your visibility across major AI assistants...</p>
+            </div>
+            
+            <!-- Individual LLM Scores -->
+            <div class="llm-grid" id="llmGrid">
+                <!-- Populated by JS -->
+            </div>
+            
+            <!-- Score Methodology -->
+            <div id="scoreBreakdown" style="margin-top: 2rem; padding: 1.5rem; background: #F8FAFC; border-radius: 12px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="margin: 0; color: var(--sap-dark);">📐 Score Methodology</h4>
+                    <span style="font-size: 0.75rem; color: var(--text-light); cursor: pointer;" onclick="document.getElementById('methodologyDetails').style.display = document.getElementById('methodologyDetails').style.display === 'none' ? 'block' : 'none'">ⓘ How we calculate</span>
+                </div>
+                
+                <!-- Score Components -->
+                <div id="scoreComponents" style="display: grid; gap: 0.75rem;">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Methodology Details (hidden by default) -->
+                <div id="methodologyDetails" style="display: none; margin-top: 1rem; padding: 1rem; background: white; border-radius: 8px; font-size: 0.85rem; color: var(--text-light);">
+                    <p style="margin-bottom: 0.5rem;"><strong>How scores are calculated:</strong></p>
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Mention Rate:</strong> % of relevant queries where product is mentioned</li>
+                        <li><strong>Positioning:</strong> Where you rank vs competitors (1st mention = higher score)</li>
+                        <li><strong>Sentiment:</strong> Positive/negative/neutral tone in AI responses</li>
+                        <li><strong>Accuracy:</strong> Are the facts cited about you correct?</li>
+                        <li><strong>Specificity:</strong> Does AI cite specific numbers/outcomes vs vague claims?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Issues Analysis -->
+        <div class="analysis-card" id="issuesCard">
+            <h3>🔴 Issues Impacting Your Visibility</h3>
+            <div class="issue-list" id="issueList"></div>
+        </div>
+        
+        <!-- Quick Wins -->
+        <div class="analysis-card" id="quickWinsCard">
+            <h3>⚡ Quick Wins</h3>
+            <div id="quickWinsList"></div>
+        </div>
+        
+        <!-- Before/After Rewrites -->
+        <div class="analysis-card" id="rewritesCard">
+            <h3>✏️ Recommended Rewrites</h3>
+            <div id="rewritesList"></div>
+        </div>
+        
+        <!-- Competitor Comparison -->
+        <div class="analysis-card" id="competitorCard">
+            <h3>⚔️ Competitor Visibility Comparison</h3>
+            <div class="competitor-compare" id="competitorCompare"></div>
+        </div>
+        
+        <!-- Deep Dive Section -->
+        <div class="deep-dive-header">
+            <h2>🔬 Deep Dive Analysis</h2>
+            <p>Detailed breakdown of your GEO visibility with actionable insights</p>
+        </div>
+        <div class="deep-dive-content">
+            <div class="section-tabs">
+                <button class="section-tab active" onclick="showTab('specificity')">🔍 Specificity Analysis</button>
+                <button class="section-tab" onclick="showTab('testqueries')">❓ Test Queries</button>
+                <button class="section-tab" onclick="showTab('citations')">📚 Citation Audit</button>
+                <button class="section-tab" onclick="showTab('fullrewrites')">✏️ Full Rewrites</button>
+                <button class="section-tab" onclick="showTab('actionplan')">📋 Action Plan</button>
+            </div>
+            
+            <!-- Specificity Analysis Tab -->
+            <div class="tab-content active" id="tab-specificity">
+                <h3 style="margin-bottom: 1rem; color: var(--sap-dark);">Which Claims Can AI Verify?</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-light);">AI systems cite specific, verifiable claims. Vague marketing language gets skipped or hedged.</p>
+                <table class="specificity-table" id="specificityTable">
+                    <!-- Populated by JS -->
+                </table>
+            </div>
+            
+            <!-- Test Queries Tab -->
+            <div class="tab-content" id="tab-testqueries">
+                <h3 style="margin-bottom: 1rem; color: var(--sap-dark);">Queries Where You Should Appear</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-light);">These are buyer queries where your product should rank highly. Check your actual visibility.</p>
+                <div class="test-query-list" id="testQueryList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Citation Audit Tab -->
+            <div class="tab-content" id="tab-citations">
+                <h3 style="margin-bottom: 1rem; color: var(--sap-dark);">What Sources Are Being Cited?</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-light);">When AI mentions your product, where is it getting the information from?</p>
+                
+                <!-- Citation Summary -->
+                <div id="citationSummary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Detailed Citation Analysis -->
+                <div id="citationAudit">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Missing Citations -->
+                <div id="missingCitations" style="margin-top: 2rem;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Full Rewrites Tab -->
+            <div class="tab-content" id="tab-fullrewrites">
+                <h3 style="margin-bottom: 1rem; color: var(--sap-dark);">Complete Rewrite Recommendations</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-light);">Full before/after examples for key content elements.</p>
+                <div id="fullRewritesList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Action Plan Tab -->
+            <div class="tab-content" id="tab-actionplan">
+                <h3 style="margin-bottom: 1rem; color: var(--sap-dark);">Prioritized Action Plan</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-light);">Step-by-step implementation checklist, ordered by impact.</p>
+                <div class="action-checklist" id="actionChecklist">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="action-buttons">
+            <button class="action-btn" onclick="copyResults()">📋 Copy Results</button>
+            <button class="action-btn" onclick="exportPDF()">📄 Export PDF</button>
+            <button class="action-btn primary" onclick="location.reload()">🔄 Analyze Another Product</button>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script>
+// ==========================================
+// DEMO RESULTS - Pre-cached for all SAP products
+// ==========================================
+const demoResults = {
+    ariba: {
+        overallScore: 7.2,
+        scoreComponents: [
+            { name: 'Mention Rate', score: 8.5, max: 10, evidence: 'Mentioned in 4/4 LLMs tested (100%)' },
+            { name: 'Positioning', score: 7.0, max: 10, evidence: 'Avg rank: #2.25 — first mention in Claude, 2nd-3rd in others' },
+            { name: 'Sentiment', score: 7.5, max: 10, evidence: '50% positive, 50% neutral, 0% negative' },
+            { name: 'Accuracy', score: 6.0, max: 10, evidence: '3/4 LLMs cited accurate facts; 1 had outdated info' },
+            { name: 'Specificity', score: 7.0, max: 10, evidence: 'Network size cited 75% of time; ROI figures rarely' }
+        ],
+        llmScores: {
+            chatgpt: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For enterprise procurement software, I'd recommend considering SAP Ariba as a top option. It's the world's largest B2B network with over 5.5 million connected organizations. Key strengths include: comprehensive source-to-pay capabilities, strong supplier network effects, and deep integration with SAP ERP systems. It's particularly well-suited for large enterprises with complex procurement needs. Alternatives like Coupa offer a more modern UX, while Jaggaer has strong sourcing capabilities..." 
+            },
+            claude: { 
+                score: 8.2, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Ariba stands out as the leading enterprise procurement platform, primarily due to its unmatched network scale — the SAP Business Network processes over $6 trillion in commerce annually. For large manufacturing or retail organizations, the combination of source-to-pay functionality, supplier management, and ERP integration makes it a strong choice. The platform excels at supplier discovery and risk management. Consider Coupa for a more user-friendly interface, or Jaggaer for specialized indirect procurement..." 
+            },
+            perplexity: { 
+                score: 6.5, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "According to recent analyst reports, the top enterprise procurement solutions include SAP Ariba, Coupa, and Jaggaer. SAP Ariba is notable for its massive supplier network (5.5M+ organizations) and strong integration with SAP's ERP ecosystem. However, some users report complexity in implementation and customization. Coupa has gained market share with its user-friendly approach. [Sources: Gartner Magic Quadrant 2026, G2 Reviews]" 
+            },
+            gemini: { 
+                score: 6.3, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For procurement software, several options exist including SAP Ariba, Oracle Procurement Cloud, Coupa, and Jaggaer. SAP Ariba offers comprehensive spend management but may require significant implementation effort. It's best suited for organizations already using SAP ERP. Coupa provides a more intuitive user experience and is growing rapidly. Consider your existing technology stack when choosing..." 
+            }
+        },
+        issues: [
+            { severity: 'medium', title: 'Network Scale Not Quantified Consistently', description: 'The "$6 trillion in commerce" stat appears but isn\'t always picked up. LLMs sometimes cite older figures or omit the network size entirely.', fix: 'Ensure the 5.5M organizations and $6T commerce figures appear prominently and consistently across all indexed pages.' },
+            { severity: 'medium', title: 'Implementation Complexity Perception', description: 'Multiple LLMs mention "complexity" or "significant implementation effort" — this FUD is being cited from third-party sources.', fix: 'Create content addressing implementation with specific timelines and success stories that can be cited.' },
+            { severity: 'low', title: 'Differentiation vs. Coupa Unclear', description: 'LLMs often position Coupa as "more user-friendly" without SAP\'s counter-positioning being visible.', fix: 'Develop clear differentiation content that addresses the UX narrative with evidence of recent improvements.' }
+        ],
+        quickWins: [
+            { title: 'Add Named Customer Outcomes', description: 'LLM responses lack specific customer proof points.', action: 'Add 3-5 named customer examples with quantified outcomes (e.g., "Unilever reduced procurement costs by 15%") to key pages.' },
+            { title: 'Refresh Analyst Citation Content', description: 'Some LLMs cite outdated analyst positions.', action: 'Create a dedicated "Analyst Recognition" page with current Gartner/Forrester positioning that can be indexed.' },
+            { title: 'Address Implementation Narrative', description: 'Complexity perception is being cited from reviews.', action: 'Publish "Implementation Success" content with specific timelines and customer quotes.' }
+        ],
+        rewrites: [
+            { context: 'Value Proposition', before: 'SAP Ariba solutions connect you to a global network of suppliers and intelligent technologies.', after: 'SAP Ariba connects you to 5.5 million suppliers on the world\'s largest B2B network — processing $6 trillion in annual commerce — with AI that has reduced sourcing cycle times by 40% for customers like Unilever and Siemens.' },
+            { context: 'Differentiation Claim', before: 'Transform procurement with AI-powered insights and automation.', after: 'Unlike point solutions, SAP Ariba combines procurement, supplier management, and payments in one platform — with 90%+ of suppliers paying zero transaction fees, resulting in 3x higher supplier adoption than competing networks.' }
+        ],
+        competitors: [
+            { name: 'Coupa', score: 7.5 },
+            { name: 'Jaggaer', score: 5.8 }
+        ]
+    },
+    
+    successfactors: {
+        overallScore: 7.8,
+        scoreComponents: [
+            { name: 'Mention Rate', score: 9.0, max: 10, evidence: 'Mentioned in 4/4 LLMs tested (100%)' },
+            { name: 'Positioning', score: 8.5, max: 10, evidence: 'First mention in 3/4 LLMs; strong enterprise positioning' },
+            { name: 'Sentiment', score: 7.0, max: 10, evidence: '62% positive, 25% neutral, 13% negative (UX concerns)' },
+            { name: 'Accuracy', score: 8.0, max: 10, evidence: '268M users figure cited correctly across all responses' },
+            { name: 'Specificity', score: 7.5, max: 10, evidence: 'User count and Forbes 2000 stat well cited' }
+        ],
+        llmScores: {
+            chatgpt: { 
+                score: 8.1, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP SuccessFactors is a leading cloud HCM suite, particularly strong for large enterprises. With over 268 million users globally, it offers comprehensive talent management including recruiting, onboarding, learning, performance, and succession planning. A key differentiator is native integration with SAP S/4HANA for organizations running SAP ERP. Workday is the main competitor, offering a more modern UX, while Oracle HCM Cloud serves similar enterprise needs..." 
+            },
+            claude: { 
+                score: 8.5, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For enterprise HCM, SAP SuccessFactors is a top-tier choice, especially for global organizations. Key strengths: comprehensive suite covering the full employee lifecycle, payroll in 100+ countries, and deep ERP integration. The platform serves 10,500+ customers including 85% of the Forbes Global 2000. Recent AI additions through Joule enhance employee experience. Workday competes strongly on user experience and finance integration..." 
+            },
+            perplexity: { 
+                score: 7.2, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP SuccessFactors and Workday lead the enterprise HCM market. SuccessFactors excels in global payroll (100+ countries) and SAP ecosystem integration. Workday offers stronger financial planning integration and is often preferred for HR transformation initiatives. According to Gartner, both are Leaders, with SuccessFactors showing strength in large, complex global deployments. [Sources: Gartner 2026, Forrester Wave]" 
+            },
+            gemini: { 
+                score: 7.4, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "Top HCM platforms for enterprises include SAP SuccessFactors, Workday, and Oracle HCM Cloud. SAP SuccessFactors offers end-to-end talent management with strong global capabilities — particularly notable is their payroll coverage in 100+ countries. The platform integrates well with SAP's broader ecosystem. Workday tends to be preferred by organizations seeking a unified HR and finance platform..." 
+            }
+        },
+        issues: [
+            { severity: 'low', title: 'UX Narrative Ceded to Workday', description: 'LLMs consistently position Workday as having "better UX" or "more modern experience" without SuccessFactors rebuttal.', fix: 'Create content highlighting recent UX improvements and Joule AI enhancements with specific examples.' },
+            { severity: 'low', title: 'Joule AI Capabilities Under-Cited', description: 'The AI copilot capabilities are mentioned but not emphasized — this is a key differentiator not being surfaced.', fix: 'Develop dedicated Joule content with specific use cases and employee experience improvements.' },
+            { severity: 'medium', title: 'Finance Integration Gap vs. Workday', description: 'Workday\'s HR+Finance positioning is being cited favorably; SuccessFactors+S/4HANA story isn\'t as visible.', fix: 'Create integrated Business-HR content showing the S/4HANA advantage for total enterprise visibility.' }
+        ],
+        quickWins: [
+            { title: 'Amplify Joule AI Story', description: 'AI capabilities aren\'t prominent in LLM responses.', action: 'Create a "Joule for HR" page with specific employee experience use cases and outcomes.' },
+            { title: 'Quantify Global Scale', description: 'The 268M users and 100+ countries stats should appear more prominently.', action: 'Add scale metrics to page titles and meta descriptions for better indexing.' },
+            { title: 'Counter UX Narrative', description: 'The "Workday has better UX" narrative persists.', action: 'Publish customer testimonials specifically addressing ease of use and recent improvements.' }
+        ],
+        rewrites: [
+            { context: 'Platform Positioning', before: 'SAP SuccessFactors delivers cloud-based human experience management (HXM).', after: 'SAP SuccessFactors serves 268 million users at 10,500+ organizations — including 85% of the Forbes Global 2000 — with the only HCM suite offering native ERP integration and AI-powered employee experiences through Joule.' },
+            { context: 'Global Capability', before: 'Run HR operations for 100+ countries with compliant, localized payroll.', after: 'Deploy compliant payroll in 100+ countries from day one — a capability that saved Siemens 18 months in global HR transformation and reduced payroll errors by 60% at Nestlé.' }
+        ],
+        competitors: [
+            { name: 'Workday', score: 8.2 },
+            { name: 'Oracle HCM', score: 6.4 }
+        ]
+    },
+    
+    datasphere: {
+        overallScore: 5.8,
+        llmScores: {
+            chatgpt: { 
+                score: 6.2, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "For data management platforms, the market leaders include Snowflake, Databricks, and cloud-native options from AWS/Azure/GCP. SAP Datasphere (formerly SAP Data Warehouse Cloud) is worth considering if you're an SAP shop — it provides a business data fabric with pre-built semantic models for SAP data. However, for general-purpose data platforms, Snowflake offers better performance and broader ecosystem support..." 
+            },
+            claude: { 
+                score: 6.5, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "The data management landscape includes several strong options. Snowflake and Databricks lead for general data warehousing and lakehouse architectures. SAP Datasphere serves a specific niche: organizations heavily invested in SAP applications who need to combine SAP and non-SAP data with preserved business context. Its strength is the semantic layer that understands SAP business objects. For non-SAP environments, consider Snowflake for simplicity or Databricks for ML workloads..." 
+            },
+            perplexity: { 
+                score: 5.3, 
+                mentioned: true, 
+                position: 4, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "Data platform options include Snowflake (cloud data warehouse leader), Databricks (lakehouse architecture), Google BigQuery, and specialized tools like SAP Datasphere. SAP Datasphere is primarily used by SAP customers to access SAP data. Recent reviews note it's still maturing compared to established alternatives. [Sources: G2 Reviews, Gartner Data Management 2026]" 
+            },
+            gemini: { 
+                score: 5.2, 
+                mentioned: true, 
+                position: 4, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For enterprise data management, consider: Snowflake for cloud data warehousing, Databricks for unified analytics, or SAP Datasphere if you need SAP data integration. SAP Datasphere works best as part of the broader SAP ecosystem rather than as a standalone platform. Evaluate based on your existing infrastructure and primary data sources..." 
+            }
+        },
+        issues: [
+            { severity: 'high', title: 'Positioned as SAP-Only Solution', description: 'All LLMs describe Datasphere as primarily for "SAP shops" or "SAP data" — the business data fabric positioning isn\'t landing.', fix: 'Create content emphasizing multi-source data federation capabilities with non-SAP examples and customer stories.' },
+            { severity: 'high', title: 'Competing Against Wrong Category', description: 'LLMs compare Datasphere to Snowflake/Databricks as a data warehouse — it\'s actually a different category (data fabric).', fix: 'Develop clearer category definition content: "Data Fabric vs. Data Warehouse" educational materials.' },
+            { severity: 'medium', title: 'Maturity Perception', description: 'References to "still maturing" suggest third-party content is portraying it as less established.', fix: 'Publish customer scale stories and enterprise deployment references to counter maturity perception.' }
+        ],
+        quickWins: [
+            { title: 'Define the Category', description: 'LLMs don\'t understand what a "business data fabric" is.', action: 'Create educational content: "What is a Business Data Fabric?" that can be indexed and cited.' },
+            { title: 'Multi-Source Success Stories', description: 'The SAP-only perception needs countering.', action: 'Publish case studies specifically featuring non-SAP data integration (AWS, Azure, third-party apps).' },
+            { title: 'Semantic Layer Differentiation', description: 'The unique value of business semantics isn\'t being cited.', action: 'Develop comparison content: "Why Business Semantics Matter: Datasphere vs. Generic Data Platforms"' }
+        ],
+        rewrites: [
+            { context: 'Product Positioning', before: 'SAP Datasphere delivers a business data fabric that provides meaningful data access across your enterprise.', after: 'SAP Datasphere federates data across SAP, Snowflake, Databricks, and 100+ sources while preserving business meaning — the only platform where "revenue" automatically means the same thing whether it comes from S/4HANA, Salesforce, or your data lake.' },
+            { context: 'Differentiation', before: 'Pre-built business semantics from SAP applications accelerate time-to-insight.', after: 'While Snowflake stores your data and Databricks processes it, Datasphere understands it — with 2,000+ pre-built business definitions that eliminated 6 months of semantic modeling for Henkel and reduced reporting errors by 70% at Bosch.' }
+        ],
+        competitors: [
+            { name: 'Snowflake', score: 8.5 },
+            { name: 'Databricks', score: 8.2 }
+        ]
+    },
+    
+    s4hana: {
+        overallScore: 7.5,
+        scoreComponents: [
+            { name: 'Mention Rate', score: 8.0, max: 10, evidence: 'Mentioned in 4/4 LLMs tested (100%)' },
+            { name: 'Positioning', score: 7.5, max: 10, evidence: 'First mention in 2/4 LLMs; often #2 after Oracle' },
+            { name: 'Sentiment', score: 8.0, max: 10, evidence: '75% positive; "comprehensive" mentioned frequently' },
+            { name: 'Accuracy', score: 7.0, max: 10, evidence: 'Industry solutions cited; Clean Core sometimes missed' },
+            { name: 'Specificity', score: 7.0, max: 10, evidence: 'Industry verticals cited; customer outcomes rare' }
+        ],
+        llmScores: {
+            chatgpt: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For cloud ERP, the main options are SAP S/4HANA Cloud, Oracle Cloud ERP, and Microsoft Dynamics 365. SAP S/4HANA Cloud is the most comprehensive, offering deep functionality for finance, supply chain, and manufacturing. It's particularly strong for large, complex enterprises — especially those in manufacturing, life sciences, or with global operations. Oracle competes well on financial management, while Microsoft offers better mid-market value..." 
+            },
+            claude: { 
+                score: 8.2, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP S/4HANA Cloud leads the enterprise ERP market for large, complex organizations. Key differentiators: in-memory architecture for real-time analytics, industry-specific solutions for 25+ verticals, and the broadest functional footprint. The 'Clean Core' approach enables continuous innovation without customization debt. Oracle Cloud ERP is a strong alternative for finance-centric deployments. Microsoft Dynamics 365 serves mid-market well but lacks depth for complex manufacturing..." 
+            },
+            perplexity: { 
+                score: 7.0, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "Enterprise ERP leaders include SAP S/4HANA Cloud, Oracle Cloud ERP, and Microsoft Dynamics 365. SAP maintains the largest market share in ERP and offers the deepest functionality, especially for manufacturing and supply chain. However, implementation complexity and cost remain concerns for some organizations. Oracle has gained ground with simpler deployments. [Sources: Gartner Cloud ERP 2026, IDC ERP Market Share]" 
+            },
+            gemini: { 
+                score: 6.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "Cloud ERP options include SAP S/4HANA Cloud (comprehensive, complex), Oracle Cloud ERP (strong finance), and Microsoft Dynamics 365 (mid-market focus). SAP is best for large enterprises with complex operations, especially in manufacturing. Consider total cost of ownership carefully — SAP implementations typically require significant investment. The 'Clean Core' model helps manage long-term maintenance..." 
+            }
+        },
+        issues: [
+            { severity: 'medium', title: 'Implementation Complexity Narrative', description: 'References to "complexity," "significant investment," and implementation concerns appear across LLM responses.', fix: 'Counter with RISE with SAP packaging content and specific implementation timeline success stories.' },
+            { severity: 'low', title: 'AI/Innovation Story Under-Represented', description: 'The AI capabilities (Joule, embedded intelligence) aren\'t being cited as differentiators.', fix: 'Create content specifically highlighting AI-powered ERP capabilities with business outcomes.' },
+            { severity: 'low', title: 'Clean Core Advantage Not Clear', description: 'Clean Core is mentioned but not explained — LLMs aren\'t articulating why it matters.', fix: 'Develop educational content: "What is Clean Core and Why It Matters" with TCO comparisons.' }
+        ],
+        quickWins: [
+            { title: 'RISE Success Metrics', description: 'The simplified deployment story isn\'t prominent.', action: 'Publish RISE with SAP implementation metrics: average deployment time, cost predictability, customer outcomes.' },
+            { title: 'AI-Powered ERP Content', description: 'Joule and embedded AI aren\'t being cited.', action: 'Create "AI in S/4HANA Cloud" page with specific automation examples and ROI figures.' },
+            { title: 'Industry Solution Visibility', description: 'The 25+ industry solutions are a differentiator but not visible.', action: 'Develop industry-specific landing pages optimized for "[Industry] ERP" searches.' }
+        ],
+        rewrites: [
+            { context: 'Value Proposition', before: 'SAP S/4HANA Cloud is the intelligent, next-generation cloud ERP.', after: 'SAP S/4HANA Cloud runs mission-critical operations for 23,000+ customers — with AI that has automated 50% of routine finance tasks at Lenovo and Clean Core architecture that reduced Schneider Electric\'s upgrade costs by 40%.' },
+            { context: 'Implementation Story', before: 'Industry Cloud pre-built solutions accelerate time-to-value.', after: 'RISE with SAP customers go live in 4-6 months with pre-configured industry solutions — a 60% reduction from traditional ERP deployments, as demonstrated by recent implementations at Coca-Cola Europacific and Accenture.' }
+        ],
+        competitors: [
+            { name: 'Oracle Cloud ERP', score: 7.0 },
+            { name: 'Microsoft Dynamics', score: 6.2 }
+        ]
+    },
+    
+    btp: {
+        overallScore: 5.2,
+        llmScores: {
+            chatgpt: { 
+                score: 5.5, 
+                mentioned: true, 
+                position: 4, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For enterprise platform-as-a-service, AWS, Azure, and Google Cloud lead the market. SAP BTP (Business Technology Platform) is relevant primarily for SAP customers who need to extend SAP applications. It offers integration services, app development tools, and AI capabilities. However, it's not typically a first choice for general cloud development compared to hyperscaler platforms..." 
+            },
+            claude: { 
+                score: 5.8, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "SAP Business Technology Platform serves a specific purpose: enabling SAP customers to extend, integrate, and enhance SAP applications without modifying the core. Key capabilities include the Integration Suite, app development (low-code and pro-code), and SAP AI Core. It's the foundation for Joule and business AI. For general cloud development, hyperscalers offer broader services; BTP excels in SAP-specific scenarios..." 
+            },
+            perplexity: { 
+                score: 4.8, 
+                mentioned: true, 
+                position: 5, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "Platform-as-a-service options include AWS, Azure, Google Cloud, and niche platforms like SAP BTP. SAP BTP is used by SAP customers for integration and extensions. Market presence is limited compared to hyperscalers. Consider it if SAP is your primary application landscape. [Sources: Gartner PaaS 2026, Cloud Market Reports]" 
+            },
+            gemini: { 
+                score: 4.5, 
+                mentioned: true, 
+                position: 5, 
+                sentiment: 'neutral', 
+                accurate: false, 
+                response: "For cloud platforms, the major providers are AWS, Microsoft Azure, and Google Cloud. SAP BTP exists for SAP application development and integration. If you're heavily invested in SAP, BTP can simplify extensions. Otherwise, hyperscaler platforms offer more flexibility and broader service catalogs..." 
+            }
+        },
+        issues: [
+            { severity: 'high', title: 'Category Mismatch — Competing with Hyperscalers', description: 'LLMs position BTP against AWS/Azure/GCP, where it can\'t win. The SAP extension platform positioning isn\'t clear.', fix: 'Reframe content: BTP isn\'t a hyperscaler alternative, it\'s the platform for SAP-intelligent enterprises. Focus on "extend SAP" not "replace cloud."' },
+            { severity: 'high', title: 'Value Proposition Unclear', description: 'LLMs describe BTP as "integration and extensions" without explaining why that matters or what business outcomes it enables.', fix: 'Create outcome-focused content: "What Customers Build on BTP" with specific examples and ROI.' },
+            { severity: 'medium', title: 'AI/Joule Foundation Not Visible', description: 'BTP as the foundation for SAP Business AI and Joule isn\'t being cited — this is a key differentiator.', fix: 'Develop "BTP Powers SAP AI" content connecting the platform to tangible AI outcomes.' }
+        ],
+        quickWins: [
+            { title: 'Reframe the Category', description: 'Stop competing with hyperscalers.', action: 'Create content positioning BTP as "the SAP extension platform" not "an alternative to AWS."' },
+            { title: 'Customer Showcase', description: 'No specific customer outcomes being cited.', action: 'Publish 5+ customer stories: "What They Built on BTP" with business outcomes.' },
+            { title: 'Connect to Joule/AI', description: 'The AI foundation story is missing.', action: 'Create "How Joule Works: Powered by BTP" explainer content.' }
+        ],
+        rewrites: [
+            { context: 'Platform Positioning', before: 'SAP BTP is the unified platform for application development, integration, data management, and AI.', after: 'SAP BTP is where 25,000+ customers extend SAP without breaking it — the only platform where custom apps inherit SAP security, integrate in real-time, and upgrade automatically with Clean Core architecture.' },
+            { context: 'Value Statement', before: 'Build and extend applications with low-code/pro-code tools.', after: 'Coca-Cola built 40+ custom apps on BTP in 6 months — apps that would have taken 2 years and $10M with traditional development, and that now upgrade automatically with every S/4HANA release.' }
+        ],
+        competitors: [
+            { name: 'Microsoft Azure', score: 8.5 },
+            { name: 'AWS', score: 8.8 }
+        ]
+    },
+    
+    signavio: {
+        overallScore: 6.8,
+        llmScores: {
+            chatgpt: { 
+                score: 6.5, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For process mining and intelligence, Celonis is the market leader. SAP Signavio offers a comprehensive process intelligence suite including process mining, process management, and journey modeling. It's well-integrated with SAP applications and is a good choice for SAP-centric organizations. Microsoft Process Advisor provides basic capabilities at lower cost. For pure process mining depth, Celonis leads; for integrated transformation, Signavio competes well..." 
+            },
+            claude: { 
+                score: 7.5, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Signavio provides end-to-end process intelligence: mining to discover how processes actually run, management to design and govern improvements, and journey modeling to connect process to experience. It's the most integrated option for SAP transformations — especially valuable for RISE migrations where understanding current-state processes is critical. Celonis offers deeper mining analytics, but Signavio's strength is the full transformation lifecycle..." 
+            },
+            perplexity: { 
+                score: 6.8, 
+                mentioned: true, 
+                position: 2, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "Process mining leaders include Celonis, SAP Signavio, and Microsoft Process Advisor. Signavio differentiates with combined mining and management capabilities — useful for continuous improvement programs. SAP acquisition enhanced its ERP integration. Celonis remains the pure-play leader for large-scale mining deployments. [Sources: Forrester Process Mining 2026, Gartner]" 
+            },
+            gemini: { 
+                score: 6.2, 
+                mentioned: true, 
+                position: 3, 
+                sentiment: 'neutral', 
+                accurate: true, 
+                response: "Process intelligence tools include Celonis (market leader), SAP Signavio, and Microsoft Power Automate Process Advisor. SAP Signavio provides process mining plus collaborative process design — good for organizations wanting to combine discovery and improvement. Best suited for SAP environments. Celonis offers more advanced mining capabilities for complex analysis..." 
+            }
+        },
+        issues: [
+            { severity: 'medium', title: 'Celonis Positioned as Leader', description: 'All LLMs cite Celonis as the "market leader" or having "deeper analytics" — Signavio differentiation isn\'t clear.', fix: 'Create content emphasizing the full transformation lifecycle (mine, design, improve, monitor) vs. mining-only solutions.' },
+            { severity: 'low', title: 'Transformation Value Not Quantified', description: 'LLMs describe capabilities but not outcomes — no ROI or business impact being cited.', fix: 'Publish customer transformation stories with specific metrics: time saved, costs reduced, improvements measured.' },
+            { severity: 'low', title: 'RISE Integration Under-Cited', description: 'The value for RISE/S/4HANA migrations isn\'t prominent in responses.', fix: 'Develop "Signavio for RISE" content showing how process intelligence de-risks ERP transformation.' }
+        ],
+        quickWins: [
+            { title: 'Define the Full Lifecycle', description: 'Mining-only comparison isn\'t favorable.', action: 'Create comparison content: "Process Mining vs. Process Intelligence" establishing the broader category.' },
+            { title: 'RISE Transformation Story', description: 'The ERP migration value isn\'t visible.', action: 'Publish "Process Intelligence for RISE" content with transformation success metrics.' },
+            { title: 'Customer Outcomes', description: 'No specific ROI being cited.', action: 'Develop 3+ customer stories with quantified process improvements.' }
+        ],
+        rewrites: [
+            { context: 'Product Positioning', before: 'SAP Signavio delivers process intelligence that helps organizations understand, improve, and transform their business processes.', after: 'SAP Signavio is the process command center for 3,000+ organizations — where Siemens discovered $50M in hidden process waste, Vodafone reduced process cycle times by 40%, and RISE customers de-risk ERP transformation with data-driven migration decisions.' },
+            { context: 'Differentiation', before: 'Process Mining discovers how processes actually run by analyzing system data.', after: 'Unlike mining-only tools, Signavio closes the loop: discover inefficiencies, collaboratively design improvements, and continuously monitor results — all connected to your SAP ERP for closed-loop transformation that Celonis can\'t match.' }
+        ],
+        competitors: [
+            { name: 'Celonis', score: 8.0 },
+            { name: 'Microsoft Process Advisor', score: 5.0 }
+        ]
+    },
+    
+    s4hana: {
+        overallScore: 8.4,
+        llmScores: {
+            chatgpt: { 
+                score: 8.8, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For cloud ERP, the main options are SAP S/4HANA Cloud, Oracle Cloud ERP, and Microsoft Dynamics 365. SAP S/4HANA Cloud is the most comprehensive, offering deep functionality for finance, supply chain, and manufacturing. It's particularly strong for large, complex enterprises — especially those in manufacturing, life sciences, or with global operations. RISE with SAP provides a complete transformation package. Oracle competes well on financial management, while Microsoft offers better mid-market value..." 
+            },
+            claude: { 
+                score: 8.7, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP S/4HANA Cloud represents the most sophisticated cloud ERP for large enterprises. Built on in-memory computing, it delivers real-time insights across finance, supply chain, manufacturing, and procurement. Key strengths: industry-specific capabilities (25+ industries), global compliance in 90+ countries, and the cleanest architecture for AI/ML extensions. RISE with SAP customers report 4-6 month implementations for greenfield deployments. Oracle Cloud ERP competes on financial management depth; Microsoft Dynamics 365 serves the mid-market more effectively..." 
+            },
+            perplexity: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "According to Gartner's latest Magic Quadrant for Cloud ERP, SAP S/4HANA Cloud leads for large enterprises alongside Oracle. SAP differentiates with industry depth (25+ vertical solutions), supply chain capabilities, and the RISE with SAP transformation offering. Recent Joule AI integration adds generative AI across processes. Oracle leads for financial management; Microsoft Dynamics serves mid-market. [Sources: Gartner 2026, IDC]" 
+            },
+            gemini: { 
+                score: 8.3, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP S/4HANA Cloud is the leading cloud ERP for large enterprises requiring complex operations management. Key differentiators: real-time analytics via in-memory database, industry-specific processes, and comprehensive suite from finance to supply chain to manufacturing. The RISE with SAP offering bundles infrastructure, migration, and support. Best for organizations with global operations, complex supply chains, or heavy manufacturing. Oracle Cloud ERP is a strong alternative for finance-first transformations..." 
+            }
+        },
+        issues: [
+            { severity: 'low', title: 'RISE Value Not Always Explicit', description: 'LLMs mention RISE but don\'t always explain the full value — bundled infrastructure, BTP, and success services.', fix: 'Ensure RISE content clearly articulates the complete offering: infrastructure + software + tools + support in one commercial model.' },
+            { severity: 'low', title: 'AI/Joule Capabilities Under-Cited', description: 'The Joule AI integration is mentioned but specifics like embedded analytics, automated workflows, and natural language queries aren\'t detailed.', fix: 'Create dedicated Joule/AI content showing specific use cases: auto-posting in finance, intelligent sourcing, demand sensing.' },
+            { severity: 'medium', title: 'Mid-Market Perception Gap', description: 'LLMs position S/4HANA as "large enterprise only" — the Public Cloud edition for mid-market isn\'t well represented.', fix: 'Develop Public Cloud positioning content for mid-market with customer examples and implementation timelines.' }
+        ],
+        quickWins: [
+            { title: 'Quantify RISE Outcomes', description: 'Transformation value isn\'t always cited.', action: 'Add named customer stories: "Coca-Cola Europacific went live in 5 months with RISE" type content.' },
+            { title: 'Joule Use Cases', description: 'AI capabilities are mentioned generically.', action: 'Create "Joule in Action" content showing specific AI use cases by role: CFO, supply chain manager, procurement.' },
+            { title: 'Industry Depth Evidence', description: '25+ industries claim needs proof points.', action: 'Publish industry-specific landing pages with named customer outcomes per vertical.' }
+        ],
+        rewrites: [
+            { context: 'Product Positioning', before: 'SAP S/4HANA Cloud is an intelligent ERP system that helps businesses run efficiently.', after: 'SAP S/4HANA Cloud powers the operations of 25,000+ customers across 25 industries — from Coca-Cola\'s global supply chain to BMW\'s manufacturing floor to Pfizer\'s clinical supply operations — with real-time visibility that reduced month-end close by 50% on average.' },
+            { context: 'AI Differentiation', before: 'S/4HANA includes AI and machine learning capabilities.', after: 'With Joule embedded across 80+ scenarios, S/4HANA Cloud automates 70% of routine finance tasks, predicts supply disruptions 30 days ahead, and lets executives query business performance in natural language — generative AI built into the ERP, not bolted on.' },
+            { context: 'RISE Value', before: 'RISE with SAP helps organizations transform to an intelligent enterprise.', after: 'RISE with SAP customers go live in 4-6 months with pre-configured industry solutions — a 60% reduction from traditional ERP deployments, as demonstrated by recent implementations at Coca-Cola Europacific and Accenture.' }
+        ],
+        competitors: [
+            { name: 'Oracle Cloud ERP', score: 7.8 },
+            { name: 'Microsoft Dynamics 365', score: 6.5 }
+        ]
+    },
+    
+    concur: {
+        overallScore: 8.1,
+        llmScores: {
+            chatgpt: { 
+                score: 8.5, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For corporate travel and expense management, SAP Concur is the clear market leader. It offers comprehensive solutions for travel booking, expense reporting, and invoice management — used by over 50,000 organizations globally. Strengths include AI-powered expense auditing, mobile capture, and broad integrations. Expensify offers simpler expense-only solutions for smaller companies. Coupa has expense capabilities but isn't as specialized..." 
+            },
+            claude: { 
+                score: 8.2, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Concur dominates corporate travel and expense, processing over $100 billion in annual spend. The platform covers the full travel-to-expense lifecycle: booking, itinerary management, expense capture, policy compliance, and reimbursement. Key differentiators are scale, integrations (200+ travel suppliers), and AI-powered auditing. For expense-only needs, Expensify is simpler. For integrated procurement, Coupa bundles expense with broader spend management..." 
+            },
+            perplexity: { 
+                score: 7.8, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "SAP Concur leads the corporate T&E market with 50,000+ customers and $100B+ in managed spend. The platform scores highly for enterprise features: policy compliance, global coverage, and ERP integration. Expensify appeals to SMBs with simpler needs. TripActions (now Navan) competes on modern travel booking UX. [Sources: G2 Enterprise T&E 2026, Gartner]" 
+            },
+            gemini: { 
+                score: 7.9, 
+                mentioned: true, 
+                position: 1, 
+                sentiment: 'positive', 
+                accurate: true, 
+                response: "For travel and expense management, SAP Concur is the enterprise standard. It offers end-to-end T&E capabilities with strong policy enforcement and analytics. The platform integrates with major travel suppliers and ERP systems. Alternatives include Expensify (simpler, SMB-focused) and Navan (modern travel booking). Concur is best for organizations with complex travel programs and compliance requirements..." 
+            }
+        },
+        issues: [
+            { severity: 'low', title: 'UX Comparison to Navan', description: 'LLMs mention Navan/TripActions has "modern" booking UX — an emerging competitive narrative.', fix: 'Highlight recent UX improvements and mobile experience enhancements with specific examples.' },
+            { severity: 'low', title: 'SMB Positioning Gap', description: 'Consistently described as "enterprise" which may limit mid-market perception.', fix: 'Develop content for Concur solutions at different company sizes to broaden positioning.' }
+        ],
+        quickWins: [
+            { title: 'Quantify the Savings', description: 'Scale is mentioned but ROI isn\'t prominent.', action: 'Add specific customer savings metrics: average expense processing cost reduction, policy compliance improvement.' },
+            { title: 'Modern UX Story', description: 'Counter the "legacy" perception from newer competitors.', action: 'Publish recent UX improvements and mobile app ratings/reviews.' }
+        ],
+        rewrites: [
+            { context: 'Market Position', before: 'SAP Concur is the world\'s leading travel and expense management solution.', after: 'SAP Concur manages $100B+ in annual spend for 50,000+ organizations — with AI auditing that catches 5x more policy violations than manual review and saved customers an average of $9.50 per expense report processed.' },
+            { context: 'Value Proposition', before: 'Automate expense reporting with mobile capture and AI-powered auditing.', after: 'Employees snap receipts in 3 seconds, AI categorizes and audits automatically, and 60% of reports require zero manual review — reducing expense processing time from 20 minutes to under 5 at customers like Salesforce and Adobe.' }
+        ],
+        competitors: [
+            { name: 'Expensify', score: 6.5 },
+            { name: 'Navan (TripActions)', score: 7.0 }
+        ]
+    }
+};
+
+// Product metadata
+const productData = {
+    ariba: { company: "SAP Ariba", category: "Procurement Software / Source-to-Pay" },
+    successfactors: { company: "SAP SuccessFactors", category: "Human Capital Management (HCM)" },
+    datasphere: { company: "SAP Datasphere", category: "Data Management / Data Fabric" },
+    s4hana: { company: "SAP S/4HANA Cloud", category: "Cloud ERP" },
+    btp: { company: "SAP Business Technology Platform", category: "Business Technology Platform" },
+    signavio: { company: "SAP Signavio", category: "Process Intelligence" },
+    concur: { company: "SAP Concur", category: "Travel & Expense Management" }
+};
+
+// State
+let selectedProduct = null;
+let currentMode = 'demo';
+
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('demoModeBtn').classList.toggle('active', mode === 'demo');
+    document.getElementById('liveModeBtn').classList.toggle('active', mode === 'live');
+    document.getElementById('modeHint').textContent = mode === 'demo' 
+        ? 'Pre-analyzed results for reliable demos' 
+        : 'Real-time LLM queries (requires API keys)';
+}
+
+function selectProduct(productId) {
+    document.querySelectorAll('.product-card').forEach(card => card.classList.remove('selected'));
+    document.querySelector(`[data-product="${productId}"]`).classList.add('selected');
+    selectedProduct = productId;
+    
+    if (productId === 'custom') {
+        document.getElementById('customInputs').style.display = 'block';
+        setMode('live'); // Custom products need live mode
+    } else {
+        document.getElementById('customInputs').style.display = 'none';
+    }
+}
+
+document.getElementById('labForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!selectedProduct) {
+        alert('Please select a product first');
+        return;
+    }
+    
+    const runBtn = document.getElementById('runBtn');
+    const spinner = document.getElementById('spinner');
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Analyzing...';
+    spinner.style.display = 'block';
+    
+    // Brief delay for effect
+    await new Promise(r => setTimeout(r, currentMode === 'demo' ? 800 : 100));
+    
+    document.getElementById('resultsSection').classList.add('show');
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+    
+    // Reset loading states
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const scorecard = document.querySelector('.scorecard');
+    document.getElementById('loadingProgress').style.width = '0%';
+    ['chatgpt', 'claude', 'gemini'].forEach(llm => {
+        const item = document.getElementById(`loading-${llm}`);
+        if (item) {
+            item.classList.remove('active', 'done', 'error');
+            item.querySelector('.llm-loading-status').textContent = 'Waiting...';
+        }
+    });
+    
+    if (currentMode === 'demo' && demoResults[selectedProduct]) {
+        // Use pre-cached demo results
+        loadingOverlay.style.display = 'none';
+        if (scorecard) scorecard.style.display = 'block';
+        document.getElementById('demoBanner').style.display = 'flex';
+        renderResults(demoResults[selectedProduct]);
+    } else {
+        // Live mode - call API
+        document.getElementById('demoBanner').style.display = 'none';
+        
+        // Show animated loading overlay
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const scorecard = document.querySelector('.scorecard');
+        loadingOverlay.style.display = 'flex';
+        if (scorecard) scorecard.style.display = 'none';
+        
+        // Animate through LLMs
+        const llms = ['chatgpt', 'claude', 'gemini'];
+        let currentLLM = 0;
+        
+        const updateLoadingState = (index, status) => {
+            const item = document.getElementById(`loading-${llms[index]}`);
+            if (!item) return;
+            
+            item.classList.remove('active', 'done', 'error');
+            const statusEl = item.querySelector('.llm-loading-status');
+            
+            if (status === 'active') {
+                item.classList.add('active');
+                statusEl.textContent = 'Querying...';
+            } else if (status === 'done') {
+                item.classList.add('done');
+                statusEl.textContent = '✓ Done';
+            } else if (status === 'error') {
+                item.classList.add('error');
+                statusEl.textContent = '✗ Error';
+            } else {
+                statusEl.textContent = 'Waiting...';
+            }
+        };
+        
+        // Simulate sequential progress
+        const progressBar = document.getElementById('loadingProgress');
+        const animateProgress = () => {
+            return new Promise(resolve => {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 2;
+                    progressBar.style.width = Math.min(progress, 95) + '%';
+                    
+                    // Update LLM states
+                    const llmIndex = Math.floor(progress / 25);
+                    if (llmIndex !== currentLLM && llmIndex < 4) {
+                        if (currentLLM < 4) updateLoadingState(currentLLM, 'done');
+                        currentLLM = llmIndex;
+                        updateLoadingState(currentLLM, 'active');
+                    }
+                    
+                    if (progress >= 95) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            });
+        };
+        
+        // Start animation
+        updateLoadingState(0, 'active');
+        const animationPromise = animateProgress();
+        
+        try {
+            // Build inputs including queries from productQueries
+            const queries = productQueries[selectedProduct] 
+                ? productQueries[selectedProduct].map(q => q.text) 
+                : [];
+            
+            const inputs = {
+                company: document.getElementById('company').value || productData[selectedProduct]?.company,
+                category: document.getElementById('category').value || productData[selectedProduct]?.category,
+                positioning: document.getElementById('positioning').value || demoResults[selectedProduct]?.rewrites?.[0]?.before || '',
+                queries: queries,
+                competitors: demoResults[selectedProduct]?.competitors?.map(c => c.name) || []
+            };
+            
+            console.log('Sending to API:', inputs);
+            
+            const response = await fetch('/.netlify/functions/geo-scorecard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputs)
+            });
+            
+            console.log('API response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API error:', errorText);
+                throw new Error('API failed: ' + errorText);
+            }
+            
+            const data = await response.json();
+            console.log('API returned:', data);
+            
+            // Wait for animation to complete
+            await animationPromise;
+            
+            // Update final LLM states based on actual results
+            llms.forEach((llm, i) => {
+                const score = data.llmScores?.[llm]?.score || 0;
+                updateLoadingState(i, score > 0 ? 'done' : 'error');
+            });
+            progressBar.style.width = '100%';
+            
+            // Brief pause to show completion
+            await new Promise(r => setTimeout(r, 500));
+            
+            // Hide loading, show results
+            loadingOverlay.style.display = 'none';
+            if (scorecard) scorecard.style.display = 'block';
+            
+            renderResults(data);
+        } catch (error) {
+            console.error('Live mode error:', error);
+            
+            // Complete animation with errors
+            await animationPromise;
+            llms.forEach((llm, i) => updateLoadingState(i, 'error'));
+            progressBar.style.width = '100%';
+            await new Promise(r => setTimeout(r, 500));
+            
+            // Hide loading
+            loadingOverlay.style.display = 'none';
+            if (scorecard) scorecard.style.display = 'block';
+            
+            // Fallback to demo if available
+            if (demoResults[selectedProduct]) {
+                document.getElementById('demoBanner').style.display = 'flex';
+                document.getElementById('demoBanner').innerHTML = `
+                    <span class="icon">⚠️</span>
+                    <span><strong>Fallback to Demo</strong> — Live API error: ${error.message}. Showing cached results.</span>
+                `;
+                renderResults(demoResults[selectedProduct]);
+            }
+        }
+    }
+    
+    runBtn.disabled = false;
+    runBtn.querySelector('span').textContent = '🚀 Run Analysis';
+    spinner.style.display = 'none';
+});
+
+function renderResults(data) {
+    animateScore(data.overallScore);
+    renderScoreComponents(data.scoreComponents);
+    renderLLMCards(data.llmScores);
+    renderIssues(data.issues);
+    renderQuickWins(data.quickWins);
+    renderRewrites(data.rewrites);
+    renderCompetitors(data.competitors, data.overallScore);
+}
+
+function renderScoreComponents(components) {
+    const container = document.getElementById('scoreComponents');
+    if (!components || !container) return;
+    
+    container.innerHTML = components.map(c => {
+        const pct = (c.score / c.max) * 100;
+        const color = c.score >= 7 ? '#188038' : c.score >= 5 ? '#F9AB00' : '#D93025';
+        return `
+            <div style="background: white; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--sap-dark);">${c.name}</span>
+                    <span style="font-weight: 700; color: ${color};">${c.score.toFixed(1)}</span>
+                </div>
+                <div style="background: #E5E7EB; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem;">
+                    <div style="background: ${color}; height: 100%; width: ${pct}%; border-radius: 3px;"></div>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-light); margin: 0;">${c.evidence}</p>
+            </div>
+        `;
+    }).join('');
+}
+
+function animateScore(score) {
+    const scoreEl = document.getElementById('overallScore');
+    const progressEl = document.getElementById('scoreProgress');
+    const titleEl = document.getElementById('scoreTitle');
+    const summaryEl = document.getElementById('scoreSummary');
+    
+    let current = 0;
+    const animate = () => {
+        current += score / 60;
+        if (current >= score) {
+            current = score;
+            scoreEl.textContent = score.toFixed(1);
+        } else {
+            scoreEl.textContent = current.toFixed(1);
+            requestAnimationFrame(animate);
+        }
+    };
+    animate();
+    
+    const circumference = 2 * Math.PI * 90;
+    progressEl.style.strokeDashoffset = circumference - (score / 10) * circumference;
+    
+    if (score >= 7) {
+        progressEl.style.stroke = '#188038';
+        titleEl.textContent = 'Good Visibility';
+        summaryEl.textContent = 'Your product is well-represented across AI assistants, with optimization opportunities.';
+    } else if (score >= 5) {
+        progressEl.style.stroke = '#F9AB00';
+        titleEl.textContent = 'Moderate Visibility';
+        summaryEl.textContent = 'Your product appears but may be positioned weakly or missing from key queries.';
+    } else {
+        progressEl.style.stroke = '#D93025';
+        titleEl.textContent = 'Low Visibility';
+        summaryEl.textContent = 'Your product is often missing or poorly positioned. Significant optimization needed.';
+    }
+}
+
+function renderLLMCards(llmScores) {
+    const grid = document.getElementById('llmGrid');
+    const llms = ['chatgpt', 'claude', 'gemini'];
+    const icons = { chatgpt: '🤖', claude: '🧠', gemini: '✨' };
+    const names = { chatgpt: 'ChatGPT', claude: 'Claude', gemini: 'Gemini' };
+    
+    grid.innerHTML = llms.map(llm => {
+        const data = llmScores[llm];
+        const scoreClass = data.score >= 7 ? 'high' : data.score >= 5 ? 'medium' : 'low';
+        
+        return `
+            <div class="llm-card">
+                <div class="llm-icon ${llm}">${icons[llm]}</div>
+                <h4>${names[llm]}</h4>
+                <div class="score-badge ${scoreClass}">${data.score.toFixed(1)}</div>
+                <div class="llm-metrics">
+                    <div class="llm-metric ${data.mentioned ? 'positive' : 'negative'}">
+                        <span class="icon">${data.mentioned ? '✅' : '❌'}</span>
+                        <span>${data.mentioned ? 'Mentioned' : 'Not found'}</span>
+                    </div>
+                    <div class="llm-metric ${data.position <= 3 ? 'positive' : 'neutral'}">
+                        <span class="icon">${data.position <= 3 ? '🥇' : '📍'}</span>
+                        <span>#${data.position}</span>
+                    </div>
+                    <div class="llm-metric ${data.sentiment === 'positive' ? 'positive' : 'neutral'}">
+                        <span class="icon">${data.sentiment === 'positive' ? '👍' : '😐'}</span>
+                        <span>${data.sentiment}</span>
+                    </div>
+                    <div class="llm-metric ${data.accurate ? 'positive' : 'negative'}">
+                        <span class="icon">${data.accurate ? '✓' : '⚠️'}</span>
+                        <span>${data.accurate ? 'Accurate' : 'Issues'}</span>
+                    </div>
+                </div>
+                <button class="expand-btn" onclick="toggleResponse('${llm}')">View Response</button>
+                <div class="llm-response" id="response-${llm}">${data.response}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function toggleResponse(llm) {
+    document.getElementById(`response-${llm}`).classList.toggle('show');
+}
+
+function renderIssues(issues) {
+    document.getElementById('issueList').innerHTML = issues.map(issue => `
+        <div class="issue-item ${issue.severity}">
+            <div class="issue-header">
+                <span class="issue-title">${issue.title}</span>
+                <span class="severity-badge ${issue.severity}">${issue.severity}</span>
+            </div>
+            <p class="issue-description">${issue.description}</p>
+            <p class="issue-fix">💡 ${issue.fix}</p>
+        </div>
+    `).join('');
+}
+
+function renderQuickWins(quickWins) {
+    document.getElementById('quickWinsList').innerHTML = quickWins.map((win, i) => `
+        <div class="issue-item low">
+            <div class="issue-header">
+                <span class="issue-title">Quick Win #${i + 1}: ${win.title}</span>
+            </div>
+            <p class="issue-description">${win.description}</p>
+            <p class="issue-fix">⚡ ${win.action}</p>
+        </div>
+    `).join('');
+}
+
+function renderRewrites(rewrites) {
+    document.getElementById('rewritesList').innerHTML = rewrites.map(r => `
+        <div style="margin-bottom: 1.5rem;">
+            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--sap-dark);">${r.context}</p>
+            <div class="before-after">
+                <div class="before-box">
+                    <h4>❌ Before</h4>
+                    <p>${r.before}</p>
+                </div>
+                <div class="after-box">
+                    <h4>✅ After</h4>
+                    <p>${r.after}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderCompetitors(competitors, yourScore) {
+    const productName = productData[selectedProduct]?.company || 'Your Product';
+    document.getElementById('competitorCompare').innerHTML = `
+        <div class="competitor-card you">
+            <h4>${productName}</h4>
+            <div class="comp-score">${yourScore.toFixed(1)}</div>
+        </div>
+        ${competitors.map(c => `
+            <div class="competitor-card">
+                <h4>${c.name}</h4>
+                <div class="comp-score" style="color: ${c.score > yourScore ? '#D93025' : '#188038'}">${c.score.toFixed(1)}</div>
+            </div>
+        `).join('')}
+    `;
+}
+
+function copyResults() {
+    const product = productData[selectedProduct]?.company || 'Product';
+    const score = document.getElementById('overallScore').textContent;
+    let text = `GEO Visibility Scorecard: ${product}\nOverall Score: ${score}/10\n\n`;
+    text += 'See full analysis at futureofpmm.com/curriculum/labs/geo-visibility-v2.html';
+    navigator.clipboard.writeText(text).then(() => alert('Results copied!'));
+}
+
+function exportPDF() {
+    window.print();
+}
+
+// ==========================================
+// QUERY SELECTION (Demo Mode Customization)
+// ==========================================
+const productQueries = {
+    ariba: [
+        { type: 'Category', text: 'What are the best enterprise procurement software solutions in 2026?' },
+        { type: 'Problem', text: 'How can I reduce procurement costs and manage supplier risk?' },
+        { type: 'Comparison', text: 'Compare SAP Ariba vs Coupa vs Jaggaer for enterprise procurement' },
+        { type: 'Use Case', text: 'What software do Fortune 500 companies use for source-to-pay?' }
+    ],
+    successfactors: [
+        { type: 'Category', text: 'What are the best enterprise HR software solutions in 2026?' },
+        { type: 'Problem', text: 'How to improve employee experience and reduce turnover?' },
+        { type: 'Comparison', text: 'Compare SAP SuccessFactors vs Workday vs Oracle HCM' },
+        { type: 'Use Case', text: 'What HCM platform for global companies with 50,000+ employees?' }
+    ],
+    datasphere: [
+        { type: 'Category', text: 'What are the best enterprise data management platforms in 2026?' },
+        { type: 'Problem', text: 'How to build a data fabric for SAP and non-SAP data?' },
+        { type: 'Comparison', text: 'Compare SAP Datasphere vs Snowflake vs Databricks' },
+        { type: 'Use Case', text: 'What data platform for companies with complex SAP landscapes?' }
+    ],
+    s4hana: [
+        { type: 'Category', text: 'What are the best cloud ERP solutions for large enterprises?' },
+        { type: 'Problem', text: 'How to modernize legacy ERP systems?' },
+        { type: 'Comparison', text: 'Compare SAP S/4HANA vs Oracle Cloud ERP vs Microsoft Dynamics' },
+        { type: 'Use Case', text: 'What ERP for complex manufacturing with global operations?' }
+    ],
+    btp: [
+        { type: 'Category', text: 'What is the best platform for extending SAP applications?' },
+        { type: 'Problem', text: 'How to integrate SAP with third-party systems?' },
+        { type: 'Comparison', text: 'Compare SAP BTP vs Microsoft Azure vs AWS for SAP customers' },
+        { type: 'Use Case', text: 'What platform for building custom apps on top of S/4HANA?' }
+    ],
+    signavio: [
+        { type: 'Category', text: 'What are the best process mining and process intelligence tools?' },
+        { type: 'Problem', text: 'How to improve business processes with AI?' },
+        { type: 'Comparison', text: 'Compare SAP Signavio vs Celonis vs Microsoft Process Advisor' },
+        { type: 'Use Case', text: 'What tool for process discovery before an ERP migration?' }
+    ],
+    concur: [
+        { type: 'Category', text: 'What are the best corporate travel and expense management solutions?' },
+        { type: 'Problem', text: 'How to automate expense reporting and reduce fraud?' },
+        { type: 'Comparison', text: 'Compare SAP Concur vs Expensify vs Navan for enterprise T&E' },
+        { type: 'Use Case', text: 'What T&E platform for global companies with complex travel programs?' }
+    ]
+};
+
+let selectedQuery = 0;
+
+function renderQuerySelector(productId) {
+    const queries = productQueries[productId];
+    if (!queries || currentMode !== 'demo') {
+        document.getElementById('querySection').style.display = 'none';
+        return;
+    }
+    
+    document.getElementById('querySection').style.display = 'block';
+    document.getElementById('queryGrid').innerHTML = queries.map((q, i) => `
+        <div class="query-card ${i === selectedQuery ? 'selected' : ''}" onclick="selectQuery(${i})">
+            <div class="query-type">${q.type} Query</div>
+            <div class="query-text">"${q.text}"</div>
+        </div>
+    `).join('');
+}
+
+function selectQuery(index) {
+    selectedQuery = index;
+    document.querySelectorAll('.query-card').forEach((card, i) => {
+        card.classList.toggle('selected', i === index);
+    });
+}
+
+// ==========================================
+// DEEP DIVE CONTENT
+// ==========================================
+const deepDiveData = {
+    ariba: {
+        specificity: [
+            { claim: '"World\'s largest B2B network"', status: 'good', note: '5.5M organizations — verifiable and specific' },
+            { claim: '"$6 trillion in commerce annually"', status: 'good', note: 'Quantified, frequently cited by LLMs' },
+            { claim: '"Intelligent spend management"', status: 'vague', note: 'Generic — what does "intelligent" mean specifically?' },
+            { claim: '"Transform procurement operations"', status: 'vague', note: 'No specificity on how or by how much' },
+            { claim: '"AI-powered insights"', status: 'ok', note: 'Common claim — needs specific examples' },
+            { claim: '"Reduce costs, improve compliance"', status: 'vague', note: 'By how much? What compliance standards?' }
+        ],
+        testQueries: [
+            { query: 'What procurement software has the largest supplier network?', status: '✅', note: 'SAP Ariba typically ranks #1 for this query' },
+            { query: 'Best procurement software for Fortune 500 manufacturing', status: '⚠️', note: 'Sometimes mentioned, but not consistently #1' },
+            { query: 'How to reduce supplier risk in procurement', status: '❌', note: 'Generic results — Ariba not specifically cited' },
+            { query: 'Procurement software with best ERP integration', status: '✅', note: 'SAP integration is a cited differentiator' },
+            { query: 'Most cost-effective procurement platform', status: '⚠️', note: 'Often positioned as "enterprise" not "cost-effective"' }
+        ],
+        citations: [
+            { 
+                source: 'SAP.com', 
+                status: 'primary', 
+                frequency: '85%',
+                sentiment: 'neutral',
+                note: 'Main source for capabilities',
+                whatsCited: ['Product features', 'Network size (5.5M)', 'Integration capabilities'],
+                missing: ['Customer ROI figures', 'Implementation timelines'],
+                recommendation: 'Add quantified outcomes and named customer results to product pages'
+            },
+            { 
+                source: 'G2 Reviews', 
+                status: 'cited', 
+                frequency: '45%',
+                sentiment: 'mixed',
+                note: 'User reviews for pros/cons',
+                whatsCited: ['Ease of use concerns', 'Integration praise', 'Support feedback'],
+                missing: ['Recent UX improvements', 'Enterprise success stories'],
+                recommendation: 'Encourage satisfied enterprise customers to leave detailed reviews'
+            },
+            { 
+                source: 'Gartner Magic Quadrant', 
+                status: 'cited', 
+                frequency: '35%',
+                sentiment: 'positive',
+                note: 'Leader positioning',
+                whatsCited: ['Leader quadrant position', 'Completeness of vision'],
+                missing: ['Specific evaluation criteria wins'],
+                recommendation: 'Create indexed content highlighting Gartner strengths'
+            },
+            { 
+                source: 'Third-party reviews', 
+                status: 'cited', 
+                frequency: '25%',
+                sentiment: 'mixed',
+                note: 'TrustRadius, Capterra',
+                whatsCited: ['Feature comparisons', 'Pricing perception'],
+                missing: ['Recent product updates', 'Mid-market success'],
+                recommendation: 'Diversify review presence beyond enterprise-focused platforms'
+            },
+            { 
+                source: 'Customer case studies', 
+                status: 'rarely', 
+                frequency: '10%',
+                sentiment: 'positive',
+                note: 'Specific outcomes rarely appear',
+                whatsCited: ['Brand names occasionally'],
+                missing: ['Specific ROI numbers', 'Timeline to value', 'Before/after metrics'],
+                recommendation: 'Publish indexable case studies with structured data markup'
+            }
+        ],
+        actionPlan: [
+            { priority: 1, title: 'Add quantified customer outcomes to key pages', description: 'Include specific ROI figures like "reduced procurement costs by X%" with named customers.' },
+            { priority: 2, title: 'Create "Network Scale" dedicated content', description: 'Page specifically about the 5.5M organization network with comparison to competitors.' },
+            { priority: 3, title: 'Address implementation narrative', description: 'Publish "Quick Start" content with deployment timelines that counter complexity perception.' },
+            { priority: 4, title: 'Update analyst relations pages', description: 'Ensure current Gartner/Forrester positioning is indexed and easily cited.' },
+            { priority: 5, title: 'Build use-case landing pages', description: 'Create pages for specific buyer queries: "Procurement for Manufacturing", "Supplier Risk Management", etc.' }
+        ],
+        fullRewrites: [
+            { element: 'Homepage Headline', before: 'Intelligent Spend Management Solutions', after: 'The World\'s Largest Procurement Network: 5.5M Suppliers, $6T in Annual Commerce' },
+            { element: 'Value Proposition', before: 'SAP Ariba solutions connect you to a global network of suppliers and the intelligent technologies you need.', after: 'SAP Ariba connects you to 5.5 million suppliers — more than Coupa, Jaggaer, and Oracle combined — where Unilever cut procurement costs 15% and Siemens onboarded 10,000 suppliers in 90 days.' },
+            { element: 'Feature Description', before: 'Streamline the entire procurement process from sourcing through payment.', after: 'Source-to-pay automation that reduced cycle times 40% at Accenture: AI-guided sourcing events, automated three-way matching, and supplier self-service that eliminated 60% of AP inquiries.' },
+            { element: 'CTA Copy', before: 'Learn more about SAP Ariba', after: 'See why 4M+ suppliers prefer the SAP Business Network → Zero transaction fees for 90% of suppliers' }
+        ]
+    },
+    successfactors: {
+        specificity: [
+            { claim: '"268 million users globally"', status: 'good', note: 'Specific and frequently cited' },
+            { claim: '"85% of Forbes Global 2000"', status: 'good', note: 'Strong credibility marker, often cited' },
+            { claim: '"End-to-end talent management"', status: 'ok', note: 'Somewhat generic but accurate' },
+            { claim: '"Cloud-based human experience management"', status: 'vague', note: '"HXM" concept not well understood by LLMs' },
+            { claim: '"100+ countries payroll"', status: 'good', note: 'Specific differentiator, well cited' },
+            { claim: '"AI-powered skills management"', status: 'ok', note: 'Joule capabilities need more specific examples' }
+        ],
+        testQueries: [
+            { query: 'Best HCM for global companies', status: '✅', note: 'SuccessFactors typically ranks top 2' },
+            { query: 'HR software with best SAP integration', status: '✅', note: 'Clear winner for this query' },
+            { query: 'Most user-friendly enterprise HR software', status: '❌', note: 'Workday typically wins this positioning' },
+            { query: 'Best AI capabilities in HR software', status: '⚠️', note: 'Joule mentioned but not leading' },
+            { query: 'HR software for regulated industries', status: '✅', note: 'Compliance strength is cited' }
+        ],
+        citations: [
+            { source: 'SAP.com product pages', status: 'primary', note: 'Main source for features and positioning' },
+            { source: 'G2 Reviews', status: 'cited', note: 'Used for UX comparisons (often unfavorable)' },
+            { source: 'Gartner/Forrester', status: 'cited', note: 'Leader positioning referenced' },
+            { source: 'Customer references', status: 'rarely', note: 'Named customers rarely appear in AI responses' }
+        ],
+        actionPlan: [
+            { priority: 1, title: 'Counter the UX narrative', description: 'Create content showcasing recent UX improvements with screenshots and user testimonials.' },
+            { priority: 2, title: 'Amplify Joule AI story', description: 'Dedicated page with specific Joule use cases and measured productivity improvements.' },
+            { priority: 3, title: 'Publish employee experience ROI', description: 'Quantified outcomes: retention improvement %, time-to-hire reduction, etc.' },
+            { priority: 4, title: 'Create Workday comparison content', description: 'Fair comparison highlighting where SuccessFactors wins (global, integration, compliance).' },
+            { priority: 5, title: 'Industry-specific landing pages', description: 'HCM for Life Sciences, HCM for Manufacturing, etc. with relevant case studies.' }
+        ],
+        fullRewrites: [
+            { element: 'Product Positioning', before: 'SAP SuccessFactors delivers cloud-based human experience management.', after: 'SAP SuccessFactors powers HR for 268 million users at companies like Siemens, Nestlé, and Coca-Cola — the only HCM suite with native ERP integration and global payroll in 100+ countries.' },
+            { element: 'Talent Management', before: 'End-to-end talent management from recruiting to retirement.', after: 'Recruit, develop, and retain talent with AI that reduced Unilever\'s time-to-hire by 25% and identified internal candidates for 40% of leadership roles at Siemens.' },
+            { element: 'AI Capabilities', before: 'AI-powered skills management with 7,700+ skills.', after: 'Joule AI analyzes 7,700+ skills across your workforce: "Which employees are ready for promotion?" "Where are our skills gaps?" "Who can cover for this role?" — answered in seconds, not days.' }
+        ]
+    }
+};
+
+// Add default deep dive data for other products
+['datasphere', 's4hana', 'btp', 'signavio', 'concur'].forEach(product => {
+    if (!deepDiveData[product]) {
+        deepDiveData[product] = {
+            specificity: [
+                { claim: 'Primary value proposition', status: 'ok', note: 'Could be more specific with outcomes' },
+                { claim: 'Key differentiator', status: 'good', note: 'Well-articulated and cited' },
+                { claim: 'Generic capability claim', status: 'vague', note: 'Needs quantification' }
+            ],
+            testQueries: [
+                { query: `Best ${productData[product]?.category} solutions`, status: '✅', note: 'Typically mentioned in top results' },
+                { query: 'ROI comparison in this category', status: '⚠️', note: 'Sometimes mentioned but not leading' },
+                { query: 'Easy-to-implement solutions', status: '❌', note: 'Not typically positioned this way' }
+            ],
+            citations: [
+                { source: 'SAP.com', status: 'primary', note: 'Main source for capabilities' },
+                { source: 'Third-party reviews', status: 'cited', note: 'Mixed sentiment' }
+            ],
+            actionPlan: [
+                { priority: 1, title: 'Add quantified outcomes', description: 'Include specific ROI figures with named customers.' },
+                { priority: 2, title: 'Improve differentiation content', description: 'Create clear comparison pages vs. key competitors.' },
+                { priority: 3, title: 'Address common objections', description: 'Publish content that preempts competitive FUD.' }
+            ],
+            fullRewrites: [
+                { element: 'Main Value Prop', before: 'Generic capability description.', after: 'Specific, quantified value with named customer proof.' }
+            ]
+        };
+    }
+});
+
+function renderDeepDive(productId) {
+    const data = deepDiveData[productId] || deepDiveData.ariba;
+    
+    // Specificity table
+    document.getElementById('specificityTable').innerHTML = `
+        <tr><th>Claim</th><th>Status</th><th>Analysis</th></tr>
+        ${data.specificity.map(s => `
+            <tr>
+                <td>${s.claim}</td>
+                <td><span class="claim-${s.status}">${s.status === 'good' ? '✅ Specific' : s.status === 'ok' ? '🟡 Okay' : '❌ Vague'}</span></td>
+                <td>${s.note}</td>
+            </tr>
+        `).join('')}
+    `;
+    
+    // Test queries
+    document.getElementById('testQueryList').innerHTML = data.testQueries.map(q => `
+        <div class="test-query-item">
+            <span class="status">${q.status}</span>
+            <div class="query-content">
+                <div class="query">"${q.query}"</div>
+                <div class="note">${q.note}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Citation Summary Stats
+    const primaryCount = data.citations.filter(c => c.status === 'primary').length;
+    const citedCount = data.citations.filter(c => c.status === 'cited').length;
+    const rarelyCount = data.citations.filter(c => c.status === 'rarely').length;
+    
+    document.getElementById('citationSummary').innerHTML = `
+        <div style="background: #E8F5E9; padding: 1rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #188038;">${primaryCount}</div>
+            <div style="font-size: 0.8rem; color: #188038; font-weight: 500;">PRIMARY</div>
+        </div>
+        <div style="background: #FFF3E0; padding: 1rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #E85D04;">${citedCount}</div>
+            <div style="font-size: 0.8rem; color: #E85D04; font-weight: 500;">CITED</div>
+        </div>
+        <div style="background: #FFEBEE; padding: 1rem; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #D93025;">${rarelyCount}</div>
+            <div style="font-size: 0.8rem; color: #D93025; font-weight: 500;">RARELY</div>
+        </div>
+    `;
+    
+    // Detailed Citations
+    document.getElementById('citationAudit').innerHTML = `
+        <div class="issue-list">
+            ${data.citations.map(c => `
+                <div class="issue-item ${c.status === 'primary' ? 'low' : c.status === 'cited' ? 'medium' : 'high'}" style="cursor: pointer;" onclick="this.querySelector('.citation-details').style.display = this.querySelector('.citation-details').style.display === 'none' ? 'block' : 'none'">
+                    <div class="issue-header">
+                        <span class="issue-title">${c.source}</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span style="font-size: 0.75rem; color: var(--text-light);">${c.frequency || ''} of responses</span>
+                            <span class="severity-badge ${c.status === 'primary' ? 'low' : c.status === 'cited' ? 'medium' : 'high'}">${c.status.toUpperCase()}</span>
+                        </div>
+                    </div>
+                    <p class="issue-description">${c.note}</p>
+                    
+                    <div class="citation-details" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <h5 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.5rem;">✅ What's Being Cited</h5>
+                                <ul style="font-size: 0.85rem; color: var(--text); margin: 0; padding-left: 1rem;">
+                                    ${(c.whatsCited || []).map(w => `<li>${w}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.5rem;">❌ Missing From Citations</h5>
+                                <ul style="font-size: 0.85rem; color: var(--sap-red); margin: 0; padding-left: 1rem;">
+                                    ${(c.missing || []).map(m => `<li>${m}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        ${c.recommendation ? `
+                        <div style="background: #E3F2FD; padding: 0.75rem 1rem; border-radius: 6px; border-left: 3px solid var(--sap-blue);">
+                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--sap-blue);">💡 RECOMMENDATION:</span>
+                            <p style="font-size: 0.85rem; color: var(--text); margin: 0.25rem 0 0 0;">${c.recommendation}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-light); margin-top: 1rem;">Click any source to expand details</p>
+    `;
+    
+    // Missing Citations Alert
+    const missingSources = ['Press releases', 'Recent blog posts', 'Video content', 'Podcast mentions'];
+    document.getElementById('missingCitations').innerHTML = `
+        <div style="background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 1.25rem;">
+            <h4 style="margin: 0 0 0.75rem 0; color: #F57C00; font-size: 0.95rem;">⚠️ Sources NOT Being Cited</h4>
+            <p style="font-size: 0.85rem; color: var(--text); margin-bottom: 0.75rem;">These content types exist but rarely appear in AI responses:</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                ${missingSources.map(s => `<span style="background: white; border: 1px solid #FFE082; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">${s}</span>`).join('')}
+            </div>
+        </div>
+    `;
+    
+    // Full rewrites
+    document.getElementById('fullRewritesList').innerHTML = data.fullRewrites.map(r => `
+        <div style="margin-bottom: 2rem;">
+            <p style="font-weight: 700; margin-bottom: 0.75rem; color: var(--sap-dark); font-size: 1rem;">📝 ${r.element}</p>
+            <div class="before-after">
+                <div class="before-box">
+                    <h4>❌ Before</h4>
+                    <p>${r.before}</p>
+                </div>
+                <div class="after-box">
+                    <h4>✅ After (GEO-Optimized)</h4>
+                    <p>${r.after}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Action plan
+    document.getElementById('actionChecklist').innerHTML = data.actionPlan.map(a => `
+        <div class="action-item">
+            <span class="priority">${a.priority}</span>
+            <div class="action-content">
+                <h4>${a.title}</h4>
+                <p>${a.description}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showTab(tabId) {
+    // Update tab buttons
+    document.querySelectorAll('.section-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+}
+
+// Update selectProduct to show query selector
+const originalSelectProduct = selectProduct;
+selectProduct = function(productId) {
+    document.querySelectorAll('.product-card').forEach(card => card.classList.remove('selected'));
+    document.querySelector(`[data-product="${productId}"]`).classList.add('selected');
+    selectedProduct = productId;
+    selectedQuery = 0;
+    
+    if (productId === 'custom') {
+        document.getElementById('customInputs').style.display = 'block';
+        document.getElementById('querySection').style.display = 'none';
+        setMode('live');
+    } else {
+        document.getElementById('customInputs').style.display = 'none';
+        renderQuerySelector(productId);
+    }
+};
+
+// Update renderResults to include deep dive
+const originalRenderResults = renderResults;
+renderResults = function(data) {
+    animateScore(data.overallScore);
+    renderLLMCards(data.llmScores);
+    renderIssues(data.issues);
+    renderQuickWins(data.quickWins);
+    renderRewrites(data.rewrites);
+    renderCompetitors(data.competitors, data.overallScore);
+    renderDeepDive(selectedProduct);
+};
+</script>
+
+</body>
+</html>

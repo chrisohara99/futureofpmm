@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Enablement | NextGen PMM</title>
+    <meta name="description" content="Learn about Sales Enablement in this comprehensive guide.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/gtm-readiness/">GTM Readiness</a>
+            </div>
+            <h1>Sales Enablement</h1>
+            <div class="article-meta">GTM Readiness</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <div>
+        <h2>🎯 Learning Objectives</h2>
+        <ul>
+            <li>Understand the key C-suite personas in enterprise software and what motivates each</li>
+            <li>Build detailed buyer persona profiles that go beyond demographics to capture real decision drivers</li>
+            <li>Map the buyer journey from awareness through adoption, identifying key touchpoints and content needs</li>
+            <li>Align persona insights with buying committee dynamics to create targeted, multi-threaded content strategies</li>
+        </ul>
+    </div>
+    
+    
+    <section>
+        <h2>Lesson 1: What Are Buyer Personas (And Why They Matter)</h2>
+        
+        <p>A buyer persona is a semi-fictional representation of your ideal customer based on market research and real data about your existing customers. But in enterprise B2B—where deals involve committees, long cycles, and complex politics—personas need to go far deeper than "Marketing Mary likes yoga and reads Forbes."</p>
+        
+        <p>Enterprise personas must capture:</p>
+        <ul>
+            <li><strong>Role and responsibilities</strong> — What does this person actually do all day?</li>
+            <li><strong>Success metrics</strong> — How is their performance measured?</li>
+            <li><strong>Pain points</strong> — What keeps them up at night?</li>
+            <li><strong>Information sources</strong> — Where do they learn about solutions?</li>
+            <li><strong>Buying influence</strong> — Do they recommend, evaluate, decide, or veto?</li>
+        </ul>
+        
+        <div>
+            <div>
+                <div>6.8</div>
+                <div>Average decision-makers in B2B deals (Gartner)</div>
+            </div>
+            <div>
+                <div>77%</div>
+                <div>Of B2B buyers say purchases are complex (Gartner)</div>
+            </div>
+            <div>
+                <div>57%</div>
+                <div>Of purchase process complete before vendor contact</div>
+            </div>
+        </div>
+        
+        <div>
+            <h4>💡 Personas vs. Segments</h4>
+            <p><strong>Segments</strong> tell you which companies to target (industry, size, geography). <strong>Personas</strong> tell you which people within those companies matter—and how to reach them. You need both. A CFO at a mid-market retailer has different concerns than a CFO at a global bank, even though they share a title.</p>
+        </div>
+        
+        <h3>The Cost of Getting Personas Wrong</h3>
+        
+        <p>Generic personas lead to generic content, which leads to generic results. When every enterprise software company targets "the CIO who wants to drive digital transformation," you become noise. Effective personas surface the specific tensions, trade-offs, and priorities that differentiate your buyers from the broad stereotype.</p>
+        
+        <div>
+            <h4>📌 Anti-Pattern: The Generic CIO</h4>
+            <p><strong>Bad persona:</strong> "Chris is a CIO who wants to modernize IT infrastructure and drive digital transformation. He values innovation and is under pressure to deliver ROI."</p>
+            <p><strong>Better persona:</strong> "Chris is a CIO at a manufacturing company (5,000 employees) who inherited a fragmented ERP landscape from three acquisitions. His CFO is pressuring him to reduce IT spend by 15% while the COO demands better shop floor visibility. He's skeptical of 'transformation' messaging because his last cloud project ran 40% over budget. He trusts peer references from other manufacturing CIOs and reads Industry Week, not TechCrunch."</p>
+        </div>
+    </section>
+    
+    
+    <section>
+        <h2>Lesson 2: The Enterprise C-Suite Personas</h2>
+        
+        <p>In enterprise software sales, the C-suite shapes strategy, controls budgets, and ultimately signs off on major purchases. Understanding each executive's world—their metrics, pressures, and priorities—is essential for PMM.</p>
+        
+        <div>
+            <div>
+                <div>📊</div>
+                <h4>Chief Data Officer (CDO)</h4>
+                <div>Data Strategy & Governance</div>
+                <div>
+                    <strong>Priorities</strong>
+                    Data quality, governance frameworks, AI readiness, breaking down silos, demonstrating data ROI
+                </div>
+            </div>
+            
+            <div>
+                <div>💰</div>
+                <h4>Chief Financial Officer (CFO)</h4>
+                <div>Financial Strategy & Control</div>
+                <div>
+                    <strong>Priorities</strong>
+                    Cost optimization, risk management, regulatory compliance, cash flow visibility, M&A due diligence
+                </div>
+            </div>
+            
+            <div>
+                <div>👥</div>
+                <h4>Chief Human Resources Officer (CHRO)</h4>
+                <div>People & Culture</div>
+                <div>
+                    <strong>Priorities</strong>
+                    Talent acquisition/retention, employee experience, workforce planning, DEI initiatives, skills development
+                </div>
+            </div>
+            
+            <div>
+                <div>🖥️</div>
+                <h4>Chief Information Officer (CIO)</h4>
+                <div>Technology & Infrastructure</div>
+                <div>
+                    <strong>Priorities</strong>
+                    System reliability, security posture, technical debt, vendor consolidation, enabling business agility
+                </div>
+            </div>
+            
+            <div>
+                <div>📋</div>
+                <h4>Chief Procurement Officer (CPO)</h4>
+                <div>Sourcing & Vendor Management</div>
+                <div>
+                    <strong>Priorities</strong>
+                    Cost savings, supplier risk, contract compliance, sustainability sourcing, spend visibility
+                </div>
+            </div>
+            
+            <div>
+                <div>📈</div>
+                <h4>Chief Revenue Officer (CRO) / CSO</h4>
+                <div>Revenue & Sales Operations</div>
+                <div>
+                    <strong>Priorities</strong>
+                    Pipeline growth, win rates, sales productivity, forecast accuracy, customer retention
+                </div>
+            </div>
+            
+            <div>
+                <div>🚚</div>
+                <h4>Chief Supply Chain Officer (CSCO)</h4>
+                <div>Operations & Logistics</div>
+                <div>
+                    <strong>Priorities</strong>
+                    Supply chain resilience, inventory optimization, logistics costs, sustainability, demand planning
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <h4>🟢 SAP Persona Journey Frameworks</h4>
+            <p>SAP maintains detailed buyer journey frameworks for each C-suite persona. These map out:</p>
+            <ul>
+                <li>Key business challenges and initiatives by role</li>
+                <li>Decision criteria and evaluation factors</li>
+                <li>Information sources and influencer networks</li>
+                <li>Typical objections and how to address them</li>
+                <li>Success metrics and business case drivers</li>
+            </ul>
+            <p>As a PMM, your job is to translate these frameworks into actionable content, messaging, and enablement for each persona.</p>
+        </div>
+        
+        <h3>Persona Deep Dive: The CFO</h3>
+        
+        <p>Let's look at one persona in depth to see how rich enterprise personas should be:</p>
+        
+        <div>
+            <div>💰</div>
+            <div>
+                <h4>The Enterprise CFO</h4>
+                <div>Chief Financial Officer • Reports to: CEO • Influences: All major spend</div>
+                <div>
+                    <span>Risk-averse</span>
+                    <span>Data-driven</span>
+                    <span>ROI-focused</span>
+                    <span>Time-constrained</span>
+                    <span>Board accountability</span>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div>
+                <h4>😰 Pain Points</h4>
+                <ul>
+                    <li>Fragmented financial data across systems</li>
+                    <li>Slow, manual close processes</li>
+                    <li>Limited real-time visibility into cash position</li>
+                    <li>Compliance complexity (SOX, IFRS, local GAAP)</li>
+                    <li>Pressure to do more with less headcount</li>
+                </ul>
+            </div>
+            <div>
+                <h4>🎯 Success Metrics</h4>
+                <ul>
+                    <li>Days to close (monthly, quarterly, annual)</li>
+                    <li>Forecast accuracy (&lt;5% variance target)</li>
+                    <li>Working capital efficiency</li>
+                    <li>Audit findings (zero material weaknesses)</li>
+                    <li>Cost as % of revenue</li>
+                </ul>
+            </div>
+            <div>
+                <h4>📚 Information Sources</h4>
+                <ul>
+                    <li>CFO peer networks (CFO Alliance, etc.)</li>
+                    <li>Big 4 consulting relationships</li>
+                    <li>Industry analyst briefings</li>
+                    <li>Board member recommendations</li>
+                    <li>WSJ, Financial Times, Harvard Business Review</li>
+                </ul>
+            </div>
+            <div>
+                <h4>⚠️ Common Objections</h4>
+                <ul>
+                    <li>"We already have Oracle/Workday for this"</li>
+                    <li>"The business case doesn't pencil out"</li>
+                    <li>"Implementation risk is too high"</li>
+                    <li>"We need to see peer references in our industry"</li>
+                    <li>"This isn't a priority right now"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div>
+            <h4>💡 Messaging for the CFO</h4>
+            <p>CFOs respond to <strong>quantified outcomes</strong>, not capabilities. "AI-powered analytics" means nothing. "Reduce days-to-close from 10 to 4, freeing your team for strategic analysis" means everything. Lead with metrics, back with proof points, minimize perceived risk.</p>
+        </div>
+    </section>
+    
+    
+    <section>
+        <h2>Lesson 3: Mapping the Buyer Journey</h2>
+        
+        <p>The buyer journey isn't a funnel—it's a maze. Enterprise buyers loop back, stall, bring in new stakeholders, and restart evaluations. But understanding the typical progression helps you deliver the right content at the right moment.</p>
+        
+        <div>
+            <h4>The B2B Buyer Journey</h4>
+            <div>
+                <div>Awareness</div>
+                <div>Consideration</div>
+                <div>Decision</div>
+                <div>Purchase</div>
+                <div>Adoption</div>
+            </div>
+        </div>
+        
+        <div>
+            <div>
+                <div>Awareness</div>
+                <div>Consideration</div>
+                <div>Decision</div>
+                <div>Purchase</div>
+                <div>Adoption</div>
+                
+                <div>
+                    <div>Buyer Mindset</div>
+                    <div>"I have a problem but I'm not sure how to solve it"</div>
+                    <div>Thought leadership, trends, pain point content</div>
+                </div>
+                <div>
+                    <div>Buyer Mindset</div>
+                    <div>"I'm evaluating different approaches"</div>
+                    <div>Solution guides, comparison content, use cases</div>
+                </div>
+                <div>
+                    <div>Buyer Mindset</div>
+                    <div>"I'm comparing specific vendors"</div>
+                    <div>Demos, customer references, ROI tools</div>
+                </div>
+                <div>
+                    <div>Buyer Mindset</div>
+                    <div>"I need to get this approved and procured"</div>
+                    <div>Business cases, security docs, legal terms</div>
+                </div>
+                <div>
+                    <div>Buyer Mindset</div>
+                    <div>"I need to drive value from this investment"</div>
+                    <div>Onboarding, training, success stories</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Content Mapping by Journey Stage</h3>
+        
+        <p>Different stages require different content types—and different personas engage at different stages:</p>
+        
+        <div>
+            <div>Persona</div>
+            <div>Awareness</div>
+            <div>Consideration</div>
+            <div>Decision</div>
+            <div>Purchase</div>
+            <div>Adoption</div>
+            
+            <div>C-Suite (CFO, CIO)</div>
+            <div>Low</div>
+            <div>Medium</div>
+            <div>High</div>
+            <div>High</div>
+            <div>Low</div>
+            
+            <div>Technical Buyer</div>
+            <div>Medium</div>
+            <div>High</div>
+            <div>High</div>
+            <div>Medium</div>
+            <div>High</div>
+            
+            <div>End Users</div>
+            <div>Low</div>
+            <div>Medium</div>
+            <div>Medium</div>
+            <div>Low</div>
+            <div>High</div>
+            
+            <div>Champion</div>
+            <div>High</div>
+            <div>High</div>
+            <div>High</div>
+            <div>Medium</div>
+            <div>High</div>
+            
+            <div>Procurement</div>
+            <div>Low</div>
+            <div>Low</div>
+            <div>Medium</div>
+            <div>High</div>
+            <div>Low</div>
+        </div>
+        
+        <div>
+            <h4>💡 The Champion Is Your Force Multiplier</h4>
+            <p>Notice the Champion is highly engaged across every stage. Your internal champion sells when you're not in the room, navigates politics, and drives consensus. Smart PMMs create content specifically designed to help champions make the internal case—executive summaries, shareable business cases, and "why change" narratives they can forward to skeptical stakeholders.</p>
+        </div>
+        
+        <div>
+            <h4>📌 Journey Stage: Building a Content Matrix</h4>
+            <p>For each persona × journey stage intersection, ask:</p>
+            <ul>
+                <li>What question is this persona trying to answer at this stage?</li>
+                <li>What content format do they prefer?</li>
+                <li>What proof do they need to move forward?</li>
+                <li>Who else are they consulting internally?</li>
+            </ul>
+            <p>This matrix becomes your content planning foundation—identifying gaps where you're missing assets for critical persona/stage combinations.</p>
+        </div>
+    </section>
+    
+    
+    <section>
+        <h2>Lesson 4: Buying Committee Dynamics</h2>
+        
+        <p>Enterprise deals are won or lost based on how well you navigate the buying committee. Understanding who influences, who decides, and who can kill deals is critical for both PMM content strategy and sales enablement.</p>
+        
+        <h3>The Buying Committee Roles</h3>
+        
+        <div>
+            <div>
+                <div>👔</div>
+                <h4>Economic Buyer</h4>
+                <div>Controls the budget</div>
+                <div>
+                    <strong>Power</strong>
+                    Can say yes when everyone else says no. Typically VP+ or C-level. Cares about ROI, risk, and strategic alignment.
+                </div>
+            </div>
+            
+            <div>
+                <div>🔧</div>
+                <h4>Technical Buyer</h4>
+                <div>Validates technical fit</div>
+                <div>
+                    <strong>Power</strong>
+                    Can veto on architecture, security, or integration concerns. IT or Engineering leadership. Cares about supportability.
+                </div>
+            </div>
+            
+            <div>
+                <div>💼</div>
+                <h4>User Buyer</h4>
+                <div>Will use the product daily</div>
+                <div>
+                    <strong>Power</strong>
+                    Drives adoption success. Can influence with enthusiasm or kill with indifference. Cares about usability, workflow fit.
+                </div>
+            </div>
+            
+            <div>
+                <div>⭐</div>
+                <h4>Champion</h4>
+                <div>Your internal advocate</div>
+                <div>
+                    <strong>Power</strong>
+                    Sells when you're not in the room. Navigates internal politics. Needs ammunition to make the case. Find and enable them.
+                </div>
+            </div>
+            
+            <div>
+                <div>🛡️</div>
+                <h4>Gatekeeper</h4>
+                <div>Controls process/access</div>
+                <div>
+                    <strong>Power</strong>
+                    Procurement, Legal, Security. Can slow deals dramatically. Rarely kills outright but creates friction. Respect their process.
+                </div>
+            </div>
+            
+            <div>
+                <div>🚫</div>
+                <h4>Blocker</h4>
+                <div>Opposes the change</div>
+                <div>
+                    <strong>Power</strong>
+                    May have competing priorities, budget conflicts, or political reasons to oppose. Identify early, understand their concerns, address or neutralize.
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <h4>🟢 Multi-Threading Strategy</h4>
+            <p>Deals that depend on a single champion are fragile. That person leaves, gets promoted, goes on leave, or loses influence—and your deal evaporates. SAP's selling methodology emphasizes <strong>multi-threading</strong>: building relationships with multiple stakeholders across the buying committee.</p>
+            <p>PMM's role: Create persona-specific content that helps sales reach and resonate with each committee member. If you're only creating content for the champion, you're one reorg away from starting over.</p>
+        </div>
+        
+        <h3>Mapping a Real Buying Committee</h3>
+        
+        <p>For a $2M SAP S/4HANA Cloud deal at a manufacturing company, the buying committee might include:</p>
+        
+        <div>
+            <div>Role</div>
+            <div>Person</div>
+            <div>Power</div>
+            <div>Content Needs</div>
+            
+            <div>Economic Buyer</div>
+            <div>CFO</div>
+            <div>Decision</div>
+            <div>ROI model, TCO comparison, peer references</div>
+            
+            <div>Technical Buyer</div>
+            <div>CIO</div>
+            <div>Veto</div>
+            <div>Architecture diagrams, security docs, migration plan</div>
+            
+            <div>User Buyer</div>
+            <div>VP Operations</div>
+            <div>Influence</div>
+            <div>Demo, day-in-the-life scenarios, training preview</div>
+            
+            <div>Champion</div>
+            <div>Dir. of Finance Transformation</div>
+            <div>Advocate</div>
+            <div>Executive summary, competitive intel, business case template</div>
+            
+            <div>Gatekeeper</div>
+            <div>Procurement Lead</div>
+            <div>Process</div>
+            <div>Compliance certs, contract terms, pricing breakdown</div>
+        </div>
+        
+        <div>
+            <h4>💡 The "So What" for PMM</h4>
+            <p>Every persona × role combination needs consideration. The CFO who's an economic buyer needs different content than the CFO who's just a gatekeeper signing off. Build your content matrix around buying roles, not just job titles.</p>
+        </div>
+    </section>
+    
+    
+    <section>
+        <h2>Lesson 5: Building Effective Personas</h2>
+        
+        <p>Now that you understand what buyer personas need to capture, let's walk through the process of building them.</p>
+        
+        <h3>Research Sources</h3>
+        
+        <ol>
+            <li><strong>Win/Loss interviews</strong> — Talk to customers who bought and prospects who didn't. Ask about their decision process, who was involved, and what content influenced them.</li>
+            <li><strong>Sales debrief</strong> — Your sales team talks to these personas daily. What questions do they hear? What objections come up?</li>
+            <li><strong>Customer success data</strong> — Which persona types drive the most successful implementations? Which struggle?</li>
+            <li><strong>Industry analyst reports</strong> — Gartner, Forrester, and IDC publish persona research for many enterprise roles.</li>
+            <li><strong>LinkedIn and job postings</strong> — What skills and experience do companies seek for these roles? What does their content consumption look like?</li>
+        </ol>
+        
+        <h3>The Persona Document Template</h3>
+        
+        <p>A useful persona document should fit on one page and include:</p>
+        
+        <div>
+            <h4>📋 Persona Template</h4>
+            <ul>
+                <li><strong>Name and photo</strong> — Make them feel real ("Finance Fiona" is memorable)</li>
+                <li><strong>Role and seniority</strong> — Title, reports to, team size</li>
+                <li><strong>Top 3 priorities</strong> — What they're measured on</li>
+                <li><strong>Top 3 pain points</strong> — What frustrates them daily</li>
+                <li><strong>Buying role</strong> — Economic, technical, user, champion, gatekeeper</li>
+                <li><strong>Information sources</strong> — Where they learn, who they trust</li>
+                <li><strong>Key objections</strong> — Why they might say no</li>
+                <li><strong>Messaging hooks</strong> — What resonates with this persona</li>
+                <li><strong>Sample quotes</strong> — Real language from interviews</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h4>💡 Keep Personas Alive</h4>
+            <p>Personas aren't a one-time project. Schedule quarterly reviews to update them based on new win/loss insights, changing market conditions, and sales feedback. A persona document from 2019 is worse than useless—it gives false confidence while being dangerously outdated.</p>
+        </div>
+        
+        <h3>Activating Personas Across the Organization</h3>
+        
+        <p>Personas are only valuable if people use them. Activation strategies include:</p>
+        
+        <ul>
+            <li><strong>Sales onboarding</strong> — Every new rep learns the core personas in their first week</li>
+            <li><strong>Content briefs</strong> — Every content request specifies the target persona</li>
+            <li><strong>Campaign planning</strong> — Demand gen maps campaigns to persona priorities</li>
+            <li><strong>Product feedback</strong> — Feature requests reference which persona benefits</li>
+            <li><strong>Executive reviews</strong> — Quarterly business reviews discuss persona-level pipeline and win rates</li>
+        </ul>
+        
+        <div>
+            <h4>🟢 SAP Persona Resources</h4>
+            <p>SAP maintains centralized persona resources including:</p>
+            <ul>
+                <li>Persona Buyer Journey Frameworks (by C-suite role)</li>
+                <li>Industry-specific persona variations</li>
+                <li>Persona-based content libraries</li>
+                <li>Sales plays mapped to persona priorities</li>
+            </ul>
+            <p>As a PMM, leverage these existing resources while adapting them for your specific product and market context.</p>
+        </div>
+    </section>
+    
+    
+    <div>
+        <h2>Ready to Test Your Knowledge?</h2>
+        <p>Complete the Unit 10 quiz to earn your badge and unlock the next unit.</p>
+        <a href="quiz.html">Take the Quiz →</a>
+    </div>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

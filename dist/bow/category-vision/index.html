@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Category Vision | NextGen PMM</title>
+    <meta name="description" content="Define market categories, establish thought leadership, and articulate the strategic vision for product evolution.">
+    <style>
+        /*
+         * BOW AREA PAGE TEMPLATE — Category Vision
+         *
+         * To reuse for another area:
+         *   1. Update <title>, <meta name="description">, breadcrumb, h1, and .page-meta counts
+         *   2. Swap badge text (PMM Leads / PMM Supports)
+         *   3. Update all section content (Definition, Ownership, Playbook, KPIs, cards)
+         *   4. Add / remove .coming-soon-card wrappers as capabilities go live
+         */
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --sap-blue:      #0070f2;
+            --sap-blue-dark: #0054b4;
+            --sap-blue-bg:   #e8f4ff;
+            --text-primary:  #1d2d3e;
+            --text-secondary:#526069;
+            --border:        #e4e7eb;
+            --bg-light:      #f7f9fb;
+            --know:          #0070f2;
+            --know-bg:       #e8f4ff;
+            --learn:         #0f9f92;
+            --learn-bg:      #e4f8f4;
+            --do:            #7c3aed;
+            --do-bg:         #f1eaff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ---- Header ---- */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .logo:hover { text-decoration: none; }
+
+        header nav {
+            display: flex;
+            gap: 2rem;
+        }
+        header nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        header nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        /* ---- Page Header ---- */
+        .page-header {
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .breadcrumb a { color: var(--sap-blue); }
+        .breadcrumb .sep { margin: 0 0.4rem; color: #ccc; }
+
+        .area-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--sap-blue);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 0.75rem;
+        }
+
+        .page-header .lead {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 680px;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+        }
+        .page-meta-item {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .page-meta-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .meta-soon {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            background: #f1f5f9;
+            color: #94a3b8;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 3px;
+            vertical-align: middle;
+        }
+
+        /* ---- Section sub-nav ---- */
+        .section-nav {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 62px;
+            z-index: 90;
+        }
+        .section-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+        }
+        .section-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.875rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            text-decoration: none;
+            transition: color 0.15s, border-color 0.15s;
+            white-space: nowrap;
+        }
+        .section-nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .nav-pip {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .section-nav a.know .nav-pip  { background: var(--know); }
+        .section-nav a.learn .nav-pip { background: var(--learn); }
+        .section-nav a.do .nav-pip    { background: var(--do); }
+
+        /* ---- Main layout ---- */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+
+        /* ---- Area sections ---- */
+        .bow-section {
+            padding-top: 3rem;
+            scroll-margin-top: 120px;
+        }
+        .bow-section + .bow-section {
+            border-top: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+        }
+        .section-eyebrow.know  { background: var(--know-bg);  color: var(--know); }
+        .section-eyebrow.learn { background: var(--learn-bg); color: var(--learn); }
+        .section-eyebrow.do    { background: var(--do-bg);    color: var(--do); }
+
+        .bow-section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        .bow-section > .section-lead {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2.25rem;
+        }
+
+        /* ---- Subsections ---- */
+        .subsection { margin-bottom: 2.5rem; }
+        .subsection-heading {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.25rem;
+        }
+
+        /* ---- Info cards (KNOW) ---- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+        .info-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        .info-card.span-2 { grid-column: 1 / -1; }
+        .info-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .info-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .info-card ul li {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            padding-left: 1.1rem;
+            position: relative;
+        }
+        .info-card ul li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--sap-blue);
+            font-size: 0.75rem;
+            top: 0.05em;
+        }
+
+        /* ---- Playbook steps ---- */
+        .playbook {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .playbook-step {
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .playbook-step:last-child { border-bottom: none; }
+        .step-num {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--sap-blue);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.15rem;
+        }
+        .step-body h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .step-body p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        /* ---- KPI grid ---- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .kpi-card {
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--know);
+            border-radius: 8px;
+            padding: 1.25rem;
+            background: #fff;
+        }
+        .kpi-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+        .kpi-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+            line-height: 1.3;
+        }
+        .kpi-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ---- Content cards (LEARN / DO) ---- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .content-card {
+            display: block;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .content-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 14px rgba(0,112,242,0.09);
+            text-decoration: none;
+        }
+        .content-card .card-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        .content-card h3 {
+            font-size: 0.975rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        .content-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        /* Learning module variant */
+        .module-card { border-left: 3px solid var(--learn); }
+        .module-card:hover { border-left-color: var(--learn); }
+        .module-card .card-tag { color: var(--learn); }
+
+        /* Coming-soon card */
+        .soon-card {
+            background: var(--bg-light);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .soon-label {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: #f1f5f9;
+            color: #94a3b8;
+            padding: 0.2rem 0.55rem;
+            border-radius: 20px;
+            align-self: flex-start;
+        }
+        .soon-card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .soon-card p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.55;
+        }
+
+        /* ---- Footer ---- */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        footer p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.85rem;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            header nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .section-nav { top: 100px; }
+            .section-nav-inner {
+                padding: 0 1rem;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .section-nav-inner::-webkit-scrollbar { display: none; }
+            .page-header { padding: 2rem 1rem 1.5rem; }
+            .page-header h1 { font-size: 1.75rem; }
+            main { padding: 0 1rem 4rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .info-card.span-2 { grid-column: auto; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .page-header-grid { grid-template-columns: 1fr; }
+            .learn-to-do { flex-direction: column; gap: 0.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .section-nav a { padding: 0.75rem 0.9rem; font-size: 0.825rem; }
+        }
+
+        /* Two-column video slot */
+        .video-slot {
+            aspect-ratio: 16/9;
+            background: #f0f4f8;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+        }
+        .video-slot svg { width: 40px; height: 40px; opacity: 0.5; }
+        .video-slot p { font-size: 0.8rem; }
+
+        /* Validation note for unvalidated content */
+        .validation-note { font-size: 0.75rem; color: #94a3b8; font-style: italic; margin-top: 0.5rem; }
+
+        /* Logo subtitle (matches homepage .brand small) */
+        .logo small {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: -2px;
+        }
+
+        /* Playbook contextual resource links */
+        .step-related {
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .step-related a {
+            color: var(--sap-blue);
+            font-weight: 600;
+        }
+
+        /* Subsection-level "in development" badge (replaces per-card labels) */
+        .heading-soon {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0;
+            text-transform: none;
+            background: #f1f5f9;
+            color: #94a3b8;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* Brief descriptor under a subsection heading */
+        .subsection-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: -0.75rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+
+        /* LEARN → DO transition nudge */
+        .learn-to-do {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            background: var(--do-bg);
+            border: 1px solid rgba(124,58,237,0.15);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .learn-to-do p { font-size: 0.875rem; color: var(--text-secondary); }
+        .learn-to-do .cta-link {
+            color: var(--do);
+            font-weight: 600;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+        .learn-to-do .cta-link:hover { text-decoration: underline; }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="page-header-grid">
+            <div class="page-header-text">
+                <div class="breadcrumb">
+                    <a href="/">Home</a><span class="sep">›</span><a href="/bow/">Book of Work</a><span class="sep">›</span>Category Vision
+                </div>
+                <div class="area-badge">PMM Leads</div>
+                <h1>Category Vision</h1>
+                <p class="lead">Define market categories, establish thought leadership, and articulate the strategic vision for product evolution.</p>
+                <div class="page-meta">
+                    <span class="page-meta-item"><strong>1</strong> learning module</span>
+                    <span class="page-meta-item"><strong>3</strong> templates<span class="meta-soon">Coming soon</span></span>
+                    <span class="page-meta-item"><strong>AI workflows</strong><span class="meta-soon">Coming soon</span></span>
+                </div>
+            </div>
+            <div class="video-slot" data-video-src="">
+                <!-- VIDEO SLOT: set data-video-src="<iframe-src>" to embed. JS below auto-injects. -->
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <p>Video coming soon</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION SUB-NAV -->
+    <nav class="section-nav" aria-label="Page sections">
+        <div class="section-nav-inner">
+            <a href="#know"  class="know" ><span class="nav-pip"></span>Know</a>
+            <a href="#learn" class="learn"><span class="nav-pip"></span>Learn</a>
+            <a href="#do"    class="do"   ><span class="nav-pip"></span>Do</a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- ======== KNOW ======== -->
+        <section class="bow-section" id="know">
+            <div class="section-eyebrow know"><span class="nav-pip" style="background:var(--know)"></span>Know</div>
+            <h2>What is Category Vision?</h2>
+            <p class="section-lead">Understand what it means to own the category narrative — and how to win the framing battle with analysts, press, and buyers.</p>
+
+            <!-- Overview -->
+            <div class="subsection">
+                <div class="subsection-heading">Overview</div>
+                <div class="info-grid">
+                    <div class="info-card span-2">
+                        <h3>What this area is</h3>
+                        <p>Category Vision is the practice of defining the market space your product competes in and articulating a compelling, forward-looking narrative that positions SAP as the leader — or challenger — in that category. It goes beyond product messaging to shape how analysts, press, and buyers understand the category itself. The PMM who owns Category Vision is not just describing a product — they are fighting for the frame.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Responsibilities</h3>
+                        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.6rem;">What this PMM area is accountable for doing.</p>
+                        <ul>
+                            <li>Own category definition and category narrative</li>
+                            <li>Develop thought leadership content and vision messaging</li>
+                            <li>Drive analyst and press positioning in the category</li>
+                            <li>Brief internal stakeholders on category strategy</li>
+                        </ul>
+                        <p class="validation-note">Needs PMM validation</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Key deliverables</h3>
+                        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.6rem;">The artifacts and outputs PMM is expected to produce.</p>
+                        <ul>
+                            <li>Category definition paper</li>
+                            <li>Vision narrative brief</li>
+                            <li>Thought leadership content plan</li>
+                            <li>Analyst briefing materials</li>
+                        </ul>
+                        <p class="validation-note">Needs PMM validation</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Collaborators &amp; interlocks</h3>
+                        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.6rem;">Who you work with and what each interlock requires.</p>
+                        <ul>
+                            <li>Strategy → market direction and roadmap alignment</li>
+                            <li>Analyst Relations → external validation and positioning</li>
+                            <li>C-Suite → vision alignment and spokesperson development</li>
+                            <li>Product → roadmap input and capability validation</li>
+                        </ul>
+                        <p class="validation-note">Needs PMM validation</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Inputs required</h3>
+                        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.6rem;">What you need before you can execute this work well.</p>
+                        <ul>
+                            <li>Market research and buyer trend data</li>
+                            <li>Analyst category reports and magic quadrant criteria</li>
+                            <li>Competitive landscape analysis</li>
+                            <li>Product strategy roadmap</li>
+                            <li>Customer strategic priorities and advisory feedback</li>
+                        </ul>
+                        <p class="validation-note">Needs PMM validation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playbook -->
+            <div class="subsection">
+                <div class="subsection-heading">Playbook</div>
+                <div class="playbook">
+                    <div class="playbook-step">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Define target category</h4>
+                            <p>Research how analysts, buyers, and competitors currently frame the category. Identify the whitespace where SAP can credibly own a distinctive and durable position.</p>
+                        </div>
+                    </div>
+                    <div class="playbook-step">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Research competitive framing</h4>
+                            <p>Analyse competitor category narratives, analyst quadrant criteria, and press framing patterns. Build a map of how the category is currently positioned and where the contested ground lies.</p>
+                        </div>
+                    </div>
+                    <div class="playbook-step">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Develop category narrative</h4>
+                            <p>Write the category definition paper, vision statement, and thought leadership content framework. Align with Strategy and C-Suite before finalising.</p>
+                        </div>
+                    </div>
+                    <div class="playbook-step">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>Validate with analysts</h4>
+                            <p>Brief key analysts under NDA to test the category framing and refine the narrative based on their pushback before public activation.</p>
+                        </div>
+                    </div>
+                    <div class="playbook-step">
+                        <div class="step-num">5</div>
+                        <div class="step-body">
+                            <h4>Activate through content and PR</h4>
+                            <p>Drive the narrative through analyst briefings, thought leadership content, executive speaking opportunities, and proactive media outreach.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs -->
+            <div class="subsection">
+                <div class="subsection-heading">KPIs</div>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-tag">Recognition</div>
+                        <div class="kpi-name">Analyst category recognition</div>
+                        <div class="kpi-desc">% of relevant analyst reports that reference SAP's category definition or framing in their category description.</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-tag">Voice</div>
+                        <div class="kpi-name">Share of voice in category</div>
+                        <div class="kpi-desc">% of category-related media and analyst mentions that align with SAP's approved category narrative.</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-tag">Influence</div>
+                        <div class="kpi-name">Thought leadership reach</div>
+                        <div class="kpi-desc">Total engagements and marketing-qualified leads generated from category vision content in a quarter.</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-tag">Adoption</div>
+                        <div class="kpi-name">Field narrative adoption</div>
+                        <div class="kpi-desc">% of field decks, pitch materials, and campaign assets that use the approved category framing without significant deviation.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======== LEARN ======== -->
+        <section class="bow-section" id="learn">
+            <div class="section-eyebrow learn"><span class="nav-pip" style="background:var(--learn)"></span>Learn</div>
+            <h2>Build your capability</h2>
+            <p class="section-lead">Structured learning modules and templates to build your Category Vision capability.</p>
+
+            <!-- Learning Modules -->
+            <div class="subsection">
+                <div class="subsection-heading">Learning Modules</div>
+                <div class="cards-grid">
+                    <a href="guide-03.html" class="content-card module-card">
+                        <div class="card-tag">Module 1 · Foundation</div>
+                        <h3>Category Strategy</h3>
+                        <p>How to define a market category, build a category narrative, and position your product as the natural choice in a market you helped frame.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Templates -->
+            <div class="subsection">
+                <div class="subsection-heading">Templates <span class="heading-soon">In development</span></div>
+                <div class="cards-grid">
+                    <div class="soon-card">
+                        <h3>Category Definition Paper Template</h3>
+                        <p>A structured format for defining a market category — context, category criteria, differentiation rationale, and SAP's position within it.</p>
+                    </div>
+                    <div class="soon-card">
+                        <h3>Analyst Briefing Deck Template</h3>
+                        <p>A slide framework for analyst briefings on category vision and product direction — market context, differentiation, roadmap, and Q&amp;A preparation.</p>
+                    </div>
+                    <div class="soon-card">
+                        <h3>Vision Narrative Brief</h3>
+                        <p>A one-page format for distilling the product's strategic narrative for executive and external use — crisp, differentiated, and analyst-ready.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="learn-to-do">
+                <p>You have the category narrative. Now activate it — brief analysts, lead the conversation, and define the space.</p>
+                <a href="#do" class="cta-link">Start doing →</a>
+            </div>
+
+        </section>
+
+        <!-- ======== DO ======== -->
+        <section class="bow-section" id="do">
+            <div class="section-eyebrow do"><span class="nav-pip" style="background:var(--do)"></span>Do</div>
+            <h2>Put it into practice</h2>
+            <p class="section-lead">AI workflows, guided activities, and tools to accelerate real Category Vision work. Rolling out progressively — check back as new capabilities go live.</p>
+
+            <!-- AI Workflows -->
+            <div class="subsection">
+                <div class="subsection-heading">AI Workflows <span class="heading-soon">In development</span></div>
+                <p class="subsection-desc">End-to-end tasks you run to accomplish a specific goal — provide context, get a structured output.</p>
+                <div class="cards-grid">
+                    <div class="soon-card">
+                        <h3>Category Narrative Builder</h3>
+                        <p>Input market research, analyst category definitions, and product strategy. Get a structured draft of SAP's category narrative and differentiation rationale.</p>
+                    </div>
+                    <div class="soon-card">
+                        <h3>Analyst Positioning Analyzer</h3>
+                        <p>Paste analyst reports and your current category framing. Get a gap analysis and recommended positioning adjustments by analyst firm.</p>
+                    </div>
+                    <div class="soon-card">
+                        <h3>Vision Statement Refiner</h3>
+                        <p>Input a draft vision statement and competitive context. Get refined alternatives with rationale, optimized for analyst and media audiences.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tools -->
+            <div class="subsection">
+                <div class="subsection-heading">Tools <span class="heading-soon">In development</span></div>
+                <p class="subsection-desc">Standalone capabilities that support your ongoing work across tasks and channels.</p>
+                <div class="cards-grid">
+                    <div class="soon-card">
+                        <h3>Category Signal Monitor</h3>
+                        <p>Tracks analyst reports, competitor announcements, and media coverage to surface emerging category shifts and positioning opportunities.</p>
+                    </div>
+                    <div class="soon-card">
+                        <h3>Vision Narrative Assistant</h3>
+                        <p>A Joule Desktop skill for drafting, refining, and pressure-testing category narratives against analyst language and competitive framing.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Guided Activities -->
+            <div class="subsection">
+                <div class="subsection-heading">Guided Activities <span class="heading-soon">In development</span></div>
+                <p class="subsection-desc">Structured exercises to build real skill through hands-on practice.</p>
+                <div class="cards-grid">
+                    <div class="soon-card">
+                        <h3>Category Definition Sprint</h3>
+                        <p>A guided activity to draft and pressure-test a category definition in under two hours — from market context to SAP's differentiation statement.</p>
+                    </div>
+                    <div class="soon-card">
+                        <h3>Analyst Positioning Audit</h3>
+                        <p>A structured self-assessment to evaluate your current analyst positioning against five criteria and identify the most impactful adjustments to make.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+
+    <script>
+        /* Highlight active section tab on scroll — no external deps */
+        (function () {
+            var ids    = ['know', 'learn', 'do'];
+            var links  = {};
+            var colors = { know: '#0070f2', learn: '#0f9f92', do: '#7c3aed' };
+            ids.forEach(function (id) {
+                links[id] = document.querySelector('.section-nav a.' + id);
+            });
+            function update() {
+                var y = window.scrollY + 150;
+                var active = ids[0];
+                ids.forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el && el.offsetTop <= y) active = id;
+                });
+                ids.forEach(function (id) {
+                    if (!links[id]) return;
+                    links[id].style.color = '';
+                    links[id].style.borderBottomColor = 'transparent';
+                });
+                if (links[active]) {
+                    links[active].style.color = '#1d2d3e';
+                    links[active].style.borderBottomColor = colors[active];
+                }
+            }
+            window.addEventListener('scroll', update, { passive: true });
+            update();
+        })();
+
+        /* Auto-inject video when data-video-src is set */
+        (function () {
+            var s = document.querySelector('.video-slot[data-video-src]');
+            if (s && s.dataset.videoSrc) {
+                var f = document.createElement('iframe');
+                f.src = s.dataset.videoSrc;
+                f.style.cssText = 'width:100%;height:100%;border:none;border-radius:10px';
+                f.allow = 'autoplay;encrypted-media';
+                f.allowFullscreen = true;
+                s.innerHTML = '';
+                s.style.cssText = '';
+                s.appendChild(f);
+            }
+        })();
+    </script>
+
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

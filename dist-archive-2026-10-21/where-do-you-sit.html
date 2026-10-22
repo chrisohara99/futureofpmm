@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where Do You Sit? | PMM Cognitive Integration Assessment</title>
+    <meta name="description" content="Map your cognitive relationship with AI across three dimensions. Based on the Artificiality Institute's sovereignty research, adapted for product marketing.">
+    <meta property="og:title" content="Where Do You Sit? | PMM Cognitive Integration Assessment">
+    <meta property="og:description" content="Eight ways product marketers integrate AI into their cognition — and why the deepest users aren't the ones losing themselves.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://futureofpmm.com/where-do-you-sit">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            color: #1F2937;
+            background: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        .header {
+            border-bottom: 3px solid #1A3A5C;
+            padding-bottom: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .header-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.15;
+            color: #1A3A5C;
+            margin: 0;
+        }
+        
+        .header p {
+            font-size: 15px;
+            color: #6B7280;
+            margin-top: 8px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .screen {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .screen.fade-out {
+            opacity: 0;
+        }
+        
+        .screen.hidden {
+            display: none;
+        }
+        
+        /* Intro Screen */
+        .intro p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        
+        .callout {
+            background: #F8F6F3;
+            border-left: 3px solid #1A3A5C;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .btn-primary {
+            background: #1A3A5C;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            font-size: 15px;
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: background 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #2D5A8A;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #1A3A5C;
+            border: 2px solid #1A3A5C;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: background 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #F0F4F8;
+        }
+        
+        /* Question Screen */
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .dimension-label {
+            font-size: 12px;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .question-count {
+            font-size: 13px;
+            color: #6B7280;
+        }
+        
+        .progress-bar {
+            height: 2px;
+            background: #E5E7EB;
+            margin-bottom: 32px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #1A3A5C;
+            transition: width 0.5s ease;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 28px;
+            color: #1A3A5C;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        
+        .option-btn {
+            text-align: left;
+            background: #fff;
+            border: 1px solid #D1D5DB;
+            padding: 18px 22px;
+            font-size: 15px;
+            line-height: 1.6;
+            font-family: 'Source Serif 4', Georgia, serif;
+            cursor: pointer;
+            color: #1F2937;
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover:not(:disabled) {
+            border-color: #1A3A5C;
+            background: #FAFBFC;
+        }
+        
+        .option-btn.selected {
+            background: #F0F4F8;
+            border: 2px solid #1A3A5C;
+        }
+        
+        .option-btn:disabled {
+            cursor: default;
+        }
+        
+        .option-btn.faded {
+            opacity: 0.5;
+        }
+        
+        /* Curriculum Focus Box */
+        .curriculum-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #7dd3fc;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+        
+        .curriculum-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .curriculum-box p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1F2937;
+            margin: 0 0 12px 0;
+        }
+        
+        .focus-units {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .unit-tag {
+            background: #0284c7;
+            color: white;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        /* Combined Assessment Box */
+        .combined-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+        
+        .combined-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .combined-scores {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .score-pill {
+            background: white;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .plus {
+            font-size: 18px;
+            color: #92400e;
+            font-weight: 700;
+        }
+        
+        .combined-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1F2937;
+            margin: 0;
+        }
+        
+        /* Take 10x Prompt */
+        .tenx-prompt {
+            background: #f3f4f6;
+            border: 1px dashed #9ca3af;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 24px 0;
+        }
+        
+        .tenx-prompt p {
+            font-size: 14px;
+            color: #4b5563;
+            margin: 0;
+        }
+        
+        .tenx-prompt a {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        
+        /* Results Screen */
+        .role-card {
+            color: #fff;
+            padding: 32px 28px;
+            margin-bottom: 28px;
+        }
+        
+        .role-card .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .role-card h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            line-height: 1.1;
+        }
+        
+        .role-card .tagline {
+            font-size: 16px;
+            font-style: italic;
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .role-card .pct {
+            font-size: 13px;
+            margin-top: 12px;
+            opacity: 0.7;
+        }
+        
+        .dimension-badges {
+            margin-bottom: 24px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 6px 6px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .badge.active {
+            background: #1A3A5C;
+            color: #fff;
+        }
+        
+        .badge.inactive {
+            background: #F3F4F6;
+            color: #9CA3AF;
+        }
+        
+        .cube-viz {
+            width: 100%;
+            max-width: 350px;
+            display: block;
+            margin: 16px auto;
+        }
+        
+        .sovereignty-meter {
+            margin: 24px 0;
+        }
+        
+        .meter-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #6B7280;
+        }
+        
+        .meter-score {
+            font-weight: 700;
+            color: #1A3A5C;
+        }
+        
+        .meter-bar {
+            height: 10px;
+            background: #E5E7EB;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8C3B3B 0%, #C45D3E 30%, #4A7C6F 60%, #1A3A5C 100%);
+            border-radius: 5px;
+            transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .meter-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 11px;
+            color: #9CA3AF;
+        }
+        
+        .description {
+            font-size: 16px;
+            line-height: 1.75;
+            color: #374151;
+            margin-bottom: 32px;
+        }
+        
+        .paradox-box {
+            background: #F8F6F3;
+            border-left: 3px solid #1A3A5C;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .attribution {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #E5E7EB;
+            font-size: 12px;
+            color: #9CA3AF;
+            line-height: 1.6;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1A3A5C;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* Back to site link */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 24px;
+            color: #6B7280;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link:hover {
+            color: #1A3A5C;
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                padding: 24px 16px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .role-card h2 {
+                font-size: 28px;
+            }
+        }
+    
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: #3b82f6; background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; margin: 0; }
+        .nav-menu a:hover { background: #f3f4f6; color: #3b82f6; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: #1e3a5f; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            .logo img { height: 70px !important; }
+            nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: #1e3a5f; flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { display: flex !important; right: 0 !important; }
+            nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; padding: 0.75rem 0 !important; background: transparent !important; }
+            nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: white !important; }
+            .nav-menu { position: static; background: transparent; border: none; box-shadow: none; opacity: 1; visibility: visible; transform: none; padding-left: 1rem; }
+            .nav-menu a { color: rgba(255,255,255,0.7) !important; padding: 0.5rem 0; }
+            .nav-menu a:hover { background: transparent; color: white !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/" class="back-link">← Back to Future of PMM</a>
+    
+    <div class="header">
+        <div class="header-label">Future of PMM — Interactive Assessment</div>
+        <h1>Where Do You Sit?</h1>
+        <p>Mapping your cognitive relationship with AI — based on the Artificiality Institute's sovereignty research</p>
+        
+        <!-- Curriculum Flow Progress -->
+        <div id="curriculum-progress" class="hidden" style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: center; gap: 0.5rem;">
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #1A3A5C; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #E5E7EB; border-radius: 2px;"></div>
+            </div>
+            <p style="font-size: 0.85rem; color: #6B7280; margin-top: 0.5rem; text-align: center;">Step 3 of 4: Cognitive Assessment</p>
+        </div>
+    </div>
+    
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="screen">
+        <p>Nine scenario-based questions. Three dimensions of cognitive integration. Eight possible profiles — each one a distinct posture toward AI in your PMM practice, not a point on a scale.</p>
+        <p>There are no right answers. The Doer who keeps AI outside their reasoning is making a legitimate choice. The Co-Author who's restructured everything around it scores highest on cognitive sovereignty. The interesting part isn't where you land — it's understanding why you're there.</p>
+        <div class="callout">
+            Based on Helen Edwards' <em>Cognitive Sovereignty</em> research at the Artificiality Institute — analysis of 1,250 transcripts studying how professionals integrate AI into their cognitive work. Adapted for the product marketing function.
+        </div>
+        <button class="btn-primary" onclick="startAssessment()">Take the Assessment</button>
+    </div>
+    
+    <!-- Question Screen -->
+    <div id="question-screen" class="screen hidden">
+        <div class="question-meta">
+            <span class="dimension-label" id="dimension-label"></span>
+            <span class="question-count" id="question-count"></span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <h2 class="question-text" id="question-text"></h2>
+        <div class="options" id="options-container"></div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen hidden">
+        <div class="role-card" id="role-card">
+            <div class="label">Your Integration Profile</div>
+            <h2 id="role-name"></h2>
+            <p class="tagline" id="role-tagline"></p>
+            <div class="pct" id="role-pct"></div>
+        </div>
+        
+        <div class="dimension-badges" id="dimension-badges"></div>
+        
+        <svg id="cube-viz" class="cube-viz" viewBox="0 0 350 240"></svg>
+        
+        <div class="sovereignty-meter">
+            <div class="meter-header">
+                <span>Cognitive Sovereignty</span>
+                <span class="meter-score" id="sovereignty-score"></span>
+            </div>
+            <div class="meter-bar">
+                <div class="meter-fill" id="meter-fill"></div>
+            </div>
+            <div class="meter-labels">
+                <span>Outsourcer (6.43)</span>
+                <span>Co-Author (8.54)</span>
+            </div>
+        </div>
+        
+        <div class="description" id="role-description"></div>
+        
+        <div class="curriculum-box" id="curriculum-box">
+            <div class="curriculum-label">📚 Your Curriculum Focus</div>
+            <p id="curriculum-focus"></p>
+            <div class="focus-units" id="focus-units"></div>
+        </div>
+        
+        <div id="combined-assessment" class="combined-box hidden">
+            <div class="combined-label">🎯 Your Prescriptive Path</div>
+            <div class="combined-scores">
+                <div class="score-pill" id="tenx-pill"></div>
+                <span class="plus">+</span>
+                <div class="score-pill" id="cognitive-pill"></div>
+            </div>
+            <p id="combined-recommendation"></p>
+            <a href="/curriculum/unit-01/" class="btn-primary" style="display: inline-block; text-decoration: none; margin-top: 16px;">Start Unit 1 →</a>
+        </div>
+        
+        <div id="take-tenx-prompt" class="tenx-prompt hidden">
+            <p>📊 <strong>Complete your baseline:</strong> Take the <a href="/10x-scorecard.html">10x PMM Scorecard</a> to get your full prescriptive learning path.</p>
+        </div>
+        
+        <div class="paradox-box">
+            <strong>The sovereignty paradox:</strong> The people who've gone furthest in integrating AI into their cognitive processes aren't the ones losing sovereignty — they're the ones with the strongest grip on who they are. Co-Authors score 8.54/9. Outsourcers score 6.43. Depth of engagement isn't the risk. Passive identity coupling without cognitive engagement is.
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn-primary" onclick="restartAssessment()">Retake Assessment</button>
+            <button class="btn-secondary" onclick="shareResult()">Share Your Result</button>
+        </div>
+        
+        <div class="attribution">
+            Assessment adapted from Edwards, H. (2026). <em>Cognitive Sovereignty: Authoring Your Mind in the AI Age.</em> Artificiality Institute. Framework applied to the product marketing function by Chris O'Hara for <em>The Future of Product Marketing</em> curriculum.
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<!-- Curriculum Flow Completion Modal -->
+<div id="completion-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #22c55e; border-radius: 2px;"></div>
+                <div style="width: 40px; height: 4px; background: #1A3A5C; border-radius: 2px;"></div>
+            </div>
+            <p style="font-size: 0.85rem; color: #6B7280;">Step 4 of 4: Your Learning Path</p>
+        </div>
+        
+        <h2 class="modal-title">🎯 Your Prescriptive Learning Path</h2>
+        
+        <div class="modal-scores" id="modal-scores">
+            <!-- Filled by JS -->
+        </div>
+        
+        <div class="modal-pattern" id="modal-pattern">
+            <!-- Filled by JS -->
+        </div>
+        
+        <p class="modal-recommendation" id="modal-recommendation">
+            <!-- Filled by JS -->
+        </p>
+        
+        <div class="modal-actions">
+            <a href="/curriculum/unit-01/" class="btn-primary modal-btn">Begin Unit 1 →</a>
+            <button class="btn-secondary modal-btn-secondary" onclick="closeModal()">View Full Results</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show {
+        opacity: 1;
+    }
+    .modal-overlay.hidden {
+        display: none;
+    }
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        max-width: 520px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        text-align: center;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+    .modal-overlay.show .modal-content {
+        transform: scale(1);
+    }
+    .modal-title {
+        font-size: 1.5rem;
+        color: #1A3A5C;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+    .modal-scores {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    .modal-score-pill {
+        background: #f3f4f6;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    .modal-pattern {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .modal-pattern.ready { color: #22c55e; }
+    .modal-pattern.maya { color: #f59e0b; }
+    .modal-pattern.trevor { color: #3b82f6; }
+    .modal-pattern.starting { color: #6b7280; }
+    .modal-recommendation {
+        font-size: 1rem;
+        color: #4b5563;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+    .modal-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .modal-btn {
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        text-align: center;
+    }
+    .modal-btn-secondary {
+        width: 100%;
+    }
+</style>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const QUESTIONS = [
+    {
+        dimension: "CP",
+        label: "Cognitive Permeability",
+        question: "You're developing positioning for a new product that enters a crowded category. How does AI fit into that process?",
+        options: [
+            { text: "I do my own analysis first — customer interviews, competitive landscape, internal stakeholder alignment — then use AI to stress-test the draft or generate alternative phrasings.", score: 0 },
+            { text: "I start a conversation with AI early, feeding it raw inputs and working through the positioning logic together. Its responses regularly redirect my thinking in ways I didn't anticipate.", score: 1 },
+        ],
+    },
+    {
+        dimension: "CP",
+        label: "Cognitive Permeability",
+        question: "A competitor drops a surprise announcement that undercuts your narrative. You need to brief the sales team by tomorrow morning.",
+        options: [
+            { text: "I pull together the facts, draft talking points, and might run the final version through AI for polish or gap-checking.", score: 0 },
+            { text: "I jump into a back-and-forth with AI immediately — exploring angles, pressure-testing counter-narratives, iterating on the framing until something clicks that I wouldn't have reached alone.", score: 1 },
+        ],
+    },
+    {
+        dimension: "CP",
+        label: "Cognitive Permeability",
+        question: "You're building the go-to-market plan for a major launch. Where does AI enter the picture?",
+        options: [
+            { text: "AI handles execution tasks — first drafts of emails, social copy, enablement decks — while the strategic architecture is mine.", score: 0 },
+            { text: "The strategic thinking itself happens partly in dialogue with AI. I think through sequencing, audience prioritization, and messaging hierarchy in conversation with it.", score: 1 },
+        ],
+    },
+    {
+        dimension: "IC",
+        label: "Identity Coupling",
+        question: "At a conference, someone asks what you do. How does AI come up?",
+        options: [
+            { text: "I describe myself as a product marketer who uses AI tools. The tools are part of how I work, but my professional identity is the same as it was three years ago.", score: 0 },
+            { text: "I honestly can't describe what I do anymore without explaining how AI is woven into it. My role, my workflows, my sense of what I'm good at — it's all restructured.", score: 1 },
+        ],
+    },
+    {
+        dimension: "IC",
+        label: "Identity Coupling",
+        question: "Think about your professional development over the next two years. What does growth look like?",
+        options: [
+            { text: "Deeper domain expertise in my category, stronger strategic judgment, better cross-functional influence — AI accelerates all of that, but the growth path is fundamentally a PMM growth path.", score: 0 },
+            { text: "I'm developing capabilities that didn't exist in PMM two years ago — prompt architecture, agentic workflow design, AI-augmented research methodologies. My career trajectory has fundamentally forked from the traditional PMM path.", score: 1 },
+        ],
+    },
+    {
+        dimension: "IC",
+        label: "Identity Coupling",
+        question: "If every AI tool you use disappeared tomorrow, what happens to your professional identity?",
+        options: [
+            { text: "I'd be slower and less efficient, but I'd still be the same PMM. My expertise, judgment, and professional reputation exist independent of the tools.", score: 0 },
+            { text: "I'd have to fundamentally rethink who I am professionally. The way I've rebuilt my practice around AI collaboration means losing it would be an identity crisis, not just an inconvenience.", score: 1 },
+        ],
+    },
+    {
+        dimension: "SP",
+        label: "Symbolic Plasticity",
+        question: "Has your definition of 'excellent positioning' changed because of AI?",
+        options: [
+            { text: "Not really. Good positioning is good positioning — clear, differentiated, defensible, customer-validated. AI helps me get there faster, but the standard hasn't moved.", score: 0 },
+            { text: "Yes. I've discovered that positioning can be more dynamic, more iterative, more data-responsive than I ever imagined. What 'good' looks like has genuinely shifted.", score: 1 },
+        ],
+    },
+    {
+        dimension: "SP",
+        label: "Symbolic Plasticity",
+        question: "Think about how you evaluate a competitive battlecard. What does 'done well' mean?",
+        options: [
+            { text: "Same criteria as always — accurate, actionable, easy for reps to use in the moment. The production process changed, but the quality bar didn't.", score: 0 },
+            { text: "I'm rethinking the entire concept. Maybe battlecards should be living documents. Maybe they should be conversational interfaces. The form factor and success criteria are both in play.", score: 1 },
+        ],
+    },
+    {
+        dimension: "SP",
+        label: "Symbolic Plasticity",
+        question: "When you look at the PMM function broadly, how do you think about what the job even is?",
+        options: [
+            { text: "The core job hasn't changed — understand the market, position the product, enable the field, drive adoption. The tools are better. The job is the job.", score: 0 },
+            { text: "I'm genuinely uncertain about what the PMM function should be optimizing for now. The boundaries between PMM, product, strategy, and enablement are blurring in ways that AI is accelerating, and I find myself renegotiating what success looks like.", score: 1 },
+        ],
+    },
+];
+
+const ROLES = {
+    "0-0-0": {
+        name: "The Doer",
+        pct: "30.3%",
+        color: "#4A7C6F",
+        tagline: "Clear boundaries, clean handoffs",
+        description: "You use AI — probably more than you think — but as an execution layer. Your strategic reasoning happens in your own head, your professional identity is solidly PMM, and your definition of good work hasn't budged. You're the person who queries AI, reviews the output, takes what's useful, and moves on. There's nothing wrong with this posture — it scored a 7.73 on cognitive sovereignty in the Edwards research, and scientists cluster here disproportionately. But the question worth asking is whether you're keeping AI outside your reasoning because you've made a deliberate choice, or because you haven't yet discovered what happens when you let it in.",
+        sovereignty: 7.73,
+        cognitiveLevel: "low",
+        curriculumFocus: "Your opportunity is cognitive partnership. Focus on the 'Thinking With' sections in Units 2-4 to discover what happens when you let AI into your reasoning process — not just your execution.",
+        focusUnits: [2, 3, 4],
+    },
+    "1-0-0": {
+        name: "The Framer",
+        pct: "33.4%",
+        color: "#2D6A9F",
+        tagline: "Think with AI, stay yourself",
+        description: "You've crossed the most important threshold: AI is genuinely inside your reasoning process. You iterate with it, you let its responses redirect your thinking, you discover angles you wouldn't have found alone. But your professional identity and your definition of good work remain your own. This is the most common pattern in the research — a third of all professionals land here — and it may represent the current equilibrium point for productive AI integration. Sovereignty score: 8.03. For a PMM, this is the sweet spot where competitive narratives get sharper, positioning gets pressure-tested in real time, and launch strategies get more creative — without losing the thread of who you are and what you stand for.",
+        sovereignty: 8.03,
+        cognitiveLevel: "high",
+        curriculumFocus: "You've got cognitive partnership. Now build the technical depth to match. Focus on the Hands-On builds in each unit to expand what you can actually create with that partnership.",
+        focusUnits: [2, 3, 4, 5],
+    },
+    "0-0-1": {
+        name: "The Catalyst",
+        pct: "9.2%",
+        color: "#8B6F47",
+        tagline: "New meanings, own reasoning",
+        description: "Here's where it gets interesting. AI hasn't entered your reasoning process — you still think independently — but it has started reshaping what you think the work even means. Maybe you've seen AI-generated positioning that made you question your own quality standards. Maybe watching agents handle enablement workflows made you rethink what PMMs should actually be spending time on. Your meanings are in flux while your thinking stays your own. Creative professionals cluster here disproportionately. For PMMs, this is the person reading every 'future of marketing' newsletter and genuinely wrestling with the implications — but doing that wrestling in their own head, not in dialogue with AI.",
+        sovereignty: 7.70,
+        cognitiveLevel: "low",
+        curriculumFocus: "You're rethinking the job but haven't engaged AI cognitively yet. Start with Unit 2's 'Thinking With' exercises to bring AI into the very process you're already wrestling with.",
+        focusUnits: [2, 5, 6],
+    },
+    "1-0-1": {
+        name: "The Partner",
+        pct: "15.3%",
+        color: "#5B4A8A",
+        tagline: "Reasoning and meaning in play",
+        description: "You're letting AI into your thinking and you're letting it change what you think good work looks like — but your professional identity holds steady. This is the advanced practitioner pattern: a PMM who brainstorms positioning in dialogue with AI, discovers that competitive analysis can be more dynamic than they ever imagined, rethinks what a launch plan should even contain — and still knows exactly who they are. Sovereignty is high at 8.18. The Partner pattern is what the 10x PMM thesis is really describing: someone whose capability has expanded dramatically through AI collaboration without losing the judgment, taste, and institutional navigation that makes a PMM valuable in the first place.",
+        sovereignty: 8.18,
+        cognitiveLevel: "high",
+        curriculumFocus: "You're at the 10x PMM pattern. The curriculum is your playbook — use it to systematize what you're already doing and build the policy/communications skills (Unit 5-7) that let you scale it across the org.",
+        focusUnits: [5, 6, 7],
+    },
+    "1-1-0": {
+        name: "The Builder",
+        pct: "5.0%",
+        color: "#C45D3E",
+        tagline: "AI in reasoning and identity; meanings stable",
+        description: "You've gone further than most: AI is in your reasoning and your professional identity has genuinely reorganized around it. But your standards and definitions of success haven't moved — you know what good PMM work looks like, and that hasn't changed. Builders are rare at 5% of the population, and they tend to be people who've structurally rebuilt their practice around AI collaboration while maintaining a clear-eyed view of what they're trying to achieve. Think of the PMM who's redesigned their entire workflow around agentic tools, can't imagine going back, but still evaluates output against the same competitive positioning frameworks they've always used.",
+        sovereignty: 7.94,
+        cognitiveLevel: "high",
+        curriculumFocus: "Your practice is rebuilt around AI. Focus on Units 5-7 to bring that same transformation to commercial strategy, stakeholder navigation, and adoption — the areas where your stable standards meet new methods.",
+        focusUnits: [5, 6, 7],
+    },
+    "1-1-1": {
+        name: "The Co-Author",
+        pct: "3.8%",
+        color: "#1A3A5C",
+        tagline: "Full integration — and highest sovereignty",
+        description: "Everything is in play: AI is inside your reasoning, your professional identity has reorganized, and the meanings of your work are actively evolving. And here's the paradox that anchors the entire Edwards research — you're also the most sovereign. Co-authors scored 8.54 out of 9. The act of actively shaping deep AI collaboration requires so much awareness, agency, and accountability that it builds the very cognitive muscles it seems like it should erode. You're the PMM who thinks with AI, has restructured your career around it, is genuinely rethinking what the function should become — and has the strongest grip on your own professional identity of anyone in the dataset.",
+        sovereignty: 8.54,
+        cognitiveLevel: "high",
+        curriculumFocus: "You're at the frontier. Use the curriculum as a reference library and focus on the Soft Skills sections — policy embedding, AI communications, and culture building. You're ready to help others get here.",
+        focusUnits: [1, 7],
+    },
+    "0-1-0": {
+        name: "The Outsourcer",
+        pct: "1.7%",
+        color: "#8C3B3B",
+        tagline: "Identity coupled, reasoning separate — watch this space",
+        description: "This is the pattern that should worry you. Your professional identity has reorganized around AI, but you haven't actually let it into your reasoning process — and your definitions of success haven't evolved either. In the Edwards data, Outsourcers scored the lowest sovereignty of any role at 6.43. The combination is a red flag: you've let AI change who you think you are without engaging deeply enough to maintain authorship over that change. For a PMM, this might look like someone who's rebranded themselves as an 'AI-native marketer' while still using AI as a glorified text generator. The identity shift happened externally — job market pressure, org restructuring — rather than through deliberate cognitive engagement.",
+        sovereignty: 6.43,
+        cognitiveLevel: "low",
+        curriculumFocus: "Priority: rebuild cognitive sovereignty. Start with Unit 1 to understand the framework, then work through Units 2-3 'Thinking With' sections deliberately. The goal is genuine cognitive engagement, not identity performance.",
+        focusUnits: [1, 2, 3],
+    },
+    "0-1-1": {
+        name: "The Creator",
+        pct: "1.4%",
+        color: "#6B3A6B",
+        tagline: "Identity and meanings in flux — without cognitive engagement",
+        description: "This is the hardest place to be. Your professional identity has reorganized and you're uncertain about what good work even means — but AI isn't inside your reasoning process. In the Edwards research, Creators showed a distinctive fracture pattern: high awareness (they can see exactly what's happening to their profession) but collapsed agency (they feel stuck). The original research found this pattern concentrated among content creators and writers whose core output AI now produces cheaply. For PMMs, this might be the person who sees AI eating the execution layer of their job, feels their professional identity shifting as a result, but hasn't found a way to engage cognitively with AI at the strategic level — the level where sovereignty lives.",
+        sovereignty: 7.47,
+        cognitiveLevel: "low",
+        curriculumFocus: "Your awareness is high but agency feels stuck. The fix is cognitive engagement. Work through the curriculum sequentially, focusing especially on the 'Thinking With' sections — they'll show you how to engage AI at the strategic level where sovereignty lives.",
+        focusUnits: [1, 2, 3, 4],
+    },
+};
+
+const VERTICES = [
+    { key: "0-0-0", x: 80, y: 200, label: "Doer" },
+    { key: "1-0-0", x: 220, y: 200, label: "Framer" },
+    { key: "0-1-0", x: 130, y: 140, label: "Outsourcer" },
+    { key: "1-1-0", x: 270, y: 140, label: "Builder" },
+    { key: "0-0-1", x: 80, y: 90, label: "Catalyst" },
+    { key: "1-0-1", x: 220, y: 90, label: "Partner" },
+    { key: "0-1-1", x: 130, y: 30, label: "Creator" },
+    { key: "1-1-1", x: 270, y: 30, label: "Co-Author" },
+];
+
+const EDGES = [
+    ["0-0-0","1-0-0"],["0-0-0","0-1-0"],["0-0-0","0-0-1"],
+    ["1-1-1","0-1-1"],["1-1-1","1-0-1"],["1-1-1","1-1-0"],
+    ["1-0-0","1-1-0"],["1-0-0","1-0-1"],
+    ["0-1-0","1-1-0"],["0-1-0","0-1-1"],
+    ["0-0-1","1-0-1"],["0-0-1","0-1-1"],
+];
+
+let currentQ = -1;
+let answers = [];
+let selectedScore = null;
+
+function startAssessment() {
+    fadeOut('intro-screen', () => {
+        currentQ = 0;
+        answers = [];
+        showQuestion();
+        fadeIn('question-screen');
+    });
+}
+
+function showQuestion() {
+    const q = QUESTIONS[currentQ];
+    document.getElementById('dimension-label').textContent = q.label;
+    document.getElementById('question-count').textContent = `${currentQ + 1} of ${QUESTIONS.length}`;
+    document.getElementById('progress-fill').style.width = `${((currentQ + 1) / QUESTIONS.length) * 100}%`;
+    document.getElementById('question-text').textContent = q.question;
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    
+    // Randomize option order
+    const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+    
+    shuffled.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt.text;
+        btn.onclick = () => selectOption(opt.score, btn);
+        container.appendChild(btn);
+    });
+}
+
+function selectOption(score, btn) {
+    if (selectedScore !== null) return;
+    selectedScore = score;
+    
+    btn.classList.add('selected');
+    document.querySelectorAll('.option-btn').forEach(b => {
+        b.disabled = true;
+        if (b !== btn) b.classList.add('faded');
+    });
+    
+    setTimeout(() => {
+        fadeOut('question-screen', () => {
+            answers.push(score);
+            selectedScore = null;
+            
+            if (currentQ < QUESTIONS.length - 1) {
+                currentQ++;
+                showQuestion();
+                fadeIn('question-screen');
+            } else {
+                showResults();
+                fadeIn('results-screen');
+            }
+        });
+    }, 500);
+}
+
+async function saveAssessmentResult(roleKey, role, dims) {
+    try {
+        // Get user email from localStorage
+        let email = null;
+        try {
+            const directUser = localStorage.getItem('pmm_direct_user');
+            if (directUser) {
+                email = JSON.parse(directUser).email;
+            }
+        } catch (e) {}
+        
+        if (!email) {
+            console.log('No user email - cannot save assessment');
+            return;
+        }
+        
+        console.log('Saving assessment via serverless: where-do-you-sit');
+        
+        // Use serverless function to bypass RLS
+        const res = await fetch('/.netlify/functions/save-result', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'assessment',
+                email: email,
+                data: {
+                    assessment_type: 'where-do-you-sit',
+                    result_key: roleKey,
+                    result_name: role.name,
+                    result_data: { 
+                        roleKey: roleKey,
+                        dimensions: dims, 
+                        sovereignty: role.sovereignty,
+                        cognitiveLevel: role.cognitiveLevel,
+                        completedAt: new Date().toISOString(),
+                        history: [],
+                        attemptNumber: 1
+                    }
+                }
+            })
+        });
+        
+        const result = await res.json();
+        
+        if (result.error) {
+            console.error('Assessment save error:', result.error);
+        } else {
+            console.log('Assessment saved successfully: where-do-you-sit');
+        }
+    } catch (e) {
+        console.error('Error saving assessment:', e);
+    }
+}
+
+// Curriculum flow helper
+function isCurriculumFlow() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('flow') === 'curriculum';
+}
+
+// Show curriculum progress indicator
+if (isCurriculumFlow()) {
+    document.getElementById('curriculum-progress').classList.remove('hidden');
+}
+
+// Close modal function
+window.closeModal = function() {
+    document.getElementById('completion-modal').classList.remove('show');
+    setTimeout(() => {
+        document.getElementById('completion-modal').classList.add('hidden');
+    }, 300);
+};
+
+async function showResults() {
+    const roleKey = getRoleKey();
+    const role = ROLES[roleKey];
+    const dims = getDimensions();
+    
+    // Save to Supabase
+    saveAssessmentResult(roleKey, role, dims);
+    
+    // If in curriculum flow, show completion modal after a delay
+    if (isCurriculumFlow()) {
+        setTimeout(() => showCompletionModal(role, roleKey), 1500);
+    }
+    
+    // Role card
+    document.getElementById('role-card').style.background = role.color;
+    document.getElementById('role-name').textContent = role.name;
+    document.getElementById('role-tagline').textContent = role.tagline;
+    document.getElementById('role-pct').textContent = `${role.pct} of professionals in the Edwards research`;
+    
+    // Dimension badges
+    const badgesContainer = document.getElementById('dimension-badges');
+    badgesContainer.innerHTML = `
+        <span class="badge ${dims.CP ? 'active' : 'inactive'}">Cognitive Permeability: ${dims.CP ? 'Yes' : 'No'}</span>
+        <span class="badge ${dims.IC ? 'active' : 'inactive'}">Identity Coupling: ${dims.IC ? 'Yes' : 'No'}</span>
+        <span class="badge ${dims.SP ? 'active' : 'inactive'}">Symbolic Plasticity: ${dims.SP ? 'Yes' : 'No'}</span>
+    `;
+    
+    // Cube visualization
+    renderCube(roleKey);
+    
+    // Sovereignty meter
+    document.getElementById('sovereignty-score').textContent = `${role.sovereignty} / 9`;
+    setTimeout(() => {
+        document.getElementById('meter-fill').style.width = `${(role.sovereignty / 9) * 100}%`;
+    }, 300);
+    
+    // Description
+    document.getElementById('role-description').textContent = role.description;
+    
+    // Curriculum focus - now sequential rollout
+    document.getElementById('curriculum-focus').textContent = "The curriculum unlocks one unit per week. Your assessment results will help you know which sections to focus on within each unit.";
+    document.getElementById('focus-units').innerHTML = '<span class="unit-tag" style="background: #16a34a;">Start with Unit 1</span>';
+    
+    // Check for 10x Scorecard completion and show combined view
+    await checkCombinedAssessment(role);
+}
+
+async function checkCombinedAssessment(cognitiveRole) {
+    try {
+        if (typeof supabase === 'undefined') {
+            document.getElementById('take-tenx-prompt').classList.remove('hidden');
+            return;
+        }
+        
+        const client = supabase.createClient(
+            'https://yyqzkczutlidhgyiyawc.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
+        );
+        
+        const { data: { session } } = await client.auth.getSession();
+        if (!session) {
+            document.getElementById('take-tenx-prompt').classList.remove('hidden');
+            return;
+        }
+        
+        // Check for 10x Scorecard content result
+        const { data: scorecardResult } = await client
+            .from('assessment_results')
+            .select('result_data')
+            .eq('user_id', session.user.id)
+            .eq('assessment_type', '10x-scorecard-content')
+            .single();
+        
+        if (!scorecardResult || !scorecardResult.result_data) {
+            document.getElementById('take-tenx-prompt').classList.remove('hidden');
+            return;
+        }
+        
+        // We have both assessments — show combined view
+        const tenxScore = scorecardResult.result_data.average;
+        const tenxGrade = scorecardResult.result_data.grade;
+        const cognitiveLevel = cognitiveRole.cognitiveLevel;
+        
+        // Determine prescriptive path
+        const isHighTenx = tenxScore >= 3.0;
+        const isHighCognitive = cognitiveLevel === 'high';
+        
+        let recommendation = '';
+        let pattern = '';
+        
+        if (isHighTenx && isHighCognitive) {
+            pattern = 'Ready for Prime Time';
+            recommendation = "You've got both the hard skills and the cognitive partnership. As each unit unlocks, focus on the Soft Skills sections — policy embedding, AI communications, and culture building. You're ready to help others get here too.";
+        } else if (isHighTenx && !isHighCognitive) {
+            pattern = 'The Maya Pattern';
+            recommendation = "Strong on execution, but cognitive integration is your gap. As you work through each unit, pay special attention to the 'Thinking With AI' sections — that's where sovereignty and true 10x leverage live.";
+        } else if (!isHighTenx && isHighCognitive) {
+            pattern = 'The Trevor Pattern';
+            recommendation = "You're thinking with AI but need the technical foundations to match. Focus on the Hands-On builds in each unit to expand what you can actually create. The hard skills are learnable — you've already done the harder part.";
+        } else {
+            pattern = 'Starting Out';
+            recommendation = "You're at the beginning of the journey — and that's fine. Start with Unit 1 to understand the framework, then follow along as units unlock each week. The curriculum builds progressively.";
+        }
+        
+        // Update UI
+        document.getElementById('tenx-pill').innerHTML = `<strong>10x:</strong> ${tenxScore.toFixed(1)}/5 (${tenxGrade})`;
+        document.getElementById('cognitive-pill').innerHTML = `<strong>Cognitive:</strong> ${cognitiveRole.name}`;
+        document.getElementById('combined-recommendation').innerHTML = `<strong>${pattern}:</strong> ${recommendation}`;
+        document.getElementById('combined-assessment').classList.remove('hidden');
+        
+    } catch (e) {
+        console.error('Error checking combined assessment:', e);
+        document.getElementById('take-tenx-prompt').classList.remove('hidden');
+    }
+}
+
+function renderCube(activeKey) {
+    const svg = document.getElementById('cube-viz');
+    svg.innerHTML = '';
+    
+    // Draw edges
+    EDGES.forEach(([a, b]) => {
+        const va = VERTICES.find(v => v.key === a);
+        const vb = VERTICES.find(v => v.key === b);
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', va.x);
+        line.setAttribute('y1', va.y);
+        line.setAttribute('x2', vb.x);
+        line.setAttribute('y2', vb.y);
+        line.setAttribute('stroke', '#D1D5DB');
+        line.setAttribute('stroke-width', '1');
+        svg.appendChild(line);
+    });
+    
+    // Draw vertices
+    VERTICES.forEach(v => {
+        const isActive = v.key === activeKey;
+        const role = ROLES[v.key];
+        
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', v.x);
+        circle.setAttribute('cy', v.y);
+        circle.setAttribute('r', isActive ? 10 : 5);
+        circle.setAttribute('fill', isActive ? role.color : '#E5E7EB');
+        if (isActive) {
+            circle.setAttribute('stroke', '#fff');
+            circle.setAttribute('stroke-width', '2');
+        }
+        svg.appendChild(circle);
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', v.x);
+        text.setAttribute('y', v.y + (v.y < 100 ? -16 : 22));
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-size', isActive ? 12 : 10);
+        text.setAttribute('font-weight', isActive ? 700 : 400);
+        text.setAttribute('fill', isActive ? role.color : '#9CA3AF');
+        text.setAttribute('font-family', "'Source Serif 4', Georgia, serif");
+        text.textContent = v.label;
+        svg.appendChild(text);
+    });
+}
+
+function getRoleKey() {
+    const dims = { CP: [], IC: [], SP: [] };
+    answers.forEach((a, i) => {
+        dims[QUESTIONS[i].dimension].push(a);
+    });
+    const cp = dims.CP.reduce((s, v) => s + v, 0) >= 2 ? 1 : 0;
+    const ic = dims.IC.reduce((s, v) => s + v, 0) >= 2 ? 1 : 0;
+    const sp = dims.SP.reduce((s, v) => s + v, 0) >= 2 ? 1 : 0;
+    return `${cp}-${ic}-${sp}`;
+}
+
+function getDimensions() {
+    const dims = { CP: [], IC: [], SP: [] };
+    answers.forEach((a, i) => {
+        dims[QUESTIONS[i].dimension].push(a);
+    });
+    return {
+        CP: dims.CP.reduce((s, v) => s + v, 0) >= 2,
+        IC: dims.IC.reduce((s, v) => s + v, 0) >= 2,
+        SP: dims.SP.reduce((s, v) => s + v, 0) >= 2,
+    };
+}
+
+function restartAssessment() {
+    document.getElementById('meter-fill').style.width = '0%';
+    fadeOut('results-screen', () => {
+        currentQ = -1;
+        answers = [];
+        selectedScore = null;
+        fadeIn('intro-screen');
+    });
+}
+
+function shareResult() {
+    const roleKey = getRoleKey();
+    const role = ROLES[roleKey];
+    const text = `I'm a "${role.name}" — ${role.tagline}. Take the PMM Cognitive Integration Assessment to find yours: futureofpmm.com/where-do-you-sit`;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Copied to clipboard!');
+        });
+    }
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+async function showCompletionModal(cognitiveRole, cognitiveKey) {
+    try {
+        const client = supabase.createClient(
+            'https://yyqzkczutlidhgyiyawc.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cXprY3p1dGxpZGhneWl5YXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY0NzksImV4cCI6MjA5MDA0MjQ3OX0.B4mHnxZ9Ap31e4w3uE4cW6cWZvKgiLnLOcmbNbeCoTI'
+        );
+        
+        const { data: { session } } = await client.auth.getSession();
+        if (!session) return;
+        
+        // Get 10x Scorecard results
+        const { data: scorecardResult } = await client
+            .from('assessment_results')
+            .select('result_data')
+            .eq('user_id', session.user.id)
+            .eq('assessment_type', '10x-scorecard-content')
+            .single();
+        
+        if (!scorecardResult || !scorecardResult.result_data) return;
+        
+        const tenxScore = scorecardResult.result_data.average;
+        const tenxGrade = scorecardResult.result_data.grade;
+        const cognitiveLevel = cognitiveRole.cognitiveLevel;
+        
+        // Determine prescriptive path
+        const isHighTenx = tenxScore >= 3.0;
+        const isHighCognitive = cognitiveLevel === 'high';
+        
+        let pattern = '';
+        let patternClass = '';
+        let recommendation = '';
+        
+        if (isHighTenx && isHighCognitive) {
+            pattern = '🚀 Ready for Prime Time';
+            patternClass = 'ready';
+            recommendation = "You've got both the hard skills and the cognitive partnership. Focus on Soft Skills (Units 5-7) — policy embedding, AI communications, and culture building. You're ready to help scale this across the team.";
+        } else if (isHighTenx && !isHighCognitive) {
+            pattern = '⚡ The Maya Pattern';
+            patternClass = 'maya';
+            recommendation = "Strong on execution, but cognitive integration is your gap. You're producing with AI but not thinking with it. Focus on the 'Thinking With' sections to unlock the strategic layer — that's where true 10x leverage lives.";
+        } else if (!isHighTenx && isHighCognitive) {
+            pattern = '📚 The Trevor Pattern';
+            patternClass = 'trevor';
+            recommendation = "You're thinking with AI but need the technical foundations to match. Focus on the Hands-On builds in each unit to expand what you can actually create. The hard skills are learnable — you've already done the harder part.";
+        } else {
+            pattern = '🌱 Starting Your Journey';
+            patternClass = 'starting';
+            recommendation = "You're at the beginning — and that's the perfect place to start. Work through Unit 1 to understand the framework, then progress sequentially. Focus on both 'Thinking With' sections and Hands-On builds in parallel.";
+        }
+        
+        // Fill modal content
+        document.getElementById('modal-scores').innerHTML = `
+            <span class="modal-score-pill">📊 10x: ${tenxScore.toFixed(1)}/5 (${tenxGrade})</span>
+            <span class="modal-score-pill">🧠 ${cognitiveRole.name}</span>
+        `;
+        document.getElementById('modal-pattern').textContent = pattern;
+        document.getElementById('modal-pattern').className = 'modal-pattern ' + patternClass;
+        document.getElementById('modal-recommendation').textContent = recommendation;
+        
+        // Show modal
+        const modal = document.getElementById('completion-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.add('show'), 50);
+        
+    } catch (e) {
+        console.error('Error showing completion modal:', e);
+    }
+}
+
+function fadeOut(screenId, callback) {
+    const screen = document.getElementById(screenId);
+    screen.classList.add('fade-out');
+    setTimeout(() => {
+        screen.classList.add('hidden');
+        screen.classList.remove('fade-out');
+        if (callback) callback();
+    }, 300);
+}
+
+function fadeIn(screenId) {
+    const screen = document.getElementById(screenId);
+    screen.classList.remove('hidden');
+    screen.classList.add('fade-out');
+    setTimeout(() => screen.classList.remove('fade-out'), 50);
+}
+</script>
+</body>
+</html>

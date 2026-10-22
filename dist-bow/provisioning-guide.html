@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP Provisioning Guide | Future of PMM</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+            --success: #28a745;
+            --warning: #f0ad4e;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.7;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        nav { display: flex; gap: 2rem; }
+        nav a { color: var(--text-secondary); font-size: 0.9rem; }
+        
+        .hero {
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, #2d4a6f 100%);
+            color: white;
+        }
+        
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero p {
+            opacity: 0.9;
+        }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .intro {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .intro p {
+            margin: 0;
+        }
+        
+        .step {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--sap-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+        
+        .step p {
+            margin-bottom: 1rem;
+        }
+        
+        .code-block {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+        
+        .code-block .comment {
+            color: #6b7280;
+        }
+        
+        .code-block .command {
+            color: #60a5fa;
+        }
+        
+        .info-box {
+            background: #e8f4ff;
+            border-left: 4px solid var(--sap-blue);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box.warning {
+            background: #fff8e6;
+            border-left-color: var(--warning);
+        }
+        
+        .info-box.success {
+            background: #e6f4ea;
+            border-left-color: var(--success);
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .checklist li {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: var(--bg-light);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+        
+        .file-tree {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.5rem; }
+            main { padding: 2rem 1rem; }
+            .step-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)">
+                        <stop offset="0" stop-color="#00B8F1"/>
+                        <stop offset="0.31" stop-color="#0D90D9"/>
+                        <stop offset="0.58" stop-color="#1775C8"/>
+                        <stop offset="0.82" stop-color="#1C65BF"/>
+                        <stop offset="1" stop-color="#1E5FBB"/>
+                    </linearGradient>
+                </defs>
+                <polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/>
+                <path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/>
+            </svg>
+            <span>Future of PMM</span>
+        </a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/bow/">Book of Work</a>
+            <a href="/handoff.html">Handoff Package</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <div class="hero-inner">
+            <h1>SAP Provisioning Guide</h1>
+            <p>Step-by-step instructions for deploying Future of PMM on SAP infrastructure</p>
+        </div>
+    </div>
+
+    <main>
+        <div class="intro">
+            <p><strong>Hi Sean</strong> — This guide walks you through exactly how to provision the Future of PMM site on SAP corporate infrastructure. The site is static HTML with zero dependencies, so deployment is straightforward.</p>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <h2 class="step-title">Download the Site Package</h2>
+            </div>
+            
+            <p>First, download all the site files. You have two options:</p>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Option A: Download ZIP from Netlify</h3>
+            <ol>
+                <li>Go to the current live site: <a href="https://bow-demo-pmm.netlify.app">bow-demo-pmm.netlify.app</a></li>
+                <li>Contact Chris O'Hara for the Netlify account access, or request a ZIP export</li>
+            </ol>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Option B: Clone from GitHub (Recommended)</h3>
+            <p>Once the repo is created on SAP GitHub Enterprise:</p>
+            
+            <div class="code-block">
+<span class="comment"># Clone the repository</span>
+<span class="command">git clone</span> https://github.tools.sap/CMO/Future-of-PMM.git
+
+<span class="comment"># Navigate to the site folder</span>
+<span class="command">cd</span> Future-of-PMM/dist-bow
+
+<span class="comment"># This folder contains everything needed for deployment</span>
+<span class="command">ls -la</span>
+            </div>
+            
+            <div class="info-box">
+                <strong>📁 What you'll get:</strong>
+                ~120 HTML files, organized into /bow/ (Book of Work areas) and /newsletter/ (archive). Total size: ~5MB.
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <h2 class="step-title">Choose Your Hosting Platform</h2>
+            </div>
+            
+            <p>SAP has several options for internal static sites. Here are the most common:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Best For</th>
+                        <th>Complexity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SAP BTP Static File Hosting</strong></td>
+                        <td>Official SAP cloud hosting</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GitHub Pages (github.tools.sap)</strong></td>
+                        <td>Quick deployment, version control</td>
+                        <td>Easy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Internal Web Server</strong></td>
+                        <td>Existing infrastructure</td>
+                        <td>Varies</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SharePoint</strong></td>
+                        <td>Integration with MS365</td>
+                        <td>Easy</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="info-box">
+                <strong>💡 Recommendation:</strong>
+                GitHub Pages on github.tools.sap is the fastest path. It auto-deploys when you push changes and handles SSL automatically.
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <h2 class="step-title">Deploy via GitHub Pages (Easiest)</h2>
+            </div>
+            
+            <p>If using SAP's internal GitHub:</p>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">3a. Create the Repository</h3>
+            <ol>
+                <li>Go to <a href="https://github.tools.sap">github.tools.sap</a></li>
+                <li>Create new repo under the CMO organization: <code>CMO/Future-of-PMM</code></li>
+                <li>Set visibility to "Internal" (accessible to all SAP employees)</li>
+            </ol>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">3b. Push the Files</h3>
+            <div class="code-block">
+<span class="comment"># Initialize and push</span>
+<span class="command">cd</span> dist-bow
+<span class="command">git init</span>
+<span class="command">git add</span> .
+<span class="command">git commit</span> -m "Initial deployment of Future of PMM"
+<span class="command">git remote add</span> origin https://github.tools.sap/CMO/Future-of-PMM.git
+<span class="command">git push</span> -u origin main
+            </div>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">3c. Enable GitHub Pages</h3>
+            <ol>
+                <li>Go to repo Settings → Pages</li>
+                <li>Source: Deploy from branch</li>
+                <li>Branch: <code>main</code>, folder: <code>/ (root)</code></li>
+                <li>Click Save</li>
+            </ol>
+            
+            <div class="info-box success">
+                <strong>✅ Done!</strong>
+                Your site will be live at: <code>https://pages.github.tools.sap/CMO/Future-of-PMM/</code>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <h2 class="step-title">Deploy via SAP BTP (Alternative)</h2>
+            </div>
+            
+            <p>If you need to use SAP Business Technology Platform:</p>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">4a. Prerequisites</h3>
+            <ul>
+                <li>SAP BTP account with Cloud Foundry enabled</li>
+                <li>CF CLI installed</li>
+                <li>Entitlement for Static File Hosting or HTML5 Application Repository</li>
+            </ul>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">4b. Create manifest.yml</h3>
+            <p>Add this file to the dist-bow folder:</p>
+            
+            <div class="code-block">
+<span class="comment"># manifest.yml</span>
+applications:
+- name: future-of-pmm
+  memory: 64M
+  disk_quota: 256M
+  buildpack: staticfile_buildpack
+  path: .
+  routes:
+  - route: future-of-pmm.cfapps.sap.hana.ondemand.com
+            </div>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">4c. Deploy</h3>
+            <div class="code-block">
+<span class="comment"># Login to Cloud Foundry</span>
+<span class="command">cf login</span> -a api.cf.sap.hana.ondemand.com
+
+<span class="comment"># Deploy the app</span>
+<span class="command">cf push</span>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <h2 class="step-title">Configure Custom Domain (Optional)</h2>
+            </div>
+            
+            <p>If you want a custom URL like <code>futureofpmm.sap.com</code>:</p>
+            
+            <ol>
+                <li>Submit a request to SAP IT for DNS configuration</li>
+                <li>Provide the target URL from your deployment (GitHub Pages or BTP)</li>
+                <li>Request SSL certificate provisioning</li>
+                <li>IT will configure the CNAME record to point to your hosting</li>
+            </ol>
+            
+            <div class="info-box warning">
+                <strong>⏱️ Timeline:</strong>
+                Custom domain setup typically takes 1-2 weeks through IT ticketing system.
+            </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">6</div>
+                <h2 class="step-title">Verify Deployment</h2>
+            </div>
+            
+            <p>After deployment, verify everything works:</p>
+            
+            <ul class="checklist">
+                <li>Homepage loads at root URL</li>
+                <li>Navigation links work (Home, Book of Work, Newsletter)</li>
+                <li>All 19 Book of Work area pages load</li>
+                <li>Articles within each area are accessible</li>
+                <li>Newsletter archive displays correctly</li>
+                <li>Mobile responsive design works (test on phone)</li>
+                <li>HTTPS is working (no certificate warnings)</li>
+            </ul>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Test URLs to Check</h3>
+            <div class="code-block">
+/                                    <span class="comment"># Homepage</span>
+/bow/                                <span class="comment"># Book of Work hub</span>
+/bow/messaging-positioning/          <span class="comment"># Sample BoW area</span>
+/bow/messaging-positioning/human-premium.html  <span class="comment"># Sample article</span>
+/newsletter/                         <span class="comment"># Newsletter archive</span>
+/handoff.html                        <span class="comment"># IT documentation</span>
+            </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">7</div>
+                <h2 class="step-title">Set Up Redirects (If Needed)</h2>
+            </div>
+            
+            <p>If users have bookmarks to the old site structure, you may want to set up redirects:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Old URL</th>
+                        <th>Redirect To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/curriculum/unit-01/</td>
+                        <td>/bow/messaging-positioning/guide-01.html</td>
+                    </tr>
+                    <tr>
+                        <td>/curriculum/*</td>
+                        <td>/bow/</td>
+                    </tr>
+                    <tr>
+                        <td>/newsletters/*</td>
+                        <td>/newsletter/</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>For GitHub Pages, create a <code>404.html</code> with JavaScript redirects. For BTP/web servers, configure server-side redirects.</p>
+        </div>
+
+        <!-- Summary -->
+        <div class="step">
+            <div class="step-header">
+                <div class="step-number">✓</div>
+                <h2 class="step-title">Summary</h2>
+            </div>
+            
+            <p>That's it! The site is pure static HTML, so once the files are on a web server, it just works. No databases, no server configuration, no build process.</p>
+            
+            <div class="info-box success">
+                <strong>Need Help?</strong>
+                Contact Chris O'Hara if you run into any issues or need the source files in a different format.
+            </div>
+            
+            <h3 style="margin: 1.5rem 0 1rem; font-size: 1.1rem;">Related Documentation</h3>
+            <ul>
+                <li><a href="/handoff.html">IT Handoff Package</a> — Complete technical documentation</li>
+                <li><a href="/memo-sean-thomson.md">Migration Memo</a> — What changed and why</li>
+                <li><a href="/it-handoff-package.md">Handoff Guide (Markdown)</a> — Downloadable version</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved. | Future of PMM Provisioning Guide</p>
+    </footer>
+</body>
+</html>

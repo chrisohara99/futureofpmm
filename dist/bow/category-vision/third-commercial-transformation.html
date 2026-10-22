@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Third Commercial Transformation | NextGen PMM</title>
+    <meta name="description" content="Enterprise software is in its third major transformation. The agentic era challenges everything we know about pricing, packaging, and go-to-market.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --sap-blue: #0070f2;
+            --sap-dark-blue: #0054b4;
+            --sap-light-blue: #e8f4ff;
+            --text-primary: #1d2d3e;
+            --text-secondary: #526069;
+            --border-color: #e4e7eb;
+            --bg-light: #f7f9fb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+        
+        a { color: var(--sap-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .logo:hover { text-decoration: none; }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        /* Article Header */
+        .article-header {
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-header-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--sap-blue);
+        }
+        
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #ccc;
+        }
+        
+        .article-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Article Content */
+        .article-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin: 0 0 1.25rem 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .article-content blockquote {
+            background: var(--bg-light);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .article-content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2.5rem 0;
+        }
+        
+        .article-content strong {
+            font-weight: 600;
+        }
+        
+        .article-content code {
+            background: var(--bg-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content pre {
+            background: var(--text-primary);
+            color: #e5e7eb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Related Content */
+        .related-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .related-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .related-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .related-card:hover {
+            border-color: var(--sap-blue);
+            box-shadow: 0 4px 12px rgba(0,112,242,0.1);
+            text-decoration: none;
+        }
+        
+        .related-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .article-header {
+                padding: 2rem 1rem;
+            }
+            
+            .article-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .article-content {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+    <header>
+    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav>
+        <a href="/bow/" class="active">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+    <div class="article-header">
+        <div class="article-header-inner">
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>›</span>
+                <a href="/bow/category-vision/">Category & Vision</a>
+            </div>
+            <h1>The Third Commercial Transformation</h1>
+            <div class="article-meta">Category & Vision</div>
+        </div>
+    </div>
+
+    <article class="article-content">
+        <article>
+        <p>The enterprise software industry is in the middle of its third major commercial transformation in twenty-five years, and most of the vendors going through it are still in the early stages of working out what it will actually require.</p>
+        
+        <p>The <strong>first transformation</strong> moved software from perpetual licenses to subscription. It took roughly a decade to complete and forced a rebuild of nearly every commercial function — pricing, sales comp, deployment motion, customer success, financial reporting, and the story told to investors.</p>
+        
+        <p>The <strong>second transformation</strong> introduced consumption pricing in infrastructure and data, led by a small group of companies — Amazon Web Services, Snowflake, Twilio, Databricks — that treated usage as a more honest proxy for value than seats had ever been. That transition is still playing out, unevenly, across the rest of the software landscape.</p>
+        
+        <p>The <strong>third transformation</strong> is the arrival of agentic software — software that acts on behalf of the customer, autonomously, inside the customer's workflow. And it is the most difficult of the three because the commercial unit is genuinely unclear for the first time in the history of the industry.</p>
+        
+        <h2>Three Eras of Commercial Logic</h2>
+        
+        <table>
+            <tr>
+                <th>Era</th>
+                <th>Pricing Unit</th>
+                <th>Representative Vendors</th>
+            </tr>
+            <tr>
+                <td><strong>Perpetual License</strong><br><small>1990s–Mid-2000s</small></td>
+                <td>Named user + annual maintenance</td>
+                <td>Oracle, SAP, Siebel, PeopleSoft</td>
+            </tr>
+            <tr>
+                <td><strong>Subscription/SaaS</strong><br><small>Mid-2000s–Present</small></td>
+                <td>Seat per month, tiered by edition</td>
+                <td>Salesforce, Workday, NetSuite, ServiceNow</td>
+            </tr>
+            <tr>
+                <td><strong>Consumption</strong><br><small>Mid-2010s–Present</small></td>
+                <td>Usage — compute, API calls, data scanned</td>
+                <td>AWS, Snowflake, Twilio, Databricks, Stripe</td>
+            </tr>
+            <tr>
+                <td><strong>Agentic/Outcome</strong><br><small>2024–</small></td>
+                <td>Conversation, resolution, or unlimited agentic capacity</td>
+                <td>Salesforce AELA, Microsoft Copilot, Intercom Fin</td>
+            </tr>
+        </table>
+        
+        <p>Each transformation required category leaders to rebuild most of their commercial operating model. The third is compressed in time and less settled in endpoint than either of the first two.</p>
+        
+        <h2>Why the Third Is Different</h2>
+        
+        <p>The core difficulty is that <strong>a seat does not make sense when no human is touching the product at the moment of value creation</strong>. A consumption unit makes partial sense, but the cost structure behind that consumption is lumpy in ways the SaaS era never had to accommodate — agents use model calls, tool calls, orchestration cycles, and real-time data retrieval in proportions that vary wildly by use case and customer.</p>
+        
+        <p>An outcome-based price is the theoretically correct answer, but the instrumentation required to price on outcome — the shared observability between vendor and customer, the agreed-upon measurement frame, the contractual machinery to settle against results rather than against usage — does not yet exist in most enterprise relationships.</p>
+        
+        <h2>Three Vendors, Three Answers</h2>
+        
+        <p>You can see the industry working through this in real time:</p>
+        
+        <ul>
+            <li><strong>Intercom</strong> prices its Fin AI agent at 99 cents per resolution — a genuinely outcome-based model that works because customer service resolution is among the more cleanly measurable outcomes in enterprise software.</li>
+            <li><strong>Microsoft</strong> consolidated its specialized copilots into a single Microsoft 365 Copilot, reinforcing a simple per-user model that encourages broad adoption at the cost of more granular value attribution.</li>
+            <li><strong>Salesforce</strong> originally introduced Agentforce at $2 per conversation, then launched AELA — the Agentic Enterprise License Agreement — offering unlimited use of Agentforce, Data 360, and MuleSoft for a fixed fee, explicitly accepting that they may lose money on some deals in exchange for customers who compound value over time.</li>
+        </ul>
+        
+        <blockquote>Three vendors, three very different commercial answers to the same underlying problem, within a single twelve-month window. That is not a stable market. It is a market in active redefinition.</blockquote>
+        
+        <h2>The Narrative-to-Commercial Gap</h2>
+        
+        <p>The clearest illustration of the gap is the packaging of conversational marketing capabilities across the category. Every major marketing software vendor has spent the last year telling marketers that the category is shifting from one-way campaign broadcasting to two-way conversational engagement.</p>
+        
+        <p>That diagnosis is almost certainly correct. But across the market, two-way conversational capabilities remain largely packaged as premium tier upgrades, frequently with cross-cloud dependencies, which places the capability at the center of the category narrative behind a commercial wall.</p>
+        
+        <div>
+            <h4>The Core Problem</h4>
+            <p>A category leader cannot indefinitely sell a story whose central claim lives behind an upsell. Customers are perceptive enough to notice when the narrative and the contract stop rhyming.</p>
+        </div>
+        
+        <p>The resolution of that tension will not come from a cleaner pricing page or a better SKU rationalization. It will come from a reconception of what the product fundamentally is — which requires the marketing organization to operate adjacent to product management in a way most marketing organizations are not currently structured for.</p>
+        
+        <h2>The Buyer Is Also Becoming Agentic</h2>
+        
+        <p>There is a second structural problem that compounds the first. The buyer of agentic software is itself in the process of becoming partly agentic.</p>
+        
+        <p>The CMO evaluating whether to buy a marketing platform is, today, running early procurement agents that read vendor websites, compare feature coverage, pull third-party review data, interrogate pricing and documentation, and produce structured recommendations for human review.</p>
+        
+        <p>This is not speculative. It is in pilot form across the Fortune 500 right now.</p>
+        
+        <p>The marketing function responsible for making a software product findable, comparable, and selectable by such an agent does not have a name yet, does not have a budget line, and does not have a playbook. It is a category of marketing work that product marketing has not claimed, that brand has not claimed, that content has not claimed, and that demand generation has certainly not claimed.</p>
+        
+        <h2>What This Means for PMM</h2>
+        
+        <p>The vendors that address the narrative-to-commercial gap earliest will compound advantage the rest of the industry will struggle to close. For PMMs, this means:</p>
+        
+        <ul>
+            <li><strong>Story and contract must be architected together.</strong> If they drift, customers feel the drift before analysts do.</li>
+            <li><strong>Marketing must operate adjacent to product management and pricing</strong> in ways most organizations aren't currently structured for.</li>
+            <li><strong>Positioning for two audiences is now table stakes.</strong> Human buyers who respond to emotion, and AI agents who need verifiable specifics.</li>
+            <li><strong>The AMP (Agentic Management Platform) is coming.</strong> The structured, machine-readable representation of what your brand does will become a material portion of marketing over the next three to five years.</li>
+        </ul>
+        
+        <p>The job of the PMM in the agentic era is not to run a better campaign engine. It's to lead the organization through a commercial transformation on a compressed timeline, with a less-settled endpoint, while the existing business continues to generate the quarterly revenue that funds the transition.</p>
+        
+        <blockquote>The vendors that build a serious agent-readability strategy early will benefit from a form of compounding advantage analogous to what SEO produced for the early movers in the mid-2000s.</blockquote>
+        
+        <div>
+            <p><strong>— Chris O'Hara</strong><br>
+            VP Product Marketing, SAP<br>
+            <em>Author of Customer Data Platforms (Wiley) and the forthcoming Agent Driven</em></p>
+        </div>
+        
+        <div>
+            <h3>Learn to Position for Two Audiences</h3>
+            <p>The 10x PMM Curriculum covers agent-readable positioning in Unit 4. Start with the intro and assessments today.</p>
+            <a href="/curriculum/intro.html">Start the Curriculum →</a>
+        </div>
+    </article>
+    </article>
+
+    <footer>
+        <p>© 2026 SAP SE. All rights reserved.</p>
+    </footer>
+    <script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

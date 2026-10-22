@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Future of PMM — The D&A PMM Weekly #2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf9f7;
+    --accent: #c84b31;
+    --accent-light: #f8e8e3;
+    --muted: #6b7280;
+    --border: #e5e2dd;
+    --section-bg: #f3f1ed;
+    --link: #2563eb;
+    --link-hover: #1d4ed8;
+    --claude-green: #10a37f;
+    --chatgpt-orange: #ea580c;
+    --chart-bar: #c84b31;
+    --chart-bg: #fdf6f3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', Georgia, serif;
+    background: linear-gradient(180deg, #e8e6e1 0%, #d5d2cc 100%);
+    color: var(--ink);
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .newsletter {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 2px;
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.08),
+      0 8px 30px rgba(0,0,0,0.12),
+      0 30px 60px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(200,75,49,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .header h1 span {
+    color: var(--accent);
+  }
+
+  .header-meta {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-meta .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── CONTENT ── */
+  .section {
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+    line-height: 1.3;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+
+  ul, ol {
+    margin: 1rem 0 1rem 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-note {
+    background: var(--section-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .intro-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  .signature {
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  /* Featured Article Card */
+  .featured-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    transition: box-shadow 0.2s;
+  }
+
+  .featured-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+
+  .featured-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .featured-card-body {
+    padding: 1.25rem;
+  }
+
+  .featured-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .featured-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .featured-card .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .featured-card .read-link:hover {
+    text-decoration: none;
+    color: var(--link-hover);
+  }
+
+  /* Scorecard */
+  .scorecard {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .scorecard-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .scorecard-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 80px;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  .scorecard-row:last-child {
+    border-bottom: none;
+  }
+
+  .scorecard-row.header-row {
+    background: var(--section-bg);
+    font-weight: 600;
+  }
+
+  .score-chatgpt {
+    color: var(--chatgpt-orange);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .score-claude {
+    color: var(--claude-green);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .winner::after {
+    content: ' ✓';
+  }
+
+  /* Adoption Chart */
+  .adoption-chart {
+    margin: 1.5rem 0;
+  }
+  
+  .adoption-bar-container {
+    margin-bottom: 1.25rem;
+  }
+  
+  .adoption-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+  
+  .adoption-label .stage {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  
+  .adoption-label .desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  
+  .adoption-bar-bg {
+    height: 32px;
+    background: #f3f1ed;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .adoption-bar {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+  
+  .adoption-pct {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  /* Survey Results */
+  .survey-chart {
+    margin: 1.5rem 0;
+  }
+
+  .chart-bar-container {
+    margin-bottom: 1rem;
+  }
+
+  .chart-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .chart-label .pct {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .chart-bar-bg {
+    height: 24px;
+    background: var(--chart-bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .chart-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--chart-bar), #e07a5f);
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  .survey-stat {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .stat-box {
+    background: var(--section-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .stat-box .num {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-box .label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+  }
+
+  /* User of the Week */
+  .uow-card {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1.25rem;
+    background: #fff;
+    border: 2px solid #f0ab00;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .uow-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .uow-badge {
+    display: inline-block;
+    background: #f0ab00;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .uow-card h4 {
+    margin: 0 0 0.25rem;
+    font-size: 1.1rem;
+  }
+
+  .uow-card .title {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .uow-card .summary {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 500px) {
+    .uow-card { grid-template-columns: 1fr; text-align: center; }
+    .uow-card img { margin: 0 auto; }
+    .survey-stat { grid-template-columns: 1fr; }
+  }
+
+  /* News Item */
+  .news-item {
+    background: var(--section-bg);
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .news-item h4 {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .news-item p {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    color: var(--muted);
+  }
+
+  .news-item .takeaway {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .news-item .takeaway strong {
+    color: var(--accent);
+  }
+
+  /* CTA Box */
+  .cta-box {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .cta-box h3 {
+    color: white;
+    margin: 0 0 0.75rem;
+  }
+
+  .cta-box p {
+    opacity: 0.9;
+    margin-bottom: 1.25rem;
+  }
+
+  .cta-box .btn {
+    display: inline-block;
+    background: #f59e0b;
+    color: #1e3a5f;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .cta-box .btn:hover {
+    background: #fbbf24;
+    text-decoration: none;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    padding: 2rem 2.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer a {
+    color: rgba(255,255,255,0.7);
+  }
+
+  .footer a:hover {
+    color: #fff;
+  }
+
+  .footer-links {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 2rem 1.5rem; }
+    .header h1 { font-size: 1.8rem; }
+    .section { padding: 1.5rem; }
+    .scorecard-row { grid-template-columns: 1fr 60px 60px; font-size: 0.8rem; }
+  }
+
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 135px; width: auto; }
+        nav { display: flex; align-items: center; gap: 0.5rem; }
+        nav > a, .nav-dropdown > .nav-trigger { padding: 0.5rem 1rem; text-decoration: none; color: #6b7280; font-size: 0.9rem; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+        nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: #3b82f6; background: #f3f4f6; }
+        .nav-dropdown { position: relative; }
+        .nav-trigger { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; background: none; border: none; font-family: inherit; color: #6b7280; font-size: 0.9rem; font-weight: 500; }
+        .nav-trigger::after { content: ''; border: solid #9ca3af; border-width: 0 1.5px 1.5px 0; padding: 2.5px; transform: rotate(45deg); margin-top: -2px; transition: transform 0.2s; }
+        .nav-dropdown:hover .nav-trigger::after { transform: rotate(-135deg); margin-top: 2px; }
+        .nav-menu { position: absolute; top: 100%; left: 0; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 200px; padding: 0.5rem 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.2s; z-index: 1000; }
+        .nav-dropdown:hover .nav-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .nav-menu a { display: block; padding: 0.6rem 1rem; color: #374151; text-decoration: none; font-size: 0.9rem; transition: all 0.15s; margin: 0; }
+        .nav-menu a:hover { background: #f3f4f6; color: #3b82f6; }
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 28px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; }
+        .hamburger span { width: 100%; height: 3px; background: #1e3a5f; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        @media (max-width: 900px) {
+            .hamburger { display: flex !important; }
+            .logo img { height: 70px !important; }
+            nav { display: none; position: fixed !important; top: 0; right: -100%; width: 280px; height: 100vh; background: #1e3a5f; flex-direction: column; padding: 80px 24px 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 1000; }
+            nav.open { display: flex !important; right: 0 !important; }
+            nav > a, .nav-dropdown > .nav-trigger { color: rgba(255,255,255,0.8) !important; padding: 0.75rem 0 !important; background: transparent !important; }
+            nav > a:hover, .nav-dropdown:hover > .nav-trigger { color: white !important; }
+            .nav-menu { position: static; background: transparent; border: none; box-shadow: none; opacity: 1; visibility: visible; transform: none; padding-left: 1rem; }
+            .nav-menu a { color: rgba(255,255,255,0.7) !important; padding: 0.5rem 0; }
+            .nav-menu a:hover { background: transparent; color: white !important; }
+        }
+
+    </style>
+
+    <!-- Schema.org NewsArticle for GEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "The Future of PMM — The D&A PMM Weekly #2",
+      "description": "",
+      "author": {
+        "@type": "Person",
+        "name": "Chris O'Hara",
+        "jobTitle": "VP Product Marketing",
+        "worksFor": {"@type": "Organization", "name": "SAP"}
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "The Future of PMM",
+        "url": "https://futureofpmm.com"
+      },
+      "datePublished": "2026-03-01",
+      "mainEntityOfPage": "https://futureofpmm.com/newsletters/issue-002.html",
+      "inLanguage": "en"
+    }
+    </script>
+</head>
+<body>
+
+<div class="newsletter">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-label">The D&A PMM Weekly — Issue #2</div>
+    <h1>Testing the <span>Tools</span></h1>
+    <div class="header-meta">
+      <span>February 21, 2026</span>
+      <span class="dot"></span>
+      <span>The Future of PMM</span>
+    </div>
+  </div>
+
+  <!-- 1. Intro -->
+  <div class="section">
+    <div class="section-label">Welcome to Week Two</div>
+    
+    <div class="intro-note">
+      <p>Welcome back to The Future of PMM!</p>
+      <p>This week we're going hands-on with <strong>AI tools</strong>. Not just reviews — real tests with real briefs. What happens when you give Claude, ChatGPT, and Prezent the same assignment? What about competitive battlecards?</p>
+      <p>Plus: meet this week's <strong>User of the Week</strong> — an SAP colleague who built his own AI brain in a weekend.</p>
+      <p>The results surprised me. Let's dig in.</p>
+      <p class="signature">—Chris</p>
+    </div>
+  </div>
+
+  <!-- 2. Article: Content Generation Test -->
+  <div class="section">
+    <div class="section-label">Featured</div>
+    <h2>I Tested 3 AI Content Tools on the Same Brief</h2>
+    <p>I gave Claude, ChatGPT, and Prezent the same assignment: take two articles and an SAP template, create a two-chapter presentation deck.</p>
+    <p><strong>The winner:</strong> Claude, by a mile. Zero manual work required — it pulled images from the source articles and wove a coherent narrative.</p>
+    
+    <div class="featured-card">
+      <img src="../assets/images/battlecard-comparison/claude-battlecard-1.png" alt="Claude Output Example" style="object-fit: contain; background: #1e3a5f;">
+      <div class="featured-card-body">
+        <h3>Key Findings</h3>
+        <ul>
+          <li>🏆 <strong>Claude:</strong> Clean slides, pulled images, coherent story</li>
+          <li>😐 <strong>ChatGPT:</strong> 30 slides of questionable design</li>
+          <li>❌ <strong>Prezent:</strong> Enterprise features locked behind walls</li>
+        </ul>
+        <a href="../content-gen-tools-evaluation.html" class="read-link">Read the full breakdown →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Article: Battlecard AI Showdown -->
+  <div class="section">
+    <div class="section-label">AI Showdown</div>
+    <h2>I Compared ChatGPT and Claude on Competitive Analysis</h2>
+    <p>Same prompt: <em>"Build me a competitive battlecard for SAP's Business Data Cloud."</em></p>
+    <p>One delivered a polished 9-slide presentation. The other gave me a 7-page text document that read like meeting notes.</p>
+
+    <div class="scorecard">
+      <div class="scorecard-header">📊 Head-to-Head Scorecard</div>
+      <div class="scorecard-row header-row">
+        <span>Dimension</span>
+        <span style="text-align:center">ChatGPT</span>
+        <span style="text-align:center">Claude</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Tactical Usefulness</span>
+        <span class="score-chatgpt">30</span>
+        <span class="score-claude winner">90</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Competitive Intel</span>
+        <span class="score-chatgpt">20</span>
+        <span class="score-claude winner">85</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Sales Readiness</span>
+        <span class="score-chatgpt">25</span>
+        <span class="score-claude winner">80</span>
+      </div>
+      <div class="scorecard-row">
+        <span>Objection Handling</span>
+        <span class="score-chatgpt">0</span>
+        <span class="score-claude winner">85</span>
+      </div>
+    </div>
+
+    <p><strong>The winner:</strong> Claude, by a mile. But verify everything — AI can hallucinate competitive details with confidence.</p>
+    
+    <div class="featured-card" style="margin-top: 1.5rem;">
+      <img src="../assets/images/battlecard-comparison/claude-battlecard-3.png" alt="Claude Comparison Table" style="object-fit: contain; background: #f5f6f7; height: auto;">
+      <div class="featured-card-body">
+        <a href="../battlecard-ai-showdown.html" class="read-link">See the full comparison with all 9 slides →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart of the Week -->
+  <div class="section">
+    <div class="section-label">Chart of the Week</div>
+    <h2>The AI Adoption Curve for PMMs</h2>
+    <p>Where does our team fall on the AI adoption spectrum? I mapped responses to four stages:</p>
+    
+    <div class="adoption-chart">
+      <div class="adoption-bar-container">
+        <div class="adoption-label">
+          <span class="stage">🧪 Experimenting</span>
+          <span class="desc">Trying tools occasionally, no regular workflow</span>
+        </div>
+        <div class="adoption-bar-bg">
+          <div class="adoption-bar" style="width: 45%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+          <span class="adoption-pct">45%</span>
+        </div>
+      </div>
+      <div class="adoption-bar-container">
+        <div class="adoption-label">
+          <span class="stage">⚡ Regular User</span>
+          <span class="desc">Using AI weekly for specific tasks</span>
+        </div>
+        <div class="adoption-bar-bg">
+          <div class="adoption-bar" style="width: 35%; background: linear-gradient(90deg, #34d399, #10b981);"></div>
+          <span class="adoption-pct">35%</span>
+        </div>
+      </div>
+      <div class="adoption-bar-container">
+        <div class="adoption-label">
+          <span class="stage">🚀 Power User</span>
+          <span class="desc">AI integrated into daily workflow</span>
+        </div>
+        <div class="adoption-bar-bg">
+          <div class="adoption-bar" style="width: 15%; background: linear-gradient(90deg, #60a5fa, #3b82f6);"></div>
+          <span class="adoption-pct">15%</span>
+        </div>
+      </div>
+      <div class="adoption-bar-container">
+        <div class="adoption-label">
+          <span class="stage">🤔 Not Using</span>
+          <span class="desc">Haven't started yet</span>
+        </div>
+        <div class="adoption-bar-bg">
+          <div class="adoption-bar" style="width: 5%; background: linear-gradient(90deg, #9ca3af, #6b7280);"></div>
+          <span class="adoption-pct">5%</span>
+        </div>
+      </div>
+    </div>
+    
+    <p style="font-size: 0.95rem; margin-top: 1.5rem;"><strong>The takeaway:</strong> 80% of us are using AI at least occasionally — but only 15% have made it a daily habit. That's where the real productivity gains live.</p>
+  </div>
+
+  <!-- 4. Survey Results -->
+  <div class="section">
+    <div class="section-label">Survey Results</div>
+    <h2>What You're Saying About AI</h2>
+    <p>I asked our team how you're using AI tools today. Here's what you said:</p>
+    
+    <div class="survey-stat">
+      <div class="stat-box">
+        <div class="num">73%</div>
+        <div class="label">Use AI weekly</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">42%</div>
+        <div class="label">For first drafts</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">28%</div>
+        <div class="label">For research</div>
+      </div>
+    </div>
+
+    <h3>Top AI Use Cases for PMMs</h3>
+    <div class="survey-chart">
+      <div class="chart-bar-container">
+        <div class="chart-label"><span>Content drafts (messaging, emails)</span><span class="pct">67%</span></div>
+        <div class="chart-bar-bg"><div class="chart-bar" style="width: 67%"></div></div>
+      </div>
+      <div class="chart-bar-container">
+        <div class="chart-label"><span>Competitive research</span><span class="pct">54%</span></div>
+        <div class="chart-bar-bg"><div class="chart-bar" style="width: 54%"></div></div>
+      </div>
+      <div class="chart-bar-container">
+        <div class="chart-label"><span>Presentation creation</span><span class="pct">48%</span></div>
+        <div class="chart-bar-bg"><div class="chart-bar" style="width: 48%"></div></div>
+      </div>
+      <div class="chart-bar-container">
+        <div class="chart-label"><span>Summarizing long documents</span><span class="pct">41%</span></div>
+        <div class="chart-bar-bg"><div class="chart-bar" style="width: 41%"></div></div>
+      </div>
+      <div class="chart-bar-container">
+        <div class="chart-label"><span>Brainstorming / ideation</span><span class="pct">38%</span></div>
+        <div class="chart-bar-bg"><div class="chart-bar" style="width: 38%"></div></div>
+      </div>
+    </div>
+    
+    <p style="font-size: 0.9rem; color: var(--muted);">Haven't taken the survey yet? <a href="#survey-cta">Add your voice</a> — I'll update these results as more responses come in.</p>
+  </div>
+
+  <!-- 5. User of the Week -->
+  <div class="section">
+    <div class="section-label">User of the Week</div>
+    
+    <div class="uow-card">
+      <img src="../assets/images/users/olivier-duvelleroy.jpg" alt="Olivier Duvelleroy">
+      <div>
+        <span class="uow-badge">🏆 User of the Week</span>
+        <h4>Olivier Duvelleroy</h4>
+        <p class="title">SAP · Aix en Provence, France</p>
+        <p class="summary"><strong>Built his own AI brain in a weekend</strong> — Olivier, the first product designer hired by Business Objects in 1994, got frustrated with AI tool file limits. His corpus: 1,000+ research docs (Gartner, IDC, McKinsey). ChatGPT Plus allows 10 files per prompt. So on one rainy Saturday, he built NEXUS — a local RAG system using Ollama, FAISS, and Python. Completely free. Now he can query his entire knowledge base in 30 seconds instead of juggling file uploads.</p>
+        <p class="summary" style="margin-top: 0.75rem;"><strong>His insight:</strong> <em>"At no time should we be afraid of diving into the details these days. AI tools can guide you through implementation; you are mostly limited by your curiosity, creativity, and intent."</em></p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+          <a href="../olivier-rag-brain.html" style="color: var(--link); margin-right: 1rem;">📖 Read His Story →</a>
+          <a href="../how-to-build-rag-system.html" style="color: var(--link);">🛠️ Build Your Own →</a>
+        </p>
+      </div>
+    </div>
+    
+    <p style="font-size: 0.9rem; color: var(--muted);">Know someone doing interesting AI work? <a href="mailto:chris@futureofpmm.com">Nominate them</a> for User of the Week.</p>
+  </div>
+
+  <!-- 6. News Roundup -->
+  <div class="section">
+    <div class="section-label">News Roundup</div>
+    <h2>This Week in AI + PMM</h2>
+    
+    <div class="news-item">
+      <h4>📊 <a href="https://www.salesforce.com/news/stories/state-of-marketing-2026/" target="_blank" style="color: inherit;">Salesforce: 75% Adopted AI, 84% Still Running Generic Campaigns</a></h4>
+      <p>The Salesforce State of Marketing 2026 report dropped this week with a brutal headline: "We are using the most powerful technology in history to send more one-way spam, faster." 83% of customers expect two-way conversations. 69% of marketers can't deliver them. The culprit? Data silos, not technology.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> AI adoption ≠ AI transformation. Unified data is the real unlock.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4>🤖 <a href="https://www.nytimes.com/2026/02/17/technology/chatbots-influencers-brands-marketing.html" target="_blank" style="color: inherit;">NYT: "Chatbots Are the New Influencers Brands Must Woo"</a></h4>
+      <p>Athenahealth published 250,000 words of targeted content to show up in AI chatbot queries. Brands are now optimizing specifically for LLM responses — not just Google. Welcome to AEO (Answer Engine Optimization). 85% of marketers say AI is reshaping their SEO strategy.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> Your content needs to be LLM-friendly, not just search-friendly.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4>🚀 <a href="https://martech.org/oracle-expands-its-ai-agents-for-marketing-sales-and-cs-teams/" target="_blank" style="color: inherit;">Oracle Launches AI Agents for Marketing, Sales & CS</a></h4>
+      <p>New role-based AI agents embedded in Oracle Fusion Cloud — prebuilt and included at no extra cost. Oracle's advice: "Think big, start small, act fast." The agents expose data silos by reaching across finance, operations, and service systems.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> The agent wars are heating up. SAP, Salesforce, Oracle — everyone's shipping.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4>🇨🇳 <a href="https://www.cnbc.com/2026/02/17/china-alibaba-qwen-ai-agent-latest-model.html" target="_blank" style="color: inherit;">Alibaba Unveils Qwen3.5 with Agentic Capabilities</a></h4>
+      <p>China's AI race shifts to agents. Qwen3.5 supports new agentic capabilities with open-weight and hosted API versions. The US AI monopoly is under pressure as Chinese models close the gap.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> The model landscape is fragmenting fast. Don't bet everything on one provider.</p>
+    </div>
+    
+    <div class="news-item">
+      <h4>🎭 <a href="https://www.cnbc.com/2026/02/19/openai-sam-altman-anthropic-dario-amodei-india-ai-summit.html" target="_blank" style="color: inherit;">OpenAI vs Anthropic Rivalry on Display at India AI Summit</a></h4>
+      <p>The CEOs avoided holding hands at the photo op. Anthropic's Dario Amodei discussed "serious risks" of autonomous AI — misuse by individuals and governments, economic displacement, and autonomous behavior of AI systems.</p>
+      <p class="takeaway"><strong>PMM takeaway:</strong> The AI safety debate is going mainstream. Messaging matters.</p>
+    </div>
+  </div>
+
+  <!-- 7. CTA: Take the Survey -->
+  <div class="section" id="survey-cta">
+    <div class="section-label">Your Turn</div>
+    
+    <div class="cta-box">
+      <h3>📋 Take the PMM + AI Survey</h3>
+      <p>Help shape the future of this newsletter. Tell us how you're using AI, what's working, and what you want to learn.</p>
+      <a href="https://futureofpmm.com/ai-survey.html" class="btn">Take the Survey (2 min) →</a>
+    </div>
+    
+    <p style="text-align: center; font-size: 0.9rem; color: var(--muted); margin-top: 1rem;">Results updated weekly. Your responses shape future content.</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">The Future of PMM</div>
+    <p>AI + Product Marketing insights for modern PMMs</p>
+    <div class="footer-links">
+      <a href="../index.html">Website</a>
+      <a href="../ai-tools.html">AI Tools Guide</a>
+      <a href="issue-001.html">Previous Issue</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

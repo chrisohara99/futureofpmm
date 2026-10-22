@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: BattleCoach — SuccessFactors | SAP Future of PMM Training</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-blue: #0070F2;
+            --sf-purple: #6B5B95;
+            --sf-teal: #00A4A6;
+            --coral: #C84B31;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --red: #C00000;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header { background: var(--dark-slate); padding: 0.75rem 2rem; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 100px; }
+        .nav { display: flex; gap: 1.5rem; align-items: center; }
+        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { color: white; }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sf-purple) 0%, #8B7BAF 100%);
+            padding: 3rem 2rem;
+            color: white;
+        }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .lab-badge { 
+            display: inline-block; 
+            background: var(--sf-teal); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.95; max-width: 700px; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .lab-intro {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .lab-intro h2 { font-size: 1.2rem; color: var(--dark-slate); margin-bottom: 1rem; }
+        .lab-intro p { color: #555; margin-bottom: 0.75rem; }
+        
+        .framework-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 600px) {
+            .framework-grid { grid-template-columns: 1fr; }
+        }
+        
+        .framework-box {
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+        .framework-box.defensive {
+            background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%);
+            border-left: 4px solid var(--sf-purple);
+        }
+        .framework-box.offensive {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-left: 4px solid var(--sf-teal);
+        }
+        .framework-box h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .framework-box.defensive h4 { color: var(--sf-purple); }
+        .framework-box.offensive h4 { color: #007A7C; }
+        .framework-box ul { 
+            font-size: 0.85rem; 
+            margin: 0 0 0 1.25rem; 
+            color: #444;
+        }
+        .framework-box li { margin-bottom: 0.25rem; }
+        
+        .lab-step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: var(--sf-purple);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; color: var(--dark-slate); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-slate);
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            background: white;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--sf-purple);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .sample-brief-loader {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 50%, #e0f7fa 100%);
+            border: 2px dashed #9c7db8;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .sample-brief-loader h4 {
+            font-size: 0.9rem;
+            color: var(--dark-slate);
+            margin-bottom: 0.75rem;
+        }
+        .sample-btn {
+            background: white;
+            border: 1px solid var(--light-gray);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+            transition: all 0.2s;
+        }
+        .sample-btn:hover {
+            background: var(--sf-purple);
+            color: white;
+            border-color: var(--sf-purple);
+        }
+        
+        .competitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+        }
+        .competitor-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .competitor-option:hover {
+            border-color: var(--sf-purple);
+        }
+        .competitor-option.selected {
+            background: var(--sf-purple);
+            color: white;
+            border-color: var(--sf-purple);
+        }
+        .competitor-option input {
+            display: none;
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .run-btn {
+            background: var(--sf-purple);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .run-btn:hover { background: #5A4A84; transform: translateY(-2px); }
+        .run-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            overflow: hidden;
+        }
+        .results-section.show { display: block; }
+        
+        .results-header {
+            background: var(--sf-purple);
+            color: white;
+            padding: 1.25rem 2rem;
+        }
+        .results-header h2 { font-size: 1.3rem; margin: 0; }
+        .results-header p { font-size: 0.9rem; opacity: 0.85; margin: 0.5rem 0 0; }
+        
+        .result-block {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .result-block.hidden { display: none; }
+        .result-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .result-block-header h3 {
+            font-size: 1.1rem;
+            color: var(--dark-slate);
+            margin: 0;
+        }
+        
+        .copy-btn {
+            background: var(--light-gray);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--sf-purple); color: white; }
+        
+        .results-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .results-content h1 { font-size: 1.4rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h2 { font-size: 1.2rem; color: var(--dark-slate); margin: 1.5rem 0 0.75rem; }
+        .results-content h3 { font-size: 1.05rem; color: var(--dark-slate); margin: 1.25rem 0 0.5rem; }
+        .results-content p { margin-bottom: 0.75rem; }
+        .results-content ul, .results-content ol { margin: 0.5rem 0 1rem 1.5rem; }
+        .results-content li { margin-bottom: 0.35rem; }
+        .results-content strong { color: var(--dark-slate); }
+        .results-content code { background: #F0F0F0; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+        .results-content blockquote {
+            border-left: 4px solid var(--sf-purple);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #555;
+            font-style: italic;
+        }
+        .results-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .results-content th, .results-content td {
+            border: 1px solid var(--light-gray);
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .results-content th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .more-outputs {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .more-outputs p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .output-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .output-btn {
+            background: white;
+            border: 2px solid var(--light-gray);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            min-width: 180px;
+        }
+        .output-btn:hover {
+            border-color: var(--sf-purple);
+            background: #f3e5f5;
+        }
+        .output-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .output-btn.done {
+            border-color: var(--green);
+            background: #f0fff4;
+        }
+        .output-btn span {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-slate);
+            font-size: 0.95rem;
+        }
+        .output-btn small {
+            display: block;
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+        
+        .error-message {
+            background: #FFEBEE;
+            color: var(--red);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message.show { display: block; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sf-purple);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        @media (max-width: 600px) {
+            .output-buttons { flex-direction: column; }
+            .output-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/logo-white.svg" alt="Future of PMM"></a>
+        <nav class="nav">
+            <a href="/curriculum/">Curriculum</a>
+            <a href="/curriculum/labs/">Labs</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge">⚔️ Competitive Lab — SuccessFactors</div>
+        <h1>BattleCoach</h1>
+        <p>SAP SuccessFactors vs. the HCM competition. Input a deal briefing, get battle-ready artifacts powered by the FUD Engine and proven frameworks.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/curriculum/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="lab-intro">
+        <h2>From FUD to Differentiation</h2>
+        <p>Every HCM competitive deal comes with noise — claims, objections, and FUD (Fear, Uncertainty, Doubt) that competitors use against SAP SuccessFactors. BattleCoach helps you cut through it with two battle-tested frameworks:</p>
+        
+        <div class="framework-grid">
+            <div class="framework-box defensive">
+                <h4>🛡️ AREA Framework (Defensive)</h4>
+                <ul>
+                    <li><strong>A</strong>cknowledge — Validate their concern</li>
+                    <li><strong>R</strong>eframe — Shift the perspective</li>
+                    <li><strong>E</strong>vidence — Ground with proof</li>
+                    <li><strong>A</strong>sk — Hand them a new question</li>
+                </ul>
+            </div>
+            <div class="framework-box offensive">
+                <h4>⚔️ IDEA Framework (Offensive)</h4>
+                <ul>
+                    <li><strong>I</strong>nsight — Lead with a surprising truth</li>
+                    <li><strong>D</strong>ifferentiator — What only SAP can do</li>
+                    <li><strong>E</strong>vidence — Prove it's real</li>
+                    <li><strong>A</strong>sk — Reframe the criteria</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <form id="labForm">
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">1</div>
+                <h3>The Deal</h3>
+            </div>
+            
+            <div class="sample-brief-loader">
+                <h4>📋 Quick Start — Load a sample SuccessFactors competitive deal:</h4>
+                <button type="button" class="sample-btn" onclick="loadSample('manufacturing')">Global Manufacturing vs Workday</button>
+                <button type="button" class="sample-btn" onclick="loadSample('healthcare')">Healthcare System vs Oracle HCM</button>
+                <button type="button" class="sample-btn" onclick="loadSample('retail')">Retail Chain vs Ceridian</button>
+                <button type="button" class="sample-btn" onclick="loadSample('financial')">Financial Services vs ADP</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" placeholder="e.g., Apex Manufacturing Group" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="industry">Industry</label>
+                <input type="text" id="industry" name="industry" placeholder="e.g., Manufacturing, Healthcare, Retail, Financial Services" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="region">Region</label>
+                <input type="text" id="region" name="region" placeholder="e.g., EMEA, NA, APAC" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="employees">Employee Count</label>
+                <input type="text" id="employees" name="employees" placeholder="e.g., 25,000 employees globally" required>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">2</div>
+                <h3>The Competition</h3>
+            </div>
+            
+            <div class="form-group">
+                <label>Primary Competitor</label>
+                <p class="hint">Select the HCM competitor you're going head-to-head with:</p>
+                <div class="competitor-grid" id="competitorGrid">
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Workday">
+                        Workday
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Oracle HCM Cloud">
+                        Oracle HCM Cloud
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="ADP">
+                        ADP
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Ceridian Dayforce">
+                        Ceridian Dayforce
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="UKG">
+                        UKG
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Cornerstone">
+                        Cornerstone
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Paylocity">
+                        Paylocity
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Paycom">
+                        Paycom
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="Microsoft Viva">
+                        Microsoft Viva
+                    </label>
+                    <label class="competitor-option">
+                        <input type="radio" name="competitor" value="ServiceNow HRSD">
+                        ServiceNow HRSD
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lab-step">
+            <div class="step-header">
+                <div class="step-num">3</div>
+                <h3>Deal Context</h3>
+            </div>
+            
+            <div class="form-group">
+                <label for="audience">Primary Buyer Persona</label>
+                <select id="audience">
+                    <option value="CHRO">CHRO / Chief Human Resources Officer</option>
+                    <option value="VP HR">VP of Human Resources</option>
+                    <option value="VP Talent">VP of Talent / Talent Acquisition</option>
+                    <option value="VP Total Rewards">VP of Total Rewards / Compensation</option>
+                    <option value="HR Director">HR Director</option>
+                    <option value="HRIS Director">HRIS / HR Technology Director</option>
+                    <option value="CFO">CFO (Payroll/Cost focus)</option>
+                    <option value="CIO">CIO / IT (Integration focus)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="solutionArea">Solution Area</label>
+                <select id="solutionArea">
+                    <option value="Full HCM Suite">Full HCM Suite</option>
+                    <option value="Core HR & Payroll">Core HR & Payroll</option>
+                    <option value="Talent Management">Talent Management</option>
+                    <option value="Recruiting">Recruiting & Onboarding</option>
+                    <option value="Learning">Learning & Development</option>
+                    <option value="Performance & Goals">Performance & Goals</option>
+                    <option value="Compensation">Compensation & Benefits</option>
+                    <option value="Workforce Analytics">Workforce Planning & Analytics</option>
+                    <option value="Employee Experience">Employee Experience / Employee Central</option>
+                    <option value="Time & Attendance">Time & Attendance</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="dealStage">Deal Stage</label>
+                <select id="dealStage">
+                    <option value="Discovery">Discovery / Early Engagement</option>
+                    <option value="Demo-Evaluation">Demo / Evaluation</option>
+                    <option value="RFP">RFP Response</option>
+                    <option value="Negotiation">Negotiation / Final Selection</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalContext">Additional Context (optional)</label>
+                <p class="hint">Any known dynamics, competitor claims you've heard, specific concerns from the buyer, etc.</p>
+                <textarea id="additionalContext" name="additionalContext" placeholder="e.g., Workday is emphasizing their 'power of one' unified platform. CHRO concerned about change management and employee adoption. Currently using legacy on-prem PeopleSoft for Core HR."></textarea>
+            </div>
+        </div>
+        
+        <div class="submit-section">
+            <button type="submit" class="run-btn" id="runBtn">
+                <span>⚔️ Get FUD Response Sheet</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+    </form>
+    
+    <div class="results-section" id="resultsSection">
+        <div class="results-header">
+            <h2>⚔️ SAP SuccessFactors vs. <span id="resultCompetitor"></span></h2>
+            <p><span id="resultCustomer"></span> • <span id="resultIndustry"></span> • <span id="resultStage"></span></p>
+        </div>
+        
+        <div class="result-block" id="block-fud">
+            <div class="result-block-header">
+                <h3>📋 FUD Response Sheet</h3>
+                <button class="copy-btn" onclick="copyBlock('fud')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-fud"></div>
+        </div>
+        
+        <div class="more-outputs">
+            <p>Need more? Generate additional artifacts:</p>
+            <div class="output-buttons">
+                <button class="output-btn" id="btn-area" onclick="generateMore('area')">
+                    <span>🛡️ AREA Script</span>
+                    <small>Defensive objection handling</small>
+                </button>
+                <button class="output-btn" id="btn-idea" onclick="generateMore('idea')">
+                    <span>⚔️ IDEA Points</span>
+                    <small>Offensive differentiation</small>
+                </button>
+                <button class="output-btn" id="btn-discovery" onclick="generateMore('discovery')">
+                    <span>❓ Discovery Questions</span>
+                    <small>Reframe the evaluation</small>
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-block hidden" id="block-area">
+            <div class="result-block-header">
+                <h3>🛡️ AREA Script (Defensive)</h3>
+                <button class="copy-btn" onclick="copyBlock('area')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-area"></div>
+        </div>
+        
+        <div class="result-block hidden" id="block-idea">
+            <div class="result-block-header">
+                <h3>⚔️ IDEA Talking Points (Offensive)</h3>
+                <button class="copy-btn" onclick="copyBlock('idea')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-idea"></div>
+        </div>
+        
+        <div class="result-block hidden" id="block-discovery">
+            <div class="result-block-header">
+                <h3>❓ Discovery Questions</h3>
+                <button class="copy-btn" onclick="copyBlock('discovery')">📋 Copy</button>
+            </div>
+            <div class="results-content" id="content-discovery"></div>
+        </div>
+    </div>
+</main>
+
+<script src="/assets/js/user-menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+let currentDealInputs = null;
+
+const sampleBriefs = {
+    manufacturing: {
+        customerName: "Apex Manufacturing Group",
+        industry: "Manufacturing",
+        region: "EMEA",
+        employees: "45,000 employees across 12 countries",
+        competitor: "Workday",
+        audience: "CHRO",
+        solutionArea: "Full HCM Suite",
+        dealStage: "Demo-Evaluation",
+        additionalContext: "Global manufacturer evaluating full HCM transformation. Currently running SAP ECC with legacy HR module. Workday is emphasizing their 'power of one' unified platform and superior UX. CHRO concerned about change management across diverse workforce (factory floor to corporate). Key requirement: support for complex global payroll across 12 countries."
+    },
+    healthcare: {
+        customerName: "Regional Health Partners",
+        industry: "Healthcare",
+        region: "NA",
+        employees: "28,000 employees including 4,000 physicians",
+        competitor: "Oracle HCM Cloud",
+        audience: "VP HR",
+        solutionArea: "Core HR & Payroll",
+        dealStage: "RFP",
+        additionalContext: "Large healthcare system with complex scheduling needs. Oracle is bundling with existing Oracle Financials footprint and pushing 'unified cloud' message. Key concerns: shift scheduling for clinical staff, credentialing management, compliance tracking. Currently using Kronos for time management."
+    },
+    retail: {
+        customerName: "ShopMax Retail",
+        industry: "Retail",
+        region: "NA",
+        employees: "85,000 employees (80% hourly workforce)",
+        competitor: "Ceridian Dayforce",
+        audience: "VP Total Rewards",
+        solutionArea: "Time & Attendance",
+        dealStage: "Discovery",
+        additionalContext: "Large retail chain with high hourly workforce. Ceridian is positioning strong time and attendance with real-time pay capabilities. High turnover environment (120% annual). Need mobile-first experience for frontline workers. Union considerations in some locations."
+    },
+    financial: {
+        customerName: "First Continental Bank",
+        industry: "Financial Services",
+        region: "NA",
+        employees: "15,000 employees",
+        competitor: "ADP",
+        audience: "CFO",
+        solutionArea: "Core HR & Payroll",
+        dealStage: "Negotiation",
+        additionalContext: "Regional bank with focus on payroll accuracy and compliance. ADP is offering aggressive multi-year pricing and emphasizing their payroll expertise. CFO is cost-conscious but also worried about compliance risk. Currently using legacy Ceridian platform that's end-of-life."
+    }
+};
+
+function loadSample(key) {
+    const brief = sampleBriefs[key];
+    document.getElementById('customerName').value = brief.customerName;
+    document.getElementById('industry').value = brief.industry;
+    document.getElementById('region').value = brief.region;
+    document.getElementById('employees').value = brief.employees;
+    document.getElementById('audience').value = brief.audience;
+    document.getElementById('solutionArea').value = brief.solutionArea;
+    document.getElementById('dealStage').value = brief.dealStage;
+    document.getElementById('additionalContext').value = brief.additionalContext;
+    
+    document.querySelectorAll('.competitor-option').forEach(opt => {
+        opt.classList.remove('selected');
+        const input = opt.querySelector('input');
+        if (input.value === brief.competitor) {
+            opt.classList.add('selected');
+            input.checked = true;
+        }
+    });
+}
+
+document.querySelectorAll('.competitor-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.competitor-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+    });
+});
+
+function copyBlock(blockId) {
+    const content = document.getElementById(`content-${blockId}`).innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        const btn = document.querySelector(`#block-${blockId} .copy-btn`);
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+const form = document.getElementById('labForm');
+const runBtn = document.getElementById('runBtn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const selectedCompetitor = document.querySelector('input[name="competitor"]:checked');
+    if (!selectedCompetitor) {
+        errorMessage.textContent = 'Please select a competitor.';
+        errorMessage.classList.add('show');
+        return;
+    }
+    
+    currentDealInputs = {
+        customerName: document.getElementById('customerName').value,
+        industry: document.getElementById('industry').value,
+        region: document.getElementById('region').value,
+        employees: document.getElementById('employees').value,
+        competitor: selectedCompetitor.value,
+        audience: document.getElementById('audience').value,
+        solutionArea: document.getElementById('solutionArea').value,
+        dealStage: document.getElementById('dealStage').value,
+        additionalContext: document.getElementById('additionalContext').value,
+        productContext: 'SAP SuccessFactors HCM'
+    };
+    
+    runBtn.disabled = true;
+    runBtn.querySelector('span').textContent = 'Generating...';
+    spinner.style.display = 'block';
+    errorMessage.classList.remove('show');
+    resultsSection.classList.remove('show');
+    
+    ['area', 'idea', 'discovery'].forEach(id => {
+        document.getElementById(`block-${id}`).classList.add('hidden');
+        document.getElementById(`btn-${id}`).classList.remove('done');
+        document.getElementById(`btn-${id}`).disabled = false;
+    });
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: 'battlecoach-fud-sf',
+                inputs: currentDealInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        
+        const data = await response.json();
+        
+        document.getElementById('resultCustomer').textContent = currentDealInputs.customerName;
+        document.getElementById('resultCompetitor').textContent = currentDealInputs.competitor;
+        document.getElementById('resultIndustry').textContent = currentDealInputs.industry;
+        document.getElementById('resultStage').textContent = currentDealInputs.dealStage;
+        
+        document.getElementById('content-fud').innerHTML = marked.parse(data.result);
+        
+        resultsSection.classList.add('show');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        errorMessage.classList.add('show');
+    } finally {
+        runBtn.disabled = false;
+        runBtn.querySelector('span').textContent = '⚔️ Get FUD Response Sheet';
+        spinner.style.display = 'none';
+    }
+});
+
+async function generateMore(outputType) {
+    if (!currentDealInputs) return;
+    
+    const btn = document.getElementById(`btn-${outputType}`);
+    const block = document.getElementById(`block-${outputType}`);
+    const content = document.getElementById(`content-${outputType}`);
+    
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Generating...';
+    
+    try {
+        const response = await fetch('/.netlify/functions/lab-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                labType: `battlecoach-${outputType}-sf`,
+                inputs: currentDealInputs
+            })
+        });
+        
+        if (!response.ok) throw new Error('Generation failed');
+        
+        const data = await response.json();
+        content.innerHTML = marked.parse(data.result);
+        
+        block.classList.remove('hidden');
+        btn.classList.add('done');
+        
+        const labels = { area: '🛡️ AREA Script', idea: '⚔️ IDEA Points', discovery: '❓ Discovery Questions' };
+        btn.querySelector('span').textContent = '✓ ' + labels[outputType];
+        
+        block.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        btn.querySelector('span').textContent = 'Failed - Try Again';
+        btn.disabled = false;
+    }
+}
+</script>
+</body>
+</html>
