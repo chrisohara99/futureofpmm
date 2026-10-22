@@ -1,46 +1,833 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Future of PMM</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d4a6f 100%);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-        .container {
-            max-width: 600px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-        p {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        .emoji {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-        }
-    </style>
+  <script src="/assets/js/auth-guard.js"></script>
+  <script src="/assets/js/user-menu.js" defer></script>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextGen PMM | SAP Product Marketing Community</title>
+  <meta name="description"
+    content="The home for Product Marketing at SAP — know the work, build the skills, and accelerate with AI.">
+  <style>
+    :root {
+      --blue: #0a6ed1;
+      --blue2: #0854a0;
+      --ink: #172b4d;
+      --text: #475569;
+      --line: #e5e7eb;
+      --soft: #f6f8fb;
+      --white: #fff;
+      --green: #0f828f;
+      --purple: #6d5bd0;
+      --orange: #d97706
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #fff;
+      line-height: 1.5
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: auto;
+      padding: 0 28px
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .96);
+      position: sticky;
+      top: 0;
+      z-index: 20
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    nav a:hover {
+      color: var(--blue)
+    }
+
+    .hero {
+      padding: 0;
+      background: linear-gradient(180deg, #fff, #f8fbff);
+      overflow: hidden
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.03fr .97fr;
+      min-height: 405px;
+      align-items: stretch
+    }
+
+    .hero-copy {
+      padding: 64px 48px 58px 0;
+      align-self: center
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 405px;
+      background: linear-gradient(145deg, #dff1ff 0%, #b9ddfa 40%, #2d74b8 100%);
+      overflow: hidden
+    }
+
+    .hero-art svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%
+    }
+
+    .hero-art:before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      left: -1px;
+      top: 0;
+      height: 100%;
+      width: 110px;
+      background: white;
+      clip-path: polygon(0 0, 100% 0, 36% 50%, 100% 100%, 0 100%)
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-weight: 750;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 16px
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      line-height: 1.05;
+      letter-spacing: -.035em;
+      max-width: 650px;
+      margin: 0 0 20px
+    }
+
+    .hero p {
+      font-size: 19px;
+      color: #52637a;
+      max-width: 620px;
+      margin: 0 0 28px
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid transparent
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: white
+    }
+
+    .btn.primary:hover {
+      background: var(--blue2)
+    }
+
+    .btn.secondary {
+      background: white;
+      border-color: #cbd5e1;
+      color: var(--ink)
+    }
+
+    section {
+      padding: 72px 0
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      margin-bottom: 30px
+    }
+
+    .section-head h2 {
+      font-size: 32px;
+      letter-spacing: -.02em;
+      margin: 0 0 7px
+    }
+
+    .section-head p {
+      color: #64748b;
+      margin: 0;
+      max-width: 650px
+    }
+
+    .text-link {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap
+    }
+
+    .start-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px
+    }
+
+    .start-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      background: #fff;
+      transition: .2s
+    }
+
+    .start-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .07);
+      border-color: #cbd5e1
+    }
+
+    .icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 21px;
+      margin-bottom: 20px;
+      background: #e8f3ff;
+      color: #0875c1
+    }
+
+    .start-card:nth-child(2) .icon {
+      background: #f1eaff;
+      color: #7c3aed
+    }
+
+    .start-card:nth-child(3) .icon {
+      background: #e4f8f4;
+      color: #0f9f92
+    }
+
+    .start-card h3 {
+      font-size: 20px;
+      margin: 0 0 8px
+    }
+
+    .start-card p {
+      color: #64748b;
+      margin: 0 0 18px;
+      font-size: 14px
+    }
+
+    .card-link {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 14px
+    }
+
+    .bow {
+      background: var(--soft)
+    }
+
+    .bow-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px
+    }
+
+    .bow-card {
+      background: white;
+      border: 1px solid #e3e8ef;
+      border-radius: 12px;
+      padding: 22px;
+      min-height: 145px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: .2s
+    }
+
+    .bow-card:hover {
+      border-color: #9dc8f2;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .05)
+    }
+
+    .bow-card h3 {
+      font-size: 16px;
+      line-height: 1.3;
+      margin: 0
+    }
+
+    .bow-card span {
+      font-size: 13px;
+      color: #64748b
+    }
+
+    .bow-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+      background: #e8f3ff;
+      color: #0875c1
+    }
+
+    .bow-card:nth-child(2) .bow-icon,
+    .bow-card:nth-child(8) .bow-icon {
+      background: #f1eaff;
+      color: #7c3aed
+    }
+
+    .bow-card:nth-child(3) .bow-icon,
+    .bow-card:nth-child(6) .bow-icon {
+      background: #e5f8ef;
+      color: #159455
+    }
+
+    .bow-card:nth-child(4) .bow-icon {
+      background: #fff0ed;
+      color: #e34b35
+    }
+
+    .bow-card:nth-child(5) .bow-icon {
+      background: #fff0ed;
+      color: #e34b35
+    }
+
+    .bow-card:nth-child(7) .bow-icon {
+      background: #fff5df;
+      color: #d97706
+    }
+
+    .assistant {
+      padding: 0 0 72px;
+      background: var(--soft)
+    }
+
+    .assistant-box {
+      background: linear-gradient(110deg, #0b3768, #0a6ed1);
+      border-radius: 18px;
+      color: white;
+      padding: 38px 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px
+    }
+
+    .assistant-copy {
+      max-width: 670px
+    }
+
+    .assistant-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .8
+    }
+
+    .assistant h2 {
+      font-size: 29px;
+      margin: 8px 0 8px
+    }
+
+    .assistant p {
+      margin: 0;
+      color: #dbeafe
+    }
+
+    .assistant .btn {
+      background: white;
+      color: #0b4f91;
+      min-width: 170px
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px
+    }
+
+    .feature {
+      border-top: 3px solid var(--blue);
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      border-left: 1px solid var(--line)
+    }
+
+    .feature:nth-child(2) {
+      border-top-color: var(--green)
+    }
+
+    .feature:nth-child(3) {
+      border-top-color: var(--purple)
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #64748b
+    }
+
+    .feature h3 {
+      font-size: 18px;
+      margin: 10px 0 8px
+    }
+
+    .feature p {
+      font-size: 14px;
+      color: #64748b;
+      margin: 0 0 16px
+    }
+
+    .resource-strip {
+      background: #f8fafc;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 32px 0
+    }
+
+    .resource-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px
+    }
+
+    .resource-links {
+      display: flex;
+      gap: 26px;
+      flex-wrap: wrap
+    }
+
+    .resource-links a {
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569
+    }
+
+    .resource-links a:hover {
+      color: var(--blue)
+    }
+
+    footer {
+      padding: 30px 0;
+      color: #64748b;
+      font-size: 13px
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center
+    }
+
+    @media(max-width:900px) {
+      nav {
+        display: none
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr
+      }
+
+      .hero-copy {
+        padding: 58px 0
+      }
+
+      .hero-art {
+        display: none
+      }
+
+      .hero h1 {
+        font-size: 42px
+      }
+
+      .start-grid,
+      .featured-grid {
+        grid-template-columns: 1fr
+      }
+
+      .bow-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+      .assistant-box {
+        align-items: flex-start;
+        flex-direction: column
+      }
+
+      .resource-inner {
+        align-items: flex-start;
+        flex-direction: column
+      }
+    }
+
+    @media(max-width:560px) {
+      .container {
+        padding: 0 20px
+      }
+
+      .hero h1 {
+        font-size: 36px
+      }
+
+      .hero p {
+        font-size: 18px
+      }
+
+      .bow-grid {
+        grid-template-columns: 1fr
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column
+      }
+    }
+
+    header .user-menu-trigger {
+      color: #475569;
+      background: transparent;
+      border: 1px solid #e5e7eb
+    }
+
+    header .user-menu-trigger:hover {
+      background: #f1f5f9;
+      color: var(--blue)
+    }
+
+    .bow-footer {
+      margin-top: 18px;
+      text-align: right
+    }
+
+    .bow-card.bow-soon {
+      cursor: default
+    }
+
+    .bow-card.bow-soon:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: #e3e8ef
+    }
+
+    .bow-cs {
+      font-size: 11px;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #94a3b8;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: .03em
+    }
+
+    .text-link-cs {
+      color: #94a3b8;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap
+    }
+
+    .assistant-cta-cs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px
+    }
+
+    .btn-cs {
+      opacity: .65;
+      cursor: default;
+      pointer-events: none
+    }
+
+    .cs-soon-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .5)
+    }
+
+    /* ── Resources dropdown ─────────────────────────────────── */
+    .nav-dropdown { position: relative }
+    .nav-dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      padding: 0;
+      line-height: inherit
+    }
+    .nav-dropdown-btn:hover,
+    .nav-dropdown-btn[aria-expanded="true"] { color: var(--blue) }
+    .nav-chevron {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+      transition: transform .15s
+    }
+    .nav-dropdown-btn[aria-expanded="true"] .nav-chevron { transform: rotate(180deg) }
+    .nav-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 14px);
+      right: 0;
+      min-width: 172px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(15,23,42,.10);
+      padding: 5px 0;
+      z-index: 30;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-4px);
+      transition: opacity .12s, transform .12s, visibility .12s
+    }
+    .nav-dropdown-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0)
+    }
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none
+    }
+    .nav-dropdown-menu a:hover,
+    .nav-dropdown-menu a:focus {
+      background: var(--soft);
+      color: var(--blue);
+      outline: none
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
 </head>
+
 <body>
-    <div class="container">
-        <div class="emoji">🎓</div>
-        <h1>Thanks for Learning with Us!</h1>
-        <p>Look for the official SAP site soon.</p>
-    </div>
+  <header>
+    <a class="logo" href="/"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
+    <nav><a href="/bow/">Book of Work</a><a href="/curriculum/">Learn</a><a href="/community/labs/">Labs</a><a href="/ai-tools.html">AI Tools</a><div class="nav-dropdown" id="community-dropdown"><button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-dropdown-menu" id="community-menu" role="menu"><a href="/community/pulse/" role="menuitem">PMM Pulse</a><a href="/community/spotlight/" role="menuitem">PMM Spotlight</a><a href="/newsletters/" role="menuitem">Newsletter</a></div></div></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">The home for Product Marketing at SAP</div>
+            <h1>Know the work.<br>Build the skills.<br>Accelerate with AI.</h1>
+            <p>Explore the PMM Book of Work, build your capabilities, and put AI to work in your everyday workflows.</p>
+            <div class="actions"><a class="btn primary" href="/bow/">Explore the Book of Work →</a><a
+                class="btn secondary" href="#assistant">Ask PMM Assistant</a></div>
+          </div>
+          <div class="hero-art" aria-label="Mountain landscape illustration"><svg viewBox="0 0 700 405"
+              preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop stop-color="#dff1ff" />
+                  <stop offset=".52" stop-color="#9fcdf1" />
+                  <stop offset="1" stop-color="#3d7fb8" />
+                </linearGradient>
+                <linearGradient id="m1" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#8eb5d2" />
+                  <stop offset="1" stop-color="#44769b" />
+                </linearGradient>
+                <linearGradient id="m2" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#4f83a9" />
+                  <stop offset="1" stop-color="#173e63" />
+                </linearGradient>
+              </defs>
+              <rect width="700" height="405" fill="url(#sky)" />
+              <circle cx="465" cy="95" r="52" fill="#fff" opacity=".55" />
+              <path d="M0 290 L105 190 175 246 272 128 365 239 435 167 540 266 610 188 700 250 700 405 0 405Z"
+                fill="url(#m1)" opacity=".72" />
+              <path d="M0 330 L110 262 180 308 290 205 385 307 472 225 565 318 645 255 700 294 700 405 0 405Z"
+                fill="url(#m2)" />
+              <path d="M0 360 C130 320 215 356 330 322 C455 284 565 335 700 298 L700 405 0 405Z" fill="#0b3153"
+                opacity=".8" />
+              <path d="M272 128 L238 190 271 174 292 199 315 178Z" fill="#eef7ff" opacity=".9" />
+              <path d="M610 188 L585 230 610 218 629 236 645 218Z" fill="#eef7ff" opacity=".75" />
+            </svg></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="start-grid">
+          <a class="start-card" href="/bow/">
+            <div class="icon">◎</div>
+            <h3>Know the Work</h3>
+            <p>Understand PMM responsibilities, ownership, standards, and what great looks like.</p><span
+              class="card-link">Explore the Book of Work →</span>
+          </a>
+          <a class="start-card" href="curriculum/">
+            <div class="icon">↗</div>
+            <h3>Build Your Skills</h3>
+            <p>Develop the capabilities you need through practical learning journeys and examples.</p><span
+              class="card-link">Explore Learning →</span>
+          </a>
+          <a class="start-card" href="ai-tools.html">
+            <div class="icon">✦</div>
+            <h3>Put AI to Work</h3>
+            <p>Use approved AI tools, workflows, and playbooks to accelerate everyday PMM work.</p><span
+              class="card-link">Explore AI Tools →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="bow" id="book-of-work">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Explore the Book of Work</h2>
+            <p>Start with the work you need to accomplish. Each area will connect standards, learning, AI workflows,
+              templates, and best practices.</p>
+          </div>
+        </div>
+        <div class="bow-grid">
+          <a class="bow-card" href="/bow/messaging-positioning">
+            <div class="bow-icon">✦</div>
+            <h3>Messaging &amp; Positioning</h3>
+          </a>
+          <a class="bow-card" href="/bow/personas">
+            <div class="bow-icon">◉</div>
+            <h3>Personas</h3>
+          </a>
+          <a class="bow-card" href="/bow/commercialization">
+            <div class="bow-icon">▤</div>
+            <h3>Commercialization</h3>
+          </a>
+          <a class="bow-card" href="/bow/launch-narrative">
+            <div class="bow-icon">◆</div>
+            <h3>Launch Narrative</h3>
+          </a>
+          <a class="bow-card" href="/bow/adoption-growth">
+            <div class="bow-icon">↗</div>
+            <h3>Adoption &amp; Growth</h3>
+          </a>
+        </div>
+        <div class="bow-footer"><a class="text-link" href="/bow/">Explore More →</a></div>
+      </div>
+    </section>
+
+    <section class="assistant" id="assistant">
+      <div class="container">
+        <div class="assistant-box">
+          <div class="assistant-copy">
+            <div class="assistant-label">PMM Assistant</div>
+            <h2>Not sure where to start?</h2>
+            <p>Describe what you need to accomplish and get routed to the right Book of Work area, learning, tools, and
+              resources.</p>
+          </div>
+          <div class="assistant-cta-cs"><span class="btn btn-cs">Ask PMM Assistant →</span><span
+              class="cs-soon-label">Coming soon</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Featured this week</h2>
+            <p>A small, curated set of what matters now — not another content feed.</p>
+          </div><a class="text-link" href="blog.html">See all insights →</a>
+        </div>
+        <div class="featured-grid">
+          <a class="feature" href="curriculum/"><span class="tag">Learning</span>
+            <h3>AI for PMM Learning Journey</h3>
+            <p>Build practical AI capability in the context of real PMM work.</p><span class="card-link">Continue
+              learning →</span>
+          </a>
+          <a class="feature" href="ai-tools.html"><span class="tag">AI tools</span>
+            <h3>PMM AI Tool Stack</h3>
+            <p>Find the right approved tools and workflows for the job at hand.</p><span class="card-link">Explore tools
+              →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="resource-strip" id="resources">
+      <div class="container resource-inner">
+        <div><strong>Resources</strong>
+          <div style="font-size:13px;color:#64748b;margin-top:3px">Quick access to practical PMM support.</div>
+        </div>
+        <div class="resource-links"><a href="ai-tools.html">AI Tools &amp; Workflows</a><a href="curriculum/">Learning
+            Journey</a><a href="blog.html">Best Practices &amp; Examples</a><a href="/newsletters/">Newsletter</a><a href="/digests/archive-horizon.html">Daily Digest</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner"><span>NextGen PMM · SAP Product Marketing Community</span><span>Prototype v2 ·
+        Internal</span></div>
+  </footer>
+  <script src="/assets/js/nav-dropdown.js" defer></script>
 </body>
 </html>
