@@ -1,100 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="/assets/js/auth-guard.js"></script>
-<script src="/assets/js/user-menu.js" defer></script>
-    <meta name="robots" content="noindex, nofollow">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Give Feedback | Future of PMM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
-        
-        .header { background: #1e3a5f; padding: 1rem 2rem; }
-        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo img { height: 80px; }
-        .nav { display: flex; gap: 1.5rem; align-items: center; }
-        .nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; }
-        .nav a:hover { color: white; }
-        
-        .container { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; }
-        
-        h1 { font-size: 2rem; color: #1e3a5f; margin-bottom: 1rem; }
-        p { color: #64748b; margin-bottom: 1.5rem; }
-        
-        .feedback-options { display: grid; gap: 1rem; margin-top: 2rem; }
-        
-        .feedback-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s;
-        }
-        .feedback-card:hover {
-            border-color: #3b82f6;
-            box-shadow: 0 4px 12px rgba(59,130,246,0.15);
-        }
-        .feedback-card h3 { color: #1e3a5f; margin-bottom: 0.5rem; }
-        .feedback-card p { color: #64748b; margin: 0; font-size: 0.9rem; }
-        .feedback-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-        
-        .back-link { display: inline-block; margin-top: 2rem; color: #3b82f6; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-    </style>
-<link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+  <script src="/assets/js/auth-guard.js"></script>
+  <script src="/assets/js/user-menu.js" defer></script>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Your Feedback | NextGen PMM</title>
+  <meta name="description" content="Help us improve NextGen PMM. Share your feedback, suggestions, or report issues.">
+  <style>
+    :root {
+      --blue: #0a6ed1;
+      --blue2: #0854a0;
+      --ink: #172b4d;
+      --text: #475569;
+      --line: #e5e7eb;
+      --soft: #f6f8fb;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: #fff; line-height: 1.6 }
+    a { text-decoration: none; color: var(--blue) }
+    
+    header { border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 20 }
+    
+    /* Hero */
+    .hero { background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%); color: #fff; padding: 56px 0; text-align: center }
+    .hero-inner { max-width: 700px; margin: 0 auto; padding: 0 28px }
+    .hero h1 { font-size: 36px; font-weight: 700; margin: 0 0 12px; letter-spacing: -.02em }
+    .hero p { font-size: 17px; opacity: .9 }
+    
+    /* Form Container */
+    .form-container { max-width: 600px; margin: 0 auto; padding: 48px 28px }
+    
+    .form-intro { text-align: center; margin-bottom: 32px }
+    .form-intro p { color: var(--text); font-size: 1rem }
+    
+    /* Form Styles */
+    .feedback-form { background: var(--soft); border: 1px solid var(--line); border-radius: 16px; padding: 32px }
+    
+    .form-group { margin-bottom: 20px }
+    .form-group label {
+      display: block; font-size: 0.9rem; font-weight: 600;
+      color: var(--ink); margin-bottom: 6px;
+    }
+    .form-group .hint {
+      font-size: 0.8rem; color: var(--muted); margin-bottom: 6px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%; padding: 12px 14px;
+      border: 1px solid var(--line); border-radius: 8px;
+      font-family: inherit; font-size: 0.95rem;
+      background: #fff; color: var(--ink);
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none; border-color: var(--blue);
+    }
+    textarea { resize: vertical; min-height: 140px }
+    select { cursor: pointer }
+    
+    /* Radio Group */
+    .radio-group { display: flex; flex-wrap: wrap; gap: 10px }
+    .radio-option {
+      display: flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 10px 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .radio-option:hover { border-color: var(--blue) }
+    .radio-option input { display: none }
+    .radio-option input:checked + .radio-label { color: var(--blue); font-weight: 600 }
+    .radio-option:has(input:checked) { border-color: var(--blue); background: #eff6ff }
+    .radio-label { font-size: 0.9rem; color: var(--text) }
+    
+    /* Submit Button */
+    .submit-btn {
+      width: 100%; padding: 14px 24px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 8px;
+      font-family: inherit; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .submit-btn:hover { background: var(--blue2) }
+    
+    /* Success Message */
+    .success-message {
+      background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px;
+      padding: 24px; text-align: center; display: none;
+    }
+    .success-message h3 { color: #059669; margin: 0 0 8px; font-size: 1.25rem }
+    .success-message p { color: #047857; margin: 0 }
+    
+    /* Contact Info */
+    .contact-info {
+      text-align: center; margin-top: 32px; padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .contact-info p { font-size: 0.9rem; color: var(--muted) }
+    .contact-info a { font-weight: 600 }
+    
+    footer { background: var(--ink); color: #fff; padding: 32px; text-align: center; margin-top: 48px }
+    footer p { color: rgba(255,255,255,.5); font-size: 0.85rem; margin: 0 }
+  </style>
+  <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <header>
-    <a href="/" class="logo"><svg width="60" height="30" viewBox="0 0 412.4 204" xmlns="http://www.w3.org/2000/svg" aria-label="SAP"><defs><linearGradient id="sapGrad" x1="206.19" y1="206" x2="206.19" y2="2" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 206)"><stop offset="0" stop-color="#00B8F1"/><stop offset="0.31" stop-color="#0D90D9"/><stop offset="0.58" stop-color="#1775C8"/><stop offset="0.82" stop-color="#1C65BF"/><stop offset="1" stop-color="#1E5FBB"/></linearGradient></defs><polyline fill="url(#sapGrad)" points="0,204 208.4,204 412.4,0 0,0 0,204"/><path fill="#FFFFFF" d="M244.7,38.4h-40.6v96.5l-35.5-96.6h-35.2l-30.3,80.7C100,98.7,79,91.7,62.4,86.4C51.5,82.9,39.8,77.7,40,72c0.1-4.7,6.2-9,18.4-8.4c8.2,0.4,15.4,1.1,29.7,8l14.1-24.5c-13.1-6.6-31.2-10.9-46-10.9h-0.1c-17.3,0-31.7,5.6-40.6,14.8c-6.2,6.3-9.7,14.8-9.7,23.7C5.5,87.2,10.1,96,19.7,103c8.1,5.9,18.5,9.8,27.6,12.6c11.3,3.5,20.5,6.5,20.4,13c-0.1,2.4-1,4.7-2.7,6.4c-2.8,2.9-7.1,4-13.1,4.1c-11.5,0.2-20-1.6-33.6-9.6L5.8,154.4c14,8,29.9,12.2,46,12.2h2.1c14.2-0.2,25.7-4.3,34.9-11.7c0.5-0.4,1-0.8,1.5-1.3l-4.1,10.9H123l6.2-18.8c7,2.3,14.3,3.5,21.7,3.4c7.2,0,14.3-1.1,21.2-3.2l6,18.6h60.1v-39h13.1c31.7,0,50.5-16.2,50.5-43.2C301.7,52.2,283.5,38.4,244.7,38.4z M150.9,121c-4.4,0-8.8-0.7-13-2.3l12.9-40.6h0.2l12.6,40.7C159.6,120.3,155.2,121,150.9,121z M247.1,97.7h-8.9V64.9h8.9c11.9,0,21.4,4,21.4,16.1C268.5,93.7,259,97.6,247.1,97.7"/></svg><span class="logo-wordmark"><span class="logo-title">NextGen PMM<span class="pilot-badge">PILOT</span></span><small>SAP Product Marketing Community</small></span></a>
-    <nav>
-        <a href="/bow/">Book of Work</a>
-        <a href="/curriculum/">Learn</a>
-        <a href="/community/labs/">Labs</a>
-        <a href="/ai-tools.html">AI Tools</a>
-        <div class="nav-dropdown" id="community-dropdown">
-            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="nav-dropdown-menu" id="community-menu" role="menu">
-                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
-                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
-                <a href="/newsletters/" role="menuitem">Newsletter</a>
-            </div>
-        </div>
-    </nav>
+  <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+  <nav>
+    <a href="/bow/">Book of Work</a>
+    <a href="/curriculum/">Learn</a>
+    <a href="/community/labs/">Labs</a>
+    <a href="/ai-tools.html">AI Tools</a>
+    <div class="nav-dropdown" id="community-dropdown">
+      <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="community-menu" role="menu">
+        <a href="/community/people/" role="menuitem">People</a>
+        <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+        <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+        <a href="/newsletters/" role="menuitem">Newsletter</a>
+      </div>
+    </div>
+  </nav>
 </header>
 
-<div class="container">
-    <h1>📝 Give Feedback</h1>
-    <p>Your feedback helps us improve the Future of PMM training program. Choose how you'd like to share:</p>
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Share Your Feedback</h1>
+    <p>Help us make NextGen PMM better. Your input directly shapes what we build next.</p>
+  </div>
+</section>
+
+<div class="form-container">
+  
+  <div class="form-intro">
+    <p>As a pilot participant, your perspective matters. Whether it's a bug, a suggestion, or something you love — we want to hear it.</p>
+  </div>
+
+  <form class="feedback-form" name="feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="feedback">
+    <p style="display:none"><input name="bot-field"></p>
     
-    <div class="feedback-options">
-        <a href="mailto:christopher.ohara@sap.com?subject=Future%20of%20PMM%20Feedback" class="feedback-card">
-            <div class="icon">✉️</div>
-            <h3>Email Feedback</h3>
-            <p>Send your thoughts, suggestions, or questions directly to Chris O'Hara.</p>
-        </a>
-        
-        <a href="mailto:christopher.ohara@sap.com?subject=Future%20of%20PMM%20-%20Quick%20Feedback&body=Hi%20Chris%2C%0A%0AHere%27s%20my%20quick%20feedback%20on%20the%20Future%20of%20PMM%20program%3A%0A%0A1.%20What%27s%20working%20well%3A%0A%0A2.%20What%20could%20be%20improved%3A%0A%0A3.%20Any%20topics%20you%27d%20like%20covered%3A%0A%0AThanks!" class="feedback-card">
-            <div class="icon">📋</div>
-            <h3>Quick Feedback</h3>
-            <p>Send structured feedback on what's working, what could improve, and topics you'd like covered.</p>
-        </a>
-        
-        <a href="/private/office-hours/" class="feedback-card">
-            <div class="icon">🎙️</div>
-            <h3>Office Hours</h3>
-            <p>Join a live session to discuss feedback, ask questions, or suggest improvements.</p>
-        </a>
+    <div class="form-group">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" required placeholder="e.g., Jane Smith">
     </div>
     
-    <a href="/" class="back-link">← Back to Home</a>
+    <div class="form-group">
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" required placeholder="e.g., jane.smith@sap.com">
+    </div>
+    
+    <div class="form-group">
+      <label>Feedback Type</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="type" value="suggestion" checked>
+          <span class="radio-label">💡 Suggestion</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="type" value="bug">
+          <span class="radio-label">🐛 Bug Report</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="type" value="content">
+          <span class="radio-label">📝 Content Request</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="type" value="praise">
+          <span class="radio-label">🙌 Praise</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="type" value="other">
+          <span class="radio-label">💬 Other</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="page">Which page or feature? (optional)</label>
+      <input type="text" id="page" name="page" placeholder="e.g., Unit 3 Quiz, AI Labs, Homepage">
+    </div>
+    
+    <div class="form-group">
+      <label for="message">Your Feedback</label>
+      <p class="hint">Be as specific as you can — details help us act faster.</p>
+      <textarea id="message" name="message" required placeholder="Tell us what's working, what's not, or what you'd like to see..."></textarea>
+    </div>
+    
+    <button type="submit" class="submit-btn">Submit Feedback →</button>
+  </form>
+  
+  <div class="success-message" id="success">
+    <h3>✓ Thank You!</h3>
+    <p>Your feedback has been sent to Chris and Sean. We'll review it and follow up if needed.</p>
+  </div>
+  
+  <div class="contact-info">
+    <p>Prefer email? Reach us directly at<br>
+    <a href="mailto:chris.ohara@sap.com">chris.ohara@sap.com</a> or <a href="mailto:sean.thomson@sap.com">sean.thomson@sap.com</a></p>
+  </div>
+
 </div>
 
+<footer>
+  <p>NextGen PMM · SAP Product Marketing Community</p>
+</footer>
+
 <script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+// Handle form submission
+document.querySelector('.feedback-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = new FormData(form);
+  
+  try {
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString()
+    });
+    form.style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+  } catch (err) {
+    alert('Something went wrong. Please try again or email us directly.');
+  }
+});
+</script>
 </body>
 </html>
