@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/assets/js/auth-guard.js"></script>
+  <script src="/assets/js/user-menu.js" defer></script>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Re-architecting Product Marketing for the AI Era | NextGen PMM</title>
+  <meta name="description" content="The strategic vision for bringing people, process, and technology together to operationalize the Book of Work and scale AI-enabled execution at SAP.">
+  <style>
+    :root {
+      --blue: #0a6ed1;
+      --blue2: #0854a0;
+      --ink: #172b4d;
+      --text: #475569;
+      --line: #e5e7eb;
+      --soft: #f6f8fb;
+      --muted: #64748b;
+      --green: #059669;
+      --purple: #7c3aed;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body { font-family: 'Newsreader', Georgia, serif; color: var(--ink); background: #fff; line-height: 1.8; font-size: 1.125rem }
+    a { text-decoration: none; color: var(--blue) }
+    
+    header { border-bottom: 1px solid var(--line); background: rgba(255,255,255,.96); position: sticky; top: 0; z-index: 20 }
+    nav { display: flex; align-items: center; gap: 26px; color: #475569; font-size: 14px; font-weight: 600; font-family: Inter, -apple-system, sans-serif }
+    nav a:hover { color: var(--blue) }
+
+    .hero { background: linear-gradient(135deg, #0b3768 0%, var(--blue) 100%); color: #fff; padding: 72px 0; text-align: center }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,.18); padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; font-family: Inter, sans-serif }
+    .hero h1 { font-size: 46px; font-weight: 600; margin: 0 0 16px; letter-spacing: -.02em; max-width: 850px; margin-left: auto; margin-right: auto; line-height: 1.1 }
+    .hero p { font-size: 20px; opacity: .9; max-width: 700px; margin: 0 auto }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 3rem 28px }
+    
+    .meta { font-family: Inter, sans-serif; font-size: 0.9rem; color: var(--muted); margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line) }
+    
+    h2 { font-size: 1.85rem; font-weight: 600; margin: 3rem 0 1rem; letter-spacing: -.01em; color: var(--ink) }
+    h3 { font-size: 1.4rem; font-weight: 600; margin: 2.5rem 0 0.75rem; color: var(--ink) }
+    p { margin-bottom: 1.5rem }
+    ul, ol { margin: 0 0 1.5rem 1.5rem }
+    li { margin-bottom: 0.5rem }
+    strong { font-weight: 600 }
+    em { font-style: italic }
+
+    .callout {
+      background: linear-gradient(135deg, #0b3768, var(--blue));
+      color: #fff; border-radius: 16px; padding: 32px; margin: 2.5rem 0;
+      font-family: Inter, sans-serif;
+    }
+    .callout h3 { color: #fff; margin-top: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85 }
+    .callout p { font-size: 1.5rem; font-weight: 600; line-height: 1.4; margin: 0 }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 2rem 0;
+    }
+    @media (max-width: 700px) { .stats-grid { grid-template-columns: 1fr } }
+    .stat-card {
+      background: var(--soft); border: 1px solid var(--line); border-radius: 12px;
+      padding: 24px; text-align: center;
+    }
+    .stat-card .number { font-family: Inter, sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--blue); line-height: 1 }
+    .stat-card .label { font-family: Inter, sans-serif; font-size: 0.85rem; color: var(--muted); margin-top: 8px }
+    .stat-card .detail { font-family: Inter, sans-serif; font-size: 0.75rem; color: var(--text); margin-top: 4px }
+
+    .pillar-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 2rem 0;
+    }
+    @media (max-width: 800px) { .pillar-grid { grid-template-columns: 1fr } }
+    .pillar {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      padding: 24px; text-align: center;
+    }
+    .pillar-icon { font-size: 2rem; margin-bottom: 12px }
+    .pillar h4 { font-family: Inter, sans-serif; font-size: 1rem; font-weight: 600; margin: 0 0 8px }
+    .pillar p { font-size: 0.9rem; color: var(--muted); margin: 0 }
+
+    .flow-diagram {
+      background: var(--soft); border-radius: 16px; padding: 32px; margin: 2rem 0;
+      text-align: center;
+    }
+    .flow-row { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px }
+    .flow-box {
+      background: #fff; border: 1px solid var(--line); border-radius: 10px;
+      padding: 14px 20px; font-family: Inter, sans-serif; font-size: 0.85rem; font-weight: 600;
+    }
+    .flow-box.blue { background: var(--blue); color: #fff; border-color: var(--blue) }
+    .flow-arrow { color: var(--muted); font-size: 1.2rem }
+
+    .highlight-box {
+      background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 2rem 0;
+    }
+    .highlight-box h4 {
+      font-family: Inter, sans-serif; font-size: 1rem; font-weight: 600;
+      color: var(--blue); margin-bottom: 0.75rem;
+    }
+    .highlight-box ul { margin-bottom: 0 }
+
+    .timeline {
+      background: var(--soft); border-radius: 16px; padding: 32px; margin: 2rem 0;
+    }
+    .timeline h4 { font-family: Inter, sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--blue); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px }
+    .timeline-row { display: flex; gap: 16px; margin-bottom: 16px }
+    .timeline-row:last-child { margin-bottom: 0 }
+    .timeline-phase {
+      background: var(--blue); color: #fff; border-radius: 8px;
+      padding: 8px 14px; font-family: Inter, sans-serif; font-size: 0.8rem; font-weight: 600;
+      white-space: nowrap;
+    }
+    .timeline-content { font-family: Inter, sans-serif; font-size: 0.9rem; color: var(--text) }
+
+    footer { padding: 30px 0; color: #64748b; font-size: 13px; border-top: 1px solid var(--line); text-align: center; font-family: Inter, sans-serif }
+  </style>
+  <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+  <nav>
+    <a href="/bow/">Book of Work</a>
+    <a href="/curriculum/">Learn</a>
+    <a href="/community/labs/">Labs</a>
+    <a href="/ai-tools.html">AI Tools</a>
+    <div class="nav-dropdown" id="community-dropdown">
+      <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="community-menu" role="menu">
+        <a href="/community/people/" role="menuitem">People</a>
+        <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+        <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+        <a href="/newsletters/" role="menuitem">Newsletter</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 0 28px;">
+    <span class="hero-badge">Strategic Vision</span>
+    <h1>Re-architecting Product Marketing for the AI Era</h1>
+    <p>How SAP PMM connects product and go-to-market at scale — bringing people, process, and technology together to operationalize the Book of Work and deliver AI-enabled execution.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="meta">By Chris O'Hara & Sean Thomson · October 2026 · 12 min read</div>
+  
+  <p>Three shifts are converging at once — and product marketing needs a new operating model to respond.</p>
+  
+  <p>First: we now have a <strong>common definition of PMM responsibilities</strong>. The Book of Work creates shared standards and interlocks across SAP. For the first time, we can articulate what great PMM execution looks like — consistently, across every line of business.</p>
+  
+  <p>Second: <strong>AI at scale</strong>. Tools, pilots, and LoB innovation are accelerating faster than our ability to coordinate them. The value of AI depends on repeatable workflows, governance, and adoption — not just experimentation. We need to standardize before we automate.</p>
+  
+  <p>Third: <strong>organizational change</strong>. Shifts in how we're structured raise the stakes on shared learning, reusable practices, and visibility across lines of business. We need to connect what works and scale it.</p>
+  
+  <p>This article lays out how we're responding — the Northstar, the economic model, the architecture, and the roadmap.</p>
+
+  <h2>The Northstar: 10x PMM</h2>
+  
+  <p>Here's the vision in one sentence: <em>Common standards and AI cut the effort of repeatable work, so PMM capacity shifts to strategy, insight, and growth.</em></p>
+  
+  <p>We call this the <strong>10x PMM</strong> — not because we're asking people to work ten times harder, but because the combination of clear standards, AI-enabled execution, and connected learning can multiply what each PMM accomplishes.</p>
+
+  <div class="pillar-grid">
+    <div class="pillar">
+      <div class="pillar-icon">📘</div>
+      <h4>Book of Work</h4>
+      <p>Defines the standard. Embed best practice. Reduce reinvention. Measure impact.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">🤖</div>
+      <h4>AI Workflows</h4>
+      <p>Transforms the execution. Automate repeatable work. Embed standards. Unlock productivity.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">🎓</div>
+      <h4>NextGen PMM</h4>
+      <p>Connects the people. Build skills. Share proven practices. Accelerate adoption.</p>
+    </div>
+  </div>
+  
+  <p>These three pillars — standards, AI, and community — reinforce each other. The Book of Work tells us <em>what</em> great looks like. AI workflows help us <em>do</em> it faster. NextGen PMM helps us <em>learn</em> together. None of them works in isolation; all three need to develop in parallel.</p>
+
+  <div class="callout">
+    <h3>The 10x PMM Promise</h3>
+    <p>More revenue. More capacity. Lower cost to scale.</p>
+  </div>
+
+  <h2>The Business Case</h2>
+  
+  <p>This isn't a technology project. It's a business transformation with measurable outcomes across three dimensions:</p>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="number">€200M</div>
+      <div class="label">Illustrative Revenue Upside</div>
+      <div class="detail">Pipeline, conversion, win rates</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">$13M</div>
+      <div class="label">Annual Capacity Value</div>
+      <div class="detail">~500 PMMs × hours saved</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">~$1.6M</div>
+      <div class="label">External Spend Avoided</div>
+      <div class="detail">Training & consulting SOWs</div>
+    </div>
+  </div>
+  
+  <p><strong>Top-line growth</strong> comes from smarter targeting, stronger buyer and competitive insights, and improved visibility in AI-driven evaluations. Every percentage point of conversion improvement translates to bookings.</p>
+  
+  <p><strong>Productivity and capacity</strong> emerge when research, synthesis, and content creation compress from days to hours. When governed, reusable workflows eliminate duplication. When PMM time redirects toward strategy, customers, and growth.</p>
+  
+  <p><strong>Cost avoidance</strong> happens when we build capability in-house rather than buying it. When the NextGen PMM curriculum, labs, and reusable expertise reduce reliance on external education and consulting. When we create durable internal IP aligned to our own Book of Work.</p>
+  
+  <p><em>These are illustrative projections, not realized benefits. We'll need to validate adoption, attribution, and avoided spend as we scale.</em></p>
+
+  <h2>Three Priorities</h2>
+  
+  <p>Strategy without focus is noise. We've distilled the work into three priorities that guide everything else:</p>
+
+  <h3>1. Enable Our PMMs</h3>
+  <p>Build AI capability into priority Book of Work workflows through learning, playbooks, and LoB champions. The goal: AI becomes part of everyday PMM execution — not a separate initiative, but the way work gets done.</p>
+
+  <h3>2. Define Our Toolset & Drive Adoption</h3>
+  <p>Identify the approved AI tools and capabilities PMMs need. Reduce fragmentation and duplicate experimentation. Give people clarity about what to use, when to use it, and how to get started. The right tools for the right PMM workflows.</p>
+
+  <h3>3. Embed PMM Intelligence into SAP AI</h3>
+  <p>Bring trusted PMM knowledge, standards, and messaging into SAP AI tools — Joule Work Desktop, EKX, Customer Strategy Explorer, and future AI experiences. The goal: PMM expertise becomes reusable enterprise intelligence.</p>
+
+  <h2>PMM as the Trusted Source</h2>
+  
+  <p>Here's the big idea: <strong>PMM-approved messaging should be authoritative, current, reusable, and consistent</strong> across SAP's AI experiences.</p>
+  
+  <p>We create and govern the narrative once — positioning, messaging, value propositions, differentiation, competitive intelligence, use cases — then make it consumable by SAP AI.</p>
+
+  <div class="flow-diagram">
+    <div class="flow-row">
+      <div class="flow-box blue">PMM Source of Truth</div>
+    </div>
+    <div class="flow-row">
+      <span class="flow-arrow">↓</span>
+    </div>
+    <div class="flow-row">
+      <div class="flow-box">EKX<br><small>Find the truth</small></div>
+      <div class="flow-box">Customer Strategy Explorer<br><small>Apply the truth</small></div>
+      <div class="flow-box">Joule Work Desktop<br><small>Act on the truth</small></div>
+    </div>
+  </div>
+  
+  <p><strong>EKX</strong> (trusted enterprise knowledge & retrieval) ensures approved PMM positioning, messaging, differentiation, and product knowledge are authoritative and discoverable. PMM content becomes trusted knowledge.</p>
+  
+  <p><strong>Customer Strategy Explorer</strong> brings approved value propositions, personas, use cases, and differentiation into customer-specific recommendations. PMM content becomes customer relevance.</p>
+  
+  <p><strong>Joule Work Desktop</strong> makes trusted PMM knowledge available to Joule Skills, agents, and everyday workflows. PMM content becomes execution at scale.</p>
+
+  <h2>The PMM AI Harness</h2>
+  
+  <p>Think of it as three layers working together:</p>
+
+  <div class="highlight-box">
+    <h4>Standards</h4>
+    <p style="margin-bottom: 0.75rem;">The <strong>PMM Book of Work</strong> defines how great PMM work gets done — methods, positioning, GTM standards.</p>
+    
+    <h4>Reusable Skills</h4>
+    <p style="margin-bottom: 0.75rem;">The <strong>CMO Skill Library</strong> turns best practices into reusable AI-powered workflows. Messaging PoC first, then CI, launch, sales plays, demand.</p>
+    
+    <h4>Content & Trust</h4>
+    <p style="margin-bottom: 0;">The <strong>Trusted Business Context</strong> grounds every skill in approved, current intelligence — brand, LoB messaging, product, CI, proof points.</p>
+  </div>
+  
+  <p>The harness sits underneath everything. Governance controls how AI reaches it. Trusted PMM content shows up wherever work gets done — EKX, Customer Strategy Explorer, Joule Work Desktop, even approved third-party tools.</p>
+
+  <h2>The Pilot Proved the Model</h2>
+  
+  <p>We didn't build this strategy in a vacuum. The NextGen PMM pilot — a 12-unit curriculum plus live AI Labs, mapped directly to the Book of Work — validated the approach with real PMMs, on real work.</p>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="number">181</div>
+      <div class="label">PMMs Enrolled</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">73%</div>
+      <div class="label">Quiz Pass Rate</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">9.1</div>
+      <div class="label">NPS Score (0–10)</div>
+    </div>
+  </div>
+  
+  <p>The numbers matter, but the qualitative feedback matters more:</p>
+  
+  <ul>
+    <li><strong>The mindset shifted.</strong> PMMs moved from treating AI as a tool to working with AI as a co-worker.</li>
+    <li><strong>4.2 / 5 overall value rating.</strong> Content, Labs, and assessments all scored between 4.1 and 4.3. 85% found the level just right.</li>
+    <li><strong>60%+ are already applying it at work.</strong> This isn't theoretical — people are using what they learned.</li>
+  </ul>
+  
+  <p>The pilot proves the model. AI as co-worker, mapped to the Book of Work, validated by practitioners. We're ready to move from pilot to SAP-wide launch.</p>
+
+  <h2>The Collaboration Model</h2>
+  
+  <p>Local LoB innovation becomes shared PMM capability. Enterprise governance sets the guardrails. Lines of business innovate. The PMM AI Council decides what should scale.</p>
+  
+  <p>The model has three layers:</p>
+  
+  <ul>
+    <li><strong>Core Team</strong> — Orchestrate the PMM AI portfolio, interface with the Global Marketing AI Council, identify duplication, connect teams solving similar problems.</li>
+    <li><strong>LoB AI Champions</strong> — Represent their LoB in the PMM AI Council, surface local innovation, validate shared capabilities, drive adoption within their teams.</li>
+    <li><strong>Workflow AI Leads</strong> — Own a core PMM workflow across LoBs, develop and validate specific AI use cases end to end, codify reusable playbooks.</li>
+  </ul>
+  
+  <p>Every LoB has a voice. Every priority workflow has an owner. The PMM AI Council connects the two.</p>
+  
+  <p><a href="/community/people/">→ Meet the people driving this work</a></p>
+
+  <h2>The Roadmap</h2>
+  
+  <p>Four phases through the remainder of 2026, leading to launch at MKOM 2027:</p>
+
+  <div class="timeline">
+    <h4>Path to Launch</h4>
+    <div class="timeline-row">
+      <div class="timeline-phase">Sept / Oct</div>
+      <div class="timeline-content"><strong>Build the foundation.</strong> Migrate to SAP BTP. Redesign around the Book of Work. Align the PMM Learning Journey. Validate priority Writer and Crayon use cases.</div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-phase">November</div>
+      <div class="timeline-content"><strong>Pilot & validate.</strong> Beta with PMM AI Champions. Test priority AI workflows. Validate usability, relevance, and value. Gather lighthouse PMM feedback.</div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-phase">December</div>
+      <div class="timeline-content"><strong>Prepare to scale.</strong> Refine the experience from pilot feedback. Finalize core Book of Work content. Activate PMM Champions. Prepare launch communications and enablement.</div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-phase">January</div>
+      <div class="timeline-content"><strong>Launch & activate.</strong> Launch at MKOM 2027. Activate the PMM Community and champions. Measure reach, adoption, capability, and impact. Integrate productivity into 2027 PMM KPIs.</div>
+    </div>
+  </div>
+  
+  <p>After launch, we evolve and grow: expand priority AI workflows, scale proven capabilities across LoBs, measure productivity and business impact, and continuously refresh learning, best practices, and AI capabilities.</p>
+
+  <h2>What This Means for You</h2>
+  
+  <p>If you're a PMM at SAP, here's what to expect:</p>
+  
+  <ul>
+    <li><strong>One front door</strong> — NextGen PMM becomes the home for Product Marketing. Know the work, build the skills, execute with AI.</li>
+    <li><strong>Clear standards</strong> — The Book of Work tells you what great looks like. No more guessing.</li>
+    <li><strong>AI in the flow of work</strong> — Approved tools, agents, prompts, and guided workflows — embedded where you already work.</li>
+    <li><strong>Connected community</strong> — Champions in every LoB. Shared learning. Practices that scale.</li>
+  </ul>
+  
+  <p>This isn't a mandate. It's an invitation. The people who engage early — who experiment, who share what they learn, who help shape the tools and workflows — will define what PMM looks like at SAP for the next decade.</p>
+  
+  <p>The model is proven. The sponsorship is real. The people are in place.</p>
+  
+  <p>Now we build.</p>
+
+</div>
+
+<footer>
+  <div style="max-width: 1180px; margin: auto; padding: 0 28px;">NextGen PMM · SAP Product Marketing Community</div>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>
