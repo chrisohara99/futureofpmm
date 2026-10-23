@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AI Use Case Tracker | NextGen PMM</title>
+    <meta name="description" content="Track AI capabilities across PMM - Available, In Development, and Future Ideas.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --blue: #0a6ed1;
+            --blue-dark: #0854a0;
+            --ink: #172b4d;
+            --text: #475569;
+            --line: #e5e7eb;
+            --soft: #f6f8fb;
+            --muted: #64748b;
+            --available: #059669;
+            --available-bg: #ecfdf5;
+            --dev: #d97706;
+            --dev-bg: #fffbeb;
+            --future: #7c3aed;
+            --future-bg: #f5f3ff;
+        }
+        
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--ink);
+            line-height: 1.6;
+            background: var(--soft);
+        }
+        
+        a { color: var(--blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        header { border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 100; }
+        
+        /* Page Header */
+        .page-header {
+            padding: 40px 28px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            color: white;
+        }
+        .page-header-inner { max-width: 1200px; margin: 0 auto; }
+        .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .page-header .lead { font-size: 1rem; opacity: 0.9; }
+        
+        /* Main */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        @media (max-width: 800px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        .stat-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+        
+        .stat-card.available .number { color: var(--available); }
+        .stat-card.dev .number { color: var(--dev); }
+        .stat-card.future .number { color: var(--future); }
+        
+        /* Filters */
+        .filters {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+        
+        .filter-group select {
+            padding: 8px 32px 8px 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: #fff;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            cursor: pointer;
+        }
+        
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+        
+        .results-count {
+            margin-left: auto;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        
+        /* Table */
+        .table-container {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            background: var(--soft);
+            border-bottom: 1px solid var(--line);
+        }
+        
+        td {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+        
+        tr:last-child td { border-bottom: none; }
+        
+        tr:hover { background: rgba(10,110,209,0.02); }
+        
+        .skill-name {
+            font-weight: 600;
+            color: var(--ink);
+        }
+        
+        .skill-desc {
+            font-size: 0.85rem;
+            color: var(--text);
+            max-width: 400px;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        
+        .status-badge.available {
+            background: var(--available-bg);
+            color: var(--available);
+        }
+        
+        .status-badge.dev {
+            background: var(--dev-bg);
+            color: var(--dev);
+        }
+        
+        .status-badge.future {
+            background: var(--future-bg);
+            color: var(--future);
+        }
+        
+        /* LoB Badge */
+        .lob-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 4px;
+            background: var(--soft);
+            color: var(--muted);
+        }
+        
+        .owner-cell {
+            white-space: nowrap;
+        }
+        
+        .owner-name {
+            font-weight: 500;
+        }
+        
+        /* Link icon */
+        .link-icon {
+            color: var(--blue);
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--ink);
+            color: #fff;
+            padding: 32px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        footer p { color: rgba(255,255,255,.5); font-size: 0.85rem; }
+        
+        /* Responsive table */
+        @media (max-width: 900px) {
+            .table-container { overflow-x: auto; }
+            table { min-width: 800px; }
+        }
+        
+        /* Submit CTA */
+        .submit-cta {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .submit-cta .text {
+            font-size: 0.95rem;
+        }
+        
+        .submit-cta .text strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        
+        .submit-cta .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: white;
+            color: var(--blue);
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        
+        .submit-cta .btn:hover {
+            background: rgba(255,255,255,0.9);
+            text-decoration: none;
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/" role="menuitem">People</a>
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1>PMM AI Use Case Tracker</h1>
+        <p class="lead">AI capabilities across PMM — skills, use cases, and ideas aligned to the Book of Work</p>
+    </div>
+</div>
+
+<main>
+    <div class="submit-cta">
+        <div class="text">
+            <strong>Have an AI capability to share?</strong>
+            Submit your team's skills, use cases, and ideas by EOD Tuesday 10/27
+        </div>
+        <a href="/ai-intake.html" class="btn">Submit Capability →</a>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="number">54</div>
+            <div class="label">Total Capabilities</div>
+        </div>
+        <div class="stat-card available">
+            <div class="number">21</div>
+            <div class="label">Available</div>
+        </div>
+        <div class="stat-card dev">
+            <div class="number">21</div>
+            <div class="label">In Development</div>
+        </div>
+        <div class="stat-card future">
+            <div class="number">12</div>
+            <div class="label">Future Ideas</div>
+        </div>
+    </div>
+    
+    <div class="filters">
+        <div class="filter-group">
+            <label>Status:</label>
+            <select id="filter-status" onchange="filterTable()">
+                <option value="">All Statuses</option>
+                <option value="Available">Available</option>
+                <option value="In Development">In Development</option>
+                <option value="Future Idea">Future Idea</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>LoB:</label>
+            <select id="filter-lob" onchange="filterTable()">
+                <option value="">All LoBs</option>
+                <option value="BAIP">BAIP</option>
+                <option value="SCM">SCM</option>
+                <option value="Finance">Finance</option>
+                <option value="Learning">Learning</option>
+                <option value="Cross">Cross</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Owner:</label>
+            <select id="filter-owner" onchange="filterTable()">
+                <option value="">All Owners</option>
+                <option value="Chris OHara">Chris OHara</option>
+                <option value="Oyku Ilgar">Oyku Ilgar</option>
+                <option value="John Fallon">John Fallon</option>
+                <option value="Dirk Mayrock">Dirk Mayrock</option>
+                <option value="Matt Montgomery">Matt Montgomery</option>
+                <option value="Paul Kim">Paul Kim</option>
+                <option value="Hyunsoo Shim">Hyunsoo Shim</option>
+            </select>
+        </div>
+        <div class="results-count" id="results-count">Showing 54 capabilities</div>
+    </div>
+    
+    <div class="table-container">
+        <table id="tracker-table">
+            <thead>
+                <tr>
+                    <th>Skill / Use Case</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Owner</th>
+                    <th>Book of Work</th>
+                    <th>🔗</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">GEO Visibility Scorecard</span></td>
+                    <td><span class="skill-desc">Tests visibility across ChatGPT, Claude, Perplexity, and Gemini; provides scores by LLM, competitor comparisons, and actionable rewrites.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Messaging & Positioning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">PMM Activity Audit</span></td>
+                    <td><span class="skill-desc">Analyzes weekly PMM activities for AI transformation potential and recommends a prioritized automation roadmap and tools.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">BattleCoach</span></td>
+                    <td><span class="skill-desc">Turns competitive deal briefings into battle-ready assets using AREA defensive and IDEA offensive frameworks.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Analyst Briefing Simulator</span></td>
+                    <td><span class="skill-desc">Simulates Gartner, Forrester, or IDC briefings with predicted questions and counter-evidence for competitive positioning.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Customer Advocacy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Segment Builder</span></td>
+                    <td><span class="skill-desc">Builds ideal customer profiles and segment definitions, maps buying committees, and generates targeted messaging.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">CI Brief Generator</span></td>
+                    <td><span class="skill-desc">Creates sales-ready competitive briefs with trap-setting questions and objection handlers from competitor intelligence and deal context.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Messaging Framework Generator</span></td>
+                    <td><span class="skill-desc">Creates value propositions and messaging frameworks, including persona variants, elevator pitches, and objection handlers.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Messaging & Positioning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">GEO Visibility Test</span></td>
+                    <td><span class="skill-desc">Tests product visibility in AI-assisted buyer research and recommends improvements to AI discoverability.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Messaging & Positioning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Content Localization Agent</span></td>
+                    <td><span class="skill-desc">Adapts approved content across languages and regions while preserving intent, tone, terminology, and cultural fit.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Persona Builder</span></td>
+                    <td><span class="skill-desc">Creates detailed buyer personas with pain points, motivations, buying committee roles, and content preferences.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Enablement Bundler</span></td>
+                    <td><span class="skill-desc">Assembles region- and persona-tuned sales kits with talk tracks, proof points, and objection handlers.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Launch Planner</span></td>
+                    <td><span class="skill-desc">Generates launch bill of materials, T-minus timeline, RACI matrix, and risk register from project criteria.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Launch Support</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Pricing Rationale Builder</span></td>
+                    <td><span class="skill-desc">Builds executive-ready ROI analyses and business cases; quantifies value and compares alternatives.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Pricing & Packaging</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Agent Positioning Test</span></td>
+                    <td><span class="skill-desc">Evaluates product-page positioning from the perspective of an AI procurement agent.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Messaging & Positioning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Content Layer Audit</span></td>
+                    <td><span class="skill-desc">Classifies content into Commodity, Strategic, and Signature layers and recommends a reallocation plan.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="BAIP" data-owner="Chris OHara">
+                    <td><span class="skill-name">Demo Narrative Builder</span></td>
+                    <td><span class="skill-desc">Transforms product features into transformation stories and three demo narratives for an ideal customer profile.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Chris OHara</span><br><span class="lob-badge">BAIP</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <!-- Finance - John Fallon -->
+                <tr data-status="Available" data-lob="Finance" data-owner="John Fallon">
+                    <td><span class="skill-name">Custom Landing Pages</span></td>
+                    <td><span class="skill-desc">Generate personalized prospect landing pages using Customer Strategy Explorer insights and approved reference content.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">John Fallon</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Content Strategy</td>
+                    <td><a href="https://github.tools.sap/I773304/Joule-Work-Desktop/blob/main/skills/vistex-margin-optz-customer-value-creator" target="_blank" class="link-icon">🔗</a></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="John Fallon">
+                    <td><span class="skill-name">Customer Specific Deck Creator</span></td>
+                    <td><span class="skill-desc">Enhance Customer Strategy Explorer's Executive Value Brief to generate solution-specific customer presentations.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">John Fallon</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="John Fallon">
+                    <td><span class="skill-name">Competitor Monitoring</span></td>
+                    <td><span class="skill-desc">Automate weekly monitoring of selected competitors and market categories, delivering dashboards and shareable intelligence digests.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">John Fallon</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="John Fallon">
+                    <td><span class="skill-name">Buyer Insights</span></td>
+                    <td><span class="skill-desc">Analyze customer meeting transcripts and communications to identify buyer priorities, challenges, perceptions, and language.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">John Fallon</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="Finance" data-owner="John Fallon">
+                    <td><span class="skill-name">Tactical Sales Play Builder</span></td>
+                    <td><span class="skill-desc">Accelerate creation and refinement of standardized sales plays using AI, aligned with the oCFO format.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">John Fallon</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Learning & Enablement</td>
+                    <td><a href="https://github.tools.sap/I773304/Joule-Work-Desktop/blob/main/skills/tactical-sales-play" target="_blank" class="link-icon">🔗</a></td>
+                </tr>
+                <tr data-status="Available" data-lob="Finance" data-owner="John Fallon">
+                    <td><span class="skill-name">Joule Work PMM Skill</span></td>
+                    <td><span class="skill-desc">Enable PMMs to execute role-specific workflows in Joule Work Desktop using reusable AI Skills tailored to their solution areas.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">John Fallon</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <!-- SCM - Oyku Ilgar -->
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Competitor Analysis with AI</span></td>
+                    <td><span class="skill-desc">Build a full competitor profile (positioning, GTM, win/loss, objection handling) using EKX and Copilot in under 30 minutes.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">JWD PMM Skills Library</span></td>
+                    <td><span class="skill-desc">Curated set of installable Joule Work Desktop skills for PMM tasks: messaging frameworks, competitive intelligence, and content generation.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">MRD Automation with JWD</span></td>
+                    <td><span class="skill-desc">AI agent that pulls from Jira, market research, competitive intelligence, and regulatory updates to auto-generate an MRD, reducing a 3-week task to 45 minutes.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">PMM AI Agents in JWD</span></td>
+                    <td><span class="skill-desc">Agentic workflows for email intelligence, calendar briefings, and multi-step PMM tasks using SAP Joule Work Desktop.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Industry Research & Customer Prep</span></td>
+                    <td><span class="skill-desc">Use AI to deeply research any industry or customer before a meeting, replacing hours of manual preparation.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">AI-Assisted Blog Writing</span></td>
+                    <td><span class="skill-desc">End-to-end workflow for writing polished blog posts using AI from brief to final draft.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">LinkedIn Content Creation with AI</span></td>
+                    <td><span class="skill-desc">AI-supported framework for crafting on-brand LinkedIn posts with practical prompting techniques.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Presentations from Any Input with EKX</span></td>
+                    <td><span class="skill-desc">Transform documents, PDFs, and briefs into presentation-ready slides using AI.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">AI Meeting Summaries & Action Tracking</span></td>
+                    <td><span class="skill-desc">Automatically generate meeting minutes and extract action items using Microsoft Copilot.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Battlecard Generation with AI</span></td>
+                    <td><span class="skill-desc">AI-powered workflow for building and maintaining battlecards using JWD research skills and EKX product knowledge.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Market Analysis & Positioning with AI</span></td>
+                    <td><span class="skill-desc">Use JWD and Claude to summarize analyst content, map competitor positioning, and identify whitespace.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">JWD Advanced: External Data Sources</span></td>
+                    <td><span class="skill-desc">Connect JWD to external sources including web, SAP systems, and documents for richer, context-aware workflows.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">AI Compliance & Tool Access Guidance</span></td>
+                    <td><span class="skill-desc">Practical guidance on verifying Copilot licensing, understanding approved AI tools at SAP, and using AI responsibly.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Video Content Creation with Camtasia</span></td>
+                    <td><span class="skill-desc">Hands-on workflow for creating short, polished, on-brand marketing videos using Camtasia.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Advanced AI Workflows with Claude</span></td>
+                    <td><span class="skill-desc">Real-world use cases for using Claude to automate workflows, create presentations, and build intelligent agents.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Visual Design & Social Content with Canva</span></td>
+                    <td><span class="skill-desc">Hands-on session unlocking advanced Canva features for creating branded social media posts and marketing assets.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Analyst AI Insights Applied to PMM</span></td>
+                    <td><span class="skill-desc">Key takeaways from the Gartner Marketing Symposium translated into actionable AI use cases for marketing efficiency.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Build Your Own PMM Agent in JWD</span></td>
+                    <td><span class="skill-desc">Move from consuming agents to building them. PMM-specific framing for creating battlecard drafters, MRD assistants, and field self-service agents.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="In Development" data-lob="SCM" data-owner="Oyku Ilgar">
+                    <td><span class="skill-name">Token Optimization & Efficiency on JWD</span></td>
+                    <td><span class="skill-desc">Practical session on prompt efficiency and cost-aware usage to help the team get more out of existing token allowances.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Oyku Ilgar</span><br><span class="lob-badge">SCM</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <!-- Learning - Dirk Mayrock -->
+                <tr data-status="In Development" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">Learning Vibe Authoring</span></td>
+                    <td><span class="skill-desc">Accelerate development and publishing of SAP Learning courses by enabling SMEs to create outlines, lesson content, and publication-ready previews with AI.</span></td>
+                    <td><span class="status-badge dev">In Development</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">Learning Vibe Authoring POC</span></td>
+                    <td><span class="skill-desc">Validate whether reusable AI Skills can help SMEs produce consistent, high-quality learning content with less manual effort.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Learning & Enablement</td>
+                    <td><a href="https://github.wdf.sap.corp/i800079/mmcp-vibe-authoring-skills/blob/main/doc/vibe-authoring-guide.md" target="_blank" class="link-icon">🔗</a></td>
+                </tr>
+                <tr data-status="Available" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">PowerPoint Compliance Check</span></td>
+                    <td><span class="skill-desc">Reduce the effort required to review hundreds of learning presentations against evolving SAP brand standards.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">Brand Data as API</span></td>
+                    <td><span class="skill-desc">Ensure learning content and AI-assisted authoring tools consistently use current SAP brand standards via centralized, API-based access.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">References Identification</span></td>
+                    <td><span class="skill-desc">Improve the credibility and relevance of learning materials by making approved references accessible to content-authoring tools.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Content Strategy</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">GTM Document Identification</span></td>
+                    <td><span class="skill-desc">Reduce time spent searching for approved GTM materials during learning content development. Enable AI authoring workflows to discover relevant presentations.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Learning" data-owner="Dirk Mayrock">
+                    <td><span class="skill-name">AI-Based Personalized Learning</span></td>
+                    <td><span class="skill-desc">Improve learning relevance and effectiveness by enabling customers to generate personalized learning paths grounded in SAP Learning content.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Dirk Mayrock</span><br><span class="lob-badge">Learning</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <!-- Cross -->
+                <tr data-status="Future Idea" data-lob="Cross" data-owner="Paul Kim">
+                    <td><span class="skill-name">Launch Readiness</span></td>
+                    <td><span class="skill-desc">–</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Paul Kim</span><br><span class="lob-badge">Cross</span></td>
+                    <td>Launch Support</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="Cross" data-owner="Hyunsoo Shim">
+                    <td><span class="skill-name">Competitive BattleCoach</span></td>
+                    <td><span class="skill-desc">–</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Hyunsoo Shim</span><br><span class="lob-badge">Cross</span></td>
+                    <td>Market Intelligence</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Available" data-lob="Cross" data-owner="Hyunsoo Shim">
+                    <td><span class="skill-name">AI-Powered Competitive Sales Deck Generator</span></td>
+                    <td><span class="skill-desc">Generate tailored presentations by competitor, industry, and region; extend the existing Spend capability to Finance/Treasury.</span></td>
+                    <td><span class="status-badge available">Available</span></td>
+                    <td class="owner-cell"><span class="owner-name">Hyunsoo Shim</span><br><span class="lob-badge">Cross</span></td>
+                    <td>Learning & Enablement</td>
+                    <td></td>
+                </tr>
+                <!-- Finance - Matt Montgomery -->
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="Matt Montgomery">
+                    <td><span class="skill-name">Event Intelligence & Prioritization Agent</span></td>
+                    <td><span class="skill-desc">Analyze industry conferences, speakers, sessions, and buyer personas to recommend high-value events for PMM investment and engagement.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Matt Montgomery</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Events</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="Matt Montgomery">
+                    <td><span class="skill-name">Market Trends & Content Strategy Agent</span></td>
+                    <td><span class="skill-desc">Monitor conference topics and emerging market trends over 3–6 months to recommend priorities for whitepapers, blogs, and partner content.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Matt Montgomery</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="Matt Montgomery">
+                    <td><span class="skill-name">Industry Publication & CI Agent</span></td>
+                    <td><span class="skill-desc">Analyze industry publications, blogs, and practitioner content to identify influential authors, competitor activity, and engagement signals.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Matt Montgomery</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Market Research</td>
+                    <td></td>
+                </tr>
+                <tr data-status="Future Idea" data-lob="Finance" data-owner="Matt Montgomery">
+                    <td><span class="skill-name">Market Opportunity & Regional Intelligence Agent</span></td>
+                    <td><span class="skill-desc">Analyze industry and regional engagement signals to identify market opportunities and inform SAM/SOM assumptions and GTM priorities.</span></td>
+                    <td><span class="status-badge future">Future Idea</span></td>
+                    <td class="owner-cell"><span class="owner-name">Matt Montgomery</span><br><span class="lob-badge">Finance</span></td>
+                    <td>Planning</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <p>NextGen PMM · SAP Product Marketing Community</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+function filterTable() {
+    const statusFilter = document.getElementById('filter-status').value;
+    const lobFilter = document.getElementById('filter-lob').value;
+    const ownerFilter = document.getElementById('filter-owner').value;
+    
+    const rows = document.querySelectorAll('#tracker-table tbody tr');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const status = row.dataset.status;
+        const lob = row.dataset.lob;
+        const owner = row.dataset.owner;
+        
+        const statusMatch = !statusFilter || status === statusFilter;
+        const lobMatch = !lobFilter || lob === lobFilter;
+        const ownerMatch = !ownerFilter || owner === ownerFilter;
+        
+        if (statusMatch && lobMatch && ownerMatch) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    document.getElementById('results-count').textContent = `Showing ${visibleCount} capabilities`;
+}
+</script>
+</body>
+</html>
