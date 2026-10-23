@@ -6,539 +6,207 @@
   <meta name="robots" content="noindex, nofollow">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unit 11: Skills That Survive: What AI Can't Touch (Yet) | NextGen PMM</title>
+  <title>Unit 11: The PMM AI Tech Stack | NextGen PMM</title>
   <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
   <style>
     :root {
       --blue: #0a6ed1;
-      --blue2: #0854a0;
       --ink: #172b4d;
       --text: #475569;
       --line: #e5e7eb;
       --soft: #f6f8fb;
-      --white: #fff;
       --green: #0f828f;
-      --purple: #6d5bd0;
-      --orange: #d97706
+      --orange: #d97706;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth }
-    
-    body {
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--ink);
-      background: #fff;
-      line-height: 1.6;
-    }
-
+    body { font-family: Inter, -apple-system, sans-serif; color: var(--ink); background: #fff; line-height: 1.7; }
     a { text-decoration: none; color: inherit; }
-
-    /* Header */
-    header {
-      border-bottom: 1px solid var(--line);
-      background: rgba(255,255,255,0.96);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo { display: flex; align-items: center; gap: 0.75rem; }
-    .logo-wordmark { display: flex; flex-direction: column; line-height: 1.2; }
-    .logo-title { font-weight: 700; font-size: 1rem; color: var(--ink); }
-    .pilot-badge { background: var(--orange); color: white; font-size: 0.55rem; padding: 2px 5px; border-radius: 3px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
-    .logo small { font-size: 0.7rem; color: var(--text); }
-    nav { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text); }
-    nav a:hover { color: var(--blue); }
-    nav a.active { color: var(--blue); }
-
-    /* Progress bar */
-    .progress-bar { background: var(--line); height: 4px; }
-    .progress-fill { background: var(--blue); height: 100%; transition: width 0.3s; }
-
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, var(--soft) 0%, #e8f4fc 100%);
-      padding: 3rem 2rem;
-      border-bottom: 1px solid var(--line);
-    }
+    
+    .hero { background: linear-gradient(135deg, var(--soft) 0%, #e8f4fc 100%); padding: 3rem 2rem; border-bottom: 1px solid var(--line); }
     .hero-inner { max-width: 800px; margin: 0 auto; }
-    .unit-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--blue);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .hero h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: var(--ink);
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
-    }
-    .hero .time {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--text);
-    }
-    .hero .time svg { opacity: 0.7; }
-
-    /* Main content */
+    .unit-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--blue); font-weight: 600; margin-bottom: 0.5rem; }
+    .hero h1 { font-size: 2.25rem; font-weight: 700; color: var(--ink); margin-bottom: 0.75rem; }
+    .hero p { font-size: 1.1rem; color: var(--text); max-width: 600px; }
+    
     main { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
-
-    /* Sections */
-    .section {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--line);
-    }
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--ink);
-    }
-    .section-time {
-      font-size: 0.8rem;
-      color: var(--text);
-      background: var(--soft);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-    }
-
-    /* Typography */
-    h3 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--blue2);
-      margin: 1.5rem 0 0.75rem;
-    }
-    p { margin-bottom: 1rem; color: var(--ink); }
-    ul, ol { margin: 1rem 0 1rem 1.5rem; }
-    li { margin-bottom: 0.5rem; }
-    strong { font-weight: 600; }
-
-    /* Highlight boxes */
-    .highlight-box {
-      background: var(--soft);
-      border-left: 4px solid var(--blue);
-      padding: 1.25rem;
-      border-radius: 0 8px 8px 0;
-      margin: 1.5rem 0;
-    }
-    .highlight-box.key-insight {
-      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
-      border-left-color: var(--orange);
-    }
-    .highlight-box h4 {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--ink);
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-    }
-
-    /* Stats */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-    .stat-card {
-      background: var(--soft);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-    }
-    .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--blue); }
-    .stat-label { font-size: 0.75rem; color: var(--text); margin-top: 0.25rem; }
-
-    /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
-    }
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--line);
-    }
-    th {
-      background: var(--ink);
-      color: white;
-      font-weight: 600;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    tr:hover { background: var(--soft); }
-    .impact-high { color: #dc2626; font-weight: 600; }
-    .impact-moderate { color: var(--orange); font-weight: 600; }
-    .impact-low { color: var(--green); font-weight: 600; }
-    .two-col-table th:first-child,
-    .two-col-table td:first-child {
-      width: 50%;
-      border-right: 1px solid var(--line);
-    }
-
-    /* Objectives */
-    .objectives-list {
-      background: var(--soft);
-      border-radius: 8px;
-      padding: 1.25rem 1.25rem 1.25rem 2.5rem;
-      margin: 1rem 0;
-    }
-
-    /* Navigation buttons */
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 2.5rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--line);
-    }
-    .nav-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.875rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .nav-btn.primary {
-      background: var(--blue);
-      color: white;
-    }
-    .nav-btn.primary:hover { background: var(--blue2); }
-    .nav-btn.secondary {
-      background: var(--soft);
-      color: var(--ink);
-      border: 1px solid var(--line);
-    }
-    .nav-btn.secondary:hover { background: var(--line); }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 1.5rem 2rem;
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text);
-      background: var(--soft);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      header { flex-direction: column; gap: 1rem; padding: 1rem; }
-      nav { flex-wrap: wrap; justify-content: center; gap: 1rem; }
-      .hero h1 { font-size: 1.75rem; }
-      .section { padding: 1.5rem; }
-      table { font-size: 0.8rem; }
-      th, td { padding: 0.5rem; }
-    }
+    
+    .section { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+    .section h2 { font-size: 1.35rem; color: var(--ink); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--line); }
+    .section h3 { font-size: 1.1rem; color: var(--blue); margin: 1.5rem 0 0.75rem; }
+    .section h4 { font-size: 1rem; color: var(--ink); margin: 1rem 0 0.5rem; }
+    .section p { margin-bottom: 1rem; color: var(--text); }
+    .section ul, .section ol { margin: 1rem 0 1rem 1.5rem; color: var(--text); }
+    .section li { margin-bottom: 0.5rem; }
+    .section strong { color: var(--ink); }
+    
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--line); }
+    th { background: var(--soft); font-weight: 600; color: var(--ink); }
+    
+    .highlight-box { background: var(--soft); border-left: 4px solid var(--blue); padding: 1.25rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
+    .highlight-box.warning { border-left-color: #ef4444; background: #fef2f2; }
+    .highlight-box.insight { border-left-color: var(--orange); background: #fffbeb; }
+    .highlight-box h4 { margin: 0 0 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink); }
+    
+    .nav-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .nav-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; }
+    .nav-btn.secondary { background: var(--soft); color: var(--text); }
+    .nav-btn.primary { background: var(--blue); color: white; }
+    .nav-btn:hover { opacity: 0.9; }
+    
+    footer { text-align: center; padding: 2rem; color: var(--text); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 2rem; }
   </style>
-  <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
 </head>
 <body>
-  <header>
-    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
-    <nav>
-    <a href="/bow/">Book of Work</a>
-    <a href="/curriculum/">Learn</a>
-    <a href="/community/labs/">Labs</a>
-    <a href="/ai-tools.html">AI Tools</a>
-    <div class="nav-dropdown" id="community-dropdown">
-      <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <div class="nav-dropdown-menu" id="community-menu" role="menu">
-        <a href="/community/people/" role="menuitem">People</a>
-        <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
-        <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
-        <a href="/newsletters/" role="menuitem">Newsletter</a>
-      </div>
-    </div>
-  </nav>
-  </header>
-  
-  <div class="progress-bar">
-    <div class="progress-fill" style="width: 92%;"></div>
+
+<header>
+  <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+  <nav><a href="/bow/">Book of Work</a><a href="/curriculum/" class="active">Learn</a><a href="/community/labs/">Labs</a><a href="/ai-tools.html">AI Tools</a><div class="nav-dropdown" id="community-dropdown"><button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-dropdown-menu" id="community-menu" role="menu"><a href="/community/people/" role="menuitem">People</a><a href="/community/pulse/" role="menuitem">PMM Pulse</a><a href="/community/spotlight/" role="menuitem">PMM Spotlight</a><a href="/newsletters/" role="menuitem">Newsletter</a></div></div></nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="unit-label">Unit 11 · Advanced Topics</div>
+    <h1>The PMM AI Tech Stack</h1>
+    <p>Tool selection, build vs. buy decisions, and prompting mastery for the AI-era PMM.</p>
   </div>
-  
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="unit-label">Unit 11</div>
-      <h1>Skills That Survive: What AI Can't Touch (Yet)</h1>
-      <div class="time">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-        </svg>
-        50 minutes
-      </div>
-    </div>
-  </section>
-  
-  <main>
-<div class="objectives-box">
-            <h2>🎯 Learning Objectives</h2>
-            <ul>
-                <li>Identify the four durable skills that define career trajectories in the agentic era</li>
-                <li>Understand the T-Shaped PMM model: broad agent fluency + deep human expertise</li>
-                <li>Assess which surviving skill is your natural strength to develop</li>
-                <li>Build a personal development plan for 2028-ready PMM skills</li>
-            </ul>
-        </div>
-        
-        <section>
-            <h2>The Question Everyone's Asking</h2>
-            
-            <p>The question we get asked most often—at conferences, in DMs, over drinks at industry dinners—is some version of: <strong>"Should I be worried about my job?"</strong></p>
-            
-            <p>The PMMs who ask it range from people two years into their career to directors with fifteen years of experience. The junior ones are worried about whether there will be a PMM role to grow into. The senior ones are worried about whether the role they've spent a decade mastering is about to be pulled out from under them.</p>
-            
-            <p>Both groups deserve an honest answer, so here it is: <strong>No, your job is not going away. But the version of your job you're doing today probably is.</strong></p>
-            
-            <div class="key-concept">
-                <h4>💡 The Precise Distinction</h4>
-                <p>The activities that define "product marketing"—the thirty-seven boxes on the Pragmatic Framework—aren't disappearing. Companies still need competitive intelligence, positioning, sales enablement, content, launch management, pricing strategy, and analyst relations. They need them more than ever. What's disappearing is the <em>specific way</em> those activities have been performed: manually, sequentially, at human speed, with human bottlenecks at every step.</p>
-            </div>
-            
-            <p>The PMM of 2023 spent the majority of their time on <strong>execution</strong>—producing deliverables. The PMM of 2028 will spend the majority of their time on <strong>judgment</strong>—making decisions that agents can't make. The deliverables still get produced. They just get produced differently, at different speed, and the human's contribution shifts from drafting to directing.</p>
-            
-            <p>So the real question isn't "Will I have a job?" It's <strong>"Which skills do I need to develop so that the version of me that shows up in 2028 is more valuable, not less?"</strong></p>
-        </section>
-        
-        <section>
-            <h2>The Four Surviving Skills</h2>
-            
-            <p>When we analyzed the Pragmatic Framework in Unit 2, the activities that scored highest on elevation opportunity—the ones that become <em>more</em> valuable as the routine work around them is automated—clustered around four capabilities. These aren't job titles or Pragmatic boxes. They're meta-skills that cut across multiple activities and define what it means to be a senior, strategic product marketer in the agentic era.</p>
-            
-            <div class="skills-grid">
-                <div class="skill-card judgment">
-                    <div class="emoji">🧠</div>
-                    <h4>Strategic Judgment</h4>
-                    <p>The ability to make good decisions under ambiguity with incomplete information. Which competitive move to respond to, which pricing model to adopt, when data is inconclusive.</p>
-                </div>
-                
-                <div class="skill-card org-intel">
-                    <div class="emoji">🤝</div>
-                    <h4>Organizational Intelligence</h4>
-                    <p>Navigating stakeholders, building cross-functional alignment, managing up and across, understanding informal power structures that determine what actually gets done.</p>
-                </div>
-                
-                <div class="skill-card narrative">
-                    <div class="emoji">✍️</div>
-                    <h4>Narrative Craft</h4>
-                    <p>Constructing arguments that move people—taking complex, abstract, technical reality and turning it into a story someone remembers the next day.</p>
-                </div>
-                
-                <div class="skill-card empathy">
-                    <div class="emoji">💜</div>
-                    <h4>Customer Empathy</h4>
-                    <p>Understanding what customers <em>feel</em>—not just their requirements, but their frustrations, anxieties, and the relief when a product actually solves their problem.</p>
-                </div>
-            </div>
-        </section>
-        
-        <section>
-            <h3>1. Strategic Judgment</h3>
-            
-            <p>Strategic judgment is the ability to make good decisions under ambiguity with incomplete information. It sounds abstract until you realize it's the core of almost every high-value PMM activity.</p>
-            
-            <div class="case-study">
-                <h4>🎯 Example: Competitive Triage</h4>
-                <p>Your CI agent flags twelve competitive signals this week. Three are noise. Six are worth noting but don't require action. Two require immediate response. One requires a fundamental rethinking of your competitive narrative.</p>
-                <p><strong>The agent can't tell you which is which.</strong> It can prioritize by recency, signal strength, or relevance to your stated priorities—but the judgment call about whether a competitor's new partnership is a strategic threat or a desperate pivot requires understanding the competitive landscape, the competitor's internal dynamics, your own company's strategic position, and what the market will perceive.</p>
-            </div>
-            
-            <p>Consider another scenario: your pricing research shows that 40% of customers prefer consumption-based pricing and 35% prefer per-seat. The remaining 25% say it depends. There is no clear winner. An agent can present the data, model scenarios, and show competitor benchmarks. But the decision to go with consumption pricing for enterprise and per-seat for SMB, with a conversion path between them—that's a strategic judgment synthesizing market data, competitive positioning, sales capabilities, and financial constraints into a single coherent choice.</p>
-            
-            <div class="key-concept">
-                <h4>💡 How to Develop Strategic Judgment</h4>
-                <p>Strategic judgment is hard to develop deliberately because it's mostly developed through exposure to decisions and their consequences. But there are accelerants: <strong>post-mortems on every major decision</strong> (not just the ones that went wrong), <strong>exposure to decision-making in other functions</strong> (sit in on product roadmap reviews, pricing committee meetings, sales pipeline reviews), and <strong>the habit of writing down your reasoning before you see the outcome</strong> so you can evaluate your judgment calibration over time.</p>
-            </div>
-        </section>
-        
-        <section>
-            <h3>2. Organizational Intelligence</h3>
-            
-            <p>We mentioned in Unit 2 that getting twelve people to agree on a positioning document is harder than writing it. That's organizational intelligence—the ability to navigate stakeholders, build cross-functional alignment, manage up and across, and understand the informal power structures that determine what actually gets done.</p>
-            
-            <p><strong>This is the skill that AI is furthest from replicating</strong>, and we think it's the one that separates good PMMs from great ones.</p>
-            
-            <div class="warning-box">
-                <h4>⚠️ The 80/20 Reality</h4>
-                <p>A good PMM can write excellent positioning. A great PMM can get that positioning <em>adopted</em> by product, <em>endorsed</em> by sales, <em>supported</em> by leadership, and <em>reflected</em> in every customer-facing touchpoint. The writing is maybe 20% of the effort. The organizational navigation is the other 80%.</p>
-            </div>
-            
-            <div class="case-study">
-                <h4>🎯 Real Example: The Hidden Objection</h4>
-                <p>Early in our time at SAP, we worked on positioning for a product that sat at the intersection of two business units. Each had a VP who wanted the positioning to emphasize their product's contribution. The document went through seven drafts—not because the writing was wrong but because each draft surfaced a new political objection that was really about organizational territory, not messaging.</p>
-                <p>We solved it by having coffee with each VP separately—not to discuss the positioning, but to understand what they <em>needed</em> the positioning to accomplish for their team. One VP needed it to support a headcount request. The other needed it to justify a product investment to the board. Once we understood what each person actually needed—as opposed to what they said they wanted—we could write a version that served both agendas without compromising market-facing clarity.</p>
-            </div>
-            
-            <p>No agent is going to have that coffee. No agent is going to read the body language that tells you the real objection isn't about the word choice on slide seven. This skill is developed by paying attention to people—their incentives, their anxieties, their ambitions—and by building enough trust that they'll tell you what they actually think.</p>
-        </section>
-        
-        <section>
-            <h3>3. Narrative Craft</h3>
-            
-            <p>Narrative craft isn't the same as writing skill. Agents can write well. Narrative craft is the ability to construct an argument that <em>moves</em> people—that takes a complex, abstract, technical reality and turns it into a story that someone remembers the next day.</p>
-            
-            <p>The skill has three components:</p>
-            
-            <ol>
-                <li><strong>Story Selection:</strong> Knowing which story to tell for which audience at which moment. A story about data collection that works in a chapter about DMP economics would be wrong in a chapter about pricing. Matching stories to arguments is a form of taste developed through wide reading, careful observation, and a lot of practice.</li>
-                
-                <li><strong>Specificity:</strong> The discipline of using concrete details rather than abstract claims. Named people. Named companies. Specific numbers. The exact question someone asked in the conference room. These details are what make a story sticky, and they require having been somewhere and paid attention.</li>
-                
-                <li><strong>Voice:</strong> The quality that makes your writing recognizably yours. Not performative quirks or stylistic tics, but the authentic expression of how you see the world. Most PMMs default to a corporate voice that's competent and invisible. The ones who break through have figured out how to sound like themselves.</li>
-            </ol>
-            
-            <div class="sap-context">
-                <h4>🟢 SAP Context</h4>
-                <p>Notice how the best SAP content doesn't sound like it came from a brand guidelines PDF. Christian Klein's communications have a distinctive voice. The content that resonates at Sapphire tells specific stories about specific customers solving specific problems. That's narrative craft—and it's what separates forgettable product marketing from content that actually influences perception.</p>
-            </div>
-        </section>
-        
-        <section>
-            <h3>4. Customer Empathy</h3>
-            
-            <p>We put customer empathy last not because it's least important but because it's the one most PMMs think they already have—and most of them are wrong, or at least incomplete, about what it actually requires.</p>
-            
-            <div class="key-concept">
-                <h4>💡 Knowledge vs. Empathy</h4>
-                <p><strong>Customer empathy isn't the same as customer knowledge.</strong> An agent can give you comprehensive customer knowledge: usage patterns, support tickets, NPS scores, feature requests, churn predictors. That's data. Customer empathy is understanding what a customer <em>feels</em>—the frustration of trying to get budget approval, the anxiety of betting their reputation on a vendor choice, the relief when a product actually solves the problem they were hired to solve.</p>
-            </div>
-            
-            <p>The PMM who has customer empathy produces different work than the PMM who has customer knowledge:</p>
-            
-            <ul>
-                <li><strong>Knowledge-based positioning:</strong> "Improve forecast accuracy by 34%"</li>
-                <li><strong>Empathy-based positioning:</strong> "Stop dreading Monday's forecast meeting"</li>
-            </ul>
-            
-            <p>Both are valid. But the second one connects with the human experience of what bad forecasting actually <em>feels like</em> in a planning team's daily life.</p>
-            
-            <div class="case-study">
-                <h4>🎯 How to Develop Customer Empathy</h4>
-                <p>Customer empathy is developed through <strong>direct customer exposure</strong>: interviews, ride-alongs, user testing sessions, support call listening, and—critically—informal conversations where you're not asking structured research questions but just talking to a person about their job.</p>
-                <p>We make it a rule to have at least <strong>two unstructured customer conversations per month</strong>. The insights from these conversations don't always show up in a deliverable, but they accumulate into a felt understanding of the customer that informs everything you produce.</p>
-            </div>
-        </section>
-        
-        <section>
-            <h2>The T-Shaped PMM</h2>
-            
-            <p>The model that brings all of this together is what we think of as the <strong>T-shaped PMM</strong>.</p>
-            
-            <div class="t-shape-container">
-                <div class="t-shape">
-                    <div class="t-horizontal">
-                        <strong>Broad Agent Fluency</strong><br>
-                        CI · Content · Data Analysis · Launch Coordination · Research Synthesis
-                    </div>
-                    <div class="t-vertical">
-                        <strong>Deep<br>Human<br>Expertise</strong>
-                    </div>
-                </div>
-                <div class="t-labels">
-                    <span>← Table Stakes →</span>
-                    <span style="text-align: right;">↑ Differentiator</span>
-                </div>
-            </div>
-            
-            <p><strong>The horizontal bar</strong> is broad competence across agent-augmented skills: the ability to direct agents for competitive intelligence, content production, data analysis, launch coordination, and the other Cluster One and Cluster Two activities we've covered throughout this curriculum. Every PMM needs this bar. It's the table stakes of the agentic era—the minimum level of agent fluency required to remain competitive.</p>
-            
-            <p><strong>The vertical bar</strong> is deep expertise in one of the four surviving skills: strategic judgment, organizational intelligence, narrative craft, or customer empathy. This is your differentiator—the skill that makes you irreplaceable rather than merely competent.</p>
-            
-            <div class="key-concept">
-                <h4>💡 Different Archetypes, Same Value</h4>
-                <p>The PMM with deep narrative craft and broad agent fluency is a different archetype than the PMM with deep organizational intelligence and broad agent fluency—and both are valuable in different contexts. The question isn't "which skill is best?" but "which skill is <em>yours</em>?"</p>
-            </div>
-        </section>
-        
-        <section>
-            <h2>The Career Implication</h2>
-            
-            <p>The career implication is clear: <strong>invest in both bars.</strong></p>
-            
-            <ol>
-                <li><strong>Develop your agent fluency broadly</strong>—learn the tools, build the workflows, get comfortable directing rather than doing. This curriculum has been building that bar.</li>
-                
-                <li><strong>Simultaneously deepen your strongest surviving skill</strong> to the point where you're recognized for it—the person people come to for the hard strategic calls, or the person who can navigate any stakeholder minefield, or the person whose writing stops people in their feed, or the person who understands customers at a level that everyone else is just guessing at.</li>
-            </ol>
-            
-            <div class="interview-box">
-                <h4>💼 The CMO Perspective: The Best Interview Question</h4>
-                <blockquote>"Tell me about a time you changed your mind about something important based on new information. What was the original position, what changed it, and what did you do differently?"</blockquote>
-                <p class="attribution">The answer reveals nearly everything that matters: whether they can be <strong>specific</strong> rather than abstract, whether they have <strong>strategic judgment</strong> (changing your mind professionally requires intellectual honesty), and whether they have <strong>organizational intelligence</strong> (changing direction usually means convincing others too).</p>
-            </div>
-            
-            <p>What this question doesn't ask about is tools, frameworks, or deliverables. Those things matter, but they're learnable. The four skills that survive—judgment, organizational intelligence, narrative craft, and empathy—are the hard ones. They're what separates PMMs who will thrive in the agentic era from those who will struggle.</p>
-        </section>
-        
-        <section>
-            <h2>The 10x PMM</h2>
-            
-            <p>The PMM with both bars—broad agent fluency and deep human skill—is the <strong>10x PMM</strong>. Not because they work harder than their peers, but because they've figured out what to outsource to machines and what to keep for themselves.</p>
-            
-            <p>That distinction is, in a sense, the entire argument of this curriculum.</p>
-            
-            <div class="sap-context">
-                <h4>🟢 Your Next Step</h4>
-                <ul>
-                    <li><strong>Assess your current T-shape:</strong> Where is your horizontal bar strongest? Weakest?</li>
-                    <li><strong>Identify your vertical bar:</strong> Which of the four surviving skills is your natural strength?</li>
-                    <li><strong>Build a 90-day plan:</strong> One agent skill to develop, one human skill to deepen</li>
-                </ul>
-            </div>
-        </section>
-        
-        <section>
-            <h2>Key Takeaways</h2>
-            
-            <ul>
-                <li><strong>The four durable PMM skills:</strong> strategic judgment, organizational intelligence, narrative craft, and customer empathy</li>
-                <li>These are the skills that agents can't replicate—and the ones that will define career trajectories in the agentic era</li>
-                <li>The <strong>T-shaped PMM model:</strong> broad agent fluency (table stakes) + deep human expertise (differentiator)</li>
-                <li>Interview for process and adaptability, not just deliverables: "how do you work?" reveals more than "what have you shipped?"</li>
-                <li>Technical fluency with AI tools is table stakes; the differentiator is critical thinking about what the tools produce</li>
-            </ul>
-        </section>
+</section>
+
+<main>
+  <div class="section">
+    <h2>The Tool Explosion Problem</h2>
+    <p>When we evaluated AI tools for our PMM organization—fifty-three people across product marketing, competitive intelligence, pricing, and research—the exercise was supposed to take a week. It took three, because the landscape is overwhelming.</p>
+    <p>At last count, there were over 200 tools in the "AI for marketing" category on G2 alone—and that doesn't include general-purpose LLMs, developer-focused agent platforms, or enterprise AI suites. A PMM trying to build a coherent tech stack faces the same problem CMOs faced with martech a decade ago: too many tools, too many categories, too many vendor claims, and not enough clarity about what actually works.</p>
+  </div>
+
+  <div class="section">
+    <h2>The Three-Layer Stack</h2>
     
-    <div class="nav-buttons">
-      <a href="/curriculum/" class="nav-btn secondary">← Back to Curriculum</a>
-      <a href="quiz.html" class="nav-btn primary">Take the Knowledge Check →</a>
+    <h3>Layer 1: Foundation — General-Purpose LLM</h3>
+    <p>Every PMM needs a general-purpose LLM assistant. Full stop. If you don't have a Claude, ChatGPT, or Gemini subscription—or if your company hasn't provisioned one—fix that before reading further.</p>
+    <p>The general-purpose LLM is your Swiss Army knife: first-draft generator, research synthesizer, brainstorming partner, copy editor, data analyst, and format converter. It's not the best tool for any single task, but it's good enough at all of them that it covers 70% of what a PMM needs.</p>
+    
+    <div class="highlight-box">
+      <h4>SAP Recommendation</h4>
+      <p><strong>Primary:</strong> Claude (best for long-form writing, nuanced analysis, maintaining context)<br>
+      <strong>Secondary:</strong> ChatGPT (web browsing, image generation, broad capabilities)<br>
+      <strong>Enterprise:</strong> SAP Joule (integrated with SAP ecosystem)</p>
     </div>
-  </main>
-  
-  <footer>
-    NextGen PMM · SAP Product Marketing Community · Prototype v2
-  </footer>
-  
-  <script src="/assets/js/nav-dropdown.js" defer></script>
+    
+    <h3>Layer 2: Workflow — Task-Specific Tools</h3>
+    <p>Once you have the foundation, add task-specific tools that outperform general-purpose LLMs for particular workflows:</p>
+    
+    <table>
+      <thead>
+        <tr><th>Workflow</th><th>Recommended Tool</th><th>Why It's Better Than LLM Alone</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Research</td><td>Perplexity Enterprise</td><td>Web-grounded, citation-backed results</td></tr>
+        <tr><td>Competitive Intel</td><td>Klue, Crayon</td><td>Automated monitoring, structured battlecards</td></tr>
+        <tr><td>Writing Consistency</td><td>Grammarly Pro</td><td>Brand voice, tone management across teams</td></tr>
+        <tr><td>Content Creation</td><td>Jasper, Writer</td><td>Brand guidelines enforcement, templates</td></tr>
+        <tr><td>Sales Intelligence</td><td>Gong, Chorus</td><td>Call analysis, pattern extraction</td></tr>
+      </tbody>
+    </table>
+    
+    <h3>Layer 3: Integration — Connective Tissue</h3>
+    <p>The most mature PMM organizations connect their tools into workflows that run without manual intervention:</p>
+    <ul>
+      <li><strong>Automation platforms:</strong> Zapier, Make, n8n</li>
+      <li><strong>Knowledge bases:</strong> Notion AI, Confluence with AI</li>
+      <li><strong>Custom agents:</strong> Claude Projects, GPT Assistants, custom RAG systems</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>The Build vs. Buy Decision</h2>
+    <p>For every PMM capability, you face a choice: use a specialized tool, or build the workflow yourself with general-purpose AI?</p>
+    
+    <table>
+      <thead>
+        <tr><th>Factor</th><th>Lean Toward Buy</th><th>Lean Toward Build</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Frequency</td><td>Daily use by multiple people</td><td>Occasional or single-user</td></tr>
+        <tr><td>Complexity</td><td>Requires domain-specific training data</td><td>General knowledge sufficient</td></tr>
+        <tr><td>Integration</td><td>Needs to pull from multiple systems</td><td>Standalone is fine</td></tr>
+        <tr><td>Maintenance</td><td>Requires ongoing updates</td><td>Relatively static requirements</td></tr>
+        <tr><td>Budget</td><td>ROI clearly justifies spend</td><td>Experimenting or budget-constrained</td></tr>
+      </tbody>
+    </table>
+    
+    <div class="highlight-box warning">
+      <h4>Warning: Tool Proliferation</h4>
+      <p>The biggest mistake we see: teams adopting a new AI tool for every task. Start with the foundation layer, get proficient, then add workflow tools only when you hit clear limitations. Each new tool has onboarding cost, maintenance burden, and integration friction.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The PMM Starter Stack</h2>
+    
+    <h3>Essential (Start Here)</h3>
+    <ol>
+      <li><strong>Claude Pro or ChatGPT Plus</strong> — Your daily workhorse for research, drafting, analysis</li>
+      <li><strong>Perplexity Pro</strong> — Web research with citations</li>
+      <li><strong>Grammarly Pro</strong> — Consistency and tone</li>
+    </ol>
+    
+    <h3>Growth (Add When Ready)</h3>
+    <ol>
+      <li><strong>Competitive intelligence platform</strong> — Klue or Crayon for systematic monitoring</li>
+      <li><strong>Sales intelligence</strong> — Gong integration for call analysis</li>
+      <li><strong>Automation</strong> — Zapier or Make to connect workflows</li>
+    </ol>
+    
+    <h3>Advanced (Mature Organizations)</h3>
+    <ol>
+      <li><strong>Custom knowledge base</strong> — RAG system with your proprietary content</li>
+      <li><strong>Agent workflows</strong> — Standing agents that run on schedule</li>
+      <li><strong>Integration layer</strong> — Connected systems that share context</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Prompting as a Core Skill</h2>
+    <p>Regardless of which tools you use, prompting effectiveness is the highest-leverage skill for PMMs in the agentic era. The same tool in two hands produces vastly different results based on prompt quality.</p>
+    
+    <h3>The PMM Prompt Framework</h3>
+    <ul>
+      <li><strong>Context:</strong> Who you are, what product, what situation</li>
+      <li><strong>Task:</strong> Specific deliverable you need</li>
+      <li><strong>Format:</strong> Structure, length, style requirements</li>
+      <li><strong>Constraints:</strong> What to avoid, what to include</li>
+      <li><strong>Examples:</strong> Reference materials or sample outputs</li>
+    </ul>
+    
+    <div class="highlight-box insight">
+      <h4>Key Insight</h4>
+      <p>The PMMs who get the most from AI tools aren't the ones with the most tools—they're the ones who've invested in prompt craft. Build a personal prompt library for your recurring tasks.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Key Principles</h2>
+    <ol>
+      <li><strong>Foundation first.</strong> Master general-purpose LLMs before adding specialized tools.</li>
+      <li><strong>Less is more.</strong> A coherent three-tool stack beats a fragmented ten-tool mess.</li>
+      <li><strong>Integration matters.</strong> Connected tools multiply value; isolated tools add friction.</li>
+      <li><strong>Prompting is leverage.</strong> Invest in prompt craft—it's tool-agnostic and compounds over time.</li>
+      <li><strong>Build incrementally.</strong> Add tools when you hit clear limitations, not when vendors pitch you.</li>
+    </ol>
+  </div>
+
+  <div class="nav-footer">
+    <a href="/curriculum/unit-10/" class="nav-btn secondary">← Unit 10</a>
+    <a href="/curriculum/unit-12/" class="nav-btn primary">Unit 12: Capstone →</a>
+  </div>
+</main>
+
+<footer>
+  <p>NextGen PMM · SAP Product Marketing Community</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
 </body>
 </html>
