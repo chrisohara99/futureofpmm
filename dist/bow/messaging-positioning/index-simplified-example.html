@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Messaging &amp; Positioning | NextGen PMM</title>
+    <meta name="description" content="Craft compelling product narratives and value propositions that resonate with target audiences and differentiate SAP in a competitive, AI-accelerated market.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue: #0a6ed1;
+            --blue2: #0854a0;
+            --ink: #172b4d;
+            --text: #475569;
+            --line: #e5e7eb;
+            --soft: #f6f8fb;
+            --muted: #64748b;
+            --know: #0a6ed1;
+            --know-bg: #eff6ff;
+            --learn: #059669;
+            --learn-bg: #ecfdf5;
+            --do: #7c3aed;
+            --do-bg: #f5f3ff;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--ink);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        a { color: var(--blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Header */
+        header { border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 100; }
+
+        /* Page Header */
+        .page-header {
+            padding: 48px 28px 40px;
+            background: linear-gradient(180deg, #fff 0%, var(--soft) 100%);
+            border-bottom: 1px solid var(--line);
+        }
+        .page-header-inner { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; }
+        .breadcrumb a { color: var(--blue); }
+        .breadcrumb .sep { margin: 0 6px; color: #ccc; }
+        .area-badge {
+            display: inline-block; padding: 4px 12px;
+            background: var(--blue); color: #fff;
+            font-size: 0.7rem; font-weight: 700; border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .page-header h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+        .page-header .lead { font-size: 1.05rem; color: var(--text); max-width: 680px; }
+
+        /* Section Nav */
+        .section-nav {
+            position: sticky; top: 65px; z-index: 50;
+            background: #fff; border-bottom: 1px solid var(--line);
+            padding: 0 28px;
+        }
+        .section-nav-inner {
+            max-width: 900px; margin: 0 auto;
+            display: flex; gap: 0;
+        }
+        .section-nav a {
+            display: flex; align-items: center; gap: 6px;
+            padding: 14px 20px; font-size: 0.85rem; font-weight: 600;
+            color: var(--muted); border-bottom: 2px solid transparent;
+            text-decoration: none;
+        }
+        .section-nav a:hover { color: var(--ink); text-decoration: none; }
+        .section-nav a.know { border-color: var(--know); color: var(--know); }
+        .section-nav a.learn { border-color: var(--learn); color: var(--learn); }
+        .section-nav a.do { border-color: var(--do); color: var(--do); }
+        .nav-pip { width: 8px; height: 8px; border-radius: 50%; }
+        .section-nav a.know .nav-pip { background: var(--know); }
+        .section-nav a.learn .nav-pip { background: var(--learn); }
+        .section-nav a.do .nav-pip { background: var(--do); }
+
+        /* Main */
+        main { max-width: 900px; margin: 0 auto; padding: 0 28px 80px; }
+
+        /* Sections */
+        .bow-section { padding-top: 48px; }
+        .section-eyebrow {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section-eyebrow.know { color: var(--know); }
+        .section-eyebrow.learn { color: var(--learn); }
+        .section-eyebrow.do { color: var(--do); }
+        .bow-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .section-lead { font-size: 0.95rem; color: var(--text); margin-bottom: 24px; }
+
+        /* Validation Badge */
+        .validation-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #fefce8; border: 1px solid #fde68a;
+            padding: 6px 12px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; color: #a16207;
+            margin-bottom: 24px;
+        }
+
+        /* Subsection */
+        .subsection { margin-top: 32px; }
+        .subsection-heading {
+            font-size: 0.9rem; font-weight: 700; color: var(--ink);
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        /* Role Card (formerly Overview) */
+        .role-card-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+        }
+        @media (max-width: 700px) { .role-card-grid { grid-template-columns: 1fr; } }
+        .role-card {
+            background: #fff; border: 1px solid var(--line); border-radius: 10px;
+            padding: 20px;
+        }
+        .role-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+        .role-card p { font-size: 0.85rem; color: var(--text); margin-bottom: 10px; }
+        .role-card ul { margin: 0; padding-left: 18px; font-size: 0.85rem; color: var(--text); }
+        .role-card li { margin-bottom: 4px; }
+
+        /* Playbook */
+        .playbook { background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+        .playbook-step {
+            display: flex; gap: 16px; align-items: flex-start;
+            padding: 16px 20px; border-bottom: 1px solid var(--line);
+        }
+        .playbook-step:last-child { border-bottom: none; }
+        .step-num {
+            flex-shrink: 0; width: 28px; height: 28px;
+            background: var(--blue); color: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+        }
+        .step-body h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+        .step-body p { font-size: 0.85rem; color: var(--text); }
+
+        /* Success Metrics (formerly KPI) */
+        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (max-width: 600px) { .metrics-grid { grid-template-columns: 1fr; } }
+        .metric-card {
+            border: 1px solid var(--line); border-top: 3px solid var(--know);
+            border-radius: 8px; padding: 16px; background: #fff;
+        }
+        .metric-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+        .metric-desc { font-size: 0.8rem; color: var(--text); }
+
+        /* LEARN / DO Cards */
+        .card-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        @media (max-width: 600px) { .card-row { grid-template-columns: 1fr; } }
+        
+        .content-card {
+            display: block; background: #fff; border: 1px solid var(--line);
+            border-radius: 10px; padding: 20px; text-decoration: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .content-card:hover {
+            border-color: var(--blue); box-shadow: 0 4px 14px rgba(10,110,209,0.08);
+            text-decoration: none;
+        }
+        .content-card.learn { border-left: 3px solid var(--learn); }
+        .content-card.do { border-left: 3px solid var(--do); }
+        .card-tag {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .content-card.learn .card-tag { color: var(--learn); }
+        .content-card.do .card-tag { color: var(--do); }
+        .content-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+        .content-card p { font-size: 0.85rem; color: var(--text); margin: 0; }
+
+        footer { background: var(--ink); color: #fff; padding: 32px; text-align: center; }
+        footer p { color: rgba(255,255,255,.5); font-size: 0.85rem; }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href='/ai-tools'>AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/" role="menuitem">People</a>
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- PAGE HEADER (counts removed) -->
+<div class="page-header">
+    <div class="page-header-inner">
+        <div class="breadcrumb">
+            <a href="/">Home</a><span class="sep">›</span><a href="/bow/">Book of Work</a><span class="sep">›</span>Messaging &amp; Positioning
+        </div>
+        <div class="area-badge">PMM Leads</div>
+        <h1>Messaging &amp; Positioning</h1>
+        <p class="lead">Craft compelling product narratives and value propositions that resonate with target audiences and differentiate SAP in a competitive, AI-accelerated market.</p>
+    </div>
+</div>
+
+<!-- SECTION NAV -->
+<nav class="section-nav">
+    <div class="section-nav-inner">
+        <a href="#know" class="know"><span class="nav-pip"></span>Know</a>
+        <a href="#learn" class="learn"><span class="nav-pip"></span>Learn</a>
+        <a href="#do" class="do"><span class="nav-pip"></span>Do</a>
+    </div>
+</nav>
+
+<main>
+
+    <!-- ======== KNOW ======== -->
+    <section class="bow-section" id="know">
+        <div class="section-eyebrow know"><span class="nav-pip" style="background:var(--know)"></span>Know</div>
+        <h2>What is Messaging &amp; Positioning?</h2>
+        <p class="section-lead">Understand what you own, what great looks like, and how to measure it.</p>
+
+        <!-- Validation Badge -->
+        <div class="validation-badge">
+            ⚠️ Needs PMM Validation
+        </div>
+
+        <!-- Role Card (renamed from Overview) -->
+        <div class="subsection">
+            <div class="subsection-heading">Role Card</div>
+            <div class="role-card-grid">
+                <div class="role-card" style="grid-column: span 2;">
+                    <h3>What this area is</h3>
+                    <p>Messaging &amp; Positioning is the practice of defining how SAP products are understood, remembered, and chosen. It translates technical capability into buyer-relevant value — answering <em>why SAP, why this product, why now</em> — in a way that resonates across audiences and holds up under competitive scrutiny.</p>
+                </div>
+                <div class="role-card">
+                    <h3>Responsibilities</h3>
+                    <ul>
+                        <li>Define and own the core message architecture</li>
+                        <li>Translate product capability into buyer-relevant value</li>
+                        <li>Maintain the competitive differentiation narrative</li>
+                        <li>Ensure message consistency across channels</li>
+                        <li>Build AI visibility into messaging</li>
+                    </ul>
+                </div>
+                <div class="role-card">
+                    <h3>Key deliverables</h3>
+                    <ul>
+                        <li>Message house (elevator pitch, pillars, proof points)</li>
+                        <li>Value proposition brief per product</li>
+                        <li>Competitive positioning statement</li>
+                        <li>Approved language guide</li>
+                        <li>AI entity brief</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playbook (links removed) -->
+        <div class="subsection">
+            <div class="subsection-heading">Playbook</div>
+            <div class="playbook">
+                <div class="playbook-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>Audience &amp; competitive analysis</h4>
+                        <p>Define primary buyer personas and their jobs-to-be-done. Map the competitive landscape and identify whitespace where SAP can own a distinctive position.</p>
+                    </div>
+                </div>
+                <div class="playbook-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>Message architecture development</h4>
+                        <p>Build the message house: elevator pitch, value proposition, positioning pillars, proof points, and objection responses. Write for human readers and AI search.</p>
+                    </div>
+                </div>
+                <div class="playbook-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>Internal validation &amp; alignment</h4>
+                        <p>Pressure-test drafts with product, sales, and field teams. Run a message resonance review before locking the framework.</p>
+                    </div>
+                </div>
+                <div class="playbook-step">
+                    <div class="step-num">4</div>
+                    <div class="step-body">
+                        <h4>Activation &amp; distribution</h4>
+                        <p>Package the framework as a self-service brief. Brief key stakeholders. Track pull-through via sales talk-track adoption and content alignment audits.</p>
+                    </div>
+                </div>
+                <div class="playbook-step">
+                    <div class="step-num">5</div>
+                    <div class="step-body">
+                        <h4>Measure &amp; iterate</h4>
+                        <p>Track message resonance through win/loss data, content engagement, and AI visibility metrics. Refresh quarterly or on major product changes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Metrics (renamed from KPI) -->
+        <div class="subsection">
+            <div class="subsection-heading">Success Metrics</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-name">Message Pull-Through Rate</div>
+                    <div class="metric-desc">% of sales calls using approved messaging framework</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-name">Competitive Win Rate</div>
+                    <div class="metric-desc">Win rate in deals where competitor was shortlisted</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-name">AI Visibility Score</div>
+                    <div class="metric-desc">Entity recognition in AI-assisted buyer queries</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-name">Message Consistency Index</div>
+                    <div class="metric-desc">Alignment across content, web, and field materials</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== LEARN ======== -->
+    <section class="bow-section" id="learn">
+        <div class="section-eyebrow learn"><span class="nav-pip" style="background:var(--learn)"></span>Learn</div>
+        <h2>Build Your Skills</h2>
+        <p class="section-lead">Develop the capabilities needed to excel in Messaging &amp; Positioning.</p>
+
+        <!-- Skills -->
+        <div class="subsection">
+            <div class="subsection-heading">Skills</div>
+            <div class="card-row">
+                <div class="content-card learn">
+                    <div class="card-tag">SAP Learning Navigator</div>
+                    <h3>Positioning Strategy</h3>
+                    <p>Define and articulate compelling market positions that differentiate SAP products.</p>
+                </div>
+                <div class="content-card learn">
+                    <div class="card-tag">SAP Learning Navigator</div>
+                    <h3>Context Engineering</h3>
+                    <p>Structure content and messaging for AI discoverability and entity recognition.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Resources -->
+        <div class="subsection">
+            <div class="subsection-heading">Learning Resources</div>
+            <div class="card-row">
+                <a href="/curriculum/unit-02/" class="content-card learn">
+                    <div class="card-tag">Curriculum Unit</div>
+                    <h3>Unit 2: Generative Engine Optimization</h3>
+                    <p>Make your products visible to AI-assisted buyers through structured messaging.</p>
+                </a>
+                <a href="/curriculum/unit-04/" class="content-card learn">
+                    <div class="card-tag">Curriculum Unit</div>
+                    <h3>Unit 4: Content Strategy for Two Audiences</h3>
+                    <p>Write for humans and AI simultaneously with dual-audience content strategies.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== DO ======== -->
+    <section class="bow-section" id="do">
+        <div class="section-eyebrow do"><span class="nav-pip" style="background:var(--do)"></span>Do</div>
+        <h2>Execute with AI</h2>
+        <p class="section-lead">Put your skills into practice with templates and AI-powered tools.</p>
+
+        <!-- Templates -->
+        <div class="subsection">
+            <div class="subsection-heading">Templates</div>
+            <div class="card-row">
+                <div class="content-card do">
+                    <div class="card-tag">Template</div>
+                    <h3>Message House Template</h3>
+                    <p>Structured framework for elevator pitch, pillars, proof points, and objection handling.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Tools -->
+        <div class="subsection">
+            <div class="subsection-heading">AI Tools</div>
+            <div class="card-row">
+                <a class='content-card do' href='/curriculum/labs/messaging'>
+                    <div class="card-tag">AI Lab</div>
+                    <h3>Messaging Lab</h3>
+                    <p>AI-powered assistant for developing and refining your message architecture.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>NextGen PMM · SAP Product Marketing Community</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>
