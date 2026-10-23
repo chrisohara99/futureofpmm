@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AI Capabilities Intake | NextGen PMM</title>
+    <meta name="description" content="Submit AI Skills, Use Cases, and Ideas for the Global Marketing AI Council.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --blue: #0a6ed1;
+            --blue-dark: #0854a0;
+            --ink: #172b4d;
+            --text: #475569;
+            --line: #e5e7eb;
+            --soft: #f6f8fb;
+            --muted: #64748b;
+            --success: #059669;
+            --success-bg: #ecfdf5;
+        }
+        
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--ink);
+            line-height: 1.6;
+            background: var(--soft);
+        }
+        
+        a { color: var(--blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        header { border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 100; }
+        
+        /* Page Header */
+        .page-header {
+            padding: 48px 28px 40px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            color: white;
+        }
+        .page-header-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+        .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+        .page-header .lead { font-size: 1.05rem; opacity: 0.9; }
+        
+        /* Main */
+        main {
+            max-width: 700px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 32px;
+        }
+        
+        .form-intro {
+            background: var(--soft);
+            border-left: 4px solid var(--blue);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 28px;
+        }
+        .form-intro p { font-size: 0.9rem; color: var(--text); margin: 0; }
+        .form-intro p + p { margin-top: 8px; }
+        .form-intro strong { color: var(--ink); }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        
+        .form-group .hint {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--ink);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(10,110,209,0.1);
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+        
+        /* Status Radio Buttons */
+        .status-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .status-option {
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .status-option input {
+            display: none;
+        }
+        
+        .status-option label {
+            display: block;
+            padding: 14px 16px;
+            border: 2px solid var(--line);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: 500;
+        }
+        
+        .status-option label:hover {
+            border-color: var(--blue);
+            background: rgba(10,110,209,0.02);
+        }
+        
+        .status-option input:checked + label {
+            border-color: var(--blue);
+            background: rgba(10,110,209,0.05);
+            color: var(--blue);
+        }
+        
+        .status-option .status-icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .status-option .status-label {
+            font-size: 0.85rem;
+        }
+        
+        /* Required asterisk */
+        .required { color: #dc2626; }
+        
+        /* Submit Button */
+        .form-actions {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+        }
+        
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #fff;
+            background: var(--blue);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .btn-submit:hover {
+            background: var(--blue-dark);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Add Another */
+        .add-another {
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .add-another a {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Success State */
+        .success-message {
+            display: none;
+            background: var(--success-bg);
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-message .success-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .success-message h2 {
+            font-size: 1.5rem;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+        
+        .success-message p {
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--blue);
+            background: #fff;
+            border: 1px solid var(--blue);
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(10,110,209,0.05);
+            text-decoration: none;
+        }
+        
+        /* Deadline Banner */
+        .deadline-banner {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .deadline-banner .icon { font-size: 1.2rem; }
+        .deadline-banner .text { font-size: 0.9rem; color: #92400e; }
+        .deadline-banner strong { color: #78350f; }
+        
+        /* Footer */
+        footer {
+            background: var(--ink);
+            color: #fff;
+            padding: 32px;
+            text-align: center;
+        }
+        footer p { color: rgba(255,255,255,.5); font-size: 0.85rem; }
+        
+        @media (max-width: 600px) {
+            .page-header { padding: 32px 20px 28px; }
+            .page-header h1 { font-size: 1.5rem; }
+            .form-card { padding: 24px 20px; }
+            .status-options { flex-direction: column; }
+            .status-option { min-width: 100%; }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/" role="menuitem">People</a>
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1>AI Capabilities Intake</h1>
+        <p class="lead">Help us build a consolidated view of AI skills, use cases, and ideas across PMM</p>
+    </div>
+</div>
+
+<main>
+    <div class="form-card" id="form-container">
+        <div class="deadline-banner">
+            <span class="icon">⏰</span>
+            <span class="text"><strong>Deadline:</strong> EOD Tuesday, October 27</span>
+        </div>
+        
+        <div class="form-intro">
+            <p><strong>We're gathering your team's perspective across three areas:</strong></p>
+            <p>• <strong>Available</strong> — AI Skills or tools already developed or in use</p>
+            <p>• <strong>In Development</strong> — AI use cases or workflows currently being built or piloted</p>
+            <p>• <strong>Future Opportunity</strong> — Ideas or capabilities your team would like to explore</p>
+            <p style="margin-top: 12px; font-style: italic;">All capabilities must align to the Book of Work. No personal productivity tools please!</p>
+        </div>
+        
+        <form name="ai-intake" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="intake-form">
+            <input type="hidden" name="form-name" value="ai-intake">
+            <p style="display:none"><input name="bot-field"></p>
+            
+            <div class="form-group">
+                <label for="skill-name">Skill / Use Case / Idea Name <span class="required">*</span></label>
+                <p class="hint">e.g., "Golden Asset Finder", "Competitive Intelligence Bot"</p>
+                <input type="text" id="skill-name" name="skill-name" required placeholder="Enter name">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Brief Description <span class="required">*</span></label>
+                <p class="hint">What does it do? High-level is fine at this stage.</p>
+                <textarea id="description" name="description" required placeholder="Describe the capability..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Status <span class="required">*</span></label>
+                <div class="status-options">
+                    <div class="status-option">
+                        <input type="radio" id="status-available" name="status" value="Available" required>
+                        <label for="status-available">
+                            <span class="status-icon">✅</span>
+                            <span class="status-label">Available</span>
+                        </label>
+                    </div>
+                    <div class="status-option">
+                        <input type="radio" id="status-dev" name="status" value="In Development">
+                        <label for="status-dev">
+                            <span class="status-icon">🔧</span>
+                            <span class="status-label">In Development</span>
+                        </label>
+                    </div>
+                    <div class="status-option">
+                        <input type="radio" id="status-future" name="status" value="Future Idea">
+                        <label for="status-future">
+                            <span class="status-icon">💡</span>
+                            <span class="status-label">Future Idea</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="bow-area">Book of Work Alignment <span class="required">*</span></label>
+                <p class="hint">Which BoW area does this capability support?</p>
+                <select id="bow-area" name="bow-area" required>
+                    <option value="">Select BoW area...</option>
+                    <optgroup label="PMM Leads">
+                        <option value="Messaging & Positioning">Messaging & Positioning</option>
+                        <option value="Category & Vision">Category & Vision</option>
+                        <option value="Market Insights">Market Insights</option>
+                        <option value="Launch Narrative">Launch Narrative</option>
+                        <option value="Personas">Personas</option>
+                        <option value="Commercialization">Commercialization</option>
+                        <option value="Launch & Disclosure">Launch & Disclosure</option>
+                        <option value="GTM Readiness">GTM Readiness</option>
+                        <option value="Demo">Demo</option>
+                        <option value="Customer Reference">Customer Reference</option>
+                        <option value="Adoption & Growth">Adoption & Growth</option>
+                    </optgroup>
+                    <optgroup label="PMM Supports">
+                        <option value="Marketing Planning">Marketing Planning</option>
+                        <option value="Campaign Execution">Campaign Execution</option>
+                        <option value="Press & Media">Press & Media</option>
+                        <option value="Partner & ISV">Partner & ISV</option>
+                        <option value="Pricing Communication">Pricing Communication</option>
+                        <option value="Community">Community</option>
+                        <option value="Learning Journeys">Learning Journeys</option>
+                        <option value="Customer Journey Content">Customer Journey Content</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="Multiple Areas">Multiple Areas</option>
+                        <option value="Cross-Functional">Cross-Functional</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="owner">Owner / Contact <span class="required">*</span></label>
+                <p class="hint">Name and LoB (e.g., "Jane Doe (Data & Analytics)")</p>
+                <input type="text" id="owner" name="owner" required placeholder="Name (LoB)">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Your Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required placeholder="name@sap.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Additional Notes</label>
+                <p class="hint">Any other context, links, or details you'd like to share</p>
+                <textarea id="notes" name="notes" placeholder="Optional..."></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <span>Submit Capability</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <div class="add-another">
+                    <p style="color: var(--muted); font-size: 0.85rem; margin-top: 12px;">Have multiple entries? Submit each one separately.</p>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="success-message" id="success-message">
+        <div class="success-icon">🎉</div>
+        <h2>Submission Received!</h2>
+        <p>Thank you for contributing to our AI capabilities inventory.<br>Your input helps us connect the dots across PMM.</p>
+        <button class="btn-secondary" onclick="resetForm()">Submit Another Entry</button>
+    </div>
+</main>
+
+<footer>
+    <p>NextGen PMM · SAP Product Marketing Community</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+document.getElementById('intake-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const formData = new FormData(form);
+    
+    fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString()
+    })
+    .then(() => {
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('success-message').classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+    .catch(error => {
+        alert('There was an error submitting the form. Please try again.');
+        console.error(error);
+    });
+});
+
+function resetForm() {
+    document.getElementById('intake-form').reset();
+    document.getElementById('form-container').style.display = 'block';
+    document.getElementById('success-message').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
