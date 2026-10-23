@@ -287,7 +287,9 @@
     
     <header>
     <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
-    <nav><a href="/bow/">Book of Work</a><a href="/curriculum/">Learn</a><a href="/community/labs/" class="active">Labs</a><a href="/ai-tools.html">AI Tools</a><div class="nav-dropdown" id="community-dropdown"><button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-dropdown-menu" id="community-menu" role="menu"><a href="/community/pulse/" role="menuitem">PMM Pulse</a><a href="/community/spotlight/" role="menuitem">PMM Spotlight</a><a href="/newsletters/" role="menuitem">Newsletter</a></div></div><span id="userMenu"></span></nav>
+    <nav><a href="/bow/">Book of Work</a><a href="/curriculum/">Learn</a><a href="/community/labs/" class="active">Labs</a><a href="/ai-tools.html">AI Tools</a><div class="nav-dropdown" id="community-dropdown"><button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="nav-dropdown-menu" id="community-menu" role="menu">
+          <a href="/community/people/" role="menuitem">People</a>
+          <a href="/community/pulse/" role="menuitem">PMM Pulse</a><a href="/community/spotlight/" role="menuitem">PMM Spotlight</a><a href="/newsletters/" role="menuitem">Newsletter</a></div></div><span id="userMenu"></span></nav>
   </header>
 
 <section class="hero">
@@ -409,6 +411,75 @@ Include:
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable
+function getClientDemoResponse(inputs) {
+    const company = inputs.company || 'Your Product';
+    const category = inputs.category || 'Enterprise Software';
+    return `## GEO Visibility Audit: ${company}
+
+### Executive Summary
+This analysis evaluates ${company}'s visibility to AI-powered discovery systems like ChatGPT, Claude, Perplexity, and Google AI Overviews in the ${category} space.
+
+---
+
+### 1. GEO Visibility Score: 6.5/10
+
+**Current State:** ${company} has moderate visibility in AI responses, with room for significant improvement in structured content and authoritative sourcing.
+
+**Key Factors:**
+- ✅ Brand is recognized in the ${category} category
+- ⚠️ Product capabilities not consistently surfaced in AI comparisons
+- ❌ Limited presence in AI-generated recommendation lists
+- ⚠️ Competitor mentions often appear before ${company} in responses
+
+---
+
+### 2. Competitive Positioning
+
+When AI systems discuss ${category} solutions, ${company} appears in approximately 40% of relevant queries. Key competitors are mentioned more frequently due to:
+- More structured product documentation
+- Higher volume of third-party citations
+- Better integration with authoritative sources (analyst reports, G2, Gartner)
+
+---
+
+### 3. Content Gap Analysis
+
+| Content Type | Current State | Recommendation |
+|-------------|---------------|----------------|
+| Product Pages | Generic messaging | Add structured data, specific capabilities |
+| Comparison Content | Limited | Create objective comparison pages |
+| Use Cases | Broad | Develop specific, measurable outcomes |
+| Third-Party Citations | Moderate | Increase analyst & review coverage |
+
+---
+
+### 4. Quick Wins (Next 30 Days)
+
+1. **Add Schema Markup** — Implement Product and Organization structured data on key pages
+2. **Create "vs" Pages** — Develop comparison content for top 3 competitors
+3. **Update Product Descriptions** — Use specific, quantifiable claims rather than generic benefits
+4. **Claim Review Profiles** — Ensure G2, Gartner Peer Insights, TrustRadius profiles are current
+
+---
+
+### 5. Strategic Recommendations
+
+**Short-term (1-3 months):**
+- Audit and optimize existing content for AI readability
+- Establish presence on platforms AI systems cite frequently
+- Create FAQ content addressing common buyer questions
+
+**Medium-term (3-6 months):**
+- Develop authoritative thought leadership content
+- Build citation network through guest posts and partnerships
+- Monitor AI response patterns and adjust content strategy
+
+---
+
+*This is a demo analysis. Connect to Claude API for personalized, real-time GEO audits.*`;
+}
+
 const form = document.getElementById('labForm');
 const runBtn = document.getElementById('runBtn');
 const spinner = document.getElementById('spinner');
@@ -505,6 +576,7 @@ form.addEventListener('submit', async (e) => {
     errorMessage.classList.remove('show');
     resultsSection.classList.remove('show');
     
+    let data;
     try {
         const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
@@ -516,32 +588,34 @@ form.addEventListener('submit', async (e) => {
         });
         
         if (!response.ok) {
-            throw new Error('Analysis failed. Please try again.');
+            throw new Error('Server unavailable');
         }
         
-        const data = await response.json();
-        
-        // Render results
-        resultsContent.innerHTML = marked.parse(data.result);
-                // Show demo mode banner if response is mocked
-                if (data._mock) {
-                    const banner = document.createElement('div');
-                    banner.className = 'demo-mode-banner';
-                    banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — This is sample output. Connect Claude API for live personalized analysis.</span>';
-                    const resultsContent = document.getElementById('resultsContent');
-                    resultsContent.insertBefore(banner, resultsContent.firstChild);
-                }
-        resultsSection.classList.add('show');
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        data = await response.json();
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
-        errorMessage.classList.add('show');
-    } finally {
-        runBtn.disabled = false;
-        runBtn.querySelector('span').textContent = '🔍 Run GEO Analysis';
-        spinner.style.display = 'none';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs),
+            _mock: true
+        };
     }
+    
+    // Render results
+    resultsContent.innerHTML = marked.parse(data.result);
+    // Show demo mode banner if response is mocked
+    if (data._mock) {
+        const banner = document.createElement('div');
+        banner.className = 'demo-mode-banner';
+        banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — This is sample output. Connect Claude API for live personalized analysis.</span>';
+        resultsContent.insertBefore(banner, resultsContent.firstChild);
+    }
+    resultsSection.classList.add('show');
+    resultsSection.scrollIntoView({ behavior: 'smooth' });
+    
+    runBtn.disabled = false;
+    runBtn.querySelector('span').textContent = '🔍 Run GEO Analysis';
+    spinner.style.display = 'none';
 });
 
 async function fetchPageContent() {
@@ -586,8 +660,10 @@ async function fetchPageContent() {
         setTimeout(() => btn.textContent = 'Fetch Content', 3000);
         
     } catch (error) {
-        alert('Could not fetch page: ' + (error.message || 'Unknown error'));
-        btn.textContent = 'Fetch Content';
+        // In demo mode, URL fetching is unavailable - prompt manual entry
+        contentArea.placeholder = 'URL fetching unavailable in demo mode. Please paste your page content here manually, or use the sample data above.';
+        btn.textContent = 'Demo Mode';
+        setTimeout(() => btn.textContent = 'Fetch Content', 3000);
     } finally {
         btn.disabled = false;
     }
