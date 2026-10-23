@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>NextGen PMM | Access</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #e8f3ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .gate-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+    .logo {
+      margin-bottom: 24px;
+    }
+    .logo img {
+      height: 48px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #172b4d;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 28px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #0a6ed1;
+      box-shadow: 0 0 0 3px rgba(10, 110, 209, 0.1);
+    }
+    button {
+      width: 100%;
+      padding: 14px 24px;
+      background: #0a6ed1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button:hover {
+      background: #0854a0;
+    }
+    .error {
+      color: #dc2626;
+      font-size: 14px;
+      margin-top: 12px;
+      display: none;
+    }
+    .pilot-badge {
+      display: inline-block;
+      background: #0a6ed1;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .footer {
+      margin-top: 28px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="gate-box">
+    <div class="logo">
+      <img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM">
+      <span class="pilot-badge">PILOT</span>
+    </div>
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Enter your access code to continue.</p>
+    <form id="gate-form">
+      <div class="input-group">
+        <input type="password" id="access-code" placeholder="Access code" autocomplete="off" autofocus>
+      </div>
+      <button type="submit">Continue →</button>
+      <p class="error" id="error-msg">Invalid access code. Please try again.</p>
+    </form>
+    <p class="footer">SAP Product Marketing Community</p>
+  </div>
+
+  <script>
+    const VALID_CODES = ['pmm2026', 'futureofpmm', 'nextgen2026'];
+    const form = document.getElementById('gate-form');
+    const input = document.getElementById('access-code');
+    const error = document.getElementById('error-msg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const code = input.value.trim().toLowerCase();
+      
+      if (VALID_CODES.includes(code)) {
+        // Store auth in localStorage
+        localStorage.setItem('pmm_gate_auth', JSON.stringify({
+          authenticated: true,
+          timestamp: Date.now()
+        }));
+        
+        // Redirect to intended page or home
+        const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+        window.location.href = redirect;
+      } else {
+        error.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    // If already authenticated, redirect
+    try {
+      const auth = JSON.parse(localStorage.getItem('pmm_gate_auth'));
+      if (auth && auth.authenticated) {
+        const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+        window.location.href = redirect;
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
