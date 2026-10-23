@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/assets/js/auth-gate.js"></script>
+<script src="/assets/js/auth-guard.js"></script>
+<script src="/assets/js/user-menu.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LL6G27YPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LL6G27YPXX');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How SAP Global Marketing Built an AI Council That Actually Works | NextGen PMM</title>
+    <meta name="description" content="Inside the Global Marketing AI Champions Council — a model for enterprise AI adoption that accelerates rather than gates innovation.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --paper: #fefefe;
+            --blue: #0a6ed1;
+            --accent: #0a6ed1;
+            --accent-light: #e8f4ff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+            font-size: 1.125rem;
+        }
+        
+        /* Site Header */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .logo img {
+            height: 135px;
+            width: auto;
+        }
+        @media (max-width: 900px) { .logo img { height: 70px !important; } }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        nav > a, .nav-dropdown > a {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        nav > a:hover, .nav-dropdown > a:hover {
+            color: var(--accent);
+            background: #f3f4f6;
+        }
+        .pilot-badge {
+            background: linear-gradient(135deg, var(--blue), #0854a0);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        .nav-dropdown {
+            position: relative;
+        }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 200px;
+            z-index: 1000;
+            padding: 0.5rem 0;
+        }
+        .nav-dropdown:hover .nav-dropdown-content {
+            display: block;
+        }
+        .nav-dropdown-content a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #374151;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+        }
+        .nav-dropdown-content a:hover {
+            background: #f3f4f6;
+            color: var(--blue);
+        }
+        .hamburger { display: none; }
+        @media (max-width: 900px) {
+            nav { display: none; }
+        }
+        
+        /* Hero Header */
+        .hero-header {
+            background: linear-gradient(135deg, #0a6ed1 0%, #0854a0 100%);
+            color: #fff;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        .hero-header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            max-width: 800px;
+            margin: 0 auto 1rem;
+            line-height: 1.2;
+        }
+        .hero-header .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            color: var(--ink);
+        }
+        h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 2rem 0 0.75rem;
+            color: var(--ink);
+        }
+        p {
+            margin-bottom: 1.5rem;
+        }
+        a { color: var(--accent); }
+        blockquote {
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--muted);
+        }
+        .meta {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        ul, ol {
+            margin: 0 0 1.5rem 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box {
+            background: var(--accent-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .highlight-box h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        footer {
+            padding: 30px 0;
+            color: #64748b;
+            font-size: 13px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/sap-logo-svg.svg" alt="SAP" style="height: 32px; width: auto;">
+            <span class="pilot-badge">PILOT</span>
+        </a>
+        <nav>
+            <a href="/learn/">Learn</a>
+            <div class="nav-dropdown">
+                <a href="#">Community ▾</a>
+                <div class="nav-dropdown-content">
+                    <a href="/community/labs/">AI Labs</a>
+                    <a href="/digests/">Daily Digest</a>
+                    <a href="/newsletters.html">Newsletters</a>
+                </div>
+            </div>
+            <a href="/about.html">About</a>
+            <div id="user-menu"></div>
+        </nav>
+    </div>
+</header>
+
+<div class="hero-header">
+    <span class="header-badge">AI Transformation</span>
+    <h1>The Council That Accelerates Instead of Gates</h1>
+    <p class="subtitle">Inside Global Marketing's AI Champions Council — and what it means for how enterprise organizations operationalize AI adoption</p>
+</div>
+
+<div class="container">
+    <div class="meta">
+        By Chris O'Hara · October 2026 · 6 min read
+    </div>
+    
+    <p>Every enterprise that's serious about AI eventually faces the same question: how do you scale what's working without killing the experimentation that got you there?</p>
+    
+    <p>The wrong answer is governance theater — review boards that meet monthly, approval processes that turn weeks into quarters, centers of excellence that become centers of bureaucracy. We've all seen it. The spirit of innovation gets buried under so many layers of "alignment" and "strategic oversight" that the people doing the actual work stop trying. They either route around the system or wait for someone else to go first.</p>
+    
+    <p>Global Marketing just took a different approach. On October 1, 2026, we launched the AI Champions Council — a model that's designed to accelerate rather than gate innovation. Three weeks in, the shape of the thing is starting to become clear, and I think it's worth documenting what we're learning.</p>
+
+    <h2>What the Council Actually Does</h2>
+    
+    <p>The mandate isn't complicated. The Council exists to identify, test, and scale AI use cases across Global Marketing. That means:</p>
+    
+    <ul>
+        <li>Finding high-value opportunities within our functions where AI can change how work gets done</li>
+        <li>Piloting new tools and workflows before rolling them out broadly</li>
+        <li>Shaping adoption plans so teams know what's coming and how to engage</li>
+        <li>Sharing best practices across functions — the stuff that works, the stuff that doesn't, and why</li>
+        <li>Serving as a resource when people have questions or ideas</li>
+    </ul>
+    
+    <p>Kahly Berg is the executive sponsor, representing Ada and the Global Marketing leadership team. Every function contributes to the work. The Council serves all of Global Marketing — not one team's agenda, not one leader's vision.</p>
+
+    <h2>The Key Insight: You Don't Need Permission to Experiment</h2>
+    
+    <p>Here's the part that matters most: <em>the Council is not a gatekeeper</em>.</p>
+    
+    <p>If you're building skills, experimenting with tools, figuring out what works for yourself and your immediate team — you don't need Council approval. Just do the work. That local experimentation is exactly what we want more of, not less.</p>
+    
+    <p>The Council becomes relevant when you're ready to scale. When you've built something that could help other people. When the impact is broad enough that IT needs to get involved, or when you need infrastructure that doesn't exist yet. That's when you come through Council processes — not to get permission, but to get support. To find the right path forward. To connect with others who are solving similar problems.</p>
+    
+    <p>This distinction — between local work that should happen fast and connected work that needs coordination — is the entire architecture. Get it wrong, and you have either chaos or paralysis. Get it right, and you have a system that lets a thousand flowers bloom while still cultivating the ones worth spreading.</p>
+
+    <h2>The Tool Question</h2>
+    
+    <p>One of the most common questions we've heard: is this going to be Joule-only, or can we use other tools?</p>
+    
+    <p>The answer is that our approach includes multiple development tools. The long-term vision is for Joule Work to provide one place to access agents and AI capabilities — including those delivered through other applications. But every agent doesn't need to be custom-built in Joule. Right now, some capabilities will come from providers like Adobe and Writer, each available within their own applications.</p>
+    
+    <p>We want business users to have access to tools like Claude Code and Joule Studio. The Council is working through which tools fit which tasks, and what access and compliance requirements apply for each. Connecting everything through one interface is the goal, but that's a multi-year journey. In the meantime, we're not going to let perfect be the enemy of good.</p>
+    
+    <p>Copilot's role is still being clarified. The approved uses of each tool are evolving. This is the nature of the work right now — we're building the guidance as we build the practice.</p>
+
+    <h2>What Happens to Your Ideas</h2>
+    
+    <p>The Council isn't going to deliver everything. That's not pessimism; it's math. There will be more ideas than capacity to execute them, and some things will need to wait or won't be prioritized at all.</p>
+    
+    <p>But here's the commitment: we're going to close the loop. If you submit an idea, you'll know what happened to it. Champions will help us focus on the opportunities with the greatest impact, and we'll be transparent about why certain things move forward and others don't.</p>
+    
+    <p>We haven't set a fixed SLA for response times yet — we're still learning how much demand to expect. The goal is to be responsive without making promises we can't keep.</p>
+
+    <h2>Building the Foundation Together</h2>
+    
+    <p>One thing I appreciate about how this is being set up: we're not pretending SAP has all the answers. The broader guidance for AI across the enterprise is still developing. The taxonomy, the frameworks, the approval paths — a lot of this is being figured out in real time.</p>
+    
+    <p>The Council's job is to make that guidance practical for Marketing. And what we learn here might help shape the wider SAP approach. It's a two-way street.</p>
+    
+    <p>This is honest. It acknowledges that nobody has cracked enterprise AI adoption at scale yet — not us, not our competitors, not the consultants selling frameworks. We're all learning together, and the organizations that learn fastest will win.</p>
+
+    <div class="highlight-box">
+        <h4>The Council's Core Principles</h4>
+        <ul style="margin-bottom: 0;">
+            <li><strong>Accelerate, don't gate</strong> — remove friction from experimentation</li>
+            <li><strong>Local work is sovereign</strong> — you don't need approval to build skills</li>
+            <li><strong>Scale requires coordination</strong> — Council processes help broad-impact work find the right path</li>
+            <li><strong>Close the loop</strong> — every idea gets a response</li>
+            <li><strong>Multi-tool pragmatism</strong> — use what works, unify over time</li>
+        </ul>
+    </div>
+
+    <h2>Why This Matters for the Future of PMM</h2>
+    
+    <p>This site has spent the past year arguing that AI transformation isn't primarily a technology problem — it's an organizational problem. The tools exist. The capabilities are real. What's missing, in most companies, is the connective tissue: the processes, incentives, and cultural norms that let innovation actually spread.</p>
+    
+    <p>The AI Champions Council is an attempt to build that connective tissue. Not through mandates or top-down transformation programs, but through distributed leadership. Champions in every function, connected to each other, empowered to move fast in their domains while coordinating on the stuff that needs coordination.</p>
+    
+    <p>Will it work? We're three weeks in. Ask me in six months. But the architecture is sound, the sponsorship is real, and the people involved actually want this to succeed. That's more than most transformation initiatives can say.</p>
+    
+    <p>I'll keep documenting what we learn here. If you're building something similar in your organization, I'd love to hear about it.</p>
+
+</div>
+
+<footer>
+    <div style="max-width: 1180px; margin: auto; padding: 0 28px;">
+      NextGen PMM · SAP Product Marketing Community · Prototype v2
+    </div>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>
