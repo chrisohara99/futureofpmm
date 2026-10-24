@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="../assets/scorm-api.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9: Persona Development with AI | SAP Future of PMM Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-slate: #44546A;
+            --sap-orange: #ED7D31;
+            --sap-blue: #4472C4;
+            --light-blue: #5B9BD5;
+            --light-gray: #E7E6E6;
+            --gold: #FFC000;
+            --green: #70AD47;
+            --text: #2B3A4A;
+            --bg: #FAFAFA;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--dark-slate);
+            padding: 0.75rem 2rem;
+        }
+        
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+        
+        .nav a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 1.5rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--sap-blue) 0%, var(--dark-slate) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero .unit-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            color: var(--dark-slate);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            color: var(--sap-blue);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        h4 {
+            font-size: 1rem;
+            color: var(--dark-slate);
+            margin: 1rem 0 0.5rem;
+        }
+        
+        p { margin-bottom: 1rem; }
+        
+        ul, ol { margin: 1rem 0 1rem 1.5rem; }
+        
+        li { margin-bottom: 0.5rem; }
+        
+        blockquote {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%);
+            border-left: 4px solid var(--sap-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight-box.key-insight {
+            background: linear-gradient(135deg, #fff8e6 0%, #fff3d4 100%);
+            border-left-color: var(--gold);
+        }
+        
+        .highlight-box h4 {
+            margin-top: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background: var(--light-gray);
+            font-weight: 600;
+        }
+        
+        .exercise {
+            background: #fffbeb;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--light-gray);
+            margin: 2rem 0;
+        }
+        
+        strong { color: var(--dark-slate); }
+        
+        .complete-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            background: #f0f9ff;
+            border-top: 2px solid #0ea5e9;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .complete-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .complete-btn:hover { background: #0284c7; }
+        
+        footer {
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.5rem; }
+            main { padding: 1rem; }
+            .section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="../index.html" class="logo">SAP Future of PMM Training</a>
+            <nav class="nav">
+                <a href="../index.html">All Units</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="unit-label">Unit 9</div>
+        <h1>Persona Development with AI</h1>
+    </section>
+    
+    <main>
+        <div class="section">
+            <h2>Opening Scenario: The Persona That Wasn't</h2>
+            
+            <p>Sarah, a PMM at SAP's CX unit, was presenting buyer personas to her sales enablement team when the VP of Sales interrupted: "These are the same three personas we've had for four years. Are enterprise CX buyers really still the same people making the same decisions the same way?"</p>
+            
+            <p>She knew he was right. The "Digital Transformation Leader" persona had been created in 2021, before AI changed everything. The buying process, the stakeholders involved, the questions they asked—all had shifted. But updating personas the traditional way—months of research, dozens of interviews, agency fees—felt impossible with her current bandwidth.</p>
+            
+            <p>Two weeks later, Sarah had rebuilt her persona framework using AI-assisted research. She analyzed 200+ Gong calls, synthesized G2 reviews, processed analyst reports, and validated findings through targeted interviews. The result: personas that reflected how buyers actually behave today, not how they behaved in 2021.</p>
+            
+            <p><strong>The question this unit explores:</strong> How do you build personas that stay current in a world where buyer behavior evolves faster than traditional research cycles?</p>
+        </div>
+        
+        <div class="section">
+            <h2>The Persona Problem in the Agentic Era</h2>
+            
+            <p>Traditional persona development has three fundamental problems:</p>
+            
+            <h3>Problem 1: Time Lag</h3>
+            <p>By the time traditional research completes, buyer behavior has shifted. The six-month persona project delivers insights that are already stale.</p>
+            
+            <h3>Problem 2: Sample Bias</h3>
+            <p>Interview-based research talks to buyers willing to be interviewed—often not representative of your actual buyer population. You hear from the friendly ones, not the skeptical ones who matter most.</p>
+            
+            <h3>Problem 3: Static Artifacts</h3>
+            <p>Personas become PowerPoint slides that live in forgotten folders. They're not integrated into workflows or updated as markets evolve.</p>
+            
+            <div class="highlight-box key-insight">
+                <h4>Key Insight</h4>
+                <p>AI doesn't replace the human judgment in persona development—it amplifies your ability to gather evidence and stay current. The strategic decisions about who to target and how to position remain irreducibly human.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>The AI-Augmented Persona Framework</h2>
+            
+            <p>Modern persona development combines multiple data streams that AI can process at scale:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Source</th>
+                        <th>What AI Extracts</th>
+                        <th>Human Judgment Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sales Call Recordings (Gong/Chorus)</td>
+                        <td>Questions asked, objections raised, decision criteria mentioned</td>
+                        <td>Pattern significance, strategic implications</td>
+                    </tr>
+                    <tr>
+                        <td>G2/TrustRadius Reviews</td>
+                        <td>Pain points, value language, competitive mentions</td>
+                        <td>Which segments to prioritize</td>
+                    </tr>
+                    <tr>
+                        <td>LinkedIn Profiles</td>
+                        <td>Career paths, skill patterns, content engagement</td>
+                        <td>Relevance to buying influence</td>
+                    </tr>
+                    <tr>
+                        <td>CRM Data</td>
+                        <td>Deal velocity, stakeholder involvement, loss reasons</td>
+                        <td>What drives wins vs. losses</td>
+                    </tr>
+                    <tr>
+                        <td>Community Forums</td>
+                        <td>Questions, complaints, workarounds</td>
+                        <td>Unmet needs worth addressing</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>The Four-Layer Persona Model</h2>
+            
+            <h3>Layer 1: Demographics & Firmographics</h3>
+            <p>The traditional basics—title, company size, industry—but enriched with behavioral data. Not just "VP of IT" but "VP of IT who's been in role 18-36 months and is under pressure to show AI transformation progress."</p>
+            
+            <h3>Layer 2: Information Behavior</h3>
+            <p>How do they research? What sources do they trust? Do they use AI assistants for vendor research? This layer determines your content strategy.</p>
+            
+            <h3>Layer 3: Decision Process</h3>
+            <p>Who else is involved? What's the sequence? What kills deals? This layer shapes your sales enablement.</p>
+            
+            <h3>Layer 4: Language Patterns</h3>
+            <p>What words do they use to describe their problems? What jargon signals credibility? This layer drives your messaging and content creation.</p>
+            
+            <div class="highlight-box">
+                <h4>Agentic Shift</h4>
+                <p>Buyers increasingly use AI assistants to research vendors. Your persona must now include: "How does this persona's AI assistant evaluate solutions?" Your content must be parseable by both the human and their AI.</p>
+            </div>
+        </div>
+        
+        <div class="exercise">
+            <h3>Workshop Exercise: The Persona Refresh</h3>
+            
+            <p>Take one of your existing personas. Using AI tools, gather evidence from three sources:</p>
+            
+            <ol>
+                <li><strong>Gong/call recordings:</strong> What questions has this persona asked in the last 90 days?</li>
+                <li><strong>G2 reviews:</strong> What language do they use to describe value?</li>
+                <li><strong>LinkedIn:</strong> What's their typical career path? What content do they engage with?</li>
+            </ol>
+            
+            <p><strong>Deliverable:</strong> A one-page persona update highlighting what's changed and what the implications are for your positioning.</p>
+        </div>
+        
+        <div class="section">
+            <h2>From Persona to Action</h2>
+            
+            <p>A persona is only useful if it changes behavior. Each persona should connect to:</p>
+            
+            <ul>
+                <li><strong>Messaging guidance:</strong> Specific language patterns and proof points</li>
+                <li><strong>Content recommendations:</strong> What formats, topics, and depth levels resonate</li>
+                <li><strong>Objection handling:</strong> Predictable concerns and effective responses</li>
+                <li><strong>Competitive positioning:</strong> How this persona evaluates alternatives</li>
+            </ul>
+            
+            <h3>The Living Persona System</h3>
+            <p>Instead of static documents, build a persona system that:</p>
+            <ul>
+                <li>Pulls from live data sources weekly</li>
+                <li>Flags when patterns shift significantly</li>
+                <li>Integrates directly with content creation workflows</li>
+                <li>Informs sales call prep in real-time</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Key Principles (Summary)</h2>
+            
+            <ol>
+                <li><strong>Evidence over intuition.</strong> AI enables you to ground personas in data from hundreds of interactions, not a handful of interviews.</li>
+                <li><strong>Continuous over periodic.</strong> Build systems that update personas as markets evolve, not once-a-year refreshes.</li>
+                <li><strong>Behavioral over demographic.</strong> Focus on how buyers behave, not just who they are on paper.</li>
+                <li><strong>Action-oriented over descriptive.</strong> Every persona element should connect to a specific PMM action.</li>
+                <li><strong>AI-aware.</strong> Modern personas must account for how buyers' AI assistants research and recommend solutions.</li>
+            </ol>
+        </div>
+        
+        <div class="section">
+            <h2>Before Unit 10</h2>
+            
+            <p><strong>Assignment:</strong> Pick one persona and use Claude or ChatGPT to analyze 10+ G2 reviews from buyers who match that persona. Document:</p>
+            <ul>
+                <li>What language do they use to describe their problems?</li>
+                <li>What value do they highlight?</li>
+                <li>What concerns do they raise?</li>
+                <li>How would this change your current messaging?</li>
+            </ul>
+            
+            <p>Bring your findings to Unit 10 on Launch Excellence.</p>
+            
+            <hr>
+            
+            <p><em>This training is a derivative work based on "The Future of Product Marketing: The Practitioner's Guide to the Agentic Era" © 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</em></p>
+        </div>
+        
+        <div class="complete-section">
+            <p style="margin-bottom: 1rem; color: #0369a1;">Finished reading this unit?</p>
+            <button class="complete-btn" onclick="markComplete()">Mark Unit Complete</button>
+        </div>
+    </main>
+    
+    <footer>
+        <p>This training is a derivative work based on <em>"The Future of Product Marketing: The Practitioner's Guide to the Agentic Era"</em></p>
+        <p style="margin-top: 0.5rem;">© 2026 Chris O'Hara. All Rights Reserved. Licensed to SAP for internal training use only.</p>
+    </footer>
+    
+    <script>
+    function markComplete() {
+        if (typeof SCORM !== 'undefined') {
+            SCORM.setStatus('completed');
+            alert('Unit marked as complete!');
+        } else {
+            alert('Progress saved locally.');
+        }
+    }
+    </script>
+</body>
+</html>
