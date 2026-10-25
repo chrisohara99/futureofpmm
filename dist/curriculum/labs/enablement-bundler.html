@@ -482,6 +482,18 @@
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## Sales Enablement Bundle
+
+1. **Quick Reference Card**
+2. **Talk Track Script**
+3. **Customer Proof Points**
+4. **Competitive Battle Card**
+
+---
+*📋 Demo Mode — Connect Claude API for bundle*`;
+}
         const sampleData = {
             ariba: {
                 product: "SAP Ariba",
@@ -590,6 +602,7 @@
                 assets: selectedAssets
             };
             
+            let data;
             try {
                 const response = await fetch('/.netlify/functions/lab-ai', {
                     method: 'POST',
@@ -597,55 +610,56 @@
                     body: JSON.stringify({ labType: 'enablement-bundler', inputs })
                 });
                 
-                const data = await response.json();
+                if (!response.ok) throw new Error('Server unavailable');
+                data = await response.json();
                 
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to generate enablement kit');
-                }
-                
-                // Format display values
-                const regionNames = {
-                    'north-america': 'North America',
-                    'emea-uk': 'EMEA (UK)',
-                    'emea-dach': 'EMEA (DACH)',
-                    'emea-nordics': 'EMEA (Nordics)',
-                    'emea-france': 'EMEA (France)',
-                    'emea-southern': 'EMEA (Southern)',
-                    'apj-anz': 'APJ (ANZ)',
-                    'apj-japan': 'APJ (Japan)',
-                    'apj-india': 'APJ (India)',
-                    'apj-sea': 'APJ (SEA)',
-                    'latam': 'LATAM'
-                };
-                const personaNames = {
-                    'cfo': 'CFO', 'cio': 'CIO', 'cpo': 'CPO', 'chro': 'CHRO', 'cmo': 'CMO', 'coo': 'COO',
-                    'vp-it': 'VP IT', 'vp-finance': 'VP Finance', 'vp-ops': 'VP Operations',
-                    'vp-supply-chain': 'VP Supply Chain', 'director-procurement': 'Dir. Procurement',
-                    'director-hr': 'Dir. HR'
-                };
-                const stageNames = {
-                    'discovery': 'Discovery Stage',
-                    'evaluation': 'Evaluation Stage',
-                    'proposal': 'Proposal Stage',
-                    'negotiation': 'Negotiation Stage'
-                };
-                
-                document.getElementById('resultProduct').textContent = inputs.product;
-                document.getElementById('resultRegion').textContent = regionNames[inputs.region];
-                document.getElementById('resultPersona').textContent = personaNames[inputs.persona];
-                document.getElementById('resultStage').textContent = stageNames[inputs.dealStage];
-                document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
-                // Show demo mode banner if response is mocked
-                if (data._mock) {
-                    const banner = document.createElement('div');
-                    banner.className = 'demo-mode-banner';
-                    banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — This is sample output. Connect Claude API for live personalized analysis.</span>';
-                    const resultsContent = document.getElementById('resultsContent');
-                    resultsContent.insertBefore(banner, resultsContent.firstChild);
-                }
-                resultsSection.classList.add('visible');
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-                
+            } catch (error) {
+                data = { result: getClientDemoResponse(inputs), _mock: true };
+            }
+            
+            const regionNames = {
+                'north-america': 'North America',
+                'emea-uk': 'EMEA (UK)',
+                'emea-dach': 'EMEA (DACH)',
+                'emea-nordics': 'EMEA (Nordics)',
+                'emea-france': 'EMEA (France)',
+                'emea-southern': 'EMEA (Southern)',
+                'apj-anz': 'APJ (ANZ)',
+                'apj-japan': 'APJ (Japan)',
+                'apj-india': 'APJ (India)',
+                'apj-sea': 'APJ (SEA)',
+                'latam': 'LATAM'
+            };
+            const personaNames = {
+                'cfo': 'CFO', 'cio': 'CIO', 'cpo': 'CPO', 'chro': 'CHRO', 'cmo': 'CMO', 'coo': 'COO',
+                'vp-it': 'VP IT', 'vp-finance': 'VP Finance', 'vp-ops': 'VP Operations',
+                'vp-supply-chain': 'VP Supply Chain', 'director-procurement': 'Dir. Procurement',
+                'director-hr': 'Dir. HR'
+            };
+            const stageNames = {
+                'discovery': 'Discovery Stage',
+                'evaluation': 'Evaluation Stage',
+                'proposal': 'Proposal Stage',
+                'negotiation': 'Negotiation Stage'
+            };
+            
+            document.getElementById('resultProduct').textContent = inputs.product;
+            document.getElementById('resultRegion').textContent = regionNames[inputs.region];
+            document.getElementById('resultPersona').textContent = personaNames[inputs.persona];
+            document.getElementById('resultStage').textContent = stageNames[inputs.dealStage];
+            document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
+            
+            if (data._mock) {
+                const banner = document.createElement('div');
+                banner.className = 'demo-mode-banner';
+                banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — Sample output. Connect Claude API for live analysis.</span>';
+                const resultsContent = document.getElementById('resultsContent');
+                resultsContent.insertBefore(banner, resultsContent.firstChild);
+            }
+            resultsSection.classList.add('visible');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            
+            try {
             } catch (error) {
                 errorEl.textContent = error.message || 'Something went wrong. Please try again.';
                 errorEl.classList.add('visible');

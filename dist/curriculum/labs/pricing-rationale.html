@@ -435,6 +435,21 @@
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## Pricing Rationale
+
+### Value Outcomes
+- Time: 10+ hrs/week saved
+- Cost: 25-40% reduction
+
+### Objection Handling
+- "Too expensive" → Focus on TCO
+- "Competitor cheaper" → Total value
+
+---
+*📋 Demo Mode — Connect Claude API for rationale*`;
+}
         const sampleData = {
             enterprise: {
                 product: "SAP Ariba Source-to-Pay",
@@ -531,6 +546,7 @@
                 alternative: document.getElementById('alternative').value
             };
             
+            let data;
             try {
                 const response = await fetch('/.netlify/functions/lab-ai', {
                     method: 'POST',
@@ -538,27 +554,29 @@
                     body: JSON.stringify({ labType: 'pricing-rationale', inputs })
                 });
                 
-                const data = await response.json();
+                if (!response.ok) throw new Error('Server unavailable');
+                data = await response.json();
                 
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to generate rationale');
-                }
-                
-                document.getElementById('resultCustomer').textContent = inputs.customer || 'Customer';
-                document.getElementById('resultProduct').textContent = inputs.product;
-                document.getElementById('resultAcv').textContent = inputs.acv;
-                document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
-                // Show demo mode banner if response is mocked
-                if (data._mock) {
-                    const banner = document.createElement('div');
-                    banner.className = 'demo-mode-banner';
-                    banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — This is sample output. Connect Claude API for live personalized analysis.</span>';
-                    const resultsContent = document.getElementById('resultsContent');
-                    resultsContent.insertBefore(banner, resultsContent.firstChild);
-                }
-                resultsSection.classList.add('visible');
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-                
+            } catch (error) {
+                data = { result: getClientDemoResponse(inputs), _mock: true };
+            }
+            
+            document.getElementById('resultCustomer').textContent = inputs.customer || 'Customer';
+            document.getElementById('resultProduct').textContent = inputs.product;
+            document.getElementById('resultAcv').textContent = inputs.acv;
+            document.getElementById('resultsContent').innerHTML = marked.parse(data.result);
+            
+            if (data._mock) {
+                const banner = document.createElement('div');
+                banner.className = 'demo-mode-banner';
+                banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — Sample output. Connect Claude API for live analysis.</span>';
+                const resultsContent = document.getElementById('resultsContent');
+                resultsContent.insertBefore(banner, resultsContent.firstChild);
+            }
+            resultsSection.classList.add('visible');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            
+            try {
             } catch (error) {
                 errorEl.textContent = error.message || 'Something went wrong. Please try again.';
                 errorEl.classList.add('visible');

@@ -386,6 +386,22 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## Competitive Intelligence Brief
+
+### Recent Signals
+- Aggressive competitor discounts
+- New features announced
+- Messaging shift toward AI
+
+### Trap Questions
+1. "How do you handle [scenario]?"
+2. "Share enterprise references?"
+
+---
+*📋 Demo Mode — Connect Claude API for intelligence*`;
+}
 const form = document.getElementById('labForm');
 const runBtn = document.getElementById('runBtn');
 const spinner = document.getElementById('spinner');
@@ -411,7 +427,11 @@ form.addEventListener('submit', async (e) => {
     resultsSection.classList.remove('show');
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -420,7 +440,7 @@ form.addEventListener('submit', async (e) => {
             })
         });
         
-        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        if (!response.ok) throw new Error('Server unavailable');
         
         const data = await response.json();
         resultsContent.innerHTML = marked.parse(data.result);
@@ -436,7 +456,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;

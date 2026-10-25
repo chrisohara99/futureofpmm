@@ -533,6 +533,28 @@ Or write 'None yet' if you haven't started"></textarea>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## AI Transformation Roadmap
+
+### AI Readiness Score: 6/10
+
+### Activity Analysis
+| Activity | AI Potential | Action |
+|---|---|---|
+| Competitive monitoring | High | Automate |
+| Content drafts | High | AI first draft |
+| Sales battlecards | High | Template + AI |
+
+### Quick Wins
+1. Set up CompeteGPT alerts
+2. Use Copilot Chat for drafts
+3. Try Perplexity Pro for research
+
+---
+*📋 Demo Mode — Connect Claude API for personalized roadmap*`;
+}
+
 // Activity checkbox toggle
 document.querySelectorAll('.activity-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -579,7 +601,11 @@ form.addEventListener('submit', async (e) => {
     resultsSection.classList.remove('show');
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -608,7 +634,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;

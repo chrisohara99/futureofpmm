@@ -714,6 +714,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## Analyst Briefing Prep
+
+### Predicted Questions
+1. "What's your AI strategy?"
+2. "How do you compare to competitors?"
+3. "What are customers saying?"
+
+### Checklist
+- [ ] Review analyst's research
+- [ ] Prepare questions for them
+
+---
+*📋 Demo Mode — Connect Claude API for analyst-specific prep*`;
+}
+
 let currentInputs = null;
 
 const sampleScenarios = {
@@ -924,7 +941,11 @@ form.addEventListener('submit', async (e) => {
     });
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -960,7 +981,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;

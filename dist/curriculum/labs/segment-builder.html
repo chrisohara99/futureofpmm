@@ -315,7 +315,43 @@ async function generateReport() {
         
     } catch (error) {
         console.error('Error:', error);
-        output.innerHTML = `<div class="output-placeholder" style="color:#dc2626;"><div class="icon">⚠️</div><p>Error generating report. Please try again.</p><p style="font-size:0.85rem;">${error.message}</p></div>`;
+        // Fallback to demo response
+        const demoResult = `## Market Segmentation Analysis
+
+### Executive Summary
+Based on the product profile provided, we've identified three primary market segments with distinct characteristics and buying patterns.
+
+### Segment 1: Enterprise Transformers
+- **Company Size:** 5,000+ employees
+- **Annual Budget:** \\$500K+
+- **Buying Trigger:** Digital transformation initiatives
+- **Win Rate:** High
+
+### Segment 2: Growth Scalers  
+- **Company Size:** 1,000-5,000 employees
+- **Annual Budget:** \\$100-500K
+- **Buying Trigger:** Outgrowing current tools
+- **Win Rate:** Medium
+
+### Segment 3: Compliance Drivers
+- **Industry:** Regulated sectors
+- **Buying Trigger:** Audit/compliance requirements
+- **Win Rate:** High
+
+### Prioritization Matrix
+| Segment | Market Size | Win Rate | Priority |
+|---|---|---|---|
+| Enterprise Transformers | Large | High | 1 |
+| Compliance Drivers | Medium | High | 2 |
+| Growth Scalers | Large | Medium | 3 |
+
+---
+*📋 Demo Mode — Connect Claude API for personalized segmentation*`;
+        output.innerHTML = formatReport(demoResult, productName);
+        const banner = document.createElement('div');
+        banner.className = 'demo-mode-banner';
+        banner.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span><strong>Demo Mode</strong> — Sample output. Connect Claude API for live analysis.</span>';
+        output.insertBefore(banner, output.firstChild);
     } finally {
         btn.classList.remove('loading');
         btn.disabled = false;

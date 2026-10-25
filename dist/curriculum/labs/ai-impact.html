@@ -398,6 +398,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## AI Impact Assessment
+
+### Recommended Tool Stack
+**Tier 1:** Copilot Chat, CompeteGPT, SAP GenAI Lab
+**Tier 2:** Perplexity Pro, Claude, Canva
+
+### Impact Matrix
+| Activity | Time Savings |
+|---|---|
+| Content Drafts | 75% |
+| Competitive Updates | 83% |
+
+---
+*📋 Demo Mode — Connect Claude API for assessment*`;
+}
 const form = document.getElementById('labForm');
 const runBtn = document.getElementById('runBtn');
 const spinner = document.getElementById('spinner');
@@ -421,7 +438,11 @@ form.addEventListener('submit', async (e) => {
     resultsSection.classList.remove('show');
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -430,7 +451,7 @@ form.addEventListener('submit', async (e) => {
             })
         });
         
-        if (!response.ok) throw new Error('Audit failed. Please try again.');
+        if (!response.ok) throw new Error('Server unavailable');
         
         const data = await response.json();
         resultsContent.innerHTML = marked.parse(data.result);
@@ -446,7 +467,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;

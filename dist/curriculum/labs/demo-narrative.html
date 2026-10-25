@@ -406,6 +406,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## Demo Narrative
+
+**BEFORE:** Manual processes, scattered data
+**TRANSFORMATION:** What if insights came to you?
+**AFTER:** Automated workflows, confident decisions
+
+### Flow (15 min)
+1. Hook (2 min)
+2. Setup (3 min)
+3. Transformation (7 min)
+4. Resolution (3 min)
+
+---
+*📋 Demo Mode — Connect Claude API for narrative*`;
+}
 const form = document.getElementById('labForm');
 const runBtn = document.getElementById('runBtn');
 const spinner = document.getElementById('spinner');
@@ -431,7 +448,11 @@ form.addEventListener('submit', async (e) => {
     resultsSection.classList.remove('show');
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -440,7 +461,7 @@ form.addEventListener('submit', async (e) => {
             })
         });
         
-        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        if (!response.ok) throw new Error('Server unavailable');
         
         const data = await response.json();
         resultsContent.innerHTML = marked.parse(data.result);
@@ -456,7 +477,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;

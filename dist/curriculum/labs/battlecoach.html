@@ -769,6 +769,19 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## FUD Response Sheet
+
+| Claim | Truth | Response |
+|---|---|---|
+| "SAP is expensive" | TCO favors unified platforms | "Should I walk through a TCO comparison?" |
+| "We're more innovative" | SAP ships quarterly with Joule AI | "Let me show what shipped last quarter..." |
+
+---
+*📋 Demo Mode — Connect Claude API for deal-specific coaching*`;
+}
+
 // Store current deal inputs for follow-up generations
 let currentDealInputs = null;
 
@@ -927,7 +940,11 @@ form.addEventListener('submit', async (e) => {
     });
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -936,7 +953,7 @@ form.addEventListener('submit', async (e) => {
             })
         });
         
-        if (!response.ok) throw new Error('Generation failed. Please try again.');
+        if (!response.ok) throw new Error('Server unavailable');
         
         const data = await response.json();
         
@@ -961,7 +978,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;
@@ -991,7 +1016,7 @@ async function generateMore(outputType) {
             })
         });
         
-        if (!response.ok) throw new Error('Generation failed');
+        if (!response.ok) throw new Error('Server unavailable');
         
         const data = await response.json();
         content.innerHTML = marked.parse(data.result);

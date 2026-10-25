@@ -467,6 +467,25 @@ Trusted by more than 10,000 customers worldwide</textarea>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// Client-side demo response when server is unavailable  
+function getClientDemoResponse(inputs) {
+    return `## GEO Visibility Audit
+
+### Score: 5.5/10 ⚠️
+
+### Issues
+- "Industry-leading" → No metric
+- "Trusted by thousands" → How many?
+
+### Quick Wins
+1. Add specific numbers
+2. Name customers
+3. Quantify outcomes
+
+---
+*📋 Demo Mode — Connect Claude API for analysis*`;
+}
+
 const productPresets = {
     sf: {
         company: "SAP SuccessFactors",
@@ -560,7 +579,11 @@ form.addEventListener('submit', async (e) => {
     resultsSection.classList.remove('show');
     
     try {
-        const response = await fetch('/.netlify/functions/lab-ai', {
+        let data;
+
+        try {
+
+            const response = await fetch('/.netlify/functions/lab-ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -588,7 +611,15 @@ form.addEventListener('submit', async (e) => {
         resultsSection.scrollIntoView({ behavior: 'smooth' });
         
     } catch (error) {
-        errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+        // Fallback to client-side demo response
+        data = {
+            result: getClientDemoResponse(inputs || currentDealInputs || {}),
+            _mock: true
+        };
+    }
+    
+    if (!data) {
+        errorMessage.textContent =
         errorMessage.classList.add('show');
     } finally {
         runBtn.disabled = false;
