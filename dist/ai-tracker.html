@@ -320,46 +320,34 @@
             font-size: 0.9rem;
         }
         
-        /* Voting buttons */
+        /* Star Rating */
         .vote-cell {
             white-space: nowrap;
             text-align: center;
         }
-        .vote-btn {
+        .star-rating {
+            display: inline-flex;
+            gap: 2px;
+        }
+        .star-btn {
             background: none;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            padding: 4px 8px;
-            margin: 0 2px;
+            border: none;
+            padding: 0;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.15s;
-            opacity: 0.6;
+            font-size: 1.1rem;
+            transition: transform 0.1s;
+            color: #d1d5db;
         }
-        .vote-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        .vote-btn.active {
-            opacity: 1;
-            border-color: var(--blue);
-            background: var(--soft);
-        }
-        .vote-btn.up.active { border-color: var(--available); background: var(--available-bg); }
-        .vote-btn.down.active { border-color: #dc2626; background: #fef2f2; }
-        .vote-btn.neutral.active { border-color: var(--dev); background: var(--dev-bg); }
-        .vote-counts {
+        .star-btn:hover { transform: scale(1.2); }
+        .star-btn.filled { color: #f59e0b; }
+        .star-btn.hovered { color: #fbbf24; }
+        .rating-info {
             font-size: 0.7rem;
             color: var(--muted);
-            margin-top: 4px;
-            display: flex;
-            justify-content: center;
-            gap: 6px;
+            margin-top: 3px;
         }
-        .vote-count { display: flex; align-items: center; gap: 2px; }
-        .vote-count.up { color: var(--available); }
-        .vote-count.down { color: #dc2626; }
-        .vote-count.neutral { color: var(--dev); }
+        .avg-rating { font-weight: 600; color: var(--ink); }
+        .rating-count { color: var(--muted); }
         
         /* Footer */
         footer {
@@ -589,7 +577,7 @@
                     <th>Owner</th>
                     <th>Book of Work</th>
                     <th>🔗</th>
-                    <th>Vote</th>
+                    <th>Rating</th>
                 </tr>
             </thead>
             <tbody>
@@ -1049,62 +1037,90 @@
 
 <script src="/assets/js/nav-dropdown.js" defer></script>
 <script>
-// Voting functionality
-const VOTES_KEY = 'ai-tracker-votes';
+// Star Rating functionality
+const RATINGS_KEY = 'ai-tracker-ratings';
 
-function getVotes() {
+function getRatings() {
     try {
-        return JSON.parse(localStorage.getItem(VOTES_KEY)) || {};
+        return JSON.parse(localStorage.getItem(RATINGS_KEY)) || {};
     } catch { return {}; }
 }
 
-function saveVotes(votes) {
-    localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
+function saveRatings(ratings) {
+    localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings));
 }
 
 function getSkillId(skillName) {
     return skillName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
-function vote(skillId, voteType) {
-    const votes = getVotes();
-    if (!votes[skillId]) votes[skillId] = { up: 0, down: 0, neutral: 0, userVote: null };
+function rate(skillId, stars) {
+    const ratings = getRatings();
+    if (!ratings[skillId]) ratings[skillId] = { total: 0, count: 0, userRating: null };
     
-    const prev = votes[skillId].userVote;
+    const prev = ratings[skillId].userRating;
     
-    // Remove previous vote if exists
-    if (prev) votes[skillId][prev]--;
-    
-    // Toggle or set new vote
-    if (prev === voteType) {
-        votes[skillId].userVote = null;
-    } else {
-        votes[skillId][voteType]++;
-        votes[skillId].userVote = voteType;
+    // Remove previous rating if exists
+    if (prev) {
+        ratings[skillId].total -= prev;
+        ratings[skillId].count--;
     }
     
-    saveVotes(votes);
-    updateVoteUI(skillId);
+    // Toggle off if clicking same rating, otherwise set new
+    if (prev === stars) {
+        ratings[skillId].userRating = null;
+    } else {
+        ratings[skillId].total += stars;
+        ratings[skillId].count++;
+        ratings[skillId].userRating = stars;
+    }
+    
+    saveRatings(ratings);
+    updateRatingUI(skillId);
 }
 
-function updateVoteUI(skillId) {
-    const votes = getVotes();
-    const data = votes[skillId] || { up: 0, down: 0, neutral: 0, userVote: null };
+function updateRatingUI(skillId) {
+    const ratings = getRatings();
+    const data = ratings[skillId] || { total: 0, count: 0, userRating: null };
     const cell = document.querySelector(`[data-skill-id="${skillId}"]`);
     if (!cell) return;
     
-    // Update button states
-    cell.querySelectorAll('.vote-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.vote === data.userVote);
+    const userRating = data.userRating || 0;
+    cell.querySelectorAll('.star-btn').forEach((btn, i) => {
+        btn.classList.toggle('filled', i < userRating);
+        btn.textContent = i < userRating ? '★' : '☆';
     });
     
-    // Update counts
-    cell.querySelector('.count-up').textContent = data.up || '';
-    cell.querySelector('.count-down').textContent = data.down || '';
-    cell.querySelector('.count-neutral').textContent = data.neutral || '';
+    const infoEl = cell.querySelector('.rating-info');
+    if (data.count > 0) {
+        const avg = (data.total / data.count).toFixed(1);
+        infoEl.innerHTML = `<span class="avg-rating">${avg}</span> <span class="rating-count">(${data.count})</span>`;
+    } else {
+        infoEl.innerHTML = '';
+    }
 }
 
-function initVoting() {
+function hoverStars(skillId, stars) {
+    const cell = document.querySelector(`[data-skill-id="${skillId}"]`);
+    if (!cell) return;
+    cell.querySelectorAll('.star-btn').forEach((btn, i) => {
+        btn.classList.toggle('hovered', i < stars);
+        if (i < stars && !btn.classList.contains('filled')) btn.textContent = '★';
+    });
+}
+
+function unhoverStars(skillId) {
+    const ratings = getRatings();
+    const userRating = ratings[skillId]?.userRating || 0;
+    const cell = document.querySelector(`[data-skill-id="${skillId}"]`);
+    if (!cell) return;
+    cell.querySelectorAll('.star-btn').forEach((btn, i) => {
+        btn.classList.remove('hovered');
+        btn.textContent = i < userRating ? '★' : '☆';
+    });
+}
+
+function initRating() {
     const rows = document.querySelectorAll('#tracker-table tbody tr');
     
     rows.forEach(row => {
@@ -1112,23 +1128,20 @@ function initVoting() {
         if (!skillName) return;
         
         const skillId = getSkillId(skillName);
-        // Append vote cell at the end
-        const voteCell = document.createElement('td');
-        voteCell.className = 'vote-cell';
-        voteCell.dataset.skillId = skillId;
-        voteCell.innerHTML = `
-            <button class="vote-btn up" data-vote="up" onclick="vote('${skillId}', 'up')" title="Useful">👍</button>
-            <button class="vote-btn neutral" data-vote="neutral" onclick="vote('${skillId}', 'neutral')" title="Neutral">😐</button>
-            <button class="vote-btn down" data-vote="down" onclick="vote('${skillId}', 'down')" title="Not useful">👎</button>
-            <div class="vote-counts">
-                <span class="vote-count up"><span class="count-up"></span></span>
-                <span class="vote-count neutral"><span class="count-neutral"></span></span>
-                <span class="vote-count down"><span class="count-down"></span></span>
-            </div>
-        `;
         
-        row.appendChild(voteCell);
-        updateVoteUI(skillId);
+        const ratingCell = document.createElement('td');
+        ratingCell.className = 'vote-cell';
+        ratingCell.dataset.skillId = skillId;
+        
+        let starsHtml = '<div class="star-rating">';
+        for (let i = 1; i <= 5; i++) {
+            starsHtml += `<button class="star-btn" data-stars="${i}" onclick="rate('${skillId}', ${i})" onmouseenter="hoverStars('${skillId}', ${i})" onmouseleave="unhoverStars('${skillId}')" title="${i} star${i > 1 ? 's' : ''}">☆</button>`;
+        }
+        starsHtml += '</div><div class="rating-info"></div>';
+        
+        ratingCell.innerHTML = starsHtml;
+        row.appendChild(ratingCell);
+        updateRatingUI(skillId);
     });
 }
 
@@ -1160,8 +1173,8 @@ function filterTable() {
     document.getElementById('results-count').textContent = `Showing ${visibleCount} capabilities`;
 }
 
-// Initialize voting on page load
-document.addEventListener('DOMContentLoaded', initVoting);
+// Initialize rating on page load
+document.addEventListener('DOMContentLoaded', initRating);
 </script>
 </body>
 </html>
