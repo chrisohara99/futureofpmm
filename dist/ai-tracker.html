@@ -320,6 +320,47 @@
             font-size: 0.9rem;
         }
         
+        /* Voting buttons */
+        .vote-cell {
+            white-space: nowrap;
+            text-align: center;
+        }
+        .vote-btn {
+            background: none;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 4px 8px;
+            margin: 0 2px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.15s;
+            opacity: 0.6;
+        }
+        .vote-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .vote-btn.active {
+            opacity: 1;
+            border-color: var(--blue);
+            background: var(--soft);
+        }
+        .vote-btn.up.active { border-color: var(--available); background: var(--available-bg); }
+        .vote-btn.down.active { border-color: #dc2626; background: #fef2f2; }
+        .vote-btn.neutral.active { border-color: var(--dev); background: var(--dev-bg); }
+        .vote-counts {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 4px;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+        .vote-count { display: flex; align-items: center; gap: 2px; }
+        .vote-count.up { color: var(--available); }
+        .vote-count.down { color: #dc2626; }
+        .vote-count.neutral { color: var(--dev); }
+        
         /* Footer */
         footer {
             background: var(--ink);
@@ -548,6 +589,7 @@
                     <th>Owner</th>
                     <th>Book of Work</th>
                     <th>🔗</th>
+                    <th>Vote</th>
                 </tr>
             </thead>
             <tbody>
@@ -1007,6 +1049,89 @@
 
 <script src="/assets/js/nav-dropdown.js" defer></script>
 <script>
+// Voting functionality
+const VOTES_KEY = 'ai-tracker-votes';
+
+function getVotes() {
+    try {
+        return JSON.parse(localStorage.getItem(VOTES_KEY)) || {};
+    } catch { return {}; }
+}
+
+function saveVotes(votes) {
+    localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
+}
+
+function getSkillId(skillName) {
+    return skillName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+function vote(skillId, voteType) {
+    const votes = getVotes();
+    if (!votes[skillId]) votes[skillId] = { up: 0, down: 0, neutral: 0, userVote: null };
+    
+    const prev = votes[skillId].userVote;
+    
+    // Remove previous vote if exists
+    if (prev) votes[skillId][prev]--;
+    
+    // Toggle or set new vote
+    if (prev === voteType) {
+        votes[skillId].userVote = null;
+    } else {
+        votes[skillId][voteType]++;
+        votes[skillId].userVote = voteType;
+    }
+    
+    saveVotes(votes);
+    updateVoteUI(skillId);
+}
+
+function updateVoteUI(skillId) {
+    const votes = getVotes();
+    const data = votes[skillId] || { up: 0, down: 0, neutral: 0, userVote: null };
+    const cell = document.querySelector(`[data-skill-id="${skillId}"]`);
+    if (!cell) return;
+    
+    // Update button states
+    cell.querySelectorAll('.vote-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.vote === data.userVote);
+    });
+    
+    // Update counts
+    cell.querySelector('.count-up').textContent = data.up || '';
+    cell.querySelector('.count-down').textContent = data.down || '';
+    cell.querySelector('.count-neutral').textContent = data.neutral || '';
+}
+
+function initVoting() {
+    const rows = document.querySelectorAll('#tracker-table tbody tr');
+    
+    rows.forEach(row => {
+        const skillName = row.querySelector('.skill-name')?.textContent;
+        if (!skillName) return;
+        
+        const skillId = getSkillId(skillName);
+        // Append vote cell at the end
+        const voteCell = document.createElement('td');
+        voteCell.className = 'vote-cell';
+        voteCell.dataset.skillId = skillId;
+        voteCell.innerHTML = `
+            <button class="vote-btn up" data-vote="up" onclick="vote('${skillId}', 'up')" title="Useful">👍</button>
+            <button class="vote-btn neutral" data-vote="neutral" onclick="vote('${skillId}', 'neutral')" title="Neutral">😐</button>
+            <button class="vote-btn down" data-vote="down" onclick="vote('${skillId}', 'down')" title="Not useful">👎</button>
+            <div class="vote-counts">
+                <span class="vote-count up"><span class="count-up"></span></span>
+                <span class="vote-count neutral"><span class="count-neutral"></span></span>
+                <span class="vote-count down"><span class="count-down"></span></span>
+            </div>
+        `;
+        
+        row.appendChild(voteCell);
+        updateVoteUI(skillId);
+    });
+}
+
 function filterTable() {
     const statusFilter = document.getElementById('filter-status').value;
     const lobFilter = document.getElementById('filter-lob').value;
@@ -1034,6 +1159,9 @@ function filterTable() {
     
     document.getElementById('results-count').textContent = `Showing ${visibleCount} capabilities`;
 }
+
+// Initialize voting on page load
+document.addEventListener('DOMContentLoaded', initVoting);
 </script>
 </body>
 </html>
