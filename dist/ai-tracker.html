@@ -350,38 +350,6 @@
         .avg-rating { font-weight: 600; color: var(--ink); }
         .rating-count { color: var(--muted); }
         
-        /* Rating Leaders */
-        .rating-leaders {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .rating-leaders-title {
-            font-weight: 700;
-            color: #92400e;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .rating-leader {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            padding: 8px 14px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .rating-leader .trophy { font-size: 1.2rem; }
-        .rating-leader .name { font-weight: 600; color: var(--ink); }
-        .rating-leader .stats { font-size: 0.8rem; color: var(--muted); }
-        .rating-leader .stars { color: #f59e0b; font-size: 0.85rem; }
-        
         /* Footer */
         footer {
             background: var(--ink);
@@ -561,12 +529,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Rating Leaders (populated by JS) -->
-    <div class="rating-leaders" id="rating-leaders" style="display: none;">
-        <div class="rating-leaders-title">🏆 Top Rated</div>
-        <div id="leaders-content"></div>
     </div>
     
     <div class="filters">
@@ -1116,7 +1078,6 @@ function rate(skillId, stars) {
     
     saveRatings(ratings);
     updateRatingUI(skillId);
-    updateLeaderboard();
 }
 
 function updateRatingUI(skillId) {
@@ -1160,19 +1121,14 @@ function unhoverStars(skillId) {
     });
 }
 
-// Map skill IDs to their owners
-const skillOwners = {};
-
 function initRating() {
     const rows = document.querySelectorAll('#tracker-table tbody tr');
     
     rows.forEach(row => {
         const skillName = row.querySelector('.skill-name')?.textContent;
-        const owner = row.dataset.owner;
         if (!skillName) return;
         
         const skillId = getSkillId(skillName);
-        skillOwners[skillId] = owner;
         
         const ratingCell = document.createElement('td');
         ratingCell.className = 'vote-cell';
@@ -1188,63 +1144,6 @@ function initRating() {
         row.appendChild(ratingCell);
         updateRatingUI(skillId);
     });
-    
-    updateLeaderboard();
-}
-
-function updateLeaderboard() {
-    const ratings = getRatings();
-    const ownerStats = {};
-    
-    // Aggregate ratings by owner
-    Object.entries(ratings).forEach(([skillId, data]) => {
-        const owner = skillOwners[skillId];
-        if (!owner || data.count === 0) return;
-        
-        if (!ownerStats[owner]) {
-            ownerStats[owner] = { totalStars: 0, totalRatings: 0, capabilities: 0 };
-        }
-        ownerStats[owner].totalStars += data.total;
-        ownerStats[owner].totalRatings += data.count;
-        ownerStats[owner].capabilities++;
-    });
-    
-    // Calculate averages and sort
-    const leaders = Object.entries(ownerStats)
-        .map(([name, stats]) => ({
-            name,
-            avg: stats.totalStars / stats.totalRatings,
-            totalStars: stats.totalStars,
-            ratings: stats.totalRatings,
-            capabilities: stats.capabilities
-        }))
-        .filter(l => l.ratings >= 1) // At least 1 rating
-        .sort((a, b) => b.totalStars - a.totalStars || b.avg - a.avg)
-        .slice(0, 3);
-    
-    const container = document.getElementById('rating-leaders');
-    const content = document.getElementById('leaders-content');
-    
-    if (leaders.length === 0) {
-        container.style.display = 'none';
-        return;
-    }
-    
-    container.style.display = 'flex';
-    const trophies = ['🥇', '🥈', '🥉'];
-    
-    content.innerHTML = leaders.map((l, i) => `
-        <div class="rating-leader">
-            <span class="trophy">${trophies[i]}</span>
-            <div>
-                <div class="name">${l.name}</div>
-                <div class="stats">
-                    <span class="stars">${'★'.repeat(Math.round(l.avg))}${'☆'.repeat(5 - Math.round(l.avg))}</span>
-                    ${l.avg.toFixed(1)} avg · ${l.totalStars} total ★
-                </div>
-            </div>
-        </div>
-    `).join('');
 }
 
 function filterTable() {
