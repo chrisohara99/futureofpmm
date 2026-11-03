@@ -148,7 +148,7 @@
     // If already authenticated, redirect
     try {
       const auth = JSON.parse(localStorage.getItem('pmm_gate_auth'));
-      if (auth && auth.authenticated) {
+      if (auth && auth.authenticated && (Date.now() - auth.timestamp < 7 * 24 * 60 * 60 * 1000)) {
         const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
         window.location.href = redirect;
       }
