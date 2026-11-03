@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Human Skills Self-Assessment | NextGen PMM</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --thinking: #7C3AED;
+            --thinking-light: #EDE9FE;
+            --collaborate: #059669;
+            --collaborate-light: #D1FAE5;
+            --mindset: #0284C7;
+            --mindset-light: #E0F2FE;
+            --strong: #22C55E;
+            --strong-light: #DCFCE7;
+            --developing: #F59E0B;
+            --developing-light: #FEF3C7;
+            --improve: #EF4444;
+            --improve-light: #FEE2E2;
+            --dark: #1e293b;
+            --text: #475569;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--dark);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { color: white; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--strong), #4ADE80);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .progress-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Navigation */
+        .step-nav {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 60px;
+            z-index: 90;
+        }
+        .step-nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .step-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .step-dot.active {
+            background: var(--dark);
+            color: white;
+            transform: scale(1.1);
+        }
+        .step-dot.completed {
+            background: var(--strong);
+            color: white;
+        }
+        .step-connector {
+            width: 40px;
+            height: 2px;
+            background: var(--border);
+            align-self: center;
+        }
+        .step-connector.completed {
+            background: var(--strong);
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Step Container */
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .step.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Intro Step */
+        .intro-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .intro-card h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        .intro-card p {
+            font-size: 1.15rem;
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .intro-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        .intro-feature {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+        .intro-feature .icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        .intro-feature h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .intro-feature p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        /* Sorting Exercise */
+        .exercise-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .exercise-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-header p {
+            color: var(--text);
+        }
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .category-badge.thinking { background: var(--thinking-light); color: var(--thinking); }
+        .category-badge.collaborate { background: var(--collaborate-light); color: var(--collaborate); }
+        .category-badge.mindset { background: var(--mindset-light); color: var(--mindset); }
+        
+        /* Sorting Container */
+        .sorting-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        /* Skills Pool */
+        .skills-pool {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            min-height: 120px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .skills-pool h3 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .skills-pool h3 .count {
+            background: var(--border);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+        .pool-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            min-height: 50px;
+        }
+        
+        /* Buckets */
+        .buckets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .bucket {
+            background: white;
+            border-radius: 20px;
+            padding: 1.25rem;
+            min-height: 200px;
+            border: 2px dashed var(--border);
+            transition: all 0.2s;
+        }
+        .bucket.drag-over {
+            border-color: var(--dark);
+            background: var(--light);
+            transform: scale(1.02);
+        }
+        .bucket.strong { border-color: var(--strong); background: var(--strong-light); }
+        .bucket.developing { border-color: var(--developing); background: var(--developing-light); }
+        .bucket.improve { border-color: var(--improve); background: var(--improve-light); }
+        
+        .bucket-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+        .bucket-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .bucket.strong .bucket-icon { background: var(--strong); color: white; }
+        .bucket.developing .bucket-icon { background: var(--developing); color: white; }
+        .bucket.improve .bucket-icon { background: var(--improve); color: white; }
+        
+        .bucket-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .bucket.strong .bucket-title { color: #166534; }
+        .bucket.developing .bucket-title { color: #92400E; }
+        .bucket.improve .bucket-title { color: #991B1B; }
+        
+        .bucket-skills {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-height: 100px;
+        }
+        
+        /* Skill Chips */
+        .skill-chip {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: grab;
+            transition: all 0.15s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .skill-chip:hover {
+            border-color: var(--dark);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .skill-chip.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        .skill-chip .drag-handle {
+            color: var(--text);
+            opacity: 0.4;
+        }
+        .skill-chip.thinking { border-left: 4px solid var(--thinking); }
+        .skill-chip.collaborate { border-left: 4px solid var(--collaborate); }
+        .skill-chip.mindset { border-left: 4px solid var(--mindset); }
+        
+        .skill-chip.in-bucket {
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Quick Buttons */
+        .quick-sort {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .skill-chip:hover .quick-sort {
+            opacity: 1;
+        }
+        .quick-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        .quick-btn:hover {
+            transform: scale(1.1);
+        }
+        .quick-btn.strong { background: var(--strong); color: white; }
+        .quick-btn.developing { background: var(--developing); color: white; }
+        .quick-btn.improve { background: var(--improve); color: white; }
+        
+        /* Results */
+        .results-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .results-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .summary-card {
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .summary-card.strong { background: var(--strong-light); }
+        .summary-card.developing { background: var(--developing-light); }
+        .summary-card.improve { background: var(--improve-light); }
+        .summary-card .number {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+        .summary-card.strong .number { color: var(--strong); }
+        .summary-card.developing .number { color: var(--developing); }
+        .summary-card.improve .number { color: var(--improve); }
+        .summary-card .label {
+            font-size: 0.9rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .results-detail {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .detail-column {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 1.25rem;
+        }
+        .detail-column h4 {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .detail-column.strong h4 { color: var(--strong); }
+        .detail-column.developing h4 { color: var(--developing); }
+        .detail-column.improve h4 { color: var(--improve); }
+        .detail-column ul {
+            list-style: none;
+        }
+        .detail-column li {
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .detail-column li:last-child {
+            border-bottom: none;
+        }
+        
+        /* Recommendations */
+        .recommendations {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--thinking-light), var(--collaborate-light));
+            border-radius: 16px;
+        }
+        .recommendations h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .recommendation-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+        }
+        .recommendation-item h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+        .recommendation-item p {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin: 0;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--dark);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #334155;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 2px solid var(--border);
+        }
+        .btn-secondary:hover {
+            border-color: var(--dark);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .intro-features, .buckets, .results-summary, .results-detail {
+                grid-template-columns: 1fr;
+            }
+            .step-nav-inner {
+                flex-wrap: wrap;
+            }
+            .progress-bar {
+                width: 100px;
+            }
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/human-soft-skills.html" class="logo">← Human Soft Skills Map</a>
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">0 / 24 sorted</span>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="step-nav">
+        <div class="step-nav-inner">
+            <div class="step-dot active" data-step="0">1</div>
+            <div class="step-connector"></div>
+            <div class="step-dot" data-step="1">2</div>
+            <div class="step-connector"></div>
+            <div class="step-dot" data-step="2">3</div>
+            <div class="step-connector"></div>
+            <div class="step-dot" data-step="3">4</div>
+            <div class="step-connector"></div>
+            <div class="step-dot" data-step="4">5</div>
+        </div>
+    </nav>
+    
+    <main>
+        <!-- Step 0: Intro -->
+        <div class="step active" data-step="0">
+            <div class="intro-card">
+                <h1>🧠 Skills Self-Assessment</h1>
+                <p>Discover your strengths and growth areas across 24 human soft skills that matter most in the age of AI.</p>
+                
+                <div class="intro-features">
+                    <div class="intro-feature">
+                        <div class="icon">🎯</div>
+                        <h3>Sort into Buckets</h3>
+                        <p>Drag each skill into one of three buckets: Strong, Developing, or Need to Improve.</p>
+                    </div>
+                    <div class="intro-feature">
+                        <div class="icon">📊</div>
+                        <h3>See Your Profile</h3>
+                        <p>Get a visual breakdown of your skill distribution across all categories.</p>
+                    </div>
+                    <div class="intro-feature">
+                        <div class="icon">💡</div>
+                        <h3>Get Recommendations</h3>
+                        <p>Receive personalized suggestions for which skills to focus on developing.</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="nextStep()">
+                    Start Assessment →
+                </button>
+            </div>
+        </div>
+        
+        <!-- Step 1: Thinking Skills -->
+        <div class="step" data-step="1">
+            <div class="exercise-header">
+                <span class="category-badge thinking">🧠 Thinking Skills</span>
+                <h2>How strong are your thinking skills?</h2>
+                <p>Drag each skill to the bucket that best describes your current ability, or click the quick-sort buttons.</p>
+            </div>
+            
+            <div class="sorting-container">
+                <div class="skills-pool" id="pool-thinking">
+                    <h3>Skills to sort <span class="count" id="count-thinking">10</span></h3>
+                    <div class="pool-skills" id="poolSkills-thinking"></div>
+                </div>
+                
+                <div class="buckets">
+                    <div class="bucket strong" data-bucket="strong" data-category="thinking">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">💪</div>
+                            <div class="bucket-title">Strong</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-thinking-strong"></div>
+                    </div>
+                    <div class="bucket developing" data-bucket="developing" data-category="thinking">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">📈</div>
+                            <div class="bucket-title">Developing</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-thinking-developing"></div>
+                    </div>
+                    <div class="bucket improve" data-bucket="improve" data-category="thinking">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">🎯</div>
+                            <div class="bucket-title">Need to Improve</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-thinking-improve"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                <button class="btn btn-primary" onclick="nextStep()" id="next-thinking" disabled>Continue →</button>
+            </div>
+        </div>
+        
+        <!-- Step 2: Collaborate Skills -->
+        <div class="step" data-step="2">
+            <div class="exercise-header">
+                <span class="category-badge collaborate">🤝 Collaborate with AI</span>
+                <h2>How well do you collaborate with AI?</h2>
+                <p>Sort these practical AI collaboration skills into your buckets.</p>
+            </div>
+            
+            <div class="sorting-container">
+                <div class="skills-pool" id="pool-collaborate">
+                    <h3>Skills to sort <span class="count" id="count-collaborate">5</span></h3>
+                    <div class="pool-skills" id="poolSkills-collaborate"></div>
+                </div>
+                
+                <div class="buckets">
+                    <div class="bucket strong" data-bucket="strong" data-category="collaborate">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">💪</div>
+                            <div class="bucket-title">Strong</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-collaborate-strong"></div>
+                    </div>
+                    <div class="bucket developing" data-bucket="developing" data-category="collaborate">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">📈</div>
+                            <div class="bucket-title">Developing</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-collaborate-developing"></div>
+                    </div>
+                    <div class="bucket improve" data-bucket="improve" data-category="collaborate">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">🎯</div>
+                            <div class="bucket-title">Need to Improve</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-collaborate-improve"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                <button class="btn btn-primary" onclick="nextStep()" id="next-collaborate" disabled>Continue →</button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Mindset Skills -->
+        <div class="step" data-step="3">
+            <div class="exercise-header">
+                <span class="category-badge mindset">💭 Mindset</span>
+                <h2>What's your AI mindset?</h2>
+                <p>These attitudes and approaches determine your success with AI collaboration.</p>
+            </div>
+            
+            <div class="sorting-container">
+                <div class="skills-pool" id="pool-mindset">
+                    <h3>Skills to sort <span class="count" id="count-mindset">9</span></h3>
+                    <div class="pool-skills" id="poolSkills-mindset"></div>
+                </div>
+                
+                <div class="buckets">
+                    <div class="bucket strong" data-bucket="strong" data-category="mindset">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">💪</div>
+                            <div class="bucket-title">Strong</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-mindset-strong"></div>
+                    </div>
+                    <div class="bucket developing" data-bucket="developing" data-category="mindset">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">📈</div>
+                            <div class="bucket-title">Developing</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-mindset-developing"></div>
+                    </div>
+                    <div class="bucket improve" data-bucket="improve" data-category="mindset">
+                        <div class="bucket-header">
+                            <div class="bucket-icon">🎯</div>
+                            <div class="bucket-title">Need to Improve</div>
+                        </div>
+                        <div class="bucket-skills" id="bucket-mindset-improve"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                <button class="btn btn-primary" onclick="showResults()" id="next-mindset" disabled>See My Results →</button>
+            </div>
+        </div>
+        
+        <!-- Step 4: Results -->
+        <div class="step" data-step="4">
+            <div class="results-card">
+                <div class="results-header">
+                    <h2>🎉 Your Skills Profile</h2>
+                    <p>Here's how you rated yourself across all 24 human soft skills.</p>
+                </div>
+                
+                <div class="results-summary">
+                    <div class="summary-card strong">
+                        <div class="number" id="result-strong">0</div>
+                        <div class="label">Strong Skills</div>
+                    </div>
+                    <div class="summary-card developing">
+                        <div class="number" id="result-developing">0</div>
+                        <div class="label">Developing</div>
+                    </div>
+                    <div class="summary-card improve">
+                        <div class="number" id="result-improve">0</div>
+                        <div class="label">Need Improvement</div>
+                    </div>
+                </div>
+                
+                <div class="results-detail">
+                    <div class="detail-column strong">
+                        <h4>💪 Strong Skills</h4>
+                        <ul id="list-strong"></ul>
+                    </div>
+                    <div class="detail-column developing">
+                        <h4>📈 Developing</h4>
+                        <ul id="list-developing"></ul>
+                    </div>
+                    <div class="detail-column improve">
+                        <h4>🎯 Focus Areas</h4>
+                        <ul id="list-improve"></ul>
+                    </div>
+                </div>
+                
+                <div class="recommendations" id="recommendations">
+                    <h3>💡 Recommendations</h3>
+                    <div id="recommendation-content"></div>
+                </div>
+                
+                <div class="button-row">
+                    <button class="btn btn-secondary" onclick="resetAssessment()">↻ Start Over</button>
+                    <button class="btn btn-primary" onclick="downloadResults()">📥 Download Results</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Skill data
+        const skills = {
+            thinking: [
+                { id: 'stakeholder', name: 'Stakeholder Management', tip: 'Address audiences with right arguments & empathy' },
+                { id: 'systems', name: 'Systems Thinking', tip: 'Understand how things connect' },
+                { id: 'synthesis', name: 'Synthesis', tip: 'Combine ideas meaningfully' },
+                { id: 'decision', name: 'Decision Making', tip: 'Choose direction, AI gives options' },
+                { id: 'judgement', name: 'Judgement & Trade-offs', tip: 'Decide what matters, evaluate trade-offs' },
+                { id: 'factcheck', name: 'Fact Checking', tip: 'Verify AI outputs' },
+                { id: 'critical', name: 'Critical Thinking', tip: 'Detect errors, biases, hallucinations' },
+                { id: 'policies', name: 'Embed Policies', tip: 'Know regulatory requirements' },
+                { id: 'ethics', name: 'AI Ethics & Privacy', tip: 'Ensure bias-free, ethical work' },
+                { id: 'metacognition', name: 'Metacognition ⭐', tip: 'Think about your own thinking' }
+            ],
+            collaborate: [
+                { id: 'speedread', name: 'Speed Reading / Info Triage', tip: 'Identify important info fast' },
+                { id: 'context', name: 'Context Building', tip: 'Give AI right background' },
+                { id: 'problem', name: 'Problem Framing', tip: 'Define the RIGHT problem' },
+                { id: 'questions', name: 'Asking Good Questions', tip: 'Maximize AI output quality' },
+                { id: 'editing', name: 'Editing & Refinement', tip: 'Iterate prompts and results' }
+            ],
+            mindset: [
+                { id: 'loops', name: 'Refinement Loops', tip: 'Prompt → evaluate → adjust → repeat' },
+                { id: 'culture', name: 'AI Culture', tip: 'Support team AI adoption' },
+                { id: 'sustainability', name: 'Sustainability Awareness', tip: 'Consider environmental impact' },
+                { id: 'communication', name: 'Communication about AI', tip: 'Be positive AI representative' },
+                { id: 'creativity', name: 'Human Creativity', tip: 'Keep your creative edge' },
+                { id: 'humility', name: 'Intellectual Humility', tip: 'Be willing to be wrong' },
+                { id: 'curiosity', name: 'Curiosity', tip: 'Experiment and explore' },
+                { id: 'independence', name: 'Cognitive Independence', tip: 'Balance human/AI thinking' },
+                { id: 'patience', name: 'Patience', tip: 'Learning AI takes time' }
+            ]
+        };
+        
+        // State
+        let currentStep = 0;
+        const results = {
+            strong: [],
+            developing: [],
+            improve: []
+        };
+        let draggedElement = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeSkills();
+            setupDragAndDrop();
+        });
+        
+        function initializeSkills() {
+            ['thinking', 'collaborate', 'mindset'].forEach(category => {
+                const pool = document.getElementById(`poolSkills-${category}`);
+                skills[category].forEach(skill => {
+                    const chip = createSkillChip(skill, category);
+                    pool.appendChild(chip);
+                });
+            });
+        }
+        
+        function createSkillChip(skill, category) {
+            const chip = document.createElement('div');
+            chip.className = `skill-chip ${category}`;
+            chip.draggable = true;
+            chip.dataset.skillId = skill.id;
+            chip.dataset.skillName = skill.name;
+            chip.dataset.category = category;
+            chip.innerHTML = `
+                <span class="drag-handle">⋮⋮</span>
+                <span class="skill-name">${skill.name}</span>
+                <div class="quick-sort">
+                    <button class="quick-btn strong tooltip" data-tip="Strong" onclick="quickSort(event, '${skill.id}', 'strong', '${category}')">💪</button>
+                    <button class="quick-btn developing tooltip" data-tip="Developing" onclick="quickSort(event, '${skill.id}', 'developing', '${category}')">📈</button>
+                    <button class="quick-btn improve tooltip" data-tip="Improve" onclick="quickSort(event, '${skill.id}', 'improve', '${category}')">🎯</button>
+                </div>
+            `;
+            return chip;
+        }
+        
+        function quickSort(event, skillId, bucket, category) {
+            event.stopPropagation();
+            const chip = document.querySelector(`[data-skill-id="${skillId}"]`);
+            const targetBucket = document.getElementById(`bucket-${category}-${bucket}`);
+            
+            // Remove quick sort buttons when in bucket
+            chip.classList.add('in-bucket');
+            const quickSort = chip.querySelector('.quick-sort');
+            if (quickSort) quickSort.remove();
+            
+            targetBucket.appendChild(chip);
+            updateProgress();
+            checkStepComplete(category);
+        }
+        
+        function setupDragAndDrop() {
+            // Make chips draggable
+            document.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('skill-chip')) {
+                    draggedElement = e.target;
+                    e.target.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                }
+            });
+            
+            document.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('skill-chip')) {
+                    e.target.classList.remove('dragging');
+                    draggedElement = null;
+                    document.querySelectorAll('.bucket').forEach(b => b.classList.remove('drag-over'));
+                }
+            });
+            
+            // Bucket drop zones
+            document.querySelectorAll('.bucket').forEach(bucket => {
+                bucket.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    bucket.classList.add('drag-over');
+                });
+                
+                bucket.addEventListener('dragleave', () => {
+                    bucket.classList.remove('drag-over');
+                });
+                
+                bucket.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    bucket.classList.remove('drag-over');
+                    
+                    if (draggedElement && bucket.dataset.category === draggedElement.dataset.category) {
+                        const bucketSkills = bucket.querySelector('.bucket-skills');
+                        draggedElement.classList.add('in-bucket');
+                        const quickSort = draggedElement.querySelector('.quick-sort');
+                        if (quickSort) quickSort.remove();
+                        bucketSkills.appendChild(draggedElement);
+                        updateProgress();
+                        checkStepComplete(draggedElement.dataset.category);
+                    }
+                });
+            });
+            
+            // Allow dropping back to pool
+            document.querySelectorAll('.pool-skills').forEach(pool => {
+                pool.addEventListener('dragover', (e) => e.preventDefault());
+                pool.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (draggedElement) {
+                        const category = pool.id.replace('poolSkills-', '');
+                        if (draggedElement.dataset.category === category) {
+                            draggedElement.classList.remove('in-bucket');
+                            // Re-add quick sort buttons
+                            if (!draggedElement.querySelector('.quick-sort')) {
+                                const skill = skills[category].find(s => s.id === draggedElement.dataset.skillId);
+                                const quickDiv = document.createElement('div');
+                                quickDiv.className = 'quick-sort';
+                                quickDiv.innerHTML = `
+                                    <button class="quick-btn strong tooltip" data-tip="Strong" onclick="quickSort(event, '${skill.id}', 'strong', '${category}')">💪</button>
+                                    <button class="quick-btn developing tooltip" data-tip="Developing" onclick="quickSort(event, '${skill.id}', 'developing', '${category}')">📈</button>
+                                    <button class="quick-btn improve tooltip" data-tip="Improve" onclick="quickSort(event, '${skill.id}', 'improve', '${category}')">🎯</button>
+                                `;
+                                draggedElement.appendChild(quickDiv);
+                            }
+                            pool.appendChild(draggedElement);
+                            updateProgress();
+                            checkStepComplete(category);
+                        }
+                    }
+                });
+            });
+        }
+        
+        function updateProgress() {
+            const total = 24;
+            let sorted = 0;
+            
+            ['thinking', 'collaborate', 'mindset'].forEach(cat => {
+                ['strong', 'developing', 'improve'].forEach(bucket => {
+                    sorted += document.getElementById(`bucket-${cat}-${bucket}`).children.length;
+                });
+            });
+            
+            const percent = (sorted / total) * 100;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+            document.getElementById('progressText').textContent = `${sorted} / ${total} sorted`;
+        }
+        
+        function checkStepComplete(category) {
+            const poolCount = document.getElementById(`poolSkills-${category}`).children.length;
+            document.getElementById(`count-${category}`).textContent = poolCount;
+            
+            const nextBtn = document.getElementById(`next-${category}`);
+            if (nextBtn) {
+                nextBtn.disabled = poolCount > 0;
+            }
+        }
+        
+        function nextStep() {
+            const steps = document.querySelectorAll('.step');
+            const dots = document.querySelectorAll('.step-dot');
+            const connectors = document.querySelectorAll('.step-connector');
+            
+            if (currentStep < steps.length - 1) {
+                steps[currentStep].classList.remove('active');
+                dots[currentStep].classList.remove('active');
+                dots[currentStep].classList.add('completed');
+                if (connectors[currentStep]) connectors[currentStep].classList.add('completed');
+                
+                currentStep++;
+                steps[currentStep].classList.add('active');
+                dots[currentStep].classList.add('active');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function prevStep() {
+            const steps = document.querySelectorAll('.step');
+            const dots = document.querySelectorAll('.step-dot');
+            const connectors = document.querySelectorAll('.step-connector');
+            
+            if (currentStep > 0) {
+                steps[currentStep].classList.remove('active');
+                dots[currentStep].classList.remove('active');
+                
+                currentStep--;
+                steps[currentStep].classList.add('active');
+                dots[currentStep].classList.add('active');
+                dots[currentStep].classList.remove('completed');
+                if (connectors[currentStep]) connectors[currentStep].classList.remove('completed');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function showResults() {
+            // Collect results
+            results.strong = [];
+            results.developing = [];
+            results.improve = [];
+            
+            ['thinking', 'collaborate', 'mindset'].forEach(cat => {
+                ['strong', 'developing', 'improve'].forEach(bucket => {
+                    const bucketEl = document.getElementById(`bucket-${cat}-${bucket}`);
+                    Array.from(bucketEl.children).forEach(chip => {
+                        results[bucket].push({
+                            name: chip.dataset.skillName,
+                            category: cat
+                        });
+                    });
+                });
+            });
+            
+            // Update UI
+            document.getElementById('result-strong').textContent = results.strong.length;
+            document.getElementById('result-developing').textContent = results.developing.length;
+            document.getElementById('result-improve').textContent = results.improve.length;
+            
+            // Populate lists
+            ['strong', 'developing', 'improve'].forEach(bucket => {
+                const list = document.getElementById(`list-${bucket}`);
+                list.innerHTML = results[bucket].length > 0 
+                    ? results[bucket].map(s => `<li>${s.name}</li>`).join('')
+                    : '<li style="color: var(--text); font-style: italic;">None</li>';
+            });
+            
+            // Generate recommendations
+            generateRecommendations();
+            
+            nextStep();
+        }
+        
+        function generateRecommendations() {
+            const content = document.getElementById('recommendation-content');
+            let html = '';
+            
+            if (results.improve.length > 0) {
+                const focus = results.improve[0];
+                html += `
+                    <div class="recommendation-item">
+                        <h4>🎯 Priority Focus: ${focus.name}</h4>
+                        <p>This skill is in your "need to improve" bucket. Consider dedicating focused time this month to develop it.</p>
+                    </div>
+                `;
+            }
+            
+            if (results.strong.length >= 5) {
+                html += `
+                    <div class="recommendation-item">
+                        <h4>💪 Leverage Your Strengths</h4>
+                        <p>You have ${results.strong.length} strong skills! Consider mentoring others or taking on projects that showcase these abilities.</p>
+                    </div>
+                `;
+            }
+            
+            const hasMetacognition = results.strong.some(s => s.name.includes('Metacognition'));
+            if (!hasMetacognition) {
+                html += `
+                    <div class="recommendation-item">
+                        <h4>⭐ The Crown Jewel</h4>
+                        <p>Metacognition — thinking about your thinking — is the most important skill for AI collaboration. Focus on developing self-awareness about your assumptions and biases.</p>
+                    </div>
+                `;
+            }
+            
+            if (results.developing.length > results.strong.length) {
+                html += `
+                    <div class="recommendation-item">
+                        <h4>📈 Growth Mindset</h4>
+                        <p>Most of your skills are in "developing" — that's a great place to be! You're actively growing. Pick one to push into "strong" this quarter.</p>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html || '<p>Great work completing the assessment! Review your results above.</p>';
+        }
+        
+        function resetAssessment() {
+            if (confirm('Start over? Your current progress will be lost.')) {
+                location.reload();
+            }
+        }
+        
+        function downloadResults() {
+            const date = new Date().toLocaleDateString();
+            let text = `Human Soft Skills Self-Assessment\nDate: ${date}\n\n`;
+            text += `STRONG SKILLS (${results.strong.length}):\n`;
+            results.strong.forEach(s => text += `- ${s.name}\n`);
+            text += `\nDEVELOPING (${results.developing.length}):\n`;
+            results.developing.forEach(s => text += `- ${s.name}\n`);
+            text += `\nNEED IMPROVEMENT (${results.improve.length}):\n`;
+            results.improve.forEach(s => text += `- ${s.name}\n`);
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'skills-assessment-results.txt';
+            a.click();
+        }
+        
+        // Step navigation clicks
+        document.querySelectorAll('.step-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const targetStep = parseInt(dot.dataset.step);
+                if (targetStep <= currentStep || dot.classList.contains('completed')) {
+                    const steps = document.querySelectorAll('.step');
+                    const dots = document.querySelectorAll('.step-dot');
+                    
+                    steps[currentStep].classList.remove('active');
+                    dots[currentStep].classList.remove('active');
+                    
+                    currentStep = targetStep;
+                    steps[currentStep].classList.add('active');
+                    dots[currentStep].classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
