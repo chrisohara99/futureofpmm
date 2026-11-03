@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Thinking Skills | Human Soft Skills | NextGen PMM</title>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --primary-light: #DDD6FE;
+            --primary-dark: #6D28D9;
+            --dark: #1e293b;
+            --text: #475569;
+            --line: #e5e7eb;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #fff; color: var(--dark); line-height: 1.6; }
+        
+        .page-header {
+            padding: 40px 28px 32px;
+            background: linear-gradient(180deg, var(--primary-light) 0%, #fff 100%);
+            border-bottom: 1px solid var(--line);
+        }
+        .page-header-inner { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 16px; }
+        .breadcrumb a { color: #0a6ed1; text-decoration: none; }
+        .breadcrumb .sep { margin: 0 6px; color: #ccc; }
+        .category-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--primary); color: #fff;
+            padding: 6px 14px; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600; margin-bottom: 12px;
+        }
+        .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .page-header .lead { font-size: 1.05rem; color: var(--text); }
+
+        main { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+        /* Honeycomb Grid */
+        .honeycomb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .hex-card {
+            background: var(--primary-light);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .hex-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+        }
+        .hex-card.active {
+            border-color: var(--dark);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .hex-icon { font-size: 2rem; margin-bottom: 12px; }
+        .hex-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--dark); }
+        .hex-desc { font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 40px;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+        .detail-panel.visible { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .detail-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+        .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        @media (max-width: 700px) { .detail-grid { grid-template-columns: 1fr; } }
+        .detail-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--line);
+        }
+        .detail-box h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .detail-box p { font-size: 0.95rem; color: var(--dark); margin: 0; }
+
+        /* Skills Table */
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .skills-table th {
+            background: var(--dark);
+            color: #fff;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .skills-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+        .skills-table tr:last-child td { border-bottom: none; }
+        .skills-table tr:hover td { background: #f8fafc; }
+        .skill-name { font-weight: 600; color: var(--primary); white-space: nowrap; }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 32px;
+            border-top: 1px solid var(--line);
+            margin-top: 40px;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .nav-btn.secondary { background: #f1f5f9; color: var(--dark); }
+        .nav-btn.secondary:hover { background: #e2e8f0; }
+        .nav-btn.primary { background: var(--primary); color: #fff; }
+        .nav-btn.primary:hover { background: var(--primary-dark); }
+
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 24px; text-align: center; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/">People</a>
+                <a href="/community/pulse/">PMM Pulse</a>
+                <a href="/community/spotlight/">PMM Spotlight</a>
+                <a href="/newsletters/">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page-header">
+    <div class="page-header-inner">
+        <div class="breadcrumb">
+            <a href="/">Home</a><span class="sep">›</span><a href="/human-skills/">Human Skills</a><span class="sep">›</span>Thinking
+        </div>
+        <div class="category-badge">🧠 Thinking</div>
+        <h1>Thinking Skills</h1>
+        <p class="lead">The cognitive skills that help you guide AI effectively — synthesis, judgement, critical thinking, and the "crown jewel" metacognition.</p>
+    </div>
+</div>
+
+<main>
+    <div class="honeycomb-grid">
+        <div class="hex-card" data-skill="stakeholder"><div class="hex-icon">👥</div><div class="hex-title">Stakeholder Management</div><div class="hex-desc">Address audiences correctly with right arguments & empathy</div></div>
+        <div class="hex-card" data-skill="systems"><div class="hex-icon">🔗</div><div class="hex-title">Systems Thinking</div><div class="hex-desc">Understand how things connect and influence each other</div></div>
+        <div class="hex-card" data-skill="synthesis"><div class="hex-icon">🧩</div><div class="hex-title">Synthesis</div><div class="hex-desc">Combine ideas from many sources into something meaningful</div></div>
+        <div class="hex-card" data-skill="decision"><div class="hex-icon">🎯</div><div class="hex-title">Decision Making</div><div class="hex-desc">AI gives options, humans choose the direction</div></div>
+        <div class="hex-card" data-skill="judgement"><div class="hex-icon">⚖️</div><div class="hex-title">Judgement & Trade-offs</div><div class="hex-desc">Decide what's relevant and what creates value</div></div>
+        <div class="hex-card" data-skill="factcheck"><div class="hex-icon">✓</div><div class="hex-title">Fact Checking</div><div class="hex-desc">Know what to verify and how to best do it</div></div>
+        <div class="hex-card" data-skill="critical"><div class="hex-icon">🔍</div><div class="hex-title">Critical Thinking</div><div class="hex-desc">Detect AI hallucinations, errors, and biases</div></div>
+        <div class="hex-card" data-skill="policies"><div class="hex-icon">📋</div><div class="hex-title">Embed Policies</div><div class="hex-desc">Know company and regulatory requirements</div></div>
+        <div class="hex-card" data-skill="ethics"><div class="hex-icon">🛡️</div><div class="hex-title">AI Ethics & Privacy</div><div class="hex-desc">Ensure bias-free, ethical, and private work</div></div>
+        <div class="hex-card" data-skill="metacognition"><div class="hex-icon">⭐</div><div class="hex-title">Metacognition</div><div class="hex-desc">The crown jewel: think about your own thinking</div></div>
+    </div>
+
+    <div class="detail-panel" id="detailPanel">
+        <h3 class="detail-title" id="detailTitle">Skill Name</h3>
+        <div class="detail-grid">
+            <div class="detail-box"><h4>What it's about</h4><p id="detailAbout"></p></div>
+            <div class="detail-box"><h4>What AI does</h4><p id="detailAI"></p></div>
+            <div class="detail-box"><h4>Why humans matter more</h4><p id="detailHuman"></p></div>
+        </div>
+    </div>
+
+    <h2 style="font-size: 1.25rem; margin-bottom: 20px;">All Thinking Skills</h2>
+    <table class="skills-table">
+        <thead><tr><th>Skill</th><th>What it's about</th><th>What AI does</th><th>Why humans matter more</th></tr></thead>
+        <tbody>
+            <tr><td class="skill-name">Stakeholder Management</td><td>Address audiences with right arguments & empathy</td><td>Simulates viewpoints but lacks real context</td><td>Know real dynamics, build trust, customize</td></tr>
+            <tr><td class="skill-name">Systems Thinking</td><td>Understand how things connect</td><td>Optimizes tasks, misses broader effects</td><td>See whole system, avoid unintended consequences</td></tr>
+            <tr><td class="skill-name">Synthesis</td><td>Combine ideas meaningfully</td><td>Creates fragments, info becomes siloed</td><td>Combine sources into coherent decisions</td></tr>
+            <tr><td class="skill-name">Decision Making</td><td>Steer AI, humans choose</td><td>Generates options and scenarios</td><td>Decide direction, when to act, which path</td></tr>
+            <tr><td class="skill-name">Judgement & Trade-offs</td><td>What's relevant, what creates value</td><td>Struggles when priorities conflict</td><td>Evaluate trade-offs: speed vs quality, cost vs risk</td></tr>
+            <tr><td class="skill-name">Fact Checking</td><td>Know what to verify and how</td><td>May misinterpret or hallucinate</td><td>Verify sources, check numbers and details</td></tr>
+            <tr><td class="skill-name">Critical Thinking</td><td>Detect errors, biases, hallucinations</td><td>Convincing while wrong</td><td>Challenge conclusions, identify logical gaps</td></tr>
+            <tr><td class="skill-name">Embed Policies</td><td>Know regulatory requirements</td><td>Can follow when instructed</td><td>Ensure compliance, apply rules correctly</td></tr>
+            <tr><td class="skill-name">AI Ethics & Privacy</td><td>Ensure bias-free, ethical work</td><td>Learns from potentially biased data</td><td>Review for bias, protect sensitive info</td></tr>
+            <tr><td class="skill-name">Metacognition ⭐</td><td>Think about your own thinking</td><td>May reinforce your biases</td><td>Reflect on assumptions, self-awareness is key</td></tr>
+        </tbody>
+    </table>
+
+    <div class="nav-buttons">
+        <a href="/human-skills/" class="nav-btn secondary">← Back to Overview</a>
+        <a href="/human-skills/collaborate.html" class="nav-btn primary">Next: Collaborate with AI →</a>
+    </div>
+</main>
+
+<footer><p>© 2026 NextGen PMM · SAP Product Marketing</p></footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+const skills = {
+    stakeholder: { title: "Stakeholder Management", about: "Ability to address the audience correctly — right arguments, empathy, etc.", ai: "AI can tailor communication styles and simulate stakeholder viewpoints. But it doesn't know your specific stakeholders, their relationships, context, or background.", human: "Humans know what matters to stakeholders, can anticipate reactions, build trust, and customize output to be specific rather than generic." },
+    systems: { title: "Systems Thinking", about: "Understand how things connect and influence each other.", ai: "AI often optimizes one task but misses the broader context and downstream effects. Individual solutions might harm other pieces of work.", human: "Humans understand the whole system, make cross-connections, anticipate downstream impacts, and avoid unintended consequences." },
+    synthesis: { title: "Synthesis", about: "Ability to combine ideas from many sources into something meaningful.", ai: "AI creates many ideas, analyses and viewpoints but delivers fragments. Information becomes abundant but siloed.", human: "Humans combine different sources meaningfully — customer feedback, research, strategy, experience — into coherent decisions and narratives." },
+    decision: { title: "Decision Making", about: "Ability to steer AI. AI gives options, humans choose.", ai: "AI can generate options, recommendations, scenarios and next steps. But AI needs direction.", human: "Humans decide which direction AI research should go, when enough info has been gathered, and which path to pursue." },
+    judgement: { title: "Judgement & Trade-off Thinking", about: "Ability to decide what's relevant, what matters, what creates value.", ai: "AI can generate many options but struggles to decide what matters most when goals conflict or priorities contradict.", human: "Good judgement becomes more valuable. Humans evaluate meaningful trade-offs: speed over quality, costs over risk, etc." },
+    factcheck: { title: "Fact Checking", about: "Know what to fact check and how to best do it.", ai: "AI does excellent summaries but output might misinterpret, hallucinate, or fabricate details.", human: "Verification becomes a core human skill: look through AI output, check source documents, verify numbers and details." },
+    critical: { title: "Critical Thinking", about: "Ability to detect AI hallucinations, errors, made-up interpretations, biases.", ai: "AI can be very convincing while being wrong. It may make mistakes, overlook context, introduce bias or draw incorrect conclusions.", human: "As AI becomes more convincing, humans must actively challenge conclusions, evaluate evidence, and identify logical gaps." },
+    policies: { title: "Embed Policies", about: "Be familiar with relevant company, state, and regulatory policies.", ai: "AI can follow policies when instructed but doesn't reliably know which company, regulatory, or legal requirements apply.", human: "Humans must ensure compliance — know EU AI labeling rules, company policies, and apply them correctly." },
+    ethics: { title: "AI Ethics, Bias, Privacy", about: "Ensure work results are free from bias, follow good business ethics, respect privacy rules.", ai: "AI learns patterns from large amounts of data — doesn't know when it's biased or violating privacy rules not in training data.", human: "Handle input carefully, don't provide personal data, review outputs for bias, protect sensitive information." },
+    metacognition: { title: "Metacognition ⭐", about: "The crown jewel: think about your own thinking — assumptions, evidence needed to change your mind.", ai: "AI can be biased, make incorrect assumptions, and reinforce existing beliefs — very confidently. AI agreeing doesn't mean you're right.", human: "Reflect on your own thinking: are you anchoring on AI's first answer? What evidence would change your mind? The more AI becomes a thinking partner, the more important self-awareness becomes." }
+};
+
+document.querySelectorAll('.hex-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.hex-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        const skill = skills[card.dataset.skill];
+        document.getElementById('detailTitle').textContent = skill.title;
+        document.getElementById('detailAbout').textContent = skill.about;
+        document.getElementById('detailAI').textContent = skill.ai;
+        document.getElementById('detailHuman').textContent = skill.human;
+        document.getElementById('detailPanel').classList.add('visible');
+    });
+});
+</script>
+</body>
+</html>
