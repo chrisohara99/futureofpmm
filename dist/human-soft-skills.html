@@ -9,19 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Match Simone's PowerPoint colors */
-            --thinking: #9333EA;
-            --thinking-light: #E9D5FF;
-            --thinking-fill: #F3E8FF;
-            --collaborate: #16A34A;
-            --collaborate-light: #BBF7D0;
-            --collaborate-fill: #DCFCE7;
-            --mindset: #0EA5E9;
-            --mindset-light: #BAE6FD;
-            --mindset-fill: #E0F2FE;
+            /* Match Simone's PowerPoint colors exactly */
+            --thinking: #C4B5FD;
+            --thinking-dark: #7C3AED;
+            --collaborate: #86EFAC;
+            --collaborate-dark: #16A34A;
+            --mindset: #93C5FD;
+            --mindset-dark: #2563EB;
             --dark: #1e293b;
-            --text: #475569;
-            --light: #f8fafc;
+            --text: #374151;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,16 +26,15 @@
             font-family: 'Inter', -apple-system, sans-serif;
             background: #fff;
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.5;
         }
         
-        /* Header */
         .header {
             background: var(--dark);
             padding: 1rem 2rem;
         }
         .header-inner {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -47,147 +42,118 @@
         }
         .logo img { height: 60px; }
         .back-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; }
-        .back-link:hover { color: white; }
         
-        /* Hero */
+        /* Hero matching PowerPoint */
         .hero {
-            padding: 3rem 2rem;
-            text-align: center;
-            background: linear-gradient(180deg, #fff 0%, var(--light) 100%);
-            border-bottom: 1px solid #e5e7eb;
+            padding: 2.5rem 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         .hero h1 {
-            font-size: 2.25rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--dark);
+            margin-bottom: 0.5rem;
         }
         .hero p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--text);
-            max-width: 600px;
+        }
+        
+        /* Main container */
+        .map-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem 3rem;
+            position: relative;
+        }
+        
+        /* Badge like PowerPoint */
+        .map-badge {
+            position: absolute;
+            top: 0;
+            right: 2rem;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 0;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(12deg);
+            line-height: 1.3;
+            text-align: center;
+        }
+        .map-badge span {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 400;
+        }
+        
+        /* Honeycomb SVG Container */
+        .honeycomb-svg-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+        
+        .honeycomb-svg {
+            min-width: 1100px;
+            height: auto;
+            display: block;
             margin: 0 auto;
         }
         
-        /* Key Insight */
-        .insight {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-            border-left: 4px solid #F59E0B;
-            border-radius: 0 12px 12px 0;
+        /* Hexagon styles */
+        .hex-thinking { fill: var(--thinking); }
+        .hex-collaborate { fill: var(--collaborate); }
+        .hex-mindset { fill: var(--mindset); }
+        
+        .hex-group {
+            cursor: pointer;
+            transition: transform 0.15s;
         }
-        .insight p {
-            font-size: 1.15rem;
-            color: #78350F;
-            margin: 0;
-            text-align: center;
+        .hex-group:hover {
+            filter: brightness(0.95);
         }
-        .insight strong { color: #92400E; }
+        .hex-group:hover polygon {
+            stroke: #333;
+            stroke-width: 2;
+        }
+        
+        .hex-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            fill: var(--dark);
+        }
+        
+        .hex-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 7px;
+            fill: #555;
+        }
         
         /* Legend */
         .legend {
             display: flex;
-            justify-content: center;
-            gap: 3rem;
-            padding: 1.5rem;
-            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-left: 1rem;
         }
         .legend-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
-        .legend-dot {
-            width: 20px;
-            height: 20px;
+        .legend-shape {
+            width: 30px;
+            height: 26px;
             border-radius: 4px;
+            border: 2px solid;
         }
-        .legend-dot.thinking { background: var(--thinking-light); border: 2px solid var(--thinking); }
-        .legend-dot.collaborate { background: var(--collaborate-light); border: 2px solid var(--collaborate); }
-        .legend-dot.mindset { background: var(--mindset-light); border: 2px solid var(--mindset); }
-        
-        /* Honeycomb Container */
-        .honeycomb-section {
-            padding: 2rem;
-            overflow-x: auto;
-        }
-        
-        .honeycomb-wrapper {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        
-        /* CSS Honeycomb Grid - matching PowerPoint layout */
-        .honeycomb-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            padding: 20px;
-        }
-        
-        .hex-row {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-        
-        .hex-row.offset {
-            margin-left: 55px;
-        }
-        
-        .hexagon {
-            width: 100px;
-            height: 115px;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .hexagon:hover {
-            transform: scale(1.08);
-            z-index: 10;
-        }
-        
-        .hexagon svg {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .hex-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            width: 85%;
-            pointer-events: none;
-        }
-        
-        .hex-title {
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: var(--dark);
-            line-height: 1.2;
-            margin-bottom: 2px;
-        }
-        
-        .hex-sub {
-            font-size: 0.5rem;
-            color: var(--text);
-            line-height: 1.2;
-        }
-        
-        .hexagon.thinking .hex-bg { fill: var(--thinking-fill); stroke: var(--thinking); stroke-width: 2; }
-        .hexagon.collaborate .hex-bg { fill: var(--collaborate-fill); stroke: var(--collaborate); stroke-width: 2; }
-        .hexagon.mindset .hex-bg { fill: var(--mindset-fill); stroke: var(--mindset); stroke-width: 2; }
-        
-        .hexagon:hover .hex-bg { stroke-width: 3; }
+        .legend-shape.thinking { background: var(--thinking); border-color: var(--thinking-dark); }
+        .legend-shape.collaborate { background: var(--collaborate); border-color: var(--collaborate-dark); }
+        .legend-shape.mindset { background: var(--mindset); border-color: var(--mindset-dark); }
         
         /* Skill Detail Panel */
         .skill-panel {
@@ -196,248 +162,102 @@
             padding: 0 2rem;
             display: none;
         }
-        
-        .skill-panel.visible {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .skill-panel.visible { display: block; }
         
         .panel-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-top: 4px solid var(--thinking);
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--thinking-dark);
         }
-        
-        .panel-card.thinking { border-top-color: var(--thinking); }
-        .panel-card.collaborate { border-top-color: var(--collaborate); }
-        .panel-card.mindset { border-top-color: var(--mindset); }
+        .panel-card.thinking { border-left-color: var(--thinking-dark); }
+        .panel-card.collaborate { border-left-color: var(--collaborate-dark); }
+        .panel-card.mindset { border-left-color: var(--mindset-dark); }
         
         .panel-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
-        
         .panel-badge {
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
             font-weight: 600;
         }
-        .panel-badge.thinking { background: var(--thinking-light); color: var(--thinking); }
-        .panel-badge.collaborate { background: var(--collaborate-light); color: var(--collaborate); }
-        .panel-badge.mindset { background: var(--mindset-light); color: var(--mindset); }
+        .panel-badge.thinking { background: var(--thinking); color: var(--thinking-dark); }
+        .panel-badge.collaborate { background: var(--collaborate); color: var(--collaborate-dark); }
+        .panel-badge.mindset { background: var(--mindset); color: var(--mindset-dark); }
         
-        .panel-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
+        .panel-title { font-size: 1.25rem; font-weight: 700; }
         
         .panel-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
         }
-        
-        @media (max-width: 700px) {
-            .panel-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 700px) { .panel-grid { grid-template-columns: 1fr; } }
         
         .panel-box {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 1.25rem;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
         }
-        
         .panel-box h4 {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text);
-            margin-bottom: 0.5rem;
+            color: #666;
+            margin-bottom: 0.4rem;
         }
-        
         .panel-box p {
             font-size: 0.9rem;
-            color: var(--dark);
             margin: 0;
-            line-height: 1.5;
         }
-        
-        /* Tables Section */
-        .tables-section {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 2rem;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-        }
-        
-        .category-block {
-            margin-bottom: 2.5rem;
-        }
-        
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        
-        .category-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-        .category-icon.thinking { background: var(--thinking-light); }
-        .category-icon.collaborate { background: var(--collaborate-light); }
-        .category-icon.mindset { background: var(--mindset-light); }
-        
-        .category-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        .category-name.thinking { color: var(--thinking); }
-        .category-name.collaborate { color: var(--collaborate); }
-        .category-name.mindset { color: var(--mindset); }
-        
-        .skills-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        
-        .skills-table th {
-            background: var(--dark);
-            color: white;
-            padding: 0.9rem 1rem;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        .skills-table td {
-            padding: 0.9rem 1rem;
-            border-bottom: 1px solid #e5e7eb;
-            vertical-align: top;
-        }
-        
-        .skills-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .skills-table tr:hover td {
-            background: var(--light);
-        }
-        
-        .skill-name {
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .thinking .skill-name { color: var(--thinking); }
-        .collaborate .skill-name { color: var(--collaborate); }
-        .mindset .skill-name { color: var(--mindset); }
         
         /* CTA */
         .cta-section {
             max-width: 800px;
-            margin: 3rem auto;
-            padding: 2rem;
+            margin: 2rem auto;
+            padding: 0 2rem;
         }
-        
         .cta-card {
-            background: linear-gradient(135deg, #F3E8FF 0%, #E0F2FE 100%);
-            border-radius: 16px;
-            padding: 2rem;
+            background: linear-gradient(135deg, #EDE9FE 0%, #DBEAFE 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
             display: flex;
             align-items: center;
             gap: 1.5rem;
             flex-wrap: wrap;
         }
-        
-        .cta-icon {
-            font-size: 3rem;
-        }
-        
-        .cta-content {
-            flex: 1;
-            min-width: 250px;
-        }
-        
-        .cta-content h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .cta-content p {
-            color: var(--text);
-            margin: 0;
-        }
-        
+        .cta-icon { font-size: 2.5rem; }
+        .cta-content { flex: 1; min-width: 200px; }
+        .cta-content h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .cta-content p { color: var(--text); margin: 0; font-size: 0.9rem; }
         .cta-btn {
-            display: inline-block;
-            background: var(--thinking);
+            background: var(--thinking-dark);
             color: white;
-            padding: 0.9rem 1.75rem;
-            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
-            transition: background 0.2s;
+            font-size: 0.9rem;
         }
+        .cta-btn:hover { background: #6D28D9; }
         
-        .cta-btn:hover {
-            background: #7C3AED;
-        }
-        
-        /* Attribution */
         .attribution {
             text-align: center;
-            padding: 2rem;
-            color: var(--text);
-            font-size: 0.9rem;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.85rem;
         }
         
         footer {
             background: var(--dark);
             color: rgba(255,255,255,0.6);
-            padding: 2rem;
+            padding: 1.5rem;
             text-align: center;
-            font-size: 0.85rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 900px) {
-            .hexagon { width: 85px; height: 98px; }
-            .hex-title { font-size: 0.55rem; }
-            .hex-sub { font-size: 0.45rem; }
-            .hex-row.offset { margin-left: 46px; }
-        }
-        
-        @media (max-width: 600px) {
-            .hexagon { width: 70px; height: 81px; }
-            .hex-title { font-size: 0.5rem; }
-            .hex-row.offset { margin-left: 38px; }
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -450,139 +270,279 @@
     </header>
     
     <section class="hero">
-        <h1>Human Soft Skills Map</h1>
-        <p>The capabilities that become even more valuable when AI does more of the execution.</p>
+        <h1>Humans guide and decide what matters. AI produces content.</h1>
+        <p>The human soft skills map focuses on the human capabilities that become even more valuable when AI does more of the execution.</p>
     </section>
     
-    <div class="insight">
-        <p><strong>Humans guide and decide what matters. AI produces content.</strong><br>It's always a plus+ — not AI <em>or</em> human.</p>
-    </div>
-    
-    <div class="legend">
-        <div class="legend-item"><div class="legend-dot thinking"></div> Thinking</div>
-        <div class="legend-item"><div class="legend-dot collaborate"></div> Collaborate with AI</div>
-        <div class="legend-item"><div class="legend-dot mindset"></div> Mindset</div>
-    </div>
-    
-    <section class="honeycomb-section" id="honeycomb">
-        <div class="honeycomb-wrapper">
-            <!-- Row 1 -->
-            <div class="hex-row">
-                <div class="hexagon thinking" data-skill="stakeholder">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Stakeholder Management</div></div>
-                </div>
-                <div class="hexagon thinking" data-skill="systems">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Systems Thinking</div></div>
-                </div>
-                <div class="hexagon thinking" data-skill="decision">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Decision Making</div></div>
-                </div>
-                <div class="hexagon collaborate" data-skill="speedread">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Speed Reading</div><div class="hex-sub">Info Triage</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="metacognition">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Metacognition</div><div class="hex-sub">⭐ Crown Jewel</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="loops">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Refinement Loops</div></div>
-                </div>
-            </div>
-            
-            <!-- Row 2 (offset) -->
-            <div class="hex-row offset">
-                <div class="hexagon thinking" data-skill="judgement">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Judgement & Trade-offs</div></div>
-                </div>
-                <div class="hexagon thinking" data-skill="synthesis">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Synthesis</div></div>
-                </div>
-                <div class="hexagon collaborate" data-skill="context">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Context Building</div></div>
-                </div>
-                <div class="hexagon collaborate" data-skill="questions">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Asking Good Questions</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="editing">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Editing & Refinement</div></div>
-                </div>
-            </div>
-            
-            <!-- Row 3 -->
-            <div class="hex-row">
-                <div class="hexagon thinking" data-skill="critical">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Critical Thinking</div><div class="hex-sub">Healthy Skepticism</div></div>
-                </div>
-                <div class="hexagon thinking" data-skill="factcheck">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Fact Checking</div></div>
-                </div>
-                <div class="hexagon thinking" data-skill="ethics">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">AI Ethics, Bias, Privacy</div></div>
-                </div>
-                <div class="hexagon collaborate" data-skill="problem">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Problem Framing</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="humility">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Intellectual Humility</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="curiosity">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Curiosity</div></div>
-                </div>
-            </div>
-            
-            <!-- Row 4 (offset) -->
-            <div class="hex-row offset">
-                <div class="hexagon thinking" data-skill="policies">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Embed Policies</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="culture">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">AI Culture</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="sustainability">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Sustainability Awareness</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="communication">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Communication about AI</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="creativity">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Human Creativity</div></div>
-                </div>
-            </div>
-            
-            <!-- Row 5 -->
-            <div class="hex-row">
-                <div class="hexagon mindset" data-skill="independence">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Cognitive Independence</div></div>
-                </div>
-                <div class="hexagon mindset" data-skill="patience">
-                    <svg viewBox="0 0 100 115"><polygon class="hex-bg" points="50,2 95,28 95,87 50,113 5,87 5,28"/></svg>
-                    <div class="hex-content"><div class="hex-title">Patience</div></div>
-                </div>
-            </div>
+    <div class="map-container">
+        <div class="map-badge">HUMAN SOFT<br>SKILLS MAP<span>for PMMs</span></div>
+        
+        <div class="honeycomb-svg-container">
+            <svg class="honeycomb-svg" viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg">
+                <!-- Row 1 -->
+                <!-- Decision making -->
+                <g class="hex-group" data-skill="decision" transform="translate(280, 10)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Decision</text>
+                    <text class="hex-title" x="50" y="48" text-anchor="middle">making</text>
+                    <text class="hex-desc" x="50" y="60" text-anchor="middle">(ability to steer AI.</text>
+                    <text class="hex-desc" x="50" y="68" text-anchor="middle">AI gives options.</text>
+                    <text class="hex-desc" x="50" y="76" text-anchor="middle">Humans choose)</text>
+                </g>
+                
+                <!-- Metacognition -->
+                <g class="hex-group" data-skill="metacognition" transform="translate(470, 10)">
+                    <polygon class="hex-mindset" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Metacognition</text>
+                    <text class="hex-desc" x="50" y="47" text-anchor="middle">(the crown jewel:</text>
+                    <text class="hex-desc" x="50" y="55" text-anchor="middle">think about your</text>
+                    <text class="hex-desc" x="50" y="63" text-anchor="middle">own thinking –</text>
+                    <text class="hex-desc" x="50" y="71" text-anchor="middle">your assumptions,</text>
+                    <text class="hex-desc" x="50" y="79" text-anchor="middle">evidence needed)</text>
+                </g>
+                
+                <!-- Refinement loops -->
+                <g class="hex-group" data-skill="loops" transform="translate(660, 10)">
+                    <polygon class="hex-mindset" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Refinement-</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">loops</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(build an iterative</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">mindset: prompt ></text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">evaluate > adjust</text>
+                    <text class="hex-desc" x="50" y="82" text-anchor="middle">> repeat)</text>
+                </g>
+                
+                <!-- Row 2 -->
+                <!-- Stakeholder management -->
+                <g class="hex-group" data-skill="stakeholder" transform="translate(100, 75)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Stakeholder</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">management</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(ability to address</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">the audience</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">correctly – right</text>
+                    <text class="hex-desc" x="50" y="82" text-anchor="middle">arguments, etc)</text>
+                </g>
+                
+                <!-- Systems thinking -->
+                <g class="hex-group" data-skill="systems" transform="translate(190, 75)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Systems</text>
+                    <text class="hex-title" x="50" y="48" text-anchor="middle">thinking</text>
+                    <text class="hex-desc" x="50" y="61" text-anchor="middle">(understand how</text>
+                    <text class="hex-desc" x="50" y="69" text-anchor="middle">things connect)</text>
+                </g>
+                
+                <!-- Speed reading -->
+                <g class="hex-group" data-skill="speedread" transform="translate(370, 75)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="32" text-anchor="middle">Speed reading/</text>
+                    <text class="hex-title" x="50" y="42" text-anchor="middle">Information</text>
+                    <text class="hex-title" x="50" y="52" text-anchor="middle">triage</text>
+                    <text class="hex-desc" x="50" y="64" text-anchor="middle">(ability to identify</text>
+                    <text class="hex-desc" x="50" y="72" text-anchor="middle">important info in</text>
+                    <text class="hex-desc" x="50" y="80" text-anchor="middle">long texts, fast)</text>
+                </g>
+                
+                <!-- Editing and refinement -->
+                <g class="hex-group" data-skill="editing" transform="translate(560, 75)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Editing and</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">refinement</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(ability to refine</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">prompts and AI</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">results to enhance</text>
+                    <text class="hex-desc" x="50" y="82" text-anchor="middle">outcomes)</text>
+                </g>
+                
+                <!-- Intellectual humility -->
+                <g class="hex-group" data-skill="humility" transform="translate(750, 75)">
+                    <polygon class="hex-mindset" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Intellectual</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">humility</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(willingness to be</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">incorrect – AI</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">agreeing with you</text>
+                    <text class="hex-desc" x="50" y="82" text-anchor="middle">doesn't mean right)</text>
+                </g>
+                
+                <!-- Row 3 -->
+                <!-- Judgement -->
+                <g class="hex-group" data-skill="judgement" transform="translate(235, 150)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="32" text-anchor="middle">Judgement &</text>
+                    <text class="hex-title" x="50" y="42" text-anchor="middle">trade-off</text>
+                    <text class="hex-title" x="50" y="52" text-anchor="middle">thinking</text>
+                    <text class="hex-desc" x="50" y="64" text-anchor="middle">(ability to decide</text>
+                    <text class="hex-desc" x="50" y="72" text-anchor="middle">what's relevant/</text>
+                    <text class="hex-desc" x="50" y="80" text-anchor="middle">matters)</text>
+                </g>
+                
+                <!-- Context building -->
+                <g class="hex-group" data-skill="context" transform="translate(415, 150)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Context</text>
+                    <text class="hex-title" x="50" y="48" text-anchor="middle">building</text>
+                    <text class="hex-desc" x="50" y="61" text-anchor="middle">(give AI the right</text>
+                    <text class="hex-desc" x="50" y="69" text-anchor="middle">background –</text>
+                    <text class="hex-desc" x="50" y="77" text-anchor="middle">enough, not much)</text>
+                </g>
+                
+                <!-- Asking good questions -->
+                <g class="hex-group" data-skill="questions" transform="translate(505, 150)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Asking good</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">questions</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(ability to ask</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">good, neutral</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">questions to</text>
+                    <text class="hex-desc" x="50" y="82" text-anchor="middle">maximize AI output)</text>
+                </g>
+                
+                <!-- Curiosity -->
+                <g class="hex-group" data-skill="curiosity" transform="translate(700, 150)">
+                    <polygon class="hex-mindset" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="42" text-anchor="middle">Curiosity</text>
+                    <text class="hex-desc" x="50" y="56" text-anchor="middle">(willingness to</text>
+                    <text class="hex-desc" x="50" y="64" text-anchor="middle">experiment with</text>
+                    <text class="hex-desc" x="50" y="72" text-anchor="middle">and thru AI)</text>
+                </g>
+                
+                <!-- Patience -->
+                <g class="hex-group" data-skill="patience" transform="translate(795, 150)">
+                    <polygon class="hex-mindset" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Patience</text>
+                    <text class="hex-desc" x="50" y="51" text-anchor="middle">(learning to</text>
+                    <text class="hex-desc" x="50" y="59" text-anchor="middle">collaborate with</text>
+                    <text class="hex-desc" x="50" y="67" text-anchor="middle">AI is a new skill</text>
+                    <text class="hex-desc" x="50" y="75" text-anchor="middle">and needs</text>
+                    <text class="hex-desc" x="50" y="83" text-anchor="middle">patience)</text>
+                </g>
+                
+                <!-- Row 4 -->
+                <!-- Synthesis -->
+                <g class="hex-group" data-skill="synthesis" transform="translate(145, 225)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="40" text-anchor="middle">Synthesis</text>
+                    <text class="hex-desc" x="50" y="54" text-anchor="middle">(ability to combine</text>
+                    <text class="hex-desc" x="50" y="62" text-anchor="middle">ideas from many</text>
+                    <text class="hex-desc" x="50" y="70" text-anchor="middle">sources)</text>
+                </g>
+                
+                <!-- Healthy skepticism -->
+                <g class="hex-group" data-skill="critical" transform="translate(325, 225)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="28" text-anchor="middle">Healthy</text>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">skepticism/</text>
+                    <text class="hex-title" x="50" y="48" text-anchor="middle">Critical thinking</text>
+                    <text class="hex-desc" x="50" y="60" text-anchor="middle">(ability to detect</text>
+                    <text class="hex-desc" x="50" y="68" text-anchor="middle">AI hallucinations,</text>
+                    <text class="hex-desc" x="50" y="76" text-anchor="middle">errors, biases, etc)</text>
+                </g>
+                
+                <!-- Problem framing -->
+                <g class="hex-group" data-skill="problem" transform="translate(460, 225)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Problem</text>
+                    <text class="hex-title" x="50" y="48" text-anchor="middle">framing</text>
+                    <text class="hex-desc" x="50" y="61" text-anchor="middle">(AI can solve</text>
+                    <text class="hex-desc" x="50" y="69" text-anchor="middle">wrong problems</text>
+                    <text class="hex-desc" x="50" y="77" text-anchor="middle">beautifully – but</text>
+                    <text class="hex-desc" x="50" y="85" text-anchor="middle">humans define)</text>
+                </g>
+                
+                <!-- Human creativity -->
+                <g class="hex-group" data-skill="creativity" transform="translate(550, 225)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Human</text>
+                    <text class="hex-title" x="50" y="48" text-anchor="middle">creativity</text>
+                    <text class="hex-desc" x="50" y="61" text-anchor="middle">(keep your human</text>
+                    <text class="hex-desc" x="50" y="69" text-anchor="middle">creativity! It set's</text>
+                    <text class="hex-desc" x="50" y="77" text-anchor="middle">you apart and</text>
+                    <text class="hex-desc" x="50" y="85" text-anchor="middle">makes AI better)</text>
+                </g>
+                
+                <!-- Cognitive independence -->
+                <g class="hex-group" data-skill="independence" transform="translate(655, 225)">
+                    <polygon class="hex-mindset" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Cognitive</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">independence</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(find your</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">human/AI</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">balance)</text>
+                </g>
+                
+                <!-- Row 5 -->
+                <!-- Fact checking -->
+                <g class="hex-group" data-skill="factcheck" transform="translate(280, 300)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="38" text-anchor="middle">Fact checking</text>
+                    <text class="hex-desc" x="50" y="52" text-anchor="middle">(know what to fact</text>
+                    <text class="hex-desc" x="50" y="60" text-anchor="middle">check and how to</text>
+                    <text class="hex-desc" x="50" y="68" text-anchor="middle">best do it)</text>
+                </g>
+                
+                <!-- AI Ethics -->
+                <g class="hex-group" data-skill="ethics" transform="translate(370, 300)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="30" text-anchor="middle">AI Ethics, Bias,</text>
+                    <text class="hex-title" x="50" y="40" text-anchor="middle">Privacy</text>
+                    <text class="hex-desc" x="50" y="53" text-anchor="middle">(ensure work</text>
+                    <text class="hex-desc" x="50" y="61" text-anchor="middle">results are free</text>
+                    <text class="hex-desc" x="50" y="69" text-anchor="middle">from bias, follow</text>
+                    <text class="hex-desc" x="50" y="77" text-anchor="middle">good business</text>
+                    <text class="hex-desc" x="50" y="85" text-anchor="middle">ethics)</text>
+                </g>
+                
+                <!-- Sustainability -->
+                <g class="hex-group" data-skill="sustainability" transform="translate(460, 300)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Sustainability</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">Awareness</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(think about the</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">environmental</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">impact of your AI</text>
+                    <text class="hex-desc" x="50" y="82" text-anchor="middle">usage)</text>
+                </g>
+                
+                <!-- Communication about AI -->
+                <g class="hex-group" data-skill="communication" transform="translate(550, 300)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Communication</text>
+                    <text class="hex-title" x="50" y="45" text-anchor="middle">about AI</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">(be a positive</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">representative of</text>
+                    <text class="hex-desc" x="50" y="74" text-anchor="middle">our AI culture)</text>
+                </g>
+                
+                <!-- Row 6 -->
+                <!-- Embed policies -->
+                <g class="hex-group" data-skill="policies" transform="translate(325, 375)">
+                    <polygon class="hex-thinking" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="35" text-anchor="middle">Embed policies</text>
+                    <text class="hex-desc" x="50" y="50" text-anchor="middle">(be familiar with</text>
+                    <text class="hex-desc" x="50" y="58" text-anchor="middle">relevant company</text>
+                    <text class="hex-desc" x="50" y="66" text-anchor="middle">and state policies)</text>
+                </g>
+                
+                <!-- AI culture -->
+                <g class="hex-group" data-skill="culture" transform="translate(415, 375)">
+                    <polygon class="hex-collaborate" points="50,0 93,25 93,75 50,100 7,75 7,25"/>
+                    <text class="hex-title" x="50" y="40" text-anchor="middle">AI culture</text>
+                    <text class="hex-desc" x="50" y="54" text-anchor="middle">(support the team</text>
+                    <text class="hex-desc" x="50" y="62" text-anchor="middle">culture of how and</text>
+                    <text class="hex-desc" x="50" y="70" text-anchor="middle">when we use AI)</text>
+                </g>
+            </svg>
         </div>
-    </section>
+        
+        <!-- Legend matching PowerPoint -->
+        <div class="legend">
+            <div class="legend-item"><div class="legend-shape thinking"></div> Thinking</div>
+            <div class="legend-item"><div class="legend-shape mindset"></div> Mindset</div>
+            <div class="legend-item"><div class="legend-shape collaborate"></div> Collaborate with AI</div>
+        </div>
+    </div>
     
     <!-- Skill Detail Panel -->
     <div class="skill-panel" id="skillPanel">
@@ -592,95 +552,12 @@
                 <h3 class="panel-title" id="panelTitle">Skill Name</h3>
             </div>
             <div class="panel-grid">
-                <div class="panel-box">
-                    <h4>What it's about</h4>
-                    <p id="panelAbout">Description...</p>
-                </div>
-                <div class="panel-box">
-                    <h4>What AI does</h4>
-                    <p id="panelAI">AI capabilities...</p>
-                </div>
-                <div class="panel-box">
-                    <h4>Why humans matter more</h4>
-                    <p id="panelHuman">Human value...</p>
-                </div>
+                <div class="panel-box"><h4>What it's about</h4><p id="panelAbout"></p></div>
+                <div class="panel-box"><h4>What AI does</h4><p id="panelAI"></p></div>
+                <div class="panel-box"><h4>Why humans matter more</h4><p id="panelHuman"></p></div>
             </div>
         </div>
     </div>
-    
-    <!-- Detailed Tables -->
-    <section class="tables-section">
-        <h2 class="section-title">All Skills by Category</h2>
-        
-        <!-- Thinking -->
-        <div class="category-block thinking">
-            <div class="category-header">
-                <div class="category-icon thinking">🧠</div>
-                <span class="category-name thinking">Thinking (10 skills)</span>
-            </div>
-            <table class="skills-table">
-                <thead>
-                    <tr><th>Skill</th><th>What it's about</th><th>What AI does</th><th>Why humans matter more</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td class="skill-name">Stakeholder Management</td><td>Address audiences with right arguments & empathy</td><td>Simulates viewpoints but lacks real context</td><td>Know real dynamics, build trust, customize</td></tr>
-                    <tr><td class="skill-name">Systems Thinking</td><td>How things connect and influence each other</td><td>Optimizes tasks, misses broader effects</td><td>See whole system, avoid unintended consequences</td></tr>
-                    <tr><td class="skill-name">Synthesis</td><td>Combine ideas meaningfully</td><td>Creates fragments, info becomes siloed</td><td>Combine sources into coherent decisions</td></tr>
-                    <tr><td class="skill-name">Decision Making</td><td>Steer AI, humans choose</td><td>Generates options and scenarios</td><td>Decide direction, when to act, which path</td></tr>
-                    <tr><td class="skill-name">Judgement & Trade-offs</td><td>What's relevant, what creates value</td><td>Struggles when priorities conflict</td><td>Evaluate trade-offs: speed vs quality, cost vs risk</td></tr>
-                    <tr><td class="skill-name">Fact Checking</td><td>Know what to verify and how</td><td>May misinterpret or hallucinate</td><td>Verify sources, check numbers and details</td></tr>
-                    <tr><td class="skill-name">Critical Thinking</td><td>Detect errors, biases, hallucinations</td><td>Convincing while wrong</td><td>Challenge conclusions, identify logical gaps</td></tr>
-                    <tr><td class="skill-name">Embed Policies</td><td>Know regulatory requirements</td><td>Can follow when instructed</td><td>Ensure compliance, apply rules correctly</td></tr>
-                    <tr><td class="skill-name">AI Ethics & Privacy</td><td>Ensure bias-free, ethical work</td><td>Learns from potentially biased data</td><td>Review for bias, protect sensitive info</td></tr>
-                    <tr><td class="skill-name">Metacognition ⭐</td><td>Think about your own thinking</td><td>May reinforce your biases</td><td>Reflect on assumptions, self-awareness is key</td></tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- Collaborate -->
-        <div class="category-block collaborate">
-            <div class="category-header">
-                <div class="category-icon collaborate">🤝</div>
-                <span class="category-name collaborate">Collaborate with AI (5 skills)</span>
-            </div>
-            <table class="skills-table">
-                <thead>
-                    <tr><th>Skill</th><th>What it's about</th><th>What AI does</th><th>Why humans matter more</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td class="skill-name">Speed Reading / Info Triage</td><td>Identify important info fast</td><td>Generates massive amounts in seconds</td><td>Distinguish signal from noise, set focus</td></tr>
-                    <tr><td class="skill-name">Context Building</td><td>Give AI right background</td><td>Uses context but assumes when missing</td><td>Too little = wrong assumptions, too much = distraction</td></tr>
-                    <tr><td class="skill-name">Problem Framing</td><td>Define the RIGHT problem</td><td>Solves beautifully — even wrong ones</td><td>Defining right problem is now critical</td></tr>
-                    <tr><td class="skill-name">Asking Good Questions</td><td>Maximize AI output quality</td><td>Output quality = question quality</td><td>Value shifts to asking better questions</td></tr>
-                    <tr><td class="skill-name">Editing & Refinement</td><td>Iterate prompts and results</td><td>First output rarely final</td><td>Evaluate results, improve structure/wording</td></tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- Mindset -->
-        <div class="category-block mindset">
-            <div class="category-header">
-                <div class="category-icon mindset">💭</div>
-                <span class="category-name mindset">Mindset (9 skills)</span>
-            </div>
-            <table class="skills-table">
-                <thead>
-                    <tr><th>Skill</th><th>What it's about</th><th>What AI does</th><th>Why humans matter more</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td class="skill-name">Refinement Loops</td><td>Prompt → evaluate → adjust → repeat</td><td>Incorporates feedback, iterates</td><td>Quality from multiple cycles</td></tr>
-                    <tr><td class="skill-name">AI Culture</td><td>Support team AI adoption</td><td>Makes work efficient if embraced</td><td>Foster positivity, help others</td></tr>
-                    <tr><td class="skill-name">Sustainability Awareness</td><td>Environmental impact of AI</td><td>Requires data centers, energy</td><td>Not every task needs AI</td></tr>
-                    <tr><td class="skill-name">Communication about AI</td><td>Be positive AI representative</td><td>Creates excitement and concerns</td><td>How you talk influences perception</td></tr>
-                    <tr><td class="skill-name">Human Creativity</td><td>Keep your creative edge</td><td>Combines patterns, inspires</td><td>Create true new things with meaning</td></tr>
-                    <tr><td class="skill-name">Intellectual Humility</td><td>AI agreeing ≠ you're right</td><td>Confidently agrees (sycophancy)</td><td>Stay open to being wrong</td></tr>
-                    <tr><td class="skill-name">Curiosity</td><td>Experiment with AI</td><td>Supports experiments</td><td>Ask "How could AI help?"</td></tr>
-                    <tr><td class="skill-name">Cognitive Independence</td><td>Find human/AI balance</td><td>Can perform many cognitive tasks</td><td>Know when judgment should overrule</td></tr>
-                    <tr><td class="skill-name">Patience</td><td>AI collaboration is a new skill</td><td>Provides instant answers</td><td>Learning takes time</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
     
     <!-- CTA -->
     <section class="cta-section">
@@ -688,52 +565,47 @@
             <div class="cta-icon">🎯</div>
             <div class="cta-content">
                 <h3>Assess Your Skills</h3>
-                <p>Sort all 24 skills into Strong, Developing, and Need to Improve buckets.</p>
+                <p>Sort all 24 skills into Strong, Developing, and Need to Improve.</p>
             </div>
             <a href="/skills-assessment.html" class="cta-btn">Start Assessment →</a>
         </div>
     </section>
     
-    <div class="attribution">
-        Framework by <strong>Simone Maienfisch</strong>, SAP · Adapted for NextGen PMM
-    </div>
+    <div class="attribution">Framework by <strong>Simone Maienfisch</strong>, SAP</div>
     
-    <footer>
-        <p>© 2026 NextGen PMM · SAP Product Marketing</p>
-    </footer>
+    <footer><p>© 2026 NextGen PMM · SAP Product Marketing</p></footer>
     
     <script>
         const skillData = {
-            stakeholder: { name: "Stakeholder Management", category: "thinking", about: "Address audiences correctly with right arguments and empathy.", ai: "Can tailor styles and simulate viewpoints, but doesn't know your specific stakeholders, relationships, or context.", human: "Know what matters to stakeholders, anticipate reactions, build trust, and customize output." },
-            systems: { name: "Systems Thinking", category: "thinking", about: "Understand how things connect and influence each other.", ai: "Often optimizes one task but misses broader context and downstream effects.", human: "Understand the whole system, anticipate impacts, avoid unintended consequences." },
-            synthesis: { name: "Synthesis", category: "thinking", about: "Combine ideas from many sources into something meaningful.", ai: "Creates fragments; information becomes abundant but siloed.", human: "Combine sources meaningfully into coherent decisions and narratives." },
-            decision: { name: "Decision Making", category: "thinking", about: "Steer AI direction. AI gives options, humans choose.", ai: "Generates options, recommendations, scenarios. Needs direction.", human: "Decide direction, when enough info exists, which path to pursue." },
-            judgement: { name: "Judgement & Trade-offs", category: "thinking", about: "Decide what's relevant, what creates value.", ai: "Struggles when priorities conflict.", human: "Evaluate trade-offs: speed vs quality, cost vs risk." },
-            factcheck: { name: "Fact Checking", category: "thinking", about: "Know what to verify and how.", ai: "May misinterpret, hallucinate, or fabricate.", human: "Verify sources, check numbers and details." },
-            critical: { name: "Critical Thinking", category: "thinking", about: "Detect AI hallucinations, errors, biases.", ai: "Can be convincing while wrong.", human: "Challenge conclusions, identify logical gaps." },
-            policies: { name: "Embed Policies", category: "thinking", about: "Know company, state, regulatory policies.", ai: "Can follow when instructed but doesn't know which apply.", human: "Ensure compliance, apply rules correctly." },
-            ethics: { name: "AI Ethics & Privacy", category: "thinking", about: "Ensure bias-free, ethical, private output.", ai: "Learns from potentially biased data.", human: "Review for bias, protect sensitive information." },
-            metacognition: { name: "Metacognition ⭐", category: "thinking", about: "The crown jewel: think about your own thinking.", ai: "Can reinforce existing beliefs confidently.", human: "Reflect on assumptions, self-awareness is key." },
-            speedread: { name: "Speed Reading / Info Triage", category: "collaborate", about: "Identify important information fast.", ai: "Generates massive amounts in seconds.", human: "Distinguish signal from noise, set focus." },
-            context: { name: "Context Building", category: "collaborate", about: "Give AI right background — enough, not too much.", ai: "Uses context but assumes when missing.", human: "Too little = wrong assumptions, too much = distraction." },
-            problem: { name: "Problem Framing", category: "collaborate", about: "Define the RIGHT problem. AI solves beautifully — even wrong ones.", ai: "Generates for problem given, can't reflect if it's right.", human: "Defining right problem is now critical." },
-            questions: { name: "Asking Good Questions", category: "collaborate", about: "Good questions maximize AI output.", ai: "Output quality = question quality.", human: "Value shifts to asking better questions." },
-            editing: { name: "Editing & Refinement", category: "collaborate", about: "Iterate prompts and results.", ai: "First output rarely final.", human: "Evaluate results, improve structure/wording." },
-            loops: { name: "Refinement Loops", category: "mindset", about: "Prompt → evaluate → adjust → repeat.", ai: "Incorporates feedback, iterates.", human: "Quality from multiple cycles." },
-            culture: { name: "AI Culture", category: "mindset", about: "Support team AI adoption.", ai: "Makes work efficient if embraced.", human: "Foster positivity, help others." },
-            sustainability: { name: "Sustainability Awareness", category: "mindset", about: "Environmental impact of AI.", ai: "Requires data centers, energy.", human: "Not every task needs AI." },
-            communication: { name: "Communication about AI", category: "mindset", about: "Be positive AI representative.", ai: "Creates excitement and concerns.", human: "How you talk influences perception." },
-            creativity: { name: "Human Creativity", category: "mindset", about: "Keep your creative edge.", ai: "Combines patterns, inspires.", human: "Create true new things with meaning." },
-            humility: { name: "Intellectual Humility", category: "mindset", about: "AI agreeing ≠ you're right.", ai: "Confidently agrees (sycophancy).", human: "Stay open to being wrong." },
+            stakeholder: { name: "Stakeholder Management", category: "thinking", about: "Address audiences correctly with right arguments and empathy.", ai: "Can tailor styles and simulate viewpoints, but doesn't know your specific stakeholders.", human: "Know what matters to stakeholders, anticipate reactions, build trust." },
+            systems: { name: "Systems Thinking", category: "thinking", about: "Understand how things connect and influence each other.", ai: "Optimizes one task but misses broader context.", human: "See whole system, avoid unintended consequences." },
+            synthesis: { name: "Synthesis", category: "thinking", about: "Combine ideas from many sources into something meaningful.", ai: "Creates fragments; information becomes siloed.", human: "Combine sources into coherent decisions." },
+            decision: { name: "Decision Making", category: "thinking", about: "Steer AI. AI gives options, humans choose.", ai: "Generates options and scenarios.", human: "Decide direction and which path to pursue." },
+            judgement: { name: "Judgement & Trade-offs", category: "thinking", about: "Decide what's relevant and what creates value.", ai: "Struggles when priorities conflict.", human: "Evaluate trade-offs: speed vs quality, cost vs risk." },
+            factcheck: { name: "Fact Checking", category: "thinking", about: "Know what to fact check and how.", ai: "May misinterpret or hallucinate.", human: "Verify sources, check numbers." },
+            critical: { name: "Healthy Skepticism / Critical Thinking", category: "thinking", about: "Detect AI hallucinations, errors, biases.", ai: "Can be convincing while wrong.", human: "Challenge conclusions, identify gaps." },
+            policies: { name: "Embed Policies", category: "thinking", about: "Know company and regulatory policies.", ai: "Can follow when instructed.", human: "Ensure compliance, apply rules." },
+            ethics: { name: "AI Ethics, Bias, Privacy", category: "thinking", about: "Ensure bias-free, ethical work.", ai: "Learns from potentially biased data.", human: "Review for bias, protect sensitive info." },
+            metacognition: { name: "Metacognition", category: "mindset", about: "The crown jewel: think about your own thinking.", ai: "May reinforce your biases.", human: "Reflect on assumptions, self-awareness." },
+            speedread: { name: "Speed Reading / Info Triage", category: "collaborate", about: "Identify important information fast.", ai: "Generates massive amounts in seconds.", human: "Distinguish signal from noise." },
+            context: { name: "Context Building", category: "collaborate", about: "Give AI right background — enough, not too much.", ai: "Uses context but assumes when missing.", human: "Balance context: too little or too much hurts." },
+            problem: { name: "Problem Framing", category: "collaborate", about: "Define the RIGHT problem.", ai: "Solves beautifully — even wrong problems.", human: "Defining right problem is critical." },
+            questions: { name: "Asking Good Questions", category: "collaborate", about: "Good questions maximize AI output.", ai: "Output quality = question quality.", human: "Value shifts to better questions." },
+            editing: { name: "Editing & Refinement", category: "collaborate", about: "Iterate prompts and results.", ai: "First output rarely final.", human: "Evaluate results, improve." },
+            loops: { name: "Refinement Loops", category: "mindset", about: "Prompt → evaluate → adjust → repeat.", ai: "Incorporates feedback.", human: "Quality from multiple cycles." },
+            culture: { name: "AI Culture", category: "collaborate", about: "Support team AI adoption.", ai: "Makes work efficient.", human: "Foster positivity, help others." },
+            sustainability: { name: "Sustainability Awareness", category: "collaborate", about: "Environmental impact of AI.", ai: "Requires energy and infrastructure.", human: "Not every task needs AI." },
+            communication: { name: "Communication about AI", category: "collaborate", about: "Be positive AI representative.", ai: "Creates excitement and concerns.", human: "How you talk influences perception." },
+            creativity: { name: "Human Creativity", category: "collaborate", about: "Keep your creative edge.", ai: "Combines patterns.", human: "Create true new things." },
+            humility: { name: "Intellectual Humility", category: "mindset", about: "AI agreeing ≠ you're right.", ai: "Confidently agrees.", human: "Stay open to being wrong." },
             curiosity: { name: "Curiosity", category: "mindset", about: "Experiment with AI.", ai: "Supports experiments.", human: "Ask 'How could AI help?'" },
-            independence: { name: "Cognitive Independence", category: "mindset", about: "Find human/AI balance.", ai: "Can perform many cognitive tasks.", human: "Know when judgment should overrule." },
+            independence: { name: "Cognitive Independence", category: "mindset", about: "Find human/AI balance.", ai: "Can do many cognitive tasks.", human: "Know when judgment should overrule." },
             patience: { name: "Patience", category: "mindset", about: "AI collaboration is a new skill.", ai: "Provides instant answers.", human: "Learning takes time." }
         };
         
-        document.querySelectorAll('.hexagon').forEach(hex => {
+        document.querySelectorAll('.hex-group').forEach(hex => {
             hex.addEventListener('click', () => {
-                const skillId = hex.dataset.skill;
-                const skill = skillData[skillId];
+                const skill = skillData[hex.dataset.skill];
                 if (!skill) return;
                 
                 const panel = document.getElementById('skillPanel');
