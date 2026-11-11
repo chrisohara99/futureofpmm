@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Human Soft Skills in the AI Era | NextGen PMM</title>
+    <meta name="description" content="Master the human capabilities that become even more valuable when AI does more of the execution. A framework by Simone Maienfisch.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue: #0a6ed1;
+            --blue2: #0854a0;
+            --ink: #172b4d;
+            --text: #475569;
+            --line: #e5e7eb;
+            --soft: #f6f8fb;
+            --muted: #64748b;
+            --know: #0a6ed1;
+            --know-bg: #eff6ff;
+            --learn: #059669;
+            --learn-bg: #ecfdf5;
+            --do: #7c3aed;
+            --do-bg: #f5f3ff;
+            --thinking: #7C3AED;
+            --collaborate: #059669;
+            --mindset: #0284C7;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--ink);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        a { color: var(--blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Header */
+        header { border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 100; }
+
+        /* Page Header */
+        .page-header {
+            padding: 48px 28px 40px;
+            background: linear-gradient(180deg, #fff 0%, var(--soft) 100%);
+            border-bottom: 1px solid var(--line);
+        }
+        .page-header-inner { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; }
+        .breadcrumb a { color: var(--blue); }
+        .breadcrumb .sep { margin: 0 6px; color: #ccc; }
+        .area-badge {
+            display: inline-block; padding: 4px 12px;
+            background: var(--thinking); color: #fff;
+            font-size: 0.7rem; font-weight: 700; border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .page-header h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+        .page-header .lead { font-size: 1.05rem; color: var(--text); max-width: 680px; }
+
+        /* Section Nav */
+        .section-nav {
+            position: sticky; top: 65px; z-index: 50;
+            background: #fff; border-bottom: 1px solid var(--line);
+            padding: 0 28px;
+        }
+        .section-nav-inner {
+            max-width: 900px; margin: 0 auto;
+            display: flex; gap: 0;
+        }
+        .section-nav a {
+            display: flex; align-items: center; gap: 6px;
+            padding: 14px 20px; font-size: 0.85rem; font-weight: 600;
+            color: var(--muted); border-bottom: 2px solid transparent;
+            text-decoration: none;
+        }
+        .section-nav a:hover { color: var(--ink); text-decoration: none; }
+        .section-nav a.know { border-color: var(--know); color: var(--know); }
+        .section-nav a.learn { border-color: var(--learn); color: var(--learn); }
+        .section-nav a.do { border-color: var(--do); color: var(--do); }
+        .nav-pip { width: 8px; height: 8px; border-radius: 50%; }
+        .section-nav a.know .nav-pip { background: var(--know); }
+        .section-nav a.learn .nav-pip { background: var(--learn); }
+        .section-nav a.do .nav-pip { background: var(--do); }
+
+        /* Main */
+        main { max-width: 900px; margin: 0 auto; padding: 0 28px 80px; }
+
+        /* Sections */
+        .bow-section { padding-top: 48px; }
+        .section-eyebrow {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section-eyebrow.know { color: var(--know); }
+        .section-eyebrow.learn { color: var(--learn); }
+        .section-eyebrow.do { color: var(--do); }
+        .bow-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .section-lead { font-size: 0.95rem; color: var(--text); margin-bottom: 24px; }
+
+        /* Video Section */
+        .video-section {
+            margin-bottom: 32px;
+        }
+        .video-placeholder {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .video-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L55 20v25L30 55 5 45V20L30 5z' fill='none' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E");
+        }
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+        .play-button:hover {
+            transform: scale(1.1);
+            background: rgba(255,255,255,0.25);
+        }
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        .video-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 12px 12px 0;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+        .key-insight h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 4px;
+        }
+        .key-insight p {
+            font-size: 1rem;
+            color: #78350f;
+            margin: 0;
+        }
+
+        /* Subsection */
+        .subsection { margin-top: 32px; }
+        .subsection-heading {
+            font-size: 0.9rem; font-weight: 700; color: var(--ink);
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        /* Role Card */
+        .role-card-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+        }
+        @media (max-width: 700px) { .role-card-grid { grid-template-columns: 1fr; } }
+        .role-card {
+            background: #fff; border: 1px solid var(--line); border-radius: 10px;
+            padding: 20px;
+        }
+        .role-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+        .role-card p { font-size: 0.85rem; color: var(--text); margin-bottom: 10px; }
+        .role-card ul { margin: 0; padding-left: 18px; font-size: 0.85rem; color: var(--text); }
+        .role-card li { margin-bottom: 4px; }
+
+        /* Skills Categories */
+        .skills-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        @media (max-width: 700px) { .skills-overview { grid-template-columns: 1fr; } }
+        .skill-category {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 20px;
+            border-top: 4px solid var(--thinking);
+        }
+        .skill-category.collaborate { border-top-color: var(--collaborate); }
+        .skill-category.mindset { border-top-color: var(--mindset); }
+        .skill-category .cat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .skill-category h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .skill-category .count {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        .skill-category p {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin: 0;
+        }
+
+        /* Content Cards */
+        .card-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        @media (max-width: 900px) { .card-row { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .card-row { grid-template-columns: 1fr; } }
+        
+        .content-card {
+            display: block; background: #fff; border: 1px solid var(--line);
+            border-radius: 10px; padding: 20px; text-decoration: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .content-card:hover {
+            border-color: var(--blue); box-shadow: 0 4px 14px rgba(10,110,209,0.08);
+            text-decoration: none;
+        }
+        .content-card.learn { border-left: 3px solid var(--learn); }
+        .content-card.do { border-left: 3px solid var(--do); }
+        .content-card.featured {
+            background: linear-gradient(135deg, var(--learn-bg) 0%, #fff 100%);
+            border-left: 4px solid var(--learn);
+        }
+        .card-tag {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .content-card.learn .card-tag { color: var(--learn); }
+        .content-card.do .card-tag { color: var(--do); }
+        .content-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+        .content-card p { font-size: 0.85rem; color: var(--text); margin: 0; }
+        .content-card .time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 10px;
+        }
+
+        /* Featured CTA */
+        .featured-cta {
+            background: linear-gradient(135deg, var(--learn-bg) 0%, var(--do-bg) 100%);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 32px;
+        }
+        .featured-cta-icon {
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+        .featured-cta-content { flex: 1; }
+        .featured-cta h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .featured-cta p {
+            font-size: 0.9rem;
+            color: var(--text);
+            margin: 0;
+        }
+        .featured-cta-btn {
+            display: inline-block;
+            background: var(--do);
+            color: white !important;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none !important;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+        .featured-cta-btn:hover {
+            background: #6d28d9;
+        }
+        @media (max-width: 700px) {
+            .featured-cta { flex-direction: column; text-align: center; }
+        }
+
+        /* Attribution */
+        .attribution {
+            background: var(--soft);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .attribution-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--thinking), var(--collaborate));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+        .attribution-text {
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        .attribution-text strong {
+            color: var(--ink);
+        }
+
+        footer { background: var(--ink); color: #fff; padding: 32px; text-align: center; }
+        footer p { color: rgba(255,255,255,.5); font-size: 0.85rem; }
+    </style>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn" aria-haspopup="true" aria-expanded="false" aria-controls="community-menu">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/" role="menuitem">People</a>
+                <a href="/community/pulse/" role="menuitem">PMM Pulse</a>
+                <a href="/community/spotlight/" role="menuitem">PMM Spotlight</a>
+                <a href="/newsletters/" role="menuitem">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="page-header-inner">
+        <div class="breadcrumb">
+            <a href="/">Home</a><span class="sep">›</span><a href="/curriculum/">Learn</a><span class="sep">›</span>Human Soft Skills
+        </div>
+        <div class="area-badge">AI Collaboration</div>
+        <h1>Human Soft Skills in the AI Era</h1>
+        <p class="lead">Master the capabilities that become even more valuable when AI does more of the execution. 24 skills across thinking, collaboration, and mindset.</p>
+    </div>
+</div>
+
+<!-- SECTION NAV -->
+<nav class="section-nav">
+    <div class="section-nav-inner">
+        <a href="#know" class="know"><span class="nav-pip"></span>Know</a>
+        <a href="#learn" class="learn"><span class="nav-pip"></span>Learn</a>
+        <a href="#do" class="do"><span class="nav-pip"></span>Do</a>
+    </div>
+</nav>
+
+<main>
+
+    <!-- ======== KNOW ======== -->
+    <section class="bow-section" id="know">
+        <div class="section-eyebrow know"><span class="nav-pip" style="background:var(--know)"></span>Know</div>
+        <h2>What are Human Soft Skills?</h2>
+        <p class="section-lead">Understand the framework and why these skills matter now more than ever.</p>
+
+        <!-- Video Intro -->
+        <div class="video-section">
+            <video controls playsinline poster="/assets/images/simone-video-poster.jpg" style="width:100%; border-radius:12px; background:#1e293b;">
+                <source src="/assets/videos/simone-ai-skills-map.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p style="text-align:center; margin-top:8px; font-size:0.85rem; color:#64748b;">Simone Maienfisch · Introduction to Human Soft Skills · 3 min</p>
+        </div>
+
+        <!-- Key Insight -->
+        <div class="key-insight">
+            <h3>💡 The Core Insight</h3>
+            <p>Humans guide and decide what matters. AI produces content. It's always a <strong>plus+</strong> — not AI <em>or</em> human.</p>
+        </div>
+
+        <!-- Overview -->
+        <div class="subsection">
+            <div class="subsection-heading">The Framework</div>
+            <div class="role-card-grid">
+                <div class="role-card" style="grid-column: span 2;">
+                    <h3>Why this matters</h3>
+                    <p>The skills in this framework are not new. What's new is that working with AI amplifies their importance. As AI becomes better at generating information, humans get more value by <strong>framing, connecting, challenging, deciding, and governing</strong> the AI output.</p>
+                    <p style="margin-bottom: 0;">When AI increasingly generates, analyzes, recommends, and produces content — humans need to increasingly synthesize, judge, decide, verify, and create meaning.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Overview -->
+        <div class="subsection">
+            <div class="subsection-heading">24 Skills Across 3 Categories</div>
+            <div class="skills-overview">
+                <div class="skill-category thinking">
+                    <div class="cat-icon">🧠</div>
+                    <h4>Thinking</h4>
+                    <div class="count">10 skills</div>
+                    <p>Stakeholder management, systems thinking, synthesis, decision making, judgement, fact checking, critical thinking, policies, ethics, and metacognition.</p>
+                </div>
+                <div class="skill-category collaborate">
+                    <div class="cat-icon">🤝</div>
+                    <h4>Collaborate with AI</h4>
+                    <div class="count">5 skills</div>
+                    <p>Speed reading, context building, problem framing, asking good questions, and editing & refinement.</p>
+                </div>
+                <div class="skill-category mindset">
+                    <div class="cat-icon">💭</div>
+                    <h4>Mindset</h4>
+                    <div class="count">9 skills</div>
+                    <p>Refinement loops, AI culture, sustainability, communication, creativity, intellectual humility, curiosity, cognitive independence, and patience.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attribution -->
+        <div class="attribution">
+            <div class="attribution-avatar">SM</div>
+            <div class="attribution-text">
+                Framework developed by <strong>Simone Maienfisch</strong>, SAP<br>
+                Adapted for NextGen PMM
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== LEARN ======== -->
+    <section class="bow-section" id="learn">
+        <div class="section-eyebrow learn"><span class="nav-pip" style="background:var(--learn)"></span>Learn</div>
+        <h2>Explore the Skills</h2>
+        <p class="section-lead">Interactive learning to understand each skill and how it applies to your work.</p>
+
+        <!-- Featured: Full Skills Map -->
+        <a href="/human-soft-skills.html" class="content-card learn featured" style="display: block; margin-bottom: 20px;">
+            <div class="card-tag">🗺️ Interactive</div>
+            <h3>Human Soft Skills Map</h3>
+            <p>View all 24 skills in one interactive map. Click any skill to explore what it means, what AI does, and why the human skill matters more.</p>
+            <div class="time">⏱️ Browse all skills</div>
+        </a>
+
+        <div class="card-row">
+            <a href="/human-skills/thinking.html" class="content-card learn">
+                <div class="card-tag">🧠 Thinking</div>
+                <h3>Thinking Skills</h3>
+                <p>10 cognitive skills that help you guide AI: synthesis, judgement, critical thinking, and the "crown jewel" — metacognition.</p>
+                <div class="time">⏱️ 10 min</div>
+            </a>
+            
+            <a href="/human-skills/collaborate.html" class="content-card learn">
+                <div class="card-tag">🤝 Collaborate</div>
+                <h3>AI Collaboration Skills</h3>
+                <p>5 practical skills for working with AI: problem framing, context building, asking good questions, and iterative refinement.</p>
+                <div class="time">⏱️ 8 min</div>
+            </a>
+            
+            <a href="/human-skills/mindset.html" class="content-card learn">
+                <div class="card-tag">💭 Mindset</div>
+                <h3>Mindset & Attitudes</h3>
+                <p>9 attitudes for AI success: curiosity, patience, intellectual humility, cognitive independence, and refinement loops.</p>
+                <div class="time">⏱️ 8 min</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ======== DO ======== -->
+    <section class="bow-section" id="do">
+        <div class="section-eyebrow do"><span class="nav-pip" style="background:var(--do)"></span>Do</div>
+        <h2>Assess Your Skills</h2>
+        <p class="section-lead">Put your learning into practice with a self-assessment.</p>
+
+        <div class="card-row">
+            <a href="/skills-assessment.html" class="content-card do featured">
+                <div class="card-tag">Self-Assessment</div>
+                <h3>🎯 Skills Self-Assessment</h3>
+                <p>Sort all 24 skills into three buckets: Strong, Developing, and Need to Improve. Get personalized recommendations for where to focus your development.</p>
+                <div class="time">⏱️ 10-15 min</div>
+            </a>
+        </div>
+
+        <!-- Featured CTA -->
+        <div class="featured-cta">
+            <div class="featured-cta-icon">🚀</div>
+            <div class="featured-cta-content">
+                <h3>Ready to discover your skill profile?</h3>
+                <p>The interactive assessment helps you identify your strengths and growth areas across all 24 human soft skills.</p>
+            </div>
+            <a href="/skills-assessment.html" class="featured-cta-btn">Start Assessment →</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 NextGen PMM · SAP Product Marketing</p>
+</footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Human Soft Skills Map | NextGen PMM</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --thinking: #8B5CF6;
+            --thinking-light: #EDE9FE;
+            --collaborate: #22C55E;
+            --collaborate-light: #DCFCE7;
+            --mindset: #3B82F6;
+            --mindset-light: #DBEAFE;
+            --dark: #1e293b;
+            --text: #475569;
+            --line: #e5e7eb;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #f8fafc;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .page-header {
+            padding: 40px 28px 32px;
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+        }
+        .page-header-inner { max-width: 1100px; margin: 0 auto; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 16px; }
+        .breadcrumb a { color: #0a6ed1; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb .sep { margin: 0 6px; color: #ccc; }
+        .page-header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+        .page-header .lead { font-size: 1rem; color: var(--text); max-width: 700px; }
+
+        .insight-banner {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            padding: 16px 28px;
+            text-align: center;
+            border-bottom: 1px solid #FCD34D;
+        }
+        .insight-banner p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1rem;
+            color: #92400E;
+            font-weight: 500;
+        }
+
+        .legend-bar {
+            background: #fff;
+            padding: 16px 28px;
+            border-bottom: 1px solid var(--line);
+        }
+        .legend-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        .legend-dot.thinking { background: var(--thinking); }
+        .legend-dot.collaborate { background: var(--collaborate); }
+        .legend-dot.mindset { background: var(--mindset); }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 28px 60px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .skill-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .skill-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .skill-card.thinking { border-color: var(--thinking); background: var(--thinking-light); }
+        .skill-card.thinking:hover { box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25); }
+        .skill-card.collaborate { border-color: var(--collaborate); background: var(--collaborate-light); }
+        .skill-card.collaborate:hover { box-shadow: 0 8px 20px rgba(34, 197, 94, 0.25); }
+        .skill-card.mindset { border-color: var(--mindset); background: var(--mindset-light); }
+        .skill-card.mindset:hover { box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25); }
+
+        .skill-card .icon {
+            font-size: 1.75rem;
+            margin-bottom: 10px;
+        }
+        .skill-card .title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        .skill-card .desc {
+            font-size: 0.75rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .modal-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .modal-header .icon { font-size: 2.5rem; }
+        .modal-header-content { flex: 1; }
+        .modal-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .modal-badge.thinking { background: var(--thinking-light); color: #5B21B6; }
+        .modal-badge.collaborate { background: var(--collaborate-light); color: #166534; }
+        .modal-badge.mindset { background: var(--mindset-light); color: #1E40AF; }
+        .modal-title { font-size: 1.4rem; font-weight: 700; color: var(--dark); }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 4px;
+            line-height: 1;
+        }
+        .modal-close:hover { color: var(--dark); }
+
+        .modal-body { padding: 24px; }
+        .modal-section {
+            margin-bottom: 20px;
+        }
+        .modal-section:last-child { margin-bottom: 0; }
+        .modal-section h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .modal-section p {
+            font-size: 0.95rem;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .modal-section.thinking h4 { color: var(--thinking); }
+        .modal-section.collaborate h4 { color: var(--collaborate); }
+        .modal-section.mindset h4 { color: var(--mindset); }
+
+        /* CTA */
+        .cta-section {
+            background: #fff;
+            padding: 40px 28px;
+            margin-top: 40px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .cta-card {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .cta-icon { font-size: 2.5rem; margin-bottom: 16px; }
+        .cta-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
+        .cta-card p { color: var(--text); margin-bottom: 20px; }
+        .cta-btn {
+            display: inline-block;
+            background: var(--thinking);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .cta-btn:hover { background: #7C3AED; }
+
+        .attribution {
+            text-align: center;
+            padding: 24px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.6);
+            padding: 24px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/">People</a>
+                <a href="/community/pulse/">PMM Pulse</a>
+                <a href="/community/spotlight/">PMM Spotlight</a>
+                <a href="/newsletters/">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page-header">
+    <div class="page-header-inner">
+        <div class="breadcrumb">
+            <a href="/">Home</a><span class="sep">›</span><a href="/human-skills/">Human Skills</a><span class="sep">›</span>Skills Map
+        </div>
+        <h1>Human Soft Skills Map</h1>
+        <p class="lead">The capabilities that become even more valuable when AI does more of the execution. Click any skill to learn more.</p>
+    </div>
+</div>
+
+<div class="insight-banner">
+    <p><strong>Humans guide and decide what matters. AI produces content.</strong> It's always a plus+ — not AI <em>or</em> human.</p>
+</div>
+
+<div class="legend-bar">
+    <div class="legend-inner">
+        <div class="legend-item"><div class="legend-dot thinking"></div> Thinking (10)</div>
+        <div class="legend-item"><div class="legend-dot collaborate"></div> Collaborate with AI (5)</div>
+        <div class="legend-item"><div class="legend-dot mindset"></div> Mindset (9)</div>
+    </div>
+</div>
+
+<main>
+    <div class="skills-grid" id="skillsGrid">
+        <!-- Thinking Skills -->
+        <div class="skill-card thinking" data-skill="stakeholder"><div class="icon">👥</div><div class="title">Stakeholder Management</div><div class="desc">Address audiences correctly with right arguments</div></div>
+        <div class="skill-card thinking" data-skill="systems"><div class="icon">🔗</div><div class="title">Systems Thinking</div><div class="desc">Understand how things connect</div></div>
+        <div class="skill-card thinking" data-skill="synthesis"><div class="icon">🧩</div><div class="title">Synthesis</div><div class="desc">Combine ideas from many sources</div></div>
+        <div class="skill-card thinking" data-skill="decision"><div class="icon">🎯</div><div class="title">Decision Making</div><div class="desc">AI gives options, humans choose</div></div>
+        <div class="skill-card thinking" data-skill="judgement"><div class="icon">⚖️</div><div class="title">Judgement & Trade-offs</div><div class="desc">Decide what's relevant, what matters</div></div>
+        <div class="skill-card thinking" data-skill="factcheck"><div class="icon">✓</div><div class="title">Fact Checking</div><div class="desc">Know what to verify and how</div></div>
+        <div class="skill-card thinking" data-skill="critical"><div class="icon">🔍</div><div class="title">Critical Thinking</div><div class="desc">Detect hallucinations, errors, biases</div></div>
+        <div class="skill-card thinking" data-skill="policies"><div class="icon">📋</div><div class="title">Embed Policies</div><div class="desc">Know company & regulatory rules</div></div>
+        <div class="skill-card thinking" data-skill="ethics"><div class="icon">🛡️</div><div class="title">AI Ethics & Privacy</div><div class="desc">Ensure bias-free, ethical work</div></div>
+        <div class="skill-card thinking" data-skill="metacognition"><div class="icon">⭐</div><div class="title">Metacognition</div><div class="desc">Think about your own thinking</div></div>
+        
+        <!-- Collaborate Skills -->
+        <div class="skill-card collaborate" data-skill="speedread"><div class="icon">⚡</div><div class="title">Speed Reading</div><div class="desc">Identify important info fast</div></div>
+        <div class="skill-card collaborate" data-skill="context"><div class="icon">🎯</div><div class="title">Context Building</div><div class="desc">Give AI right background</div></div>
+        <div class="skill-card collaborate" data-skill="problem"><div class="icon">🔎</div><div class="title">Problem Framing</div><div class="desc">Define the RIGHT problem</div></div>
+        <div class="skill-card collaborate" data-skill="questions"><div class="icon">❓</div><div class="title">Asking Good Questions</div><div class="desc">Maximize AI output quality</div></div>
+        <div class="skill-card collaborate" data-skill="editing"><div class="icon">✏️</div><div class="title">Editing & Refinement</div><div class="desc">Iterate prompts and results</div></div>
+        
+        <!-- Mindset Skills -->
+        <div class="skill-card mindset" data-skill="loops"><div class="icon">🔄</div><div class="title">Refinement Loops</div><div class="desc">Prompt → evaluate → adjust → repeat</div></div>
+        <div class="skill-card mindset" data-skill="culture"><div class="icon">🤝</div><div class="title">AI Culture</div><div class="desc">Support team AI adoption</div></div>
+        <div class="skill-card mindset" data-skill="sustainability"><div class="icon">🌱</div><div class="title">Sustainability</div><div class="desc">Consider environmental impact</div></div>
+        <div class="skill-card mindset" data-skill="communication"><div class="icon">📢</div><div class="title">Communication</div><div class="desc">Be positive AI representative</div></div>
+        <div class="skill-card mindset" data-skill="creativity"><div class="icon">💡</div><div class="title">Human Creativity</div><div class="desc">Keep your creative edge</div></div>
+        <div class="skill-card mindset" data-skill="humility"><div class="icon">🙏</div><div class="title">Intellectual Humility</div><div class="desc">AI agreeing ≠ you're right</div></div>
+        <div class="skill-card mindset" data-skill="curiosity"><div class="icon">🔍</div><div class="title">Curiosity</div><div class="desc">Experiment with and thru AI</div></div>
+        <div class="skill-card mindset" data-skill="independence"><div class="icon">🧠</div><div class="title">Cognitive Independence</div><div class="desc">Find your human/AI balance</div></div>
+        <div class="skill-card mindset" data-skill="patience"><div class="icon">⏳</div><div class="title">Patience</div><div class="desc">AI collaboration takes time to learn</div></div>
+    </div>
+
+    <div class="cta-section">
+        <div class="cta-card">
+            <div class="cta-icon">🎯</div>
+            <h3>Assess Your Skills</h3>
+            <p>Sort all 24 skills into Strong, Developing, and Need to Improve.</p>
+            <a href="/skills-assessment.html" class="cta-btn">Start Assessment →</a>
+        </div>
+    </div>
+</main>
+
+<div class="attribution">Framework by <strong>Simone Maienfisch</strong>, SAP</div>
+
+<footer><p>© 2026 NextGen PMM · SAP Product Marketing</p></footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="icon" id="modalIcon">👥</div>
+            <div class="modal-header-content">
+                <div class="modal-badge" id="modalBadge">🧠 Thinking</div>
+                <h2 class="modal-title" id="modalTitle">Skill Name</h2>
+            </div>
+            <button class="modal-close" id="modalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section" id="modalAboutSection">
+                <h4>What it's about</h4>
+                <p id="modalAbout"></p>
+            </div>
+            <div class="modal-section">
+                <h4>What AI does</h4>
+                <p id="modalAI"></p>
+            </div>
+            <div class="modal-section">
+                <h4>Why humans matter more</h4>
+                <p id="modalHuman"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+const skillData = {
+    // Thinking
+    stakeholder: { icon: "👥", category: "thinking", name: "Stakeholder Management", about: "Ability to address the audience correctly — right arguments, empathy, etc.", ai: "AI can tailor communication styles and simulate stakeholder viewpoints. But it doesn't know your specific stakeholders, their relationships, context, or background.", human: "Humans know what matters to stakeholders, can anticipate reactions, build trust, and customize output to be specific rather than generic." },
+    systems: { icon: "🔗", category: "thinking", name: "Systems Thinking", about: "Understand how things connect and influence each other.", ai: "AI often optimizes one task but misses the broader context and downstream effects. Individual solutions might harm other pieces of work.", human: "Humans understand the whole system, make cross-connections, anticipate downstream impacts, and avoid unintended consequences." },
+    synthesis: { icon: "🧩", category: "thinking", name: "Synthesis", about: "Ability to combine ideas from many sources into something meaningful.", ai: "AI creates many ideas, analyses and viewpoints but delivers fragments. Information becomes abundant but siloed.", human: "Humans combine different sources meaningfully — customer feedback, research, strategy, experience — into coherent decisions and narratives." },
+    decision: { icon: "🎯", category: "thinking", name: "Decision Making", about: "Ability to steer AI. AI gives options, humans choose.", ai: "AI can generate options, recommendations, scenarios and next steps. But AI needs direction.", human: "Humans decide which direction AI research should go, when enough info has been gathered, and which path to pursue." },
+    judgement: { icon: "⚖️", category: "thinking", name: "Judgement & Trade-offs", about: "Ability to decide what's relevant, what matters, what creates value.", ai: "AI can generate many options but struggles to decide what matters most when goals conflict or priorities contradict.", human: "Good judgement becomes more valuable. Humans evaluate meaningful trade-offs: speed over quality, costs over risk, etc." },
+    factcheck: { icon: "✓", category: "thinking", name: "Fact Checking", about: "Know what to fact check and how to best do it.", ai: "AI does excellent summaries but output might misinterpret, hallucinate, or fabricate details.", human: "Verification becomes a core human skill: look through AI output, check source documents, verify numbers and details." },
+    critical: { icon: "🔍", category: "thinking", name: "Critical Thinking", about: "Ability to detect AI hallucinations, errors, made-up interpretations, biases.", ai: "AI can be very convincing while being wrong. It may make mistakes, overlook context, introduce bias or draw incorrect conclusions.", human: "As AI becomes more convincing, humans must actively challenge conclusions, evaluate evidence, and identify logical gaps." },
+    policies: { icon: "📋", category: "thinking", name: "Embed Policies", about: "Be familiar with relevant company, state, and regulatory policies.", ai: "AI can follow policies when instructed but doesn't reliably know which company, regulatory, or legal requirements apply.", human: "Humans must ensure compliance — know EU AI labeling rules, company policies, and apply them correctly." },
+    ethics: { icon: "🛡️", category: "thinking", name: "AI Ethics & Privacy", about: "Ensure work results are free from bias, follow good business ethics, respect privacy rules.", ai: "AI learns patterns from large amounts of data — doesn't know when it's biased or violating privacy rules not in training data.", human: "Handle input carefully, don't provide personal data, review outputs for bias, protect sensitive information." },
+    metacognition: { icon: "⭐", category: "thinking", name: "Metacognition", about: "The crown jewel: think about your own thinking — assumptions, evidence needed to change your mind.", ai: "AI can be biased, make incorrect assumptions, and reinforce existing beliefs — very confidently. AI agreeing doesn't mean you're right.", human: "Reflect on your own thinking: are you anchoring on AI's first answer? What evidence would change your mind? The more AI becomes a thinking partner, the more important self-awareness becomes." },
+    
+    // Collaborate
+    speedread: { icon: "⚡", category: "collaborate", name: "Speed Reading / Info Triage", about: "Ability to identify important information in long texts, fast.", ai: "AI can generate, summarize, analyze, and retrieve large amounts of information in seconds. It significantly increases the volume of information available to humans.", human: "Humans must quickly identify what is relevant, distinguish signal from noise and recognize important insights to steer further analysis." },
+    context: { icon: "🎯", category: "collaborate", name: "Context Building", about: "Give AI the right background — enough, but not too much.", ai: "AI uses the context humans provide to interpret requests, tailor outputs, and make recommendations. However, it only knows the context it is given and may make assumptions when information is missing.", human: "Humans must determine relevant and needed information for AI to generate useful outputs. Too little context leads to incorrect assumptions — too much context can distract from the actual task." },
+    problem: { icon: "🔎", category: "collaborate", name: "Problem Framing", about: "AI can solve wrong problems beautifully — but humans define the right problem.", ai: "AI generates output for the problems it's been given. It cannot reflect, challenge or know if it's solving the right problem.", human: "With AI, generating solutions becomes easier, while defining the right problem becomes more critical and harder." },
+    questions: { icon: "❓", category: "collaborate", name: "Asking Good Questions", about: "Ability to ask good, neutral questions to maximize AI output.", ai: "The quality of the AI response is influenced by the quality of the question asked. If the question or task is too vague, the quality of the output will be less on target.", human: "Good interviewers, consultants or analysts typically ask good questions. As AI makes answers abundant — the human value shifts to asking better questions." },
+    editing: { icon: "✏️", category: "collaborate", name: "Editing & Refinement", about: "Ability to refine prompts and AI results to enhance outcomes.", ai: "AI generates output based on feedback and instructions. The first AI output is rarely the final output.", human: "Humans must evaluate results, identify gaps or weaknesses, and iteratively improve both prompts and outputs." },
+    
+    // Mindset
+    loops: { icon: "🔄", category: "mindset", name: "Refinement Loops", about: "Build an iterative mindset: prompt → evaluate → adjust → repeat.", ai: "AI can immediately incorporate feedback, adjust outputs, explore alternatives, and iterate on previous responses.", human: "The quality results come from multiple cycles of feedback and refinement. Humans must evaluate outputs, learn from each iteration, and continuously guide the conversation toward better results." },
+    culture: { icon: "🤝", category: "mindset", name: "AI Culture", about: "Support the team culture of how and when we use AI.", ai: "AI can make our work more efficient and create value. For this to be true though, humans need to embrace this new way of working.", human: "Fostering a new way of how we work requires a good level of positivity to embrace the change and help others to do so, too." },
+    sustainability: { icon: "🌱", category: "mindset", name: "Sustainability Awareness", about: "Think about the environmental impact of your AI usage.", ai: "AI tasks require computational resources, data centers, energy, and infrastructure.", human: "Humans should be aware of AI's environmental footprint and use it thoughtfully. Not every task requires AI." },
+    communication: { icon: "📢", category: "mindset", name: "Communication about AI", about: "Be a positive representative of our AI culture.", ai: "AI adoption is not only a technology challenge but also a people challenge. AI can create excitement, concerns, misconceptions, and resistance.", human: "The way you talk about AI influences your colleagues' perception. Be an advocate while understanding where human oversight remains essential." },
+    creativity: { icon: "💡", category: "mindset", name: "Human Creativity", about: "Keep your human creativity! It sets you apart.", ai: "AI can generate ideas, concepts, variations by combining patterns it has learned. AI can inspire, but humans create true new things.", human: "Humans use their experiences, memories, relationships, emotions, intuition, and context to create new ideas with meaning." },
+    humility: { icon: "🙏", category: "mindset", name: "Intellectual Humility", about: "Willingness to be incorrect — AI agreeing with you doesn't mean you are right.", ai: "AI confidently provides answers and may support your argumentation. It tends to agree with you.", human: "Humans must remain open to being wrong. Ask AI to challenge your assumptions and be open for new views." },
+    curiosity: { icon: "🔍", category: "mindset", name: "Curiosity", about: "Willingness to experiment with and through AI.", ai: "AI will support your experiments and hopefully surprise you often.", human: "Curiosity makes us try new things, explore new ways and learn. Ask yourself: how could AI help me with this challenge?" },
+    independence: { icon: "🧠", category: "mindset", name: "Cognitive Independence", about: "Find your human/AI balance.", ai: "AI can act as an advisor, collaborator, researcher, writer, analyst. It can perform many cognitive tasks.", human: "As AI gets more capable, humans must avoid outsourcing all thinking. Know when to rely on AI, when to think independently, and when human judgment should overrule." },
+    patience: { icon: "⏳", category: "mindset", name: "Patience", about: "Learning to collaborate with AI is a new skill and needs training.", ai: "By providing instant answers, AI might suggest that humans need to already know how to work with it.", human: "Learning how to ask better questions, build context, and refine outputs takes time. Like any new skill, AI collaboration develops through patience." }
+};
+
+const categoryLabels = {
+    thinking: "🧠 Thinking",
+    collaborate: "🤝 Collaborate with AI",
+    mindset: "💭 Mindset"
+};
+
+const overlay = document.getElementById('modalOverlay');
+const closeBtn = document.getElementById('modalClose');
+
+document.querySelectorAll('.skill-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const skill = skillData[card.dataset.skill];
+        if (!skill) return;
+        
+        document.getElementById('modalIcon').textContent = skill.icon;
+        document.getElementById('modalBadge').textContent = categoryLabels[skill.category];
+        document.getElementById('modalBadge').className = 'modal-badge ' + skill.category;
+        document.getElementById('modalTitle').textContent = skill.name;
+        document.getElementById('modalAbout').textContent = skill.about;
+        document.getElementById('modalAI').textContent = skill.ai;
+        document.getElementById('modalHuman').textContent = skill.human;
+        document.getElementById('modalAboutSection').className = 'modal-section ' + skill.category;
+        
+        overlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+closeBtn.addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
+function closeModal() {
+    overlay.classList.remove('visible');
+    document.body.style.overflow = '';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Collaborate with AI | Human Soft Skills | NextGen PMM</title>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #22C55E;
+            --primary-light: #BBF7D0;
+            --primary-dark: #16A34A;
+            --dark: #1e293b;
+            --text: #475569;
+            --line: #e5e7eb;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #fff; color: var(--dark); line-height: 1.6; }
+        
+        .page-header {
+            padding: 40px 28px 32px;
+            background: linear-gradient(180deg, var(--primary-light) 0%, #fff 100%);
+            border-bottom: 1px solid var(--line);
+        }
+        .page-header-inner { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 16px; }
+        .breadcrumb a { color: #0a6ed1; text-decoration: none; }
+        .breadcrumb .sep { margin: 0 6px; color: #ccc; }
+        .category-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--primary); color: #fff;
+            padding: 6px 14px; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600; margin-bottom: 12px;
+        }
+        .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .page-header .lead { font-size: 1.05rem; color: var(--text); }
+
+        main { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+        .honeycomb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .hex-card {
+            background: var(--primary-light);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .hex-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.2);
+        }
+        .hex-card.active {
+            border-color: var(--dark);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .hex-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .hex-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
+        .hex-desc { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+
+        .detail-panel {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 40px;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+        .detail-panel.visible { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .detail-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+        .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        @media (max-width: 700px) { .detail-grid { grid-template-columns: 1fr; } }
+        .detail-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--line);
+        }
+        .detail-box h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+        .detail-box p { font-size: 0.95rem; color: var(--dark); margin: 0; }
+
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .skills-table th {
+            background: var(--dark);
+            color: #fff;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .skills-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+        .skills-table tr:last-child td { border-bottom: none; }
+        .skills-table tr:hover td { background: #f8fafc; }
+        .skill-name { font-weight: 600; color: var(--primary-dark); white-space: nowrap; }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 32px;
+            border-top: 1px solid var(--line);
+            margin-top: 40px;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .nav-btn.secondary { background: #f1f5f9; color: var(--dark); }
+        .nav-btn.secondary:hover { background: #e2e8f0; }
+        .nav-btn.primary { background: var(--primary); color: #fff; }
+        .nav-btn.primary:hover { background: var(--primary-dark); }
+
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 24px; text-align: center; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/">People</a>
+                <a href="/community/pulse/">PMM Pulse</a>
+                <a href="/community/spotlight/">PMM Spotlight</a>
+                <a href="/newsletters/">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page-header">
+    <div class="page-header-inner">
+        <div class="breadcrumb">
+            <a href="/">Home</a><span class="sep">›</span><a href="/human-skills/">Human Skills</a><span class="sep">›</span>Collaborate with AI
+        </div>
+        <div class="category-badge">🤝 Collaborate with AI</div>
+        <h1>AI Collaboration Skills</h1>
+        <p class="lead">Practical skills for working with AI effectively — problem framing, context building, asking good questions, and iterative refinement.</p>
+    </div>
+</div>
+
+<main>
+    <div class="honeycomb-grid">
+        <div class="hex-card" data-skill="speedread"><div class="hex-icon">⚡</div><div class="hex-title">Speed Reading / Info Triage</div><div class="hex-desc">Identify important information in long texts, fast</div></div>
+        <div class="hex-card" data-skill="context"><div class="hex-icon">🎯</div><div class="hex-title">Context Building</div><div class="hex-desc">Give AI the right background — enough, but not too much</div></div>
+        <div class="hex-card" data-skill="problem"><div class="hex-icon">🔎</div><div class="hex-title">Problem Framing</div><div class="hex-desc">AI solves beautifully — but humans define the RIGHT problem</div></div>
+        <div class="hex-card" data-skill="questions"><div class="hex-icon">❓</div><div class="hex-title">Asking Good Questions</div><div class="hex-desc">Good, neutral questions maximize AI output quality</div></div>
+        <div class="hex-card" data-skill="editing"><div class="hex-icon">✏️</div><div class="hex-title">Editing & Refinement</div><div class="hex-desc">Refine prompts and AI results to enhance outcomes</div></div>
+    </div>
+
+    <div class="detail-panel" id="detailPanel">
+        <h3 class="detail-title" id="detailTitle">Skill Name</h3>
+        <div class="detail-grid">
+            <div class="detail-box"><h4>What it's about</h4><p id="detailAbout"></p></div>
+            <div class="detail-box"><h4>What AI does</h4><p id="detailAI"></p></div>
+            <div class="detail-box"><h4>Why humans matter more</h4><p id="detailHuman"></p></div>
+        </div>
+    </div>
+
+    <h2 style="font-size: 1.25rem; margin-bottom: 20px;">All AI Collaboration Skills</h2>
+    <table class="skills-table">
+        <thead><tr><th>Skill</th><th>What it's about</th><th>What AI does</th><th>Why humans matter more</th></tr></thead>
+        <tbody>
+            <tr><td class="skill-name">Speed Reading / Info Triage</td><td>Identify important info fast</td><td>Generates massive amounts in seconds</td><td>Distinguish signal from noise, set focus</td></tr>
+            <tr><td class="skill-name">Context Building</td><td>Give AI right background</td><td>Uses context but assumes when missing</td><td>Too little = wrong assumptions, too much = distraction</td></tr>
+            <tr><td class="skill-name">Problem Framing</td><td>Define the RIGHT problem</td><td>Solves beautifully — even wrong ones</td><td>Defining right problem is now critical</td></tr>
+            <tr><td class="skill-name">Asking Good Questions</td><td>Maximize AI output quality</td><td>Output quality = question quality</td><td>Value shifts to asking better questions</td></tr>
+            <tr><td class="skill-name">Editing & Refinement</td><td>Iterate prompts and results</td><td>First output rarely final</td><td>Evaluate results, improve structure/wording</td></tr>
+        </tbody>
+    </table>
+
+    <div class="nav-buttons">
+        <a href="/human-skills/thinking.html" class="nav-btn secondary">← Thinking Skills</a>
+        <a href="/human-skills/mindset.html" class="nav-btn primary">Next: Mindset →</a>
+    </div>
+</main>
+
+<footer><p>© 2026 NextGen PMM · SAP Product Marketing</p></footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+const skills = {
+    speedread: { title: "Speed Reading / Information Triage", about: "Ability to identify important information in long texts, fast.", ai: "AI can generate, summarize, analyze, and retrieve large amounts of information in seconds. It significantly increases the volume of information available to humans.", human: "Humans must quickly identify what is relevant, distinguish signal from noise and recognize important insights to steer further analysis. Information triage becomes essential to set the right focus." },
+    context: { title: "Context Building", about: "Give AI the right background — enough, but not too much.", ai: "AI uses the context humans provide to interpret requests, tailor outputs, and make recommendations. However, it only knows the context it is given and may make assumptions when information is missing.", human: "Humans must determine relevant and needed information for AI to generate useful outputs. AI only knows what it's told, so providing the right context is critical. Too little context leads to incorrect assumptions — too much context can distract from the actual task." },
+    problem: { title: "Problem Framing", about: "AI can solve wrong problems beautifully — but humans define the right problem.", ai: "AI generates output for the problems it's been given. It cannot reflect, challenge or know if it's solving the right problem.", human: "With AI, generating solutions becomes easier, while defining the right problem becomes more critical and harder. Distinguishing symptoms from the real problem was often part of the solution finding process. Now, knowing the real problem and phrasing it correctly from the beginning is critical." },
+    questions: { title: "Asking Good Questions", about: "Ability to ask good, neutral questions to maximize AI output.", ai: "The quality of the AI response is influenced by the quality of the question asked. If the question or task is too vague, the quality of the output will be less on target.", human: "Good interviewers, consultants or analysts typically ask good questions. When breaking the request into specific objectives, constraints, risks and missing information, answers from AI will be much better. As AI makes answers abundant — the human value shifts to asking better questions." },
+    editing: { title: "Editing and Refinement", about: "Ability to refine prompts and AI results to enhance outcomes.", ai: "AI generates output based on feedback and instructions. The first AI output is rarely the final output. Refining prompts, instructions and outputs improves result quality.", human: "Humans must evaluate results, identify gaps or weaknesses, and iteratively improve both prompts and outputs. Improving the structure, wording, logic and spotting weaknesses is important for good results." }
+};
+
+document.querySelectorAll('.hex-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.hex-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        const skill = skills[card.dataset.skill];
+        document.getElementById('detailTitle').textContent = skill.title;
+        document.getElementById('detailAbout').textContent = skill.about;
+        document.getElementById('detailAI').textContent = skill.ai;
+        document.getElementById('detailHuman').textContent = skill.human;
+        document.getElementById('detailPanel').classList.add('visible');
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <script src="/assets/js/user-menu.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Mindset | Human Soft Skills | NextGen PMM</title>
+    <link rel="stylesheet" href="/assets/css/site-header.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-light: #BFDBFE;
+            --primary-dark: #1D4ED8;
+            --dark: #1e293b;
+            --text: #475569;
+            --line: #e5e7eb;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #fff; color: var(--dark); line-height: 1.6; }
+        
+        .page-header {
+            padding: 40px 28px 32px;
+            background: linear-gradient(180deg, var(--primary-light) 0%, #fff 100%);
+            border-bottom: 1px solid var(--line);
+        }
+        .page-header-inner { max-width: 900px; margin: 0 auto; }
+        .breadcrumb { font-size: 0.85rem; color: #64748b; margin-bottom: 16px; }
+        .breadcrumb a { color: #0a6ed1; text-decoration: none; }
+        .breadcrumb .sep { margin: 0 6px; color: #ccc; }
+        .category-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--primary); color: #fff;
+            padding: 6px 14px; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600; margin-bottom: 12px;
+        }
+        .page-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        .page-header .lead { font-size: 1.05rem; color: var(--text); }
+
+        main { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+
+        .honeycomb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .hex-card {
+            background: var(--primary-light);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .hex-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+        }
+        .hex-card.active {
+            border-color: var(--dark);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .hex-icon { font-size: 2rem; margin-bottom: 12px; }
+        .hex-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--dark); }
+        .hex-desc { font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+
+        .detail-panel {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 40px;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+        .detail-panel.visible { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .detail-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+        .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        @media (max-width: 700px) { .detail-grid { grid-template-columns: 1fr; } }
+        .detail-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--line);
+        }
+        .detail-box h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .detail-box p { font-size: 0.95rem; color: var(--dark); margin: 0; }
+
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .skills-table th {
+            background: var(--dark);
+            color: #fff;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .skills-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+        .skills-table tr:last-child td { border-bottom: none; }
+        .skills-table tr:hover td { background: #f8fafc; }
+        .skill-name { font-weight: 600; color: var(--primary); white-space: nowrap; }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 32px;
+            border-top: 1px solid var(--line);
+            margin-top: 40px;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .nav-btn.secondary { background: #f1f5f9; color: var(--dark); }
+        .nav-btn.secondary:hover { background: #e2e8f0; }
+        .nav-btn.primary { background: var(--primary); color: #fff; }
+        .nav-btn.primary:hover { background: var(--primary-dark); }
+
+        footer { background: var(--dark); color: rgba(255,255,255,0.6); padding: 24px; text-align: center; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"><span class="pilot-badge">PILOT</span></a>
+    <nav>
+        <a href="/bow/">Book of Work</a>
+        <a href="/curriculum/">Learn</a>
+        <a href="/community/labs/">Labs</a>
+        <a href="/ai-tools.html">AI Tools</a>
+        <div class="nav-dropdown" id="community-dropdown">
+            <button class="nav-dropdown-btn">Community<svg class="nav-chevron" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="nav-dropdown-menu" id="community-menu" role="menu">
+                <a href="/community/people/">People</a>
+                <a href="/community/pulse/">PMM Pulse</a>
+                <a href="/community/spotlight/">PMM Spotlight</a>
+                <a href="/newsletters/">Newsletter</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="page-header">
+    <div class="page-header-inner">
+        <div class="breadcrumb">
+            <a href="/">Home</a><span class="sep">›</span><a href="/human-skills/">Human Skills</a><span class="sep">›</span>Mindset
+        </div>
+        <div class="category-badge">💭 Mindset</div>
+        <h1>Mindset & Attitudes</h1>
+        <p class="lead">The attitudes and approaches that determine your success with AI — curiosity, patience, intellectual humility, and cognitive independence.</p>
+    </div>
+</div>
+
+<main>
+    <div class="honeycomb-grid">
+        <div class="hex-card" data-skill="loops"><div class="hex-icon">🔄</div><div class="hex-title">Refinement Loops</div><div class="hex-desc">Prompt → evaluate → adjust → repeat</div></div>
+        <div class="hex-card" data-skill="culture"><div class="hex-icon">🤝</div><div class="hex-title">AI Culture</div><div class="hex-desc">Support the team culture of how and when we use AI</div></div>
+        <div class="hex-card" data-skill="sustainability"><div class="hex-icon">🌱</div><div class="hex-title">Sustainability Awareness</div><div class="hex-desc">Think about the environmental impact of AI usage</div></div>
+        <div class="hex-card" data-skill="communication"><div class="hex-icon">📢</div><div class="hex-title">Communication about AI</div><div class="hex-desc">Be a positive representative of our AI culture</div></div>
+        <div class="hex-card" data-skill="creativity"><div class="hex-icon">💡</div><div class="hex-title">Human Creativity</div><div class="hex-desc">Keep your creativity — it sets you apart</div></div>
+        <div class="hex-card" data-skill="humility"><div class="hex-icon">🙏</div><div class="hex-title">Intellectual Humility</div><div class="hex-desc">AI agreeing with you doesn't mean you're right</div></div>
+        <div class="hex-card" data-skill="curiosity"><div class="hex-icon">🔍</div><div class="hex-title">Curiosity</div><div class="hex-desc">Willingness to experiment with and through AI</div></div>
+        <div class="hex-card" data-skill="independence"><div class="hex-icon">🧠</div><div class="hex-title">Cognitive Independence</div><div class="hex-desc">Find your human/AI balance</div></div>
+        <div class="hex-card" data-skill="patience"><div class="hex-icon">⏳</div><div class="hex-title">Patience</div><div class="hex-desc">Learning AI collaboration is a new skill that takes time</div></div>
+    </div>
+
+    <div class="detail-panel" id="detailPanel">
+        <h3 class="detail-title" id="detailTitle">Skill Name</h3>
+        <div class="detail-grid">
+            <div class="detail-box"><h4>What it's about</h4><p id="detailAbout"></p></div>
+            <div class="detail-box"><h4>What AI does</h4><p id="detailAI"></p></div>
+            <div class="detail-box"><h4>Why humans matter more</h4><p id="detailHuman"></p></div>
+        </div>
+    </div>
+
+    <h2 style="font-size: 1.25rem; margin-bottom: 20px;">All Mindset Skills</h2>
+    <table class="skills-table">
+        <thead><tr><th>Skill</th><th>What it's about</th><th>What AI does</th><th>Why humans matter more</th></tr></thead>
+        <tbody>
+            <tr><td class="skill-name">Refinement Loops</td><td>Prompt → evaluate → adjust → repeat</td><td>Incorporates feedback, iterates</td><td>Quality from multiple cycles</td></tr>
+            <tr><td class="skill-name">AI Culture</td><td>Support team AI adoption</td><td>Makes work efficient if embraced</td><td>Foster positivity, help others</td></tr>
+            <tr><td class="skill-name">Sustainability Awareness</td><td>Environmental impact of AI</td><td>Requires data centers, energy</td><td>Not every task needs AI</td></tr>
+            <tr><td class="skill-name">Communication about AI</td><td>Be positive AI representative</td><td>Creates excitement and concerns</td><td>How you talk influences perception</td></tr>
+            <tr><td class="skill-name">Human Creativity</td><td>Keep your creative edge</td><td>Combines patterns, inspires</td><td>Create true new things with meaning</td></tr>
+            <tr><td class="skill-name">Intellectual Humility</td><td>AI agreeing ≠ you're right</td><td>Confidently agrees (sycophancy)</td><td>Stay open to being wrong</td></tr>
+            <tr><td class="skill-name">Curiosity</td><td>Experiment with AI</td><td>Supports experiments</td><td>Ask "How could AI help?"</td></tr>
+            <tr><td class="skill-name">Cognitive Independence</td><td>Find human/AI balance</td><td>Can do many cognitive tasks</td><td>Know when judgment should overrule</td></tr>
+            <tr><td class="skill-name">Patience</td><td>AI collaboration is a new skill</td><td>Provides instant answers</td><td>Learning takes time</td></tr>
+        </tbody>
+    </table>
+
+    <div class="nav-buttons">
+        <a href="/human-skills/collaborate.html" class="nav-btn secondary">← Collaborate with AI</a>
+        <a href="/skills-assessment.html" class="nav-btn primary">Take the Assessment →</a>
+    </div>
+</main>
+
+<footer><p>© 2026 NextGen PMM · SAP Product Marketing</p></footer>
+
+<script src="/assets/js/nav-dropdown.js" defer></script>
+<script>
+const skills = {
+    loops: { title: "Refinement Loops", about: "Build an iterative mindset: prompt → evaluate → adjust → repeat.", ai: "AI can immediately incorporate feedback, adjust outputs, explore alternatives, and iterate on previous responses.", human: "Working with AI is not a one-step activity. The quality results come from multiple cycles of feedback and refinement. Humans must evaluate outputs, learn from each iteration, and continuously guide the conversation toward better results." },
+    culture: { title: "AI Culture", about: "Support the team culture of how and when we use AI.", ai: "AI can make our work more efficient and create value. For this to be true though, humans need to embrace this new way of working.", human: "Fostering a new way of how we work requires a good level of positivity to embrace the change and help others to do so, too. This doesn't mean we shouldn't be critical. Each one of us needs to find their way and own balance to benefit from AI." },
+    sustainability: { title: "Sustainability Awareness", about: "Think about the environmental impact of your AI usage.", ai: "AI tasks can be simple and very complex — and they are performed at scale. These capabilities require computational resources, data centers, energy, and infrastructure build including forever chemicals, etc.", human: "As AI becomes part of more daily tasks and business processes, humans should be aware of its environmental footprint and use it thoughtfully. Not every task requires AI. Sustainability awareness helps balance value creation with responsible resource consumption." },
+    communication: { title: "Communication about AI", about: "Be a positive representative of our AI culture.", ai: "AI adoption is not only a technology challenge but also a people challenge. AI can create excitement, concerns, misconceptions, and resistance. Different stakeholders may have varying levels of understanding and trust in AI.", human: "The way you talk about AI, influences your colleagues' perception of AI. How you communicate about AI becomes important — do you talk about opportunities and how AI creates value in your work or do you only highlight risks? Be an advocate for AI, while understanding and also communicating where human oversight remains essential." },
+    creativity: { title: "Human Creativity", about: "Keep your human creativity! It set's you apart and makes your AI collaboration better.", ai: "AI can generate ideas, concepts, variations, images, and content by combining patterns it has learned from existing data. AI can't replicate that. AI can inspire, but humans create true new things that have meaning.", human: "Humans use their experiences, memories, relationships, emotions, intuition, and context to create new ideas. AI can't replicate that. AI can inspire, but humans create true new things that have meaning." },
+    humility: { title: "Intellectual Humility", about: "Willingness to be incorrect — AI agreeing with you doesn't mean you are right. Test it.", ai: "AI confidently provides answers and may support your argumentation. It tends to agree with you — which doesn't mean your viewpoint is right or the only possible one.", human: "Humans must remain open to being wrong and need to challenge themselves. Ask AI (or a colleague) to challenge your assumptions or arguments and be open for new views." },
+    curiosity: { title: "Curiosity", about: "Willingness to experiment with and through AI.", ai: "AI will support your experiments and hopefully surprise you often. When experimenting with AI, you can learn more about AI.", human: "Curiosity makes us try new things, explore new ways and with this, learn. When we experiment, we may discover new AI capabilities and use cases. It helps us to become more comfortable using AI and to grow with AI. Ask yourself: how could AI help me with this challenge or task?" },
+    independence: { title: "Cognitive Independence", about: "Find your human/AI balance.", ai: "AI can act as an advisor, collaborator, researcher, writer, analyst, and brainstorming partner. It can perform many cognitive tasks.", human: "As AI gets more capable, humans must avoid outsourcing all thinking to AI. Cognitive independence means you know when to rely on AI, when to think independently, and when human judgment should overrule AI. The goal is augmentation, not simply turning to AI for everything." },
+    patience: { title: "Patience", about: "Learning to collaborate with AI is a new skill and needs training and thus patience to progress.", ai: "By providing instant answers and results, AI might suggest that humans need to already know how to best work with it.", human: "Learning how to ask better questions, build context, refine outputs, and create use cases takes time. Patience helps us persist through experimentation and improving our AI collaboration skills. Like any new skill, the skill to work with AI develops over time and through patience." }
+};
+
+document.querySelectorAll('.hex-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.hex-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        const skill = skills[card.dataset.skill];
+        document.getElementById('detailTitle').textContent = skill.title;
+        document.getElementById('detailAbout').textContent = skill.about;
+        document.getElementById('detailAI').textContent = skill.ai;
+        document.getElementById('detailHuman').textContent = skill.human;
+        document.getElementById('detailPanel').classList.add('visible');
+    });
+});
+</script>
+</body>
+</html>
