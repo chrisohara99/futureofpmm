@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Pricing Rationale Builder | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --ink: #1e293b; --ink-muted: #64748b;
+            --surface: #f8fafc; --line: #e2e8f0; --green: #10b981; --green-light: #d1fae5;
+            --emerald: #059669; --emerald-light: #d1fae5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--emerald-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--emerald); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; color: var(--blue); text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--emerald-light) 0%, #ecfdf5 100%); border: 1px solid #6ee7b7; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box a { color: var(--emerald); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; }
+        .progress-step.active { background: var(--emerald); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--emerald); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: var(--emerald); }
+        
+        .input-group { display: flex; gap: 1rem; }
+        .input-group .form-group { flex: 1; }
+        
+        .currency-input { position: relative; }
+        .currency-input::before { content: '$'; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--ink-muted); }
+        .currency-input input { padding-left: 1.75rem; }
+        
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--emerald); }
+        .results-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        
+        /* ROI Summary */
+        .roi-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .roi-card { background: var(--surface); border-radius: 10px; padding: 1.25rem; text-align: center; }
+        .roi-card.highlight { background: linear-gradient(135deg, var(--emerald-light) 0%, #ecfdf5 100%); }
+        .roi-card .value { font-size: 2rem; font-weight: 700; color: var(--emerald); }
+        .roi-card .label { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.25rem; }
+        
+        /* Value Breakdown */
+        .value-breakdown { margin-bottom: 2rem; }
+        .value-breakdown h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .breakdown-item { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--line); }
+        .breakdown-item:last-child { border-bottom: none; }
+        .breakdown-item .label { color: var(--ink-muted); }
+        .breakdown-item .value { font-weight: 600; }
+        .breakdown-item.total { font-weight: 700; font-size: 1.1rem; background: var(--surface); margin: 0.5rem -1rem; padding: 1rem; border-radius: 8px; }
+        
+        /* ROI Chart */
+        .roi-chart { margin-bottom: 2rem; }
+        .roi-chart h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .chart-bars { display: flex; gap: 2rem; align-items: flex-end; height: 200px; padding: 1rem; background: var(--surface); border-radius: 10px; }
+        .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .bar { width: 100%; border-radius: 8px 8px 0 0; transition: height 0.5s; }
+        .bar.cost { background: #fca5a5; }
+        .bar.benefit { background: var(--emerald); }
+        .bar-label { margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600; }
+        .bar-value { font-size: 0.8rem; color: var(--ink-muted); }
+        
+        /* Skill Training */
+        .skill-training { background: linear-gradient(135deg, var(--emerald-light) 0%, #ecfdf5 100%); border: 1px solid #6ee7b7; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--emerald); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        
+        .joule-cta { background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta .btn { display: inline-flex; background: var(--emerald); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-secondary { background: var(--surface); border: 2px solid var(--line); }
+        .btn-primary { background: var(--emerald); color: white; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) { .roi-summary, .training-grid { grid-template-columns: 1fr; } .input-group { flex-direction: column; } }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>💰</span> Interactive Lab</div>
+        <h1>Pricing Rationale Builder</h1>
+        <p>Build executive-ready ROI analyses and business cases. Quantify value, calculate payback periods, and arm your champion for procurement conversations.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span>🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/0589a554-7939-4e40-88c0-433fd249f05e" target="_blank">AI Value Selling ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+    </div>
+    
+    <!-- Step 1: Solution & Investment -->
+    <section class="step-section active" id="step1">
+        <div class="step-header"><div class="step-num">1</div><h2>Solution & Investment</h2></div>
+        <p class="step-desc">Define the solution and investment amount.</p>
+        
+        <div class="form-group">
+            <label>Solution Name</label>
+            <input type="text" id="solutionName" placeholder="e.g., SAP S/4HANA Cloud">
+        </div>
+        
+        <div class="input-group">
+            <div class="form-group">
+                <label>Annual License Cost</label>
+                <div class="currency-input">
+                    <input type="number" id="licenseCost" placeholder="500,000" value="500000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Implementation Cost</label>
+                <div class="currency-input">
+                    <input type="number" id="implCost" placeholder="250,000" value="250000">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Contract Term (Years)</label>
+            <select id="contractTerm">
+                <option value="1">1 Year</option>
+                <option value="3" selected>3 Years</option>
+                <option value="5">5 Years</option>
+            </select>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- Step 2: Value Drivers -->
+    <section class="step-section" id="step2">
+        <div class="step-header"><div class="step-num">2</div><h2>Value Drivers</h2></div>
+        <p class="step-desc">Quantify the expected benefits. Enter annual values.</p>
+        
+        <div class="form-group">
+            <label>Labor Savings</label>
+            <p class="hint">FTE reduction or productivity gains</p>
+            <div class="currency-input">
+                <input type="number" id="laborSavings" placeholder="200,000" value="200000">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Process Efficiency Gains</label>
+            <p class="hint">Faster cycle times, reduced errors</p>
+            <div class="currency-input">
+                <input type="number" id="processSavings" placeholder="150,000" value="150000">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Revenue Impact</label>
+            <p class="hint">Faster time-to-market, new capabilities</p>
+            <div class="currency-input">
+                <input type="number" id="revenueImpact" placeholder="100,000" value="100000">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Risk/Compliance Savings</label>
+            <p class="hint">Avoided penalties, reduced audit costs</p>
+            <div class="currency-input">
+                <input type="number" id="riskSavings" placeholder="50,000" value="50000">
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Calculate ROI →</button>
+        </div>
+    </section>
+    
+    <!-- Step 3: Results -->
+    <section class="step-section" id="step3">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>💰 ROI Analysis</h2>
+                <p style="color: var(--ink-muted);" id="resultsSummary"></p>
+            </div>
+            
+            <!-- ROI Summary -->
+            <div class="roi-summary">
+                <div class="roi-card highlight">
+                    <div class="value" id="roiPercent">156%</div>
+                    <div class="label">3-Year ROI</div>
+                </div>
+                <div class="roi-card">
+                    <div class="value" id="paybackMonths">14</div>
+                    <div class="label">Months to Payback</div>
+                </div>
+                <div class="roi-card">
+                    <div class="value" id="npvValue">$750K</div>
+                    <div class="label">Net Present Value</div>
+                </div>
+            </div>
+            
+            <!-- Value Breakdown -->
+            <div class="value-breakdown">
+                <h3>📊 Value Breakdown</h3>
+                <div class="breakdown-item">
+                    <span class="label">Total Investment (3-Year TCO)</span>
+                    <span class="value" id="totalInvestment">$1,750,000</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Labor Savings (Annual)</span>
+                    <span class="value" id="displayLabor">$200,000</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Process Efficiency (Annual)</span>
+                    <span class="value" id="displayProcess">$150,000</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Revenue Impact (Annual)</span>
+                    <span class="value" id="displayRevenue">$100,000</span>
+                </div>
+                <div class="breakdown-item">
+                    <span class="label">Risk/Compliance (Annual)</span>
+                    <span class="value" id="displayRisk">$50,000</span>
+                </div>
+                <div class="breakdown-item total">
+                    <span class="label">Total Annual Benefit</span>
+                    <span class="value" id="totalAnnualBenefit">$500,000</span>
+                </div>
+            </div>
+            
+            <!-- ROI Chart -->
+            <div class="roi-chart">
+                <h3>📈 Cost vs. Benefit</h3>
+                <div class="chart-bars">
+                    <div class="chart-bar">
+                        <div class="bar cost" id="costBar" style="height: 100px;"></div>
+                        <div class="bar-label">Total Cost</div>
+                        <div class="bar-value" id="costBarValue">$1.75M</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar benefit" id="benefitBar" style="height: 150px;"></div>
+                        <div class="bar-label">Total Benefit</div>
+                        <div class="bar-value" id="benefitBarValue">$1.5M</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the AI Value Selling Skill</h3>
+                <p class="training-intro">Generate complete ROI analyses, business cases, and executive presentations.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <ul class="trigger-list">
+                            <li>"Calculate ROI for..."</li>
+                            <li>"Build a business case for..."</li>
+                            <li>"Value justification for..."</li>
+                            <li>"TCO comparison..."</li>
+                        </ul>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <div class="sample-prompt">"Build a business case for SAP S/4HANA Cloud for a $5B manufacturing company. Include ROI, payback period, and executive summary."</div>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Executive Summary</strong> — CFO-ready overview</li>
+                            <li><strong>ROI Analysis</strong> — Full calculations</li>
+                            <li><strong>Risk Assessment</strong> — Sensitivity analysis</li>
+                            <li><strong>Competitive Comparison</strong> — Alternative costs</li>
+                        </ul>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Include industry</strong> — Benchmarks vary</li>
+                            <li><strong>Mention deal size</strong> — Scales analysis</li>
+                            <li><strong>Ask for objections</strong> — "What would CFO push back on?"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="joule-cta">
+                <h3>🧩 Need a Complete Business Case?</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Install the <strong>AI Value Selling</strong> Skill to generate executive-ready business cases with sensitivity analysis, risk factors, and competitive comparisons.</p>
+                <a href="https://hub.joule.only.sap/skills/0589a554-7939-4e40-88c0-433fd249f05e" target="_blank" class="btn">Install AI Value Selling Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyAnalysis()">📋 Copy Analysis</button>
+                <button class="action-btn" onclick="saveAnalysis()">💾 Save</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved.</footer>
+
+<script>
+let currentStep = 1;
+let formData = { name: '', licenseCost: 500000, implCost: 250000, term: 3, labor: 200000, process: 150000, revenue: 100000, risk: 50000 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupNavigation();
+});
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => { collectData(); goToStep(3); });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i < step - 1) el.classList.add('complete');
+        if (i === step - 1) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => el.classList.toggle('active', i === step - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectData() {
+    formData.name = document.getElementById('solutionName').value || 'Solution';
+    formData.licenseCost = parseFloat(document.getElementById('licenseCost').value) || 0;
+    formData.implCost = parseFloat(document.getElementById('implCost').value) || 0;
+    formData.term = parseInt(document.getElementById('contractTerm').value) || 3;
+    formData.labor = parseFloat(document.getElementById('laborSavings').value) || 0;
+    formData.process = parseFloat(document.getElementById('processSavings').value) || 0;
+    formData.revenue = parseFloat(document.getElementById('revenueImpact').value) || 0;
+    formData.risk = parseFloat(document.getElementById('riskSavings').value) || 0;
+    calculateROI();
+}
+
+function calculateROI() {
+    const totalCost = (formData.licenseCost * formData.term) + formData.implCost;
+    const annualBenefit = formData.labor + formData.process + formData.revenue + formData.risk;
+    const totalBenefit = annualBenefit * formData.term;
+    const netBenefit = totalBenefit - totalCost;
+    const roi = totalCost > 0 ? (netBenefit / totalCost) * 100 : 0;
+    const paybackMonths = annualBenefit > 0 ? Math.ceil((totalCost / annualBenefit) * 12) : 0;
+    const npv = netBenefit * 0.85; // Simplified NPV with 5% discount
+    
+    document.getElementById('resultsSummary').textContent = `${formData.name} · ${formData.term}-Year Analysis`;
+    document.getElementById('roiPercent').textContent = `${Math.round(roi)}%`;
+    document.getElementById('paybackMonths').textContent = paybackMonths;
+    document.getElementById('npvValue').textContent = formatCurrency(npv);
+    document.getElementById('totalInvestment').textContent = formatCurrency(totalCost);
+    document.getElementById('displayLabor').textContent = formatCurrency(formData.labor);
+    document.getElementById('displayProcess').textContent = formatCurrency(formData.process);
+    document.getElementById('displayRevenue').textContent = formatCurrency(formData.revenue);
+    document.getElementById('displayRisk').textContent = formatCurrency(formData.risk);
+    document.getElementById('totalAnnualBenefit').textContent = formatCurrency(annualBenefit);
+    
+    // Chart
+    const maxVal = Math.max(totalCost, totalBenefit);
+    document.getElementById('costBar').style.height = `${(totalCost / maxVal) * 150}px`;
+    document.getElementById('benefitBar').style.height = `${(totalBenefit / maxVal) * 150}px`;
+    document.getElementById('costBarValue').textContent = formatCurrency(totalCost);
+    document.getElementById('benefitBarValue').textContent = formatCurrency(totalBenefit);
+}
+
+function formatCurrency(value) {
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+    return `$${value.toFixed(0)}`;
+}
+
+function copyAnalysis() {
+    const totalCost = (formData.licenseCost * formData.term) + formData.implCost;
+    const annualBenefit = formData.labor + formData.process + formData.revenue + formData.risk;
+    const roi = totalCost > 0 ? ((annualBenefit * formData.term - totalCost) / totalCost) * 100 : 0;
+    
+    const text = `ROI ANALYSIS: ${formData.name}
+Term: ${formData.term} Years
+Total Investment: ${formatCurrency(totalCost)}
+Annual Benefit: ${formatCurrency(annualBenefit)}
+ROI: ${Math.round(roi)}%
+Payback: ${Math.ceil((totalCost / annualBenefit) * 12)} months`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Analysis', 2000);
+    });
+}
+
+function saveAnalysis() {
+    const saved = JSON.parse(localStorage.getItem('pmmROIAnalyses') || '[]');
+    saved.unshift({ ...formData, date: new Date().toISOString() });
+    localStorage.setItem('pmmROIAnalyses', JSON.stringify(saved.slice(0, 10)));
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save', 2000);
+}
+
+function startOver() {
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>
