@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Persona Builder | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2;
+            --blue-light: #e8f4fc;
+            --ink: #1e293b;
+            --ink-muted: #64748b;
+            --surface: #f8fafc;
+            --line: #e2e8f0;
+            --green: #10b981;
+            --green-light: #d1fae5;
+            --yellow: #f59e0b;
+            --yellow-light: #fef3c7;
+            --purple: #8b5cf6;
+            --purple-light: #ede9fe;
+            --teal: #14b8a6;
+            --teal-light: #ccfbf1;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--teal-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--teal); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--teal-light) 0%, #f0f9ff 100%); border: 1px solid #99f6e4; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box a { color: var(--teal); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; }
+        .progress-step.active { background: var(--teal); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--teal); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--teal); }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+        .role-card { border: 2px solid var(--line); border-radius: 10px; padding: 1.25rem; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .role-card:hover { border-color: var(--teal); }
+        .role-card.selected { border-color: var(--teal); background: var(--teal-light); }
+        .role-card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .role-card h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .role-card p { font-size: 0.8rem; color: var(--ink-muted); }
+        
+        .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .chip { padding: 0.5rem 1rem; border: 2px solid var(--line); border-radius: 20px; cursor: pointer; font-size: 0.9rem; background: white; }
+        .chip:hover { border-color: var(--teal); }
+        .chip.selected { background: var(--teal); color: white; border-color: var(--teal); }
+        
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--teal); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        
+        .persona-card-result { background: linear-gradient(135deg, var(--teal-light) 0%, #f0f9ff 100%); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .persona-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .persona-avatar { width: 80px; height: 80px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+        .persona-header h3 { font-size: 1.5rem; }
+        .persona-header .title { color: var(--ink-muted); }
+        
+        .persona-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .persona-section { background: white; padding: 1rem; border-radius: 8px; }
+        .persona-section h4 { font-size: 0.85rem; color: var(--teal); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .persona-section ul { padding-left: 1.25rem; margin: 0; }
+        .persona-section li { margin-bottom: 0.35rem; font-size: 0.9rem; }
+        
+        .skill-training { background: linear-gradient(135deg, var(--teal-light) 0%, #f0f9ff 100%); border: 1px solid #99f6e4; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .training-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--teal); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; line-height: 1.5; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        .output-list li:last-child, .tips-list li:last-child { border-bottom: none; }
+        
+        .joule-cta { background: linear-gradient(135deg, #134e4a 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .joule-cta p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+        .joule-cta .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--teal); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
+        .btn-primary { background: var(--teal); color: white; }
+        .btn-primary:hover { background: #0d9488; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { border-color: var(--teal); }
+        
+        .saved-section { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 10px; }
+        .saved-section h4 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--ink-muted); }
+        .saved-item { display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) { .persona-grid, .training-grid { grid-template-columns: 1fr; } .role-grid { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>👤</span> Interactive Lab</div>
+        <h1>Persona Builder</h1>
+        <p>Create detailed buyer personas for your target market. Define roles, pain points, motivations, and content preferences for each member of the buying committee.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/692333c5-d602-43ee-b639-fe08a1cb5658" target="_blank">Customer Engagement ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+    </div>
+    
+    <!-- Step 1: Select Role -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Select Role</h2>
+        </div>
+        <p class="step-desc">Choose the buyer persona role you want to build.</p>
+        
+        <div class="role-grid" id="roleGrid">
+            <div class="role-card" data-role="CIO" data-icon="💻" data-title="Chief Information Officer">
+                <div class="icon">💻</div>
+                <h4>CIO / CTO</h4>
+                <p>Technology strategy leader</p>
+            </div>
+            <div class="role-card" data-role="CFO" data-icon="💰" data-title="Chief Financial Officer">
+                <div class="icon">💰</div>
+                <h4>CFO</h4>
+                <p>Financial decision maker</p>
+            </div>
+            <div class="role-card" data-role="CMO" data-icon="📢" data-title="Chief Marketing Officer">
+                <div class="icon">📢</div>
+                <h4>CMO</h4>
+                <p>Marketing leader</p>
+            </div>
+            <div class="role-card" data-role="COO" data-icon="⚙️" data-title="Chief Operating Officer">
+                <div class="icon">⚙️</div>
+                <h4>COO</h4>
+                <p>Operations leader</p>
+            </div>
+            <div class="role-card" data-role="VP Sales" data-icon="🎯" data-title="VP of Sales">
+                <div class="icon">🎯</div>
+                <h4>VP Sales</h4>
+                <p>Sales organization leader</p>
+            </div>
+            <div class="role-card" data-role="IT Director" data-icon="🖥️" data-title="IT Director">
+                <div class="icon">🖥️</div>
+                <h4>IT Director</h4>
+                <p>Implementation owner</p>
+            </div>
+            <div class="role-card" data-role="Procurement" data-icon="📋" data-title="Procurement Manager">
+                <div class="icon">📋</div>
+                <h4>Procurement</h4>
+                <p>Vendor management</p>
+            </div>
+            <div class="role-card" data-role="End User" data-icon="👤" data-title="End User">
+                <div class="icon">👤</div>
+                <h4>End User</h4>
+                <p>Day-to-day operator</p>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2" disabled>Continue →</button>
+        </div>
+    </section>
+    
+    <!-- Step 2: Context -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Add Context</h2>
+        </div>
+        <p class="step-desc">Provide context about your product and target industry.</p>
+        
+        <div class="form-group">
+            <label>Your Product/Solution</label>
+            <input type="text" id="product" placeholder="e.g., Cloud ERP, Data Analytics Platform">
+        </div>
+        
+        <div class="form-group">
+            <label>Target Industry</label>
+            <div class="chip-group" id="industryChips">
+                <span class="chip" data-value="Manufacturing">Manufacturing</span>
+                <span class="chip" data-value="Retail">Retail</span>
+                <span class="chip" data-value="Financial Services">Financial Services</span>
+                <span class="chip" data-value="Healthcare">Healthcare</span>
+                <span class="chip" data-value="Technology">Technology</span>
+                <span class="chip" data-value="Professional Services">Services</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Company Size</label>
+            <div class="chip-group" id="sizeChips">
+                <span class="chip" data-value="SMB">SMB</span>
+                <span class="chip" data-value="Mid-Market">Mid-Market</span>
+                <span class="chip" data-value="Enterprise">Enterprise</span>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- Step 3: Pain Points -->
+    <section class="step-section" id="step3">
+        <div class="step-header">
+            <div class="step-num">3</div>
+            <h2>Pain Points & Goals</h2>
+        </div>
+        <p class="step-desc">What challenges does this persona face? What motivates them?</p>
+        
+        <div class="form-group">
+            <label>Primary Pain Points</label>
+            <p class="hint">Select the top challenges this persona faces</p>
+            <div class="chip-group" id="painChips">
+                <span class="chip" data-value="Manual processes">Manual processes</span>
+                <span class="chip" data-value="Data silos">Data silos</span>
+                <span class="chip" data-value="Budget constraints">Budget constraints</span>
+                <span class="chip" data-value="Legacy systems">Legacy systems</span>
+                <span class="chip" data-value="Security concerns">Security concerns</span>
+                <span class="chip" data-value="Skills shortage">Skills shortage</span>
+                <span class="chip" data-value="Time to value">Time to value</span>
+                <span class="chip" data-value="Change management">Change management</span>
+                <span class="chip" data-value="Vendor fragmentation">Vendor fragmentation</span>
+                <span class="chip" data-value="Compliance">Compliance</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Key Motivations</label>
+            <p class="hint">What drives their decisions?</p>
+            <div class="chip-group" id="motivationChips">
+                <span class="chip" data-value="Cost reduction">Cost reduction</span>
+                <span class="chip" data-value="Efficiency gains">Efficiency gains</span>
+                <span class="chip" data-value="Innovation">Innovation</span>
+                <span class="chip" data-value="Competitive advantage">Competitive advantage</span>
+                <span class="chip" data-value="Risk mitigation">Risk mitigation</span>
+                <span class="chip" data-value="Career advancement">Career advancement</span>
+                <span class="chip" data-value="User satisfaction">User satisfaction</span>
+                <span class="chip" data-value="Revenue growth">Revenue growth</span>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep2">← Back</button>
+            <button class="btn btn-primary" id="toStep4">Generate Persona →</button>
+        </div>
+    </section>
+    
+    <!-- Step 4: Results -->
+    <section class="step-section" id="step4">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>👤 Your Buyer Persona</h2>
+            </div>
+            
+            <div class="persona-card-result">
+                <div class="persona-header">
+                    <div class="persona-avatar" id="personaIcon">💻</div>
+                    <div>
+                        <h3 id="personaName">The Strategic CIO</h3>
+                        <div class="title" id="personaTitle">Chief Information Officer</div>
+                    </div>
+                </div>
+                
+                <div class="persona-grid">
+                    <div class="persona-section">
+                        <h4>🎯 Goals</h4>
+                        <ul id="personaGoals">
+                            <li>Drive digital transformation</li>
+                            <li>Modernize IT infrastructure</li>
+                            <li>Enable business agility</li>
+                        </ul>
+                    </div>
+                    <div class="persona-section">
+                        <h4>😓 Pain Points</h4>
+                        <ul id="personaPains">
+                            <li>Legacy system integration</li>
+                            <li>Budget justification</li>
+                            <li>Talent retention</li>
+                        </ul>
+                    </div>
+                    <div class="persona-section">
+                        <h4>💡 Motivations</h4>
+                        <ul id="personaMotivations">
+                            <li>Innovation recognition</li>
+                            <li>Operational excellence</li>
+                            <li>Strategic influence</li>
+                        </ul>
+                    </div>
+                    <div class="persona-section">
+                        <h4>📚 Content Preferences</h4>
+                        <ul id="personaContent">
+                            <li>Industry analyst reports</li>
+                            <li>Peer case studies</li>
+                            <li>ROI calculators</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="skill-training">
+                <h3>🎓 How to Use the Customer Engagement Skill</h3>
+                <p class="training-intro">Generate complete persona profiles with messaging and content recommendations.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <ul class="trigger-list">
+                            <li>"Build a persona for..."</li>
+                            <li>"What does a CIO care about?"</li>
+                            <li>"Buyer profile for..."</li>
+                            <li>"Content strategy for..."</li>
+                        </ul>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <div class="sample-prompt">"Build a buyer persona for a CIO at an enterprise manufacturing company evaluating cloud ERP. Include pain points, motivations, and content preferences."</div>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Complete Profile</strong> — Demographics, psychographics</li>
+                            <li><strong>Journey Map</strong> — Awareness to decision</li>
+                            <li><strong>Content Plan</strong> — What to create for each stage</li>
+                            <li><strong>Objections</strong> — Common concerns & responses</li>
+                        </ul>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Include industry</strong> — Persona varies by vertical</li>
+                            <li><strong>Specify company size</strong> — Enterprise vs SMB differ</li>
+                            <li><strong>Ask for objections</strong> — "What would make them say no?"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="joule-cta">
+                <h3>🧩 Ready for Deeper Insights?</h3>
+                <p>Install the <strong>Customer Engagement</strong> Skill to generate complete personas with journey maps, content strategies, and objection handling.</p>
+                <a href="https://hub.joule.only.sap/skills/692333c5-d602-43ee-b639-fe08a1cb5658" target="_blank" class="btn">Install Customer Engagement Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyPersona()">📋 Copy Persona</button>
+                <button class="action-btn" onclick="savePersona()">💾 Save Persona</button>
+                <button class="action-btn" onclick="startOver()">🔄 Build Another</button>
+            </div>
+            
+            <div class="saved-section" id="savedSection" style="display: none;">
+                <h4>📁 Saved Personas</h4>
+                <div id="savedList"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved.</footer>
+
+<script>
+let currentStep = 1;
+let formData = { role: '', roleIcon: '', roleTitle: '', product: '', industry: '', size: '', pains: [], motivations: [] };
+
+const personaData = {
+    'CIO': { name: 'The Strategic CIO', goals: ['Drive digital transformation', 'Modernize IT infrastructure', 'Enable business agility', 'Reduce technical debt'], content: ['Gartner/Forrester reports', 'Peer CIO roundtables', 'Architecture deep-dives', 'ROI frameworks'] },
+    'CFO': { name: 'The Value-Driven CFO', goals: ['Optimize costs', 'Improve financial visibility', 'Manage risk', 'Enable growth investments'], content: ['Business case templates', 'TCO comparisons', 'CFO peer benchmarks', 'Financial impact studies'] },
+    'CMO': { name: 'The Growth-Focused CMO', goals: ['Drive revenue growth', 'Improve customer experience', 'Build brand equity', 'Prove marketing ROI'], content: ['Marketing benchmarks', 'Customer success stories', 'Attribution studies', 'Competitive analyses'] },
+    'COO': { name: 'The Efficiency-Minded COO', goals: ['Streamline operations', 'Reduce costs', 'Improve quality', 'Scale processes'], content: ['Process optimization guides', 'Operational benchmarks', 'Implementation case studies', 'Best practice frameworks'] },
+    'VP Sales': { name: 'The Revenue-Obsessed VP', goals: ['Hit quota', 'Improve win rates', 'Shorten sales cycles', 'Grow pipeline'], content: ['Competitive battle cards', 'Sales playbooks', 'Win/loss analyses', 'Quota attainment studies'] },
+    'IT Director': { name: 'The Practical IT Director', goals: ['Successful implementations', 'System reliability', 'User adoption', 'Team productivity'], content: ['Technical documentation', 'Implementation guides', 'Integration specs', 'Admin training'] },
+    'Procurement': { name: 'The Risk-Aware Buyer', goals: ['Vendor consolidation', 'Cost optimization', 'Risk mitigation', 'Contract compliance'], content: ['Vendor comparisons', 'Pricing guides', 'Security certifications', 'SLA templates'] },
+    'End User': { name: 'The Productivity Seeker', goals: ['Work faster', 'Reduce frustration', 'Learn easily', 'Get recognition'], content: ['Quick start guides', 'Video tutorials', 'Tips & tricks', 'Community forums'] }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupRoles();
+    setupChips();
+    setupNavigation();
+    loadSaved();
+});
+
+function setupRoles() {
+    document.querySelectorAll('.role-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            formData.role = card.dataset.role;
+            formData.roleIcon = card.dataset.icon;
+            formData.roleTitle = card.dataset.title;
+            document.getElementById('toStep2').disabled = false;
+        });
+    });
+}
+
+function setupChips() {
+    document.querySelectorAll('.chip-group').forEach(group => {
+        const max = group.id.includes('pain') || group.id.includes('motivation') ? 4 : 1;
+        group.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                if (max === 1) {
+                    group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                } else {
+                    const selected = group.querySelectorAll('.chip.selected').length;
+                    if (chip.classList.contains('selected')) {
+                        chip.classList.remove('selected');
+                    } else if (selected < max) {
+                        chip.classList.add('selected');
+                    }
+                }
+            });
+        });
+    });
+}
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => goToStep(3));
+    document.getElementById('backToStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('toStep4').addEventListener('click', () => { collectData(); goToStep(4); });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i < step - 1) el.classList.add('complete');
+        if (i === step - 1) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => el.classList.toggle('active', i === step - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectData() {
+    formData.product = document.getElementById('product').value;
+    formData.industry = [...document.querySelectorAll('#industryChips .chip.selected')].map(c => c.dataset.value).join(', ');
+    formData.size = [...document.querySelectorAll('#sizeChips .chip.selected')].map(c => c.dataset.value).join(', ');
+    formData.pains = [...document.querySelectorAll('#painChips .chip.selected')].map(c => c.dataset.value);
+    formData.motivations = [...document.querySelectorAll('#motivationChips .chip.selected')].map(c => c.dataset.value);
+    renderResults();
+}
+
+function renderResults() {
+    const data = personaData[formData.role] || personaData['CIO'];
+    document.getElementById('personaIcon').textContent = formData.roleIcon;
+    document.getElementById('personaName').textContent = data.name;
+    document.getElementById('personaTitle').textContent = `${formData.roleTitle} · ${formData.industry || 'Technology'} · ${formData.size || 'Enterprise'}`;
+    document.getElementById('personaGoals').innerHTML = data.goals.map(g => `<li>${g}</li>`).join('');
+    document.getElementById('personaPains').innerHTML = (formData.pains.length ? formData.pains : ['Budget constraints', 'Time pressure', 'Risk aversion']).map(p => `<li>${p}</li>`).join('');
+    document.getElementById('personaMotivations').innerHTML = (formData.motivations.length ? formData.motivations : ['Efficiency gains', 'Career advancement', 'Recognition']).map(m => `<li>${m}</li>`).join('');
+    document.getElementById('personaContent').innerHTML = data.content.map(c => `<li>${c}</li>`).join('');
+}
+
+function copyPersona() {
+    const text = `BUYER PERSONA: ${personaData[formData.role]?.name || formData.role}
+Role: ${formData.roleTitle}
+Industry: ${formData.industry}
+Company Size: ${formData.size}
+Product Context: ${formData.product}
+
+Pain Points: ${formData.pains.join(', ')}
+Motivations: ${formData.motivations.join(', ')}
+Content Preferences: ${personaData[formData.role]?.content.join(', ')}`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Persona', 2000);
+    });
+}
+
+function savePersona() {
+    const saved = JSON.parse(localStorage.getItem('pmmPersonas') || '[]');
+    saved.unshift({ ...formData, name: personaData[formData.role]?.name, date: new Date().toISOString() });
+    localStorage.setItem('pmmPersonas', JSON.stringify(saved.slice(0, 10)));
+    loadSaved();
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save Persona', 2000);
+}
+
+function loadSaved() {
+    const saved = JSON.parse(localStorage.getItem('pmmPersonas') || '[]');
+    if (saved.length > 0) {
+        document.getElementById('savedSection').style.display = 'block';
+        document.getElementById('savedList').innerHTML = saved.map(s => `
+            <div class="saved-item">
+                <span>${s.roleIcon} ${s.name || s.role}</span>
+                <span style="color: var(--ink-muted); font-size: 0.8rem;">${new Date(s.date).toLocaleDateString()}</span>
+            </div>
+        `).join('');
+    }
+}
+
+function startOver() {
+    formData = { role: '', roleIcon: '', roleTitle: '', product: '', industry: '', size: '', pains: [], motivations: [] };
+    document.querySelectorAll('.chip.selected, .role-card.selected').forEach(el => el.classList.remove('selected'));
+    document.getElementById('product').value = '';
+    document.getElementById('toStep2').disabled = true;
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>

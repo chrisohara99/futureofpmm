@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Launch Planner | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --ink: #1e293b; --ink-muted: #64748b;
+            --surface: #f8fafc; --line: #e2e8f0; --green: #10b981; --green-light: #d1fae5;
+            --yellow: #f59e0b; --yellow-light: #fef3c7; --orange: #f97316; --orange-light: #ffedd5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--orange-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--orange); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; color: var(--blue); text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--orange-light) 0%, #fff7ed 100%); border: 1px solid #fdba74; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box a { color: var(--orange); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; }
+        .progress-step.active { background: var(--orange); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        input[type="text"], input[type="date"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: var(--orange); }
+        
+        .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .chip { padding: 0.5rem 1rem; border: 2px solid var(--line); border-radius: 20px; cursor: pointer; font-size: 0.9rem; background: white; }
+        .chip:hover { border-color: var(--orange); }
+        .chip.selected { background: var(--orange); color: white; border-color: var(--orange); }
+        
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--orange); }
+        .results-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        
+        /* Timeline */
+        .timeline { margin-bottom: 2rem; }
+        .timeline h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .timeline-track { position: relative; padding: 1rem 0; }
+        .timeline-item { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .timeline-marker { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+        .timeline-marker.t-minus { background: var(--yellow-light); color: #b45309; }
+        .timeline-marker.launch { background: var(--green-light); color: #047857; }
+        .timeline-marker.post { background: var(--blue-light); color: #1d4ed8; }
+        .timeline-content { flex: 1; background: var(--surface); padding: 1rem; border-radius: 8px; }
+        .timeline-content h4 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .timeline-content ul { padding-left: 1.25rem; margin: 0; font-size: 0.85rem; }
+        
+        /* RACI */
+        .raci-section { margin-bottom: 2rem; }
+        .raci-section h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .raci-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .raci-table th, .raci-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--line); }
+        .raci-table th { background: var(--surface); font-weight: 600; }
+        .raci-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .raci-r { background: #fecaca; color: #dc2626; }
+        .raci-a { background: #fed7aa; color: #ea580c; }
+        .raci-c { background: #bfdbfe; color: #2563eb; }
+        .raci-i { background: #e5e7eb; color: #4b5563; }
+        
+        /* Checklist */
+        .checklist-section { margin-bottom: 2rem; }
+        .checklist-section h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .checklist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .checklist-card { background: var(--surface); border-radius: 10px; padding: 1rem; }
+        .checklist-card h4 { font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--orange); }
+        .checklist-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; font-size: 0.85rem; }
+        .checklist-item input { width: 18px; height: 18px; }
+        
+        /* Training */
+        .skill-training { background: linear-gradient(135deg, var(--orange-light) 0%, #fff7ed 100%); border: 1px solid #fdba74; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--orange); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        
+        .joule-cta { background: linear-gradient(135deg, #7c2d12 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta .btn { display: inline-flex; background: var(--orange); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-secondary { background: var(--surface); border: 2px solid var(--line); }
+        .btn-primary { background: var(--orange); color: white; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) { .checklist-grid, .training-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>🚀</span> Interactive Lab</div>
+        <h1>Launch Planner</h1>
+        <p>Plan your product launch from idea to launch day. Generate a timeline, RACI matrix, and comprehensive checklist for a successful GTM execution.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span>🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/94fc9eb8-a387-4c89-b29d-c9fae268dbee" target="_blank">GTM Strategy ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+    </div>
+    
+    <!-- Step 1 -->
+    <section class="step-section active" id="step1">
+        <div class="step-header"><div class="step-num">1</div><h2>Launch Details</h2></div>
+        <p class="step-desc">Define your launch scope and timeline.</p>
+        
+        <div class="form-group">
+            <label>Launch Name</label>
+            <input type="text" id="launchName" placeholder="e.g., Q1 2027 Cloud ERP Release">
+        </div>
+        
+        <div class="form-group">
+            <label>Launch Type</label>
+            <div class="chip-group" id="typeChips">
+                <span class="chip" data-value="Major">Major Release</span>
+                <span class="chip" data-value="Minor">Minor Update</span>
+                <span class="chip" data-value="Feature">New Feature</span>
+                <span class="chip" data-value="Campaign">Campaign Launch</span>
+                <span class="chip" data-value="Event">Event Launch</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Target Launch Date</label>
+            <input type="date" id="launchDate">
+        </div>
+        
+        <div class="form-group">
+            <label>Launch Tier</label>
+            <div class="chip-group" id="tierChips">
+                <span class="chip" data-value="Tier 1">Tier 1 (Full GTM)</span>
+                <span class="chip" data-value="Tier 2">Tier 2 (Standard)</span>
+                <span class="chip" data-value="Tier 3">Tier 3 (Lightweight)</span>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- Step 2 -->
+    <section class="step-section" id="step2">
+        <div class="step-header"><div class="step-num">2</div><h2>Team & Channels</h2></div>
+        <p class="step-desc">Who's involved and where will you launch?</p>
+        
+        <div class="form-group">
+            <label>Key Stakeholders</label>
+            <div class="chip-group" id="stakeholderChips">
+                <span class="chip" data-value="PMM Lead">PMM Lead</span>
+                <span class="chip" data-value="Product Manager">Product Manager</span>
+                <span class="chip" data-value="Sales Enablement">Sales Enablement</span>
+                <span class="chip" data-value="Field Marketing">Field Marketing</span>
+                <span class="chip" data-value="PR/Comms">PR/Comms</span>
+                <span class="chip" data-value="Demand Gen">Demand Gen</span>
+                <span class="chip" data-value="Partner Marketing">Partner Marketing</span>
+                <span class="chip" data-value="Customer Success">Customer Success</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Launch Channels</label>
+            <div class="chip-group" id="channelChips">
+                <span class="chip" data-value="Website">Website</span>
+                <span class="chip" data-value="Email">Email</span>
+                <span class="chip" data-value="Social">Social Media</span>
+                <span class="chip" data-value="Webinar">Webinar</span>
+                <span class="chip" data-value="Press Release">Press Release</span>
+                <span class="chip" data-value="Sales Outreach">Sales Outreach</span>
+                <span class="chip" data-value="Partner Comms">Partner Comms</span>
+                <span class="chip" data-value="In-Product">In-Product</span>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Generate Plan →</button>
+        </div>
+    </section>
+    
+    <!-- Step 3: Results -->
+    <section class="step-section" id="step3">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>🚀 Your Launch Plan</h2>
+                <p id="launchSummary" style="color: var(--ink-muted);"></p>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="timeline">
+                <h3>📅 T-Minus Timeline</h3>
+                <div class="timeline-track" id="timelineTrack"></div>
+            </div>
+            
+            <!-- RACI -->
+            <div class="raci-section">
+                <h3>👥 RACI Matrix</h3>
+                <table class="raci-table" id="raciTable">
+                    <thead><tr><th>Deliverable</th><th>Responsible</th><th>Accountable</th><th>Consulted</th><th>Informed</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <!-- Checklist -->
+            <div class="checklist-section">
+                <h3>✅ Launch Checklist</h3>
+                <div class="checklist-grid" id="checklistGrid"></div>
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the GTM Strategy Skill</h3>
+                <p class="training-intro">Generate complete launch plans with detailed timelines, responsibilities, and risk mitigation.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <ul class="trigger-list">
+                            <li>"Plan a product launch for..."</li>
+                            <li>"GTM strategy for..."</li>
+                            <li>"Launch timeline for..."</li>
+                            <li>"Launch readiness checklist"</li>
+                        </ul>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <div class="sample-prompt">"Create a Tier 1 launch plan for our new AI analytics feature launching March 15. Include timeline, RACI, and risk register."</div>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Bill of Materials</strong> — Every asset needed</li>
+                            <li><strong>T-Minus Timeline</strong> — Week-by-week activities</li>
+                            <li><strong>RACI Matrix</strong> — Clear ownership</li>
+                            <li><strong>Risk Register</strong> — Mitigation plans</li>
+                        </ul>
+                    </div>
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Specify tier</strong> — Tier 1 vs 3 changes scope</li>
+                            <li><strong>Include date</strong> — Enables realistic timeline</li>
+                            <li><strong>Name stakeholders</strong> — Get specific RACI</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="joule-cta">
+                <h3>🧩 Ready for a Full Launch Plan?</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Install the <strong>GTM Strategy</strong> Skill to generate complete launch plans with risk registers, asset lists, and stakeholder communications.</p>
+                <a href="https://hub.joule.only.sap/skills/94fc9eb8-a387-4c89-b29d-c9fae268dbee" target="_blank" class="btn">Install GTM Strategy Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyPlan()">📋 Copy Plan</button>
+                <button class="action-btn" onclick="savePlan()">💾 Save Plan</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved.</footer>
+
+<script>
+let currentStep = 1;
+let formData = { name: '', type: '', date: '', tier: '', stakeholders: [], channels: [] };
+
+const timelineTemplates = {
+    'Tier 1': [
+        { week: 'T-8', phase: 't-minus', title: 'Strategy & Planning', tasks: ['Finalize positioning', 'Identify target audiences', 'Set success metrics', 'Kick off asset production'] },
+        { week: 'T-6', phase: 't-minus', title: 'Content Development', tasks: ['Create messaging framework', 'Draft press release', 'Develop sales deck', 'Brief analysts'] },
+        { week: 'T-4', phase: 't-minus', title: 'Asset Production', tasks: ['Website updates', 'Email campaigns built', 'Social content ready', 'Demo environment live'] },
+        { week: 'T-2', phase: 't-minus', title: 'Enablement & Testing', tasks: ['Sales training complete', 'Partner briefings', 'Final QA on all assets', 'Dry run communications'] },
+        { week: 'Launch', phase: 'launch', title: 'Launch Day', tasks: ['Execute all channels', 'Monitor social/PR', 'Field team activation', 'Customer communications'] },
+        { week: 'T+2', phase: 'post', title: 'Post-Launch', tasks: ['Gather initial feedback', 'Address issues', 'Performance report', 'Optimize campaigns'] }
+    ],
+    'Tier 2': [
+        { week: 'T-4', phase: 't-minus', title: 'Planning & Content', tasks: ['Finalize messaging', 'Create key assets', 'Brief sales team'] },
+        { week: 'T-2', phase: 't-minus', title: 'Preparation', tasks: ['Website updates', 'Email ready', 'Sales enablement complete'] },
+        { week: 'Launch', phase: 'launch', title: 'Launch Day', tasks: ['Execute channels', 'Sales outreach', 'Monitor results'] },
+        { week: 'T+1', phase: 'post', title: 'Follow-up', tasks: ['Performance check', 'Iterate messaging'] }
+    ],
+    'Tier 3': [
+        { week: 'T-2', phase: 't-minus', title: 'Quick Prep', tasks: ['Update website', 'Notify sales', 'Draft announcement'] },
+        { week: 'Launch', phase: 'launch', title: 'Launch', tasks: ['Publish updates', 'Send communications'] }
+    ]
+};
+
+const raciData = [
+    { task: 'Messaging & Positioning', r: 'PMM Lead', a: 'PMM Lead', c: 'Product Manager', i: 'Sales Enablement' },
+    { task: 'Sales Enablement Materials', r: 'Sales Enablement', a: 'PMM Lead', c: 'Field Marketing', i: 'Sales Leaders' },
+    { task: 'Website Updates', r: 'Demand Gen', a: 'PMM Lead', c: 'PMM Lead', i: 'PR/Comms' },
+    { task: 'Press Release', r: 'PR/Comms', a: 'PR/Comms', c: 'PMM Lead', i: 'Executives' },
+    { task: 'Email Campaigns', r: 'Demand Gen', a: 'Demand Gen', c: 'PMM Lead', i: 'Sales' },
+    { task: 'Partner Communications', r: 'Partner Marketing', a: 'Partner Marketing', c: 'PMM Lead', i: 'Partner Team' }
+];
+
+const checklistCategories = {
+    'Messaging': ['Value proposition finalized', 'Key messages documented', 'Elevator pitch ready', 'Competitive positioning clear'],
+    'Content': ['Website copy approved', 'Blog post drafted', 'Social posts scheduled', 'Email copy finalized'],
+    'Sales': ['Sales deck complete', 'Battle cards updated', 'Talk track documented', 'Demo ready'],
+    'Operations': ['Launch date confirmed', 'Stakeholders aligned', 'Success metrics defined', 'Post-launch review scheduled']
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupChips();
+    setupNavigation();
+    document.getElementById('launchDate').valueAsDate = new Date(Date.now() + 60*24*60*60*1000);
+});
+
+function setupChips() {
+    document.querySelectorAll('.chip-group').forEach(group => {
+        const multi = group.id.includes('stakeholder') || group.id.includes('channel');
+        group.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                if (!multi) group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.toggle('selected');
+            });
+        });
+    });
+}
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => { collectData(); goToStep(3); });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i < step - 1) el.classList.add('complete');
+        if (i === step - 1) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => el.classList.toggle('active', i === step - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectData() {
+    formData.name = document.getElementById('launchName').value || 'Product Launch';
+    formData.type = [...document.querySelectorAll('#typeChips .chip.selected')].map(c => c.dataset.value)[0] || 'Major';
+    formData.date = document.getElementById('launchDate').value;
+    formData.tier = [...document.querySelectorAll('#tierChips .chip.selected')].map(c => c.dataset.value)[0] || 'Tier 1';
+    formData.stakeholders = [...document.querySelectorAll('#stakeholderChips .chip.selected')].map(c => c.dataset.value);
+    formData.channels = [...document.querySelectorAll('#channelChips .chip.selected')].map(c => c.dataset.value);
+    renderResults();
+}
+
+function renderResults() {
+    document.getElementById('launchSummary').textContent = `${formData.tier} ${formData.type} · ${formData.date ? new Date(formData.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'TBD'}`;
+    
+    const timeline = timelineTemplates[formData.tier] || timelineTemplates['Tier 1'];
+    document.getElementById('timelineTrack').innerHTML = timeline.map(item => `
+        <div class="timeline-item">
+            <div class="timeline-marker ${item.phase}">${item.week}</div>
+            <div class="timeline-content">
+                <h4>${item.title}</h4>
+                <ul>${item.tasks.map(t => `<li>${t}</li>`).join('')}</ul>
+            </div>
+        </div>
+    `).join('');
+    
+    document.querySelector('#raciTable tbody').innerHTML = raciData.map(row => `
+        <tr>
+            <td>${row.task}</td>
+            <td><span class="raci-badge raci-r">R</span> ${row.r}</td>
+            <td><span class="raci-badge raci-a">A</span> ${row.a}</td>
+            <td><span class="raci-badge raci-c">C</span> ${row.c}</td>
+            <td><span class="raci-badge raci-i">I</span> ${row.i}</td>
+        </tr>
+    `).join('');
+    
+    document.getElementById('checklistGrid').innerHTML = Object.entries(checklistCategories).map(([cat, items]) => `
+        <div class="checklist-card">
+            <h4>${cat}</h4>
+            ${items.map(item => `<div class="checklist-item"><input type="checkbox"><span>${item}</span></div>`).join('')}
+        </div>
+    `).join('');
+}
+
+function copyPlan() {
+    const text = `LAUNCH PLAN: ${formData.name}\nType: ${formData.type}\nTier: ${formData.tier}\nDate: ${formData.date}\nStakeholders: ${formData.stakeholders.join(', ')}\nChannels: ${formData.channels.join(', ')}`;
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Plan', 2000);
+    });
+}
+
+function savePlan() {
+    const saved = JSON.parse(localStorage.getItem('pmmLaunches') || '[]');
+    saved.unshift({ ...formData, savedDate: new Date().toISOString() });
+    localStorage.setItem('pmmLaunches', JSON.stringify(saved.slice(0, 10)));
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save Plan', 2000);
+}
+
+function startOver() {
+    formData = { name: '', type: '', date: '', tier: '', stakeholders: [], channels: [] };
+    document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
+    document.getElementById('launchName').value = '';
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>
