@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: PMM Activity Audit | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2;
+            --blue-light: #e8f4fc;
+            --blue-dark: #0054b4;
+            --ink: #1e293b;
+            --ink-muted: #64748b;
+            --surface: #f8fafc;
+            --line: #e2e8f0;
+            --white: #ffffff;
+            --green: #10b981;
+            --green-light: #d1fae5;
+            --yellow: #f59e0b;
+            --yellow-light: #fef3c7;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+            --purple-light: #ede9fe;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .site-header {
+            background: white;
+            border-bottom: 1px solid var(--line);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .logo img { height: 28px; }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--blue-light) 0%, #f1f5f9 100%);
+            padding: 2.5rem 2rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .hero-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .lab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--blue);
+            color: white;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--ink-muted);
+            max-width: 600px;
+        }
+        
+        /* Main */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        /* Joule Skill Box */
+        .joule-skill-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #faf5ff 0%, #f0f9ff 100%);
+            border: 1px solid #e9d5ff;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box span { font-size: 0.9rem; color: #555; }
+        .joule-skill-box a { color: var(--blue); font-weight: 600; }
+        
+        /* Progress Bar */
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .progress-step {
+            flex: 1;
+            height: 6px;
+            background: var(--line);
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        .progress-step.active { background: var(--blue); }
+        .progress-step.complete { background: var(--green); }
+        
+        /* Steps */
+        .step-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .step-section.active { display: block; }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-num {
+            width: 36px;
+            height: 36px;
+            background: var(--blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .step-header h2 {
+            font-size: 1.25rem;
+            color: var(--ink);
+        }
+        .step-desc {
+            color: var(--ink-muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .category-tab {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--line);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .category-tab:hover { border-color: var(--blue); }
+        .category-tab.active {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+        .category-tab .count {
+            background: rgba(0,0,0,0.1);
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 0.35rem;
+        }
+        .category-tab.active .count { background: rgba(255,255,255,0.3); }
+        
+        /* Activity Grid */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .activity-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid var(--line);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        .activity-card:hover { border-color: var(--blue); background: var(--blue-light); }
+        .activity-card.selected {
+            border-color: var(--blue);
+            background: var(--blue-light);
+        }
+        .activity-card .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--line);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .activity-card.selected .checkbox {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: white;
+        }
+        .activity-card .label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+        .activity-card .ai-badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            margin-top: 0.35rem;
+            display: inline-block;
+        }
+        .ai-badge.high { background: var(--green-light); color: #047857; }
+        .ai-badge.medium { background: var(--yellow-light); color: #b45309; }
+        .ai-badge.low { background: #fef2f2; color: #dc2626; }
+        
+        /* Time Rating */
+        .time-rating-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .time-rating-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 10px;
+        }
+        .time-rating-item .activity-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .time-slider-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .time-slider {
+            width: 150px;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--line);
+        }
+        .time-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--blue);
+            cursor: pointer;
+        }
+        .time-value {
+            font-weight: 600;
+            color: var(--blue);
+            min-width: 70px;
+            text-align: right;
+        }
+        
+        /* Results */
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border-top: 4px solid var(--green);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .results-header h2 {
+            font-size: 1.4rem;
+            color: var(--ink);
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .summary-card {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+        .summary-card .label {
+            font-size: 0.85rem;
+            color: var(--ink-muted);
+            margin-top: 0.25rem;
+        }
+        .summary-card.highlight {
+            background: var(--green-light);
+        }
+        .summary-card.highlight .value { color: var(--green); }
+        
+        /* Recommendations */
+        .recommendations {
+            margin-bottom: 2rem;
+        }
+        .recommendations h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+        .rec-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+        }
+        .rec-item.high { background: var(--green-light); }
+        .rec-item.medium { background: var(--yellow-light); }
+        .rec-item.low { background: var(--purple-light); }
+        
+        .rec-priority {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .rec-item.high .rec-priority { background: var(--green); color: white; }
+        .rec-item.medium .rec-priority { background: var(--yellow); color: white; }
+        .rec-item.low .rec-priority { background: var(--purple); color: white; }
+        
+        .rec-content { flex: 1; }
+        .rec-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .rec-content p {
+            font-size: 0.85rem;
+            color: var(--ink-muted);
+        }
+        .rec-savings {
+            font-weight: 600;
+            color: var(--green);
+            white-space: nowrap;
+        }
+        
+        /* Chart */
+        .chart-container {
+            margin-bottom: 2rem;
+        }
+        .chart-container h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .bar-label {
+            width: 140px;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.5s ease;
+        }
+        .bar-fill.current { background: var(--ink-muted); }
+        .bar-fill.future { background: var(--green); }
+        .bar-value {
+            width: 60px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        /* Joule CTA */
+        .joule-cta {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .joule-cta h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .joule-cta p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+        }
+        .joule-cta .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--blue);
+            color: white;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .joule-cta .btn:hover {
+            background: var(--blue-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Buttons */
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--line);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--ink);
+            border: 2px solid var(--line);
+        }
+        .btn-secondary:hover { border-color: var(--blue); }
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--blue-dark); }
+        .btn-primary:disabled {
+            background: var(--line);
+            cursor: not-allowed;
+        }
+        
+        /* Action buttons */
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            border: 2px solid var(--line);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .action-btn:hover { border-color: var(--blue); }
+        
+        /* History */
+        .history-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 10px;
+        }
+        .history-section h4 {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            color: var(--ink-muted);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--line);
+        }
+        .history-item:last-child { border-bottom: none; }
+        .history-date { font-size: 0.85rem; color: var(--ink-muted); }
+        .history-stat { font-weight: 600; color: var(--green); }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--ink-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--line);
+            margin-top: 3rem;
+        }
+        
+        /* Mobile */
+        @media (max-width: 640px) {
+            .summary-cards { grid-template-columns: 1fr; }
+            .activity-grid { grid-template-columns: 1fr; }
+            .time-rating-item { flex-direction: column; align-items: flex-start; }
+            .time-slider-group { width: 100%; }
+            .time-slider { flex: 1; }
+            .bar-label { width: 100px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM">
+        </a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge">
+            <span>🧪</span> Interactive Lab
+        </div>
+        <h1>PMM Activity Audit</h1>
+        <p>Analyze your weekly activities and discover which tasks have the highest AI automation potential. Get a personalized transformation roadmap.</p>
+    </div>
+</section>
+
+<!-- Main -->
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <!-- Joule Skill Box -->
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/f53f83b3-fea9-48fa-8efd-63741223d260" target="_blank">Strategic Thinking ↗</a></span>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-step active" data-step="1"></div>
+        <div class="progress-step" data-step="2"></div>
+        <div class="progress-step" data-step="3"></div>
+    </div>
+    
+    <!-- STEP 1: Select Activities -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Select Your Activities</h2>
+        </div>
+        <p class="step-desc">Choose the PMM activities you perform regularly. We'll analyze each for AI automation potential.</p>
+        
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="all">All <span class="count" id="count-all">25</span></button>
+            <button class="category-tab" data-category="research">Research <span class="count" id="count-research">5</span></button>
+            <button class="category-tab" data-category="content">Content <span class="count" id="count-content">5</span></button>
+            <button class="category-tab" data-category="enablement">Enablement <span class="count" id="count-enablement">5</span></button>
+            <button class="category-tab" data-category="strategy">Strategy <span class="count" id="count-strategy">5</span></button>
+            <button class="category-tab" data-category="ops">Operations <span class="count" id="count-ops">5</span></button>
+        </div>
+        
+        <!-- Activity Grid -->
+        <div class="activity-grid" id="activityGrid">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2" disabled>Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 2: Rate Time Spent -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Rate Time Spent</h2>
+        </div>
+        <p class="step-desc">Estimate how many hours per week you spend on each selected activity.</p>
+        
+        <div class="time-rating-list" id="timeRatingList">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Generate Roadmap →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 3: Results -->
+    <section class="step-section" id="step3">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>🎯 Your AI Transformation Roadmap</h2>
+            </div>
+            
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="value" id="totalHours">0</div>
+                    <div class="label">Hours/Week Analyzed</div>
+                </div>
+                <div class="summary-card highlight">
+                    <div class="value" id="savedHours">0</div>
+                    <div class="label">Hours Automatable</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value" id="savedPercent">0%</div>
+                    <div class="label">Potential Reduction</div>
+                </div>
+            </div>
+            
+            <!-- Bar Chart -->
+            <div class="chart-container">
+                <h3>📊 Before vs. After AI Automation</h3>
+                <div class="bar-chart" id="barChart">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Recommendations -->
+            <div class="recommendations">
+                <h3>🚀 Prioritized Recommendations</h3>
+                <div id="recList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Joule CTA -->
+            <div class="joule-cta">
+                <h3>🧩 Ready to Automate?</h3>
+                <p>Install the <strong>Strategic Thinking</strong> Skill in Joule Work Desktop to analyze your actual work patterns and surface automation opportunities automatically.</p>
+                <a href="https://hub.joule.only.sap/skills/f53f83b3-fea9-48fa-8efd-63741223d260" target="_blank" class="btn">
+                    Install Strategic Thinking Skill →
+                </a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyResults()">📋 Copy Results</button>
+                <button class="action-btn" onclick="saveToHistory()">💾 Save to History</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+            
+            <!-- History -->
+            <div class="history-section" id="historySection" style="display: none;">
+                <h4>📅 Your Assessment History</h4>
+                <div id="historyList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+</main>
+
+<footer>
+    © 2026 SAP SE. All rights reserved. · Internal Use Only
+</footer>
+
+<script>
+// ========== DATA ==========
+const activities = [
+    // Research (5)
+    { id: 'comp-research', name: 'Competitive Research', category: 'research', aiPotential: 0.85, aiLabel: 'high', jouleSkill: 'Competitive Analysis' },
+    { id: 'market-analysis', name: 'Market Analysis', category: 'research', aiPotential: 0.75, aiLabel: 'high', jouleSkill: 'Strategic Thinking' },
+    { id: 'analyst-prep', name: 'Analyst Briefing Prep', category: 'research', aiPotential: 0.70, aiLabel: 'high', jouleSkill: 'Competitive Analysis' },
+    { id: 'win-loss', name: 'Win/Loss Analysis', category: 'research', aiPotential: 0.65, aiLabel: 'medium', jouleSkill: 'Competitive Analysis' },
+    { id: 'customer-research', name: 'Customer Research', category: 'research', aiPotential: 0.55, aiLabel: 'medium', jouleSkill: 'Customer Engagement' },
+    
+    // Content (5)
+    { id: 'blog-writing', name: 'Blog/Article Writing', category: 'content', aiPotential: 0.80, aiLabel: 'high', jouleSkill: 'Content Development' },
+    { id: 'sales-decks', name: 'Sales Deck Creation', category: 'content', aiPotential: 0.75, aiLabel: 'high', jouleSkill: 'Sales Enablement' },
+    { id: 'case-studies', name: 'Case Study Development', category: 'content', aiPotential: 0.60, aiLabel: 'medium', jouleSkill: 'Storytelling' },
+    { id: 'email-campaigns', name: 'Email Campaign Copy', category: 'content', aiPotential: 0.85, aiLabel: 'high', jouleSkill: 'Content Development' },
+    { id: 'social-content', name: 'Social Media Content', category: 'content', aiPotential: 0.90, aiLabel: 'high', jouleSkill: 'Digital Marketing' },
+    
+    // Enablement (5)
+    { id: 'battle-cards', name: 'Battle Card Creation', category: 'enablement', aiPotential: 0.80, aiLabel: 'high', jouleSkill: 'Competitive Analysis' },
+    { id: 'talk-tracks', name: 'Talk Track Development', category: 'enablement', aiPotential: 0.75, aiLabel: 'high', jouleSkill: 'Sales Enablement' },
+    { id: 'objection-handling', name: 'Objection Handling Guides', category: 'enablement', aiPotential: 0.70, aiLabel: 'high', jouleSkill: 'Sales Enablement' },
+    { id: 'sales-training', name: 'Sales Training Materials', category: 'enablement', aiPotential: 0.65, aiLabel: 'medium', jouleSkill: 'Sales Enablement' },
+    { id: 'demo-scripts', name: 'Demo Scripts', category: 'enablement', aiPotential: 0.60, aiLabel: 'medium', jouleSkill: 'Storytelling' },
+    
+    // Strategy (5)
+    { id: 'messaging-framework', name: 'Messaging Frameworks', category: 'strategy', aiPotential: 0.55, aiLabel: 'medium', jouleSkill: 'Positioning Strategy' },
+    { id: 'positioning', name: 'Positioning Development', category: 'strategy', aiPotential: 0.50, aiLabel: 'medium', jouleSkill: 'Positioning Strategy' },
+    { id: 'persona-dev', name: 'Persona Development', category: 'strategy', aiPotential: 0.60, aiLabel: 'medium', jouleSkill: 'Customer Engagement' },
+    { id: 'gtm-planning', name: 'GTM Planning', category: 'strategy', aiPotential: 0.45, aiLabel: 'low', jouleSkill: 'GTM Strategy' },
+    { id: 'pricing-strategy', name: 'Pricing Strategy', category: 'strategy', aiPotential: 0.35, aiLabel: 'low', jouleSkill: 'AI Value Selling' },
+    
+    // Operations (5)
+    { id: 'launch-coord', name: 'Launch Coordination', category: 'ops', aiPotential: 0.50, aiLabel: 'medium', jouleSkill: 'GTM Strategy' },
+    { id: 'reporting', name: 'Reporting & Dashboards', category: 'ops', aiPotential: 0.70, aiLabel: 'high', jouleSkill: 'Strategic Thinking' },
+    { id: 'stakeholder-updates', name: 'Stakeholder Updates', category: 'ops', aiPotential: 0.75, aiLabel: 'high', jouleSkill: 'Strategic Thinking' },
+    { id: 'meeting-prep', name: 'Meeting Prep & Notes', category: 'ops', aiPotential: 0.85, aiLabel: 'high', jouleSkill: 'Strategic Thinking' },
+    { id: 'content-localization', name: 'Content Localization', category: 'ops', aiPotential: 0.80, aiLabel: 'high', jouleSkill: 'Content Development' }
+];
+
+// ========== STATE ==========
+let selectedActivities = new Set();
+let timeRatings = {};
+let currentStep = 1;
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', () => {
+    renderActivities('all');
+    setupEventListeners();
+    loadHistory();
+});
+
+// ========== RENDERING ==========
+function renderActivities(category) {
+    const grid = document.getElementById('activityGrid');
+    const filtered = category === 'all' 
+        ? activities 
+        : activities.filter(a => a.category === category);
+    
+    grid.innerHTML = filtered.map(a => `
+        <div class="activity-card ${selectedActivities.has(a.id) ? 'selected' : ''}" data-id="${a.id}">
+            <div class="checkbox">${selectedActivities.has(a.id) ? '✓' : ''}</div>
+            <div>
+                <div class="label">${a.name}</div>
+                <div class="ai-badge ${a.aiLabel}">${a.aiLabel === 'high' ? '🟢 High AI Potential' : a.aiLabel === 'medium' ? '🟡 Medium' : '🔵 Strategic'}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Re-attach click handlers
+    grid.querySelectorAll('.activity-card').forEach(card => {
+        card.addEventListener('click', () => toggleActivity(card.dataset.id));
+    });
+}
+
+function renderTimeRatings() {
+    const list = document.getElementById('timeRatingList');
+    const selected = activities.filter(a => selectedActivities.has(a.id));
+    
+    list.innerHTML = selected.map(a => `
+        <div class="time-rating-item">
+            <div class="activity-name">${a.name}</div>
+            <div class="time-slider-group">
+                <input type="range" class="time-slider" min="0.5" max="10" step="0.5" value="${timeRatings[a.id] || 2}" data-id="${a.id}">
+                <div class="time-value">${timeRatings[a.id] || 2} hrs/wk</div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Attach slider handlers
+    list.querySelectorAll('.time-slider').forEach(slider => {
+        slider.addEventListener('input', (e) => {
+            timeRatings[e.target.dataset.id] = parseFloat(e.target.value);
+            e.target.nextElementSibling.textContent = `${e.target.value} hrs/wk`;
+        });
+        // Initialize
+        if (!timeRatings[slider.dataset.id]) {
+            timeRatings[slider.dataset.id] = 2;
+        }
+    });
+}
+
+function renderResults() {
+    const selected = activities.filter(a => selectedActivities.has(a.id));
+    
+    // Calculate totals
+    let totalHours = 0;
+    let savedHours = 0;
+    const results = selected.map(a => {
+        const hours = timeRatings[a.id] || 2;
+        const saved = hours * a.aiPotential;
+        totalHours += hours;
+        savedHours += saved;
+        return { ...a, hours, saved, afterHours: hours - saved };
+    }).sort((a, b) => b.saved - a.saved);
+    
+    // Update summary cards
+    document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+    document.getElementById('savedHours').textContent = savedHours.toFixed(1);
+    document.getElementById('savedPercent').textContent = `${Math.round((savedHours / totalHours) * 100)}%`;
+    
+    // Render bar chart
+    const chartHtml = results.slice(0, 5).map(r => `
+        <div class="bar-row">
+            <div class="bar-label">${r.name}</div>
+            <div class="bar-track">
+                <div class="bar-fill current" style="width: ${(r.hours / 10) * 100}%"></div>
+            </div>
+            <div class="bar-value">${r.hours}h → ${r.afterHours.toFixed(1)}h</div>
+        </div>
+    `).join('');
+    document.getElementById('barChart').innerHTML = chartHtml;
+    
+    // Render recommendations
+    const recHtml = results.map((r, i) => {
+        const priority = r.aiPotential >= 0.7 ? 'high' : r.aiPotential >= 0.5 ? 'medium' : 'low';
+        const priorityLabel = priority === 'high' ? 'HIGH IMPACT' : priority === 'medium' ? 'MEDIUM' : 'OPTIMIZE LATER';
+        return `
+            <div class="rec-item ${priority}">
+                <span class="rec-priority">${priorityLabel}</span>
+                <div class="rec-content">
+                    <h4>${r.name}</h4>
+                    <p>Use Joule <strong>${r.jouleSkill}</strong> Skill • ${Math.round(r.aiPotential * 100)}% automatable</p>
+                </div>
+                <div class="rec-savings">-${r.saved.toFixed(1)} hrs</div>
+            </div>
+        `;
+    }).join('');
+    document.getElementById('recList').innerHTML = recHtml;
+}
+
+// ========== INTERACTIONS ==========
+function toggleActivity(id) {
+    if (selectedActivities.has(id)) {
+        selectedActivities.delete(id);
+    } else {
+        selectedActivities.add(id);
+    }
+    
+    // Update UI
+    const card = document.querySelector(`.activity-card[data-id="${id}"]`);
+    card.classList.toggle('selected');
+    card.querySelector('.checkbox').textContent = selectedActivities.has(id) ? '✓' : '';
+    
+    // Update button state
+    document.getElementById('toStep2').disabled = selectedActivities.size === 0;
+}
+
+function goToStep(step) {
+    currentStep = step;
+    
+    // Update progress bar
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i + 1 < step) el.classList.add('complete');
+        if (i + 1 === step) el.classList.add('active');
+    });
+    
+    // Show/hide sections
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === step);
+    });
+    
+    // Render content for step
+    if (step === 2) renderTimeRatings();
+    if (step === 3) renderResults();
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setupEventListeners() {
+    // Category tabs
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderActivities(tab.dataset.category);
+        });
+    });
+    
+    // Navigation
+    document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => goToStep(3));
+}
+
+// ========== ACTIONS ==========
+function copyResults() {
+    const selected = activities.filter(a => selectedActivities.has(a.id));
+    let totalHours = 0;
+    let savedHours = 0;
+    
+    const lines = selected.map(a => {
+        const hours = timeRatings[a.id] || 2;
+        const saved = hours * a.aiPotential;
+        totalHours += hours;
+        savedHours += saved;
+        return `• ${a.name}: ${hours}h/wk → ${(hours - saved).toFixed(1)}h/wk (save ${saved.toFixed(1)}h)`;
+    });
+    
+    const text = `PMM Activity Audit Results
+========================
+Total Hours Analyzed: ${totalHours.toFixed(1)} hrs/week
+Potential Time Saved: ${savedHours.toFixed(1)} hrs/week (${Math.round((savedHours / totalHours) * 100)}%)
+
+Activities:
+${lines.join('\n')}
+
+Next Step: Install Joule Strategic Thinking Skill
+https://hub.joule.only.sap/skills/f53f83b3-fea9-48fa-8efd-63741223d260`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy Results', 2000);
+    });
+}
+
+function saveToHistory() {
+    const selected = activities.filter(a => selectedActivities.has(a.id));
+    let totalHours = 0;
+    let savedHours = 0;
+    selected.forEach(a => {
+        const hours = timeRatings[a.id] || 2;
+        totalHours += hours;
+        savedHours += hours * a.aiPotential;
+    });
+    
+    const history = JSON.parse(localStorage.getItem('pmmActivityAuditHistory') || '[]');
+    history.unshift({
+        date: new Date().toISOString(),
+        totalHours: totalHours.toFixed(1),
+        savedHours: savedHours.toFixed(1),
+        percent: Math.round((savedHours / totalHours) * 100),
+        activities: selected.length
+    });
+    
+    // Keep last 10
+    localStorage.setItem('pmmActivityAuditHistory', JSON.stringify(history.slice(0, 10)));
+    
+    loadHistory();
+    
+    const btn = event.target;
+    btn.textContent = '✓ Saved!';
+    setTimeout(() => btn.textContent = '💾 Save to History', 2000);
+}
+
+function loadHistory() {
+    const history = JSON.parse(localStorage.getItem('pmmActivityAuditHistory') || '[]');
+    const section = document.getElementById('historySection');
+    const list = document.getElementById('historyList');
+    
+    if (history.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = history.map(h => {
+            const date = new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            return `
+                <div class="history-item">
+                    <span class="history-date">${date} · ${h.activities} activities</span>
+                    <span class="history-stat">${h.savedHours}h saved (${h.percent}%)</span>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function startOver() {
+    selectedActivities = new Set();
+    timeRatings = {};
+    renderActivities('all');
+    document.getElementById('toStep2').disabled = true;
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>
