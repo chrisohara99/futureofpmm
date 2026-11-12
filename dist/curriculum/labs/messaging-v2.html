@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Messaging Framework Builder | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --blue-dark: #0054b4;
+            --ink: #1e293b; --ink-muted: #64748b; --surface: #f8fafc; --line: #e2e8f0; --white: #ffffff;
+            --green: #10b981; --green-light: #d1fae5;
+            --yellow: #f59e0b; --yellow-light: #fef3c7;
+            --indigo: #6366f1; --indigo-light: #e0e7ff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--indigo-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--indigo); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--indigo-light) 0%, #eef2ff 100%); border: 1px solid #a5b4fc; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box a { color: var(--indigo); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; transition: background 0.3s; }
+        .progress-step.active { background: var(--indigo); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--indigo); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--indigo); }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        
+        /* Value Prop Builder */
+        .value-prop-builder { background: var(--surface); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .value-prop-builder h4 { font-size: 1rem; margin-bottom: 1rem; }
+        .value-formula { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.9rem; }
+        .value-formula span { color: var(--ink-muted); }
+        .value-formula input { width: auto; flex: 1; min-width: 150px; }
+        
+        .value-statement { background: white; border: 2px solid var(--indigo); border-radius: 10px; padding: 1.25rem; font-size: 1.1rem; line-height: 1.6; }
+        .value-statement .highlight { color: var(--indigo); font-weight: 600; }
+        
+        /* Persona Tabs */
+        .persona-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
+        .persona-tab { padding: 0.75rem 1.25rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 500; white-space: nowrap; transition: all 0.2s; }
+        .persona-tab:hover { border-color: var(--indigo); }
+        .persona-tab.active { background: var(--indigo); color: white; border-color: var(--indigo); }
+        
+        /* Messaging Layers */
+        .messaging-layers { display: flex; flex-direction: column; gap: 1rem; }
+        .messaging-layer { background: var(--surface); border-radius: 10px; padding: 1.25rem; border-left: 4px solid var(--indigo); }
+        .messaging-layer h4 { font-size: 0.9rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .messaging-layer h4 span { font-size: 1.25rem; }
+        .messaging-layer textarea { min-height: 70px; }
+        
+        /* Results */
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--indigo); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .results-header h2 { font-size: 1.4rem; }
+        
+        /* Framework Preview */
+        .framework-preview { background: linear-gradient(135deg, var(--ink) 0%, #334155 100%); border-radius: 12px; padding: 1.5rem; color: white; margin-bottom: 2rem; }
+        .framework-preview h3 { font-size: 1.2rem; margin-bottom: 1rem; }
+        
+        .framework-section { margin-bottom: 1.5rem; }
+        .framework-section:last-child { margin-bottom: 0; }
+        .framework-section .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
+        .framework-section .content { font-size: 0.95rem; line-height: 1.6; }
+        .framework-section .content strong { color: var(--indigo-light); }
+        
+        .persona-messages { margin-top: 1rem; }
+        .persona-message { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; }
+        .persona-message h5 { font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--indigo-light); }
+        .persona-message .layers { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem; }
+        .persona-message .layer-item { display: flex; gap: 0.5rem; }
+        .persona-message .layer-label { width: 80px; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+        
+        /* Skill Training */
+        .skill-training { background: linear-gradient(135deg, var(--indigo-light) 0%, #eef2ff 100%); border: 1px solid #a5b4fc; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .training-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--indigo); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; line-height: 1.5; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        .output-list li:last-child, .tips-list li:last-child { border-bottom: none; }
+        
+        /* Joule CTA */
+        .joule-cta { background: linear-gradient(135deg, #312e81 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .joule-cta p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+        .joule-cta .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--indigo); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .joule-cta .btn:hover { background: #4f46e5; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
+        .btn-secondary:hover { border-color: var(--indigo); }
+        .btn-primary { background: var(--indigo); color: white; }
+        .btn-primary:hover { background: #4f46e5; }
+        .btn-primary:disabled { background: var(--line); cursor: not-allowed; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { border-color: var(--indigo); }
+        
+        .saved-section { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 10px; }
+        .saved-section h4 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--ink-muted); }
+        .saved-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) {
+            .input-row, .training-grid { grid-template-columns: 1fr; }
+            .value-formula { flex-direction: column; align-items: stretch; }
+            .value-formula input { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>💬</span> Interactive Lab</div>
+        <h1>Messaging Framework Builder</h1>
+        <p>Create structured value propositions and persona-specific messaging. Build a complete messaging framework from positioning statement to proof points.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/89be5a1f-901f-4d11-816b-7a42f35b5544" target="_blank">Positioning Strategy ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active" data-step="1"></div>
+        <div class="progress-step" data-step="2"></div>
+        <div class="progress-step" data-step="3"></div>
+        <div class="progress-step" data-step="4"></div>
+    </div>
+    
+    <!-- STEP 1: Core Positioning -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Core Value Proposition</h2>
+        </div>
+        <p class="step-desc">Build your foundational value statement using the proven formula.</p>
+        
+        <div class="form-group">
+            <label>Product/Solution Name</label>
+            <input type="text" id="productName" placeholder="e.g., SAP S/4HANA Cloud">
+        </div>
+        
+        <div class="value-prop-builder">
+            <h4>Value Proposition Formula</h4>
+            <div class="value-formula">
+                <span>For</span>
+                <input type="text" id="vp-target" placeholder="target customer">
+                <span>who</span>
+                <input type="text" id="vp-need" placeholder="need/pain point">
+                <span>,</span>
+            </div>
+            <div class="value-formula">
+                <input type="text" id="vp-product" placeholder="product name">
+                <span>is a</span>
+                <input type="text" id="vp-category" placeholder="category">
+                <span>that</span>
+                <input type="text" id="vp-benefit" placeholder="key benefit">
+                <span>.</span>
+            </div>
+            <div class="value-formula">
+                <span>Unlike</span>
+                <input type="text" id="vp-competitor" placeholder="competitor/alternative">
+                <span>, we</span>
+                <input type="text" id="vp-differentiator" placeholder="key differentiator">
+                <span>.</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Preview</label>
+            <div class="value-statement" id="valuePreview">
+                For <span class="highlight">[target customer]</span> who <span class="highlight">[need/pain point]</span>, 
+                <span class="highlight">[product]</span> is a <span class="highlight">[category]</span> that <span class="highlight">[key benefit]</span>. 
+                Unlike <span class="highlight">[competitor]</span>, we <span class="highlight">[key differentiator]</span>.
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 2: Target Personas -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Target Personas</h2>
+        </div>
+        <p class="step-desc">Select the personas you need messaging for. Each will get tailored value props.</p>
+        
+        <div class="form-group">
+            <label>Select Personas (choose 2-4)</label>
+            <div class="persona-tabs" id="personaSelector">
+                <div class="persona-tab" data-persona="CIO">👔 CIO/CTO</div>
+                <div class="persona-tab" data-persona="CFO">💰 CFO</div>
+                <div class="persona-tab" data-persona="LOB">📊 Line of Business</div>
+                <div class="persona-tab" data-persona="IT">🖥️ IT Director</div>
+                <div class="persona-tab" data-persona="User">👤 End User</div>
+                <div class="persona-tab" data-persona="Procurement">📋 Procurement</div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Industry Context (optional)</label>
+            <select id="industryContext">
+                <option value="">General / Cross-Industry</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Retail">Retail</option>
+                <option value="Financial Services">Financial Services</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Technology">Technology</option>
+            </select>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Build Messages →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 3: Messaging Layers -->
+    <section class="step-section" id="step3">
+        <div class="step-header">
+            <div class="step-num">3</div>
+            <h2>Persona Messaging</h2>
+        </div>
+        <p class="step-desc">Craft headline, message, and proof point for each persona.</p>
+        
+        <div class="persona-tabs" id="messagingTabs">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div id="messagingForms">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep2">← Back</button>
+            <button class="btn btn-primary" id="toStep4">Generate Framework →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 4: Results -->
+    <section class="step-section" id="step4">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>📋 Messaging Framework</h2>
+            </div>
+            
+            <!-- Framework Preview -->
+            <div class="framework-preview">
+                <h3 id="frameworkTitle">Messaging Framework</h3>
+                
+                <div class="framework-section">
+                    <div class="label">Core Value Proposition</div>
+                    <div class="content" id="previewValueProp">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="framework-section">
+                    <div class="label">Persona Messaging</div>
+                    <div class="persona-messages" id="previewPersonas">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the Positioning Strategy Skill</h3>
+                <p class="training-intro">Use this skill in Joule to generate complete messaging frameworks in seconds.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <ul class="trigger-list">
+                            <li>"Build messaging for [product]"</li>
+                            <li>"Value proposition for CIO"</li>
+                            <li>"Messaging framework for..."</li>
+                            <li>"How do I position [solution]"</li>
+                            <li>"Create talk tracks for..."</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <div class="sample-prompt">"Create a messaging framework for SAP S/4HANA Cloud targeting manufacturing companies. Include value props for CIO, CFO, and Plant Manager. Emphasize AI capabilities and sustainability."</div>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Core Value Prop</strong> — Foundational positioning statement</li>
+                            <li><strong>Persona Messages</strong> — Tailored headline, message, proof</li>
+                            <li><strong>Competitive Angles</strong> — Differentiation points</li>
+                            <li><strong>Talk Tracks</strong> — Ready-to-use conversation starters</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Be specific</strong> — Include industry and company size</li>
+                            <li><strong>Name competitors</strong> — "Differentiate from Oracle"</li>
+                            <li><strong>Add constraints</strong> — "Keep headlines under 10 words"</li>
+                            <li><strong>Request variations</strong> — "Give me 3 options for each"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Joule CTA -->
+            <div class="joule-cta">
+                <h3>🧩 Generate Frameworks Instantly</h3>
+                <p>Install the <strong>Positioning Strategy</strong> Skill to create complete messaging frameworks with AI-powered suggestions.</p>
+                <a href="https://hub.joule.only.sap/skills/89be5a1f-901f-4d11-816b-7a42f35b5544" target="_blank" class="btn">Install Positioning Strategy Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyFramework()">📋 Copy Framework</button>
+                <button class="action-btn" onclick="exportMarkdown()">📥 Export MD</button>
+                <button class="action-btn" onclick="saveFramework()">💾 Save</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+            
+            <div class="saved-section" id="savedSection" style="display: none;">
+                <h4>📁 Saved Frameworks</h4>
+                <div id="savedList"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved. · Internal Use Only</footer>
+
+<script>
+// State
+let currentStep = 1;
+let valueProp = {};
+let selectedPersonas = [];
+let personaMessages = {};
+let industry = '';
+
+const personaDetails = {
+    'CIO': { icon: '👔', title: 'CIO/CTO', focus: 'Technology strategy, innovation, risk' },
+    'CFO': { icon: '💰', title: 'CFO', focus: 'ROI, TCO, financial impact' },
+    'LOB': { icon: '📊', title: 'Line of Business', focus: 'Business outcomes, productivity' },
+    'IT': { icon: '🖥️', title: 'IT Director', focus: 'Implementation, integration, support' },
+    'User': { icon: '👤', title: 'End User', focus: 'Ease of use, daily productivity' },
+    'Procurement': { icon: '📋', title: 'Procurement', focus: 'Vendor management, compliance, contracts' }
+};
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    setupValuePropInputs();
+    setupPersonaSelector();
+    setupNavigation();
+    loadSaved();
+});
+
+function setupValuePropInputs() {
+    const inputs = ['vp-target', 'vp-need', 'vp-product', 'vp-category', 'vp-benefit', 'vp-competitor', 'vp-differentiator'];
+    inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', updateValuePreview);
+    });
+}
+
+function updateValuePreview() {
+    const target = document.getElementById('vp-target').value || '[target customer]';
+    const need = document.getElementById('vp-need').value || '[need/pain point]';
+    const product = document.getElementById('vp-product').value || document.getElementById('productName').value || '[product]';
+    const category = document.getElementById('vp-category').value || '[category]';
+    const benefit = document.getElementById('vp-benefit').value || '[key benefit]';
+    const competitor = document.getElementById('vp-competitor').value || '[competitor]';
+    const differentiator = document.getElementById('vp-differentiator').value || '[key differentiator]';
+    
+    document.getElementById('valuePreview').innerHTML = `
+        For <span class="highlight">${target}</span> who <span class="highlight">${need}</span>, 
+        <span class="highlight">${product}</span> is a <span class="highlight">${category}</span> that <span class="highlight">${benefit}</span>. 
+        Unlike <span class="highlight">${competitor}</span>, we <span class="highlight">${differentiator}</span>.
+    `;
+}
+
+function setupPersonaSelector() {
+    document.querySelectorAll('#personaSelector .persona-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const persona = tab.dataset.persona;
+            if (tab.classList.contains('active')) {
+                tab.classList.remove('active');
+                selectedPersonas = selectedPersonas.filter(p => p !== persona);
+            } else if (selectedPersonas.length < 4) {
+                tab.classList.add('active');
+                selectedPersonas.push(persona);
+            }
+        });
+    });
+}
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => { collectValueProp(); goToStep(2); });
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => { renderMessagingForms(); goToStep(3); });
+    document.getElementById('backToStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('toStep4').addEventListener('click', () => { collectMessages(); goToStep(4); });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i + 1 < step) el.classList.add('complete');
+        if (i + 1 === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === step);
+    });
+    if (step === 4) renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectValueProp() {
+    valueProp = {
+        product: document.getElementById('productName').value || document.getElementById('vp-product').value || 'Solution',
+        target: document.getElementById('vp-target').value,
+        need: document.getElementById('vp-need').value,
+        category: document.getElementById('vp-category').value,
+        benefit: document.getElementById('vp-benefit').value,
+        competitor: document.getElementById('vp-competitor').value,
+        differentiator: document.getElementById('vp-differentiator').value
+    };
+    industry = document.getElementById('industryContext').value;
+}
+
+function renderMessagingForms() {
+    if (selectedPersonas.length === 0) {
+        selectedPersonas = ['CIO', 'CFO']; // Default
+    }
+    
+    // Render tabs
+    const tabsHtml = selectedPersonas.map((p, i) => `
+        <div class="persona-tab ${i === 0 ? 'active' : ''}" data-persona="${p}" onclick="showPersonaForm('${p}')">
+            ${personaDetails[p].icon} ${personaDetails[p].title}
+        </div>
+    `).join('');
+    document.getElementById('messagingTabs').innerHTML = tabsHtml;
+    
+    // Render forms
+    const formsHtml = selectedPersonas.map((p, i) => `
+        <div class="messaging-form ${i === 0 ? 'active' : ''}" id="form-${p}" style="${i > 0 ? 'display: none;' : ''}">
+            <div class="messaging-layers">
+                <div class="messaging-layer">
+                    <h4><span>🎯</span> Headline (5-10 words)</h4>
+                    <input type="text" id="${p}-headline" placeholder="e.g., Transform Operations with AI-Powered Intelligence">
+                </div>
+                <div class="messaging-layer">
+                    <h4><span>💬</span> Core Message (2-3 sentences)</h4>
+                    <textarea id="${p}-message" placeholder="What's the key value for this persona? Focus on: ${personaDetails[p].focus}"></textarea>
+                </div>
+                <div class="messaging-layer">
+                    <h4><span>📊</span> Proof Point</h4>
+                    <textarea id="${p}-proof" placeholder="e.g., 30% reduction in operational costs, Fortune 500 customer reference, analyst recognition..."></textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('messagingForms').innerHTML = formsHtml;
+    
+    // Initialize empty messages
+    selectedPersonas.forEach(p => {
+        personaMessages[p] = { headline: '', message: '', proof: '' };
+    });
+}
+
+function showPersonaForm(persona) {
+    // Save current form
+    selectedPersonas.forEach(p => {
+        const headline = document.getElementById(`${p}-headline`);
+        const message = document.getElementById(`${p}-message`);
+        const proof = document.getElementById(`${p}-proof`);
+        if (headline) {
+            personaMessages[p] = {
+                headline: headline.value,
+                message: message.value,
+                proof: proof.value
+            };
+        }
+    });
+    
+    // Switch tabs
+    document.querySelectorAll('#messagingTabs .persona-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`#messagingTabs .persona-tab[data-persona="${persona}"]`).classList.add('active');
+    
+    // Switch forms
+    document.querySelectorAll('.messaging-form').forEach(f => f.style.display = 'none');
+    document.getElementById(`form-${persona}`).style.display = 'block';
+}
+
+function collectMessages() {
+    selectedPersonas.forEach(p => {
+        const headline = document.getElementById(`${p}-headline`);
+        const message = document.getElementById(`${p}-message`);
+        const proof = document.getElementById(`${p}-proof`);
+        if (headline) {
+            personaMessages[p] = {
+                headline: headline.value || `${valueProp.benefit} for ${personaDetails[p].title}`,
+                message: message.value || `${valueProp.product} helps ${personaDetails[p].title.toLowerCase()} achieve ${valueProp.benefit}.`,
+                proof: proof.value || 'Contact sales for case studies and references.'
+            };
+        }
+    });
+}
+
+function renderResults() {
+    document.getElementById('frameworkTitle').textContent = `${valueProp.product} Messaging Framework`;
+    
+    // Value prop
+    const vpText = valueProp.target ? 
+        `For <strong>${valueProp.target}</strong> who ${valueProp.need}, ${valueProp.product} is a ${valueProp.category} that ${valueProp.benefit}. Unlike ${valueProp.competitor}, we ${valueProp.differentiator}.` :
+        `${valueProp.product} delivers ${valueProp.benefit || 'exceptional value'}.`;
+    document.getElementById('previewValueProp').innerHTML = vpText;
+    
+    // Persona messages
+    const personasHtml = selectedPersonas.map(p => `
+        <div class="persona-message">
+            <h5>${personaDetails[p].icon} ${personaDetails[p].title}</h5>
+            <div class="layers">
+                <div class="layer-item"><span class="layer-label">Headline:</span> ${personaMessages[p]?.headline || 'Not specified'}</div>
+                <div class="layer-item"><span class="layer-label">Message:</span> ${personaMessages[p]?.message || 'Not specified'}</div>
+                <div class="layer-item"><span class="layer-label">Proof:</span> ${personaMessages[p]?.proof || 'Not specified'}</div>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('previewPersonas').innerHTML = personasHtml;
+}
+
+function copyFramework() {
+    let text = `MESSAGING FRAMEWORK: ${valueProp.product}\n${'='.repeat(50)}\n\n`;
+    
+    text += `CORE VALUE PROPOSITION\n${'-'.repeat(30)}\n`;
+    if (valueProp.target) {
+        text += `For ${valueProp.target} who ${valueProp.need}, ${valueProp.product} is a ${valueProp.category} that ${valueProp.benefit}. Unlike ${valueProp.competitor}, we ${valueProp.differentiator}.\n\n`;
+    }
+    
+    text += `PERSONA MESSAGING\n${'-'.repeat(30)}\n`;
+    selectedPersonas.forEach(p => {
+        const m = personaMessages[p] || {};
+        text += `\n${personaDetails[p].title}\n`;
+        text += `  Headline: ${m.headline || 'N/A'}\n`;
+        text += `  Message: ${m.message || 'N/A'}\n`;
+        text += `  Proof: ${m.proof || 'N/A'}\n`;
+    });
+    
+    text += `\nGenerated by Messaging Framework Builder\nJoule Skill: https://hub.joule.only.sap/skills/89be5a1f-901f-4d11-816b-7a42f35b5544`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Framework', 2000);
+    });
+}
+
+function exportMarkdown() {
+    let md = `# ${valueProp.product} Messaging Framework\n\n`;
+    
+    md += `## Core Value Proposition\n\n`;
+    if (valueProp.target) {
+        md += `For **${valueProp.target}** who ${valueProp.need}, **${valueProp.product}** is a ${valueProp.category} that ${valueProp.benefit}. Unlike ${valueProp.competitor}, we ${valueProp.differentiator}.\n\n`;
+    }
+    
+    md += `## Persona Messaging\n\n`;
+    selectedPersonas.forEach(p => {
+        const m = personaMessages[p] || {};
+        md += `### ${personaDetails[p].icon} ${personaDetails[p].title}\n\n`;
+        md += `- **Headline:** ${m.headline || 'N/A'}\n`;
+        md += `- **Message:** ${m.message || 'N/A'}\n`;
+        md += `- **Proof:** ${m.proof || 'N/A'}\n\n`;
+    });
+    
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `messaging-${valueProp.product?.toLowerCase().replace(/\s+/g, '-') || 'framework'}.md`;
+    a.click();
+}
+
+function saveFramework() {
+    const saved = JSON.parse(localStorage.getItem('pmmMessagingFrameworks') || '[]');
+    saved.unshift({
+        date: new Date().toISOString(),
+        product: valueProp.product,
+        personas: selectedPersonas,
+        valueProp: valueProp,
+        messages: personaMessages
+    });
+    localStorage.setItem('pmmMessagingFrameworks', JSON.stringify(saved.slice(0, 10)));
+    loadSaved();
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save', 2000);
+}
+
+function loadSaved() {
+    const saved = JSON.parse(localStorage.getItem('pmmMessagingFrameworks') || '[]');
+    const section = document.getElementById('savedSection');
+    const list = document.getElementById('savedList');
+    if (saved.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = saved.map(s => {
+            const date = new Date(s.date).toLocaleDateString();
+            return `
+                <div class="saved-item">
+                    <div>
+                        <div style="font-weight: 600;">${s.product}</div>
+                        <div style="font-size: 0.8rem; color: var(--ink-muted);">${s.personas.length} personas · ${date}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function startOver() {
+    valueProp = {};
+    selectedPersonas = [];
+    personaMessages = {};
+    industry = '';
+    document.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+    document.querySelectorAll('.persona-tab').forEach(t => t.classList.remove('active'));
+    updateValuePreview();
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>

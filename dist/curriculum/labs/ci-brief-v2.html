@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: CI Brief Generator | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --blue-dark: #0054b4;
+            --ink: #1e293b; --ink-muted: #64748b; --surface: #f8fafc; --line: #e2e8f0; --white: #ffffff;
+            --green: #10b981; --green-light: #d1fae5;
+            --yellow: #f59e0b; --yellow-light: #fef3c7;
+            --red: #ef4444; --red-light: #fee2e2;
+            --cyan: #06b6d4; --cyan-light: #cffafe;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--cyan-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--cyan); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--cyan-light) 0%, #ecfeff 100%); border: 1px solid #67e8f9; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box a { color: var(--cyan); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; transition: background 0.3s; }
+        .progress-step.active { background: var(--cyan); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--cyan); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--cyan); }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        
+        /* Chips */
+        .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .chip { padding: 0.5rem 1rem; border: 2px solid var(--line); border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+        .chip:hover { border-color: var(--cyan); }
+        .chip.selected { background: var(--cyan); color: white; border-color: var(--cyan); }
+        
+        /* Deal Stage */
+        .stage-selector { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .stage-btn { flex: 1; padding: 1rem; border: 2px solid var(--line); border-radius: 10px; background: white; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .stage-btn:hover { border-color: var(--cyan); }
+        .stage-btn.selected { border-color: var(--cyan); background: var(--cyan-light); }
+        .stage-btn .icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .stage-btn .label { font-size: 0.85rem; font-weight: 600; }
+        
+        /* Results */
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--cyan); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .results-header h2 { font-size: 1.4rem; }
+        
+        /* CI Brief Preview */
+        .brief-preview { background: var(--surface); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--line); }
+        .brief-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .brief-header h3 { font-size: 1.25rem; color: var(--ink); }
+        .brief-meta { font-size: 0.85rem; color: var(--ink-muted); text-align: right; }
+        
+        .brief-section { margin-bottom: 1.5rem; }
+        .brief-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .brief-section-content { background: white; border-radius: 8px; padding: 1rem; border: 1px solid var(--line); }
+        
+        .key-points { list-style: none; padding: 0; }
+        .key-points li { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+        .key-points li:last-child { border-bottom: none; }
+        .key-points .bullet { width: 8px; height: 8px; border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0; }
+        .key-points .bullet.strength { background: var(--green); }
+        .key-points .bullet.weakness { background: var(--red); }
+        .key-points .bullet.neutral { background: var(--yellow); }
+        
+        .talk-track { background: linear-gradient(135deg, var(--ink) 0%, #334155 100%); color: white; border-radius: 8px; padding: 1.25rem; font-size: 0.95rem; line-height: 1.7; }
+        .talk-track em { color: var(--cyan); font-style: normal; font-weight: 600; }
+        
+        .landmines { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .landmine-card { background: var(--yellow-light); border-radius: 8px; padding: 1rem; }
+        .landmine-card h5 { font-size: 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .landmine-card p { font-size: 0.85rem; color: var(--ink-muted); }
+        
+        /* Skill Training */
+        .skill-training { background: linear-gradient(135deg, var(--cyan-light) 0%, #ecfeff 100%); border: 1px solid #67e8f9; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .training-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: #0891b2; }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; line-height: 1.5; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        .output-list li:last-child, .tips-list li:last-child { border-bottom: none; }
+        
+        /* Joule CTA */
+        .joule-cta { background: linear-gradient(135deg, #164e63 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .joule-cta p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+        .joule-cta .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--cyan); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .joule-cta .btn:hover { background: #0891b2; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
+        .btn-secondary:hover { border-color: var(--cyan); }
+        .btn-primary { background: var(--cyan); color: white; }
+        .btn-primary:hover { background: #0891b2; }
+        .btn-primary:disabled { background: var(--line); cursor: not-allowed; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { border-color: var(--cyan); }
+        
+        .saved-section { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 10px; }
+        .saved-section h4 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--ink-muted); }
+        .saved-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) {
+            .input-row, .training-grid, .landmines { grid-template-columns: 1fr; }
+            .stage-selector { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>🎯</span> Interactive Lab</div>
+        <h1>CI Brief Generator</h1>
+        <p>Create sales-ready competitive intelligence briefs for specific deals. Give your reps the context they need to win against a specific competitor.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/9cfbd344-7c54-42c4-95e9-f78454ed43de" target="_blank">Competitive Analysis ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active" data-step="1"></div>
+        <div class="progress-step" data-step="2"></div>
+        <div class="progress-step" data-step="3"></div>
+    </div>
+    
+    <!-- STEP 1: Deal Context -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Deal Context</h2>
+        </div>
+        <p class="step-desc">Provide context about the deal so we can generate a tailored CI brief.</p>
+        
+        <div class="input-row">
+            <div class="form-group">
+                <label>Account Name</label>
+                <input type="text" id="accountName" placeholder="e.g., Acme Corporation">
+            </div>
+            <div class="form-group">
+                <label>Industry</label>
+                <select id="industry">
+                    <option value="">Select industry...</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Financial Services">Financial Services</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Energy">Energy</option>
+                    <option value="Professional Services">Professional Services</option>
+                    <option value="Public Sector">Public Sector</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="input-row">
+            <div class="form-group">
+                <label>Deal Size</label>
+                <select id="dealSize">
+                    <option value="small">$0 - $250K</option>
+                    <option value="medium" selected>$250K - $1M</option>
+                    <option value="large">$1M - $5M</option>
+                    <option value="enterprise">$5M+</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Our Solution</label>
+                <input type="text" id="ourSolution" placeholder="e.g., SAP S/4HANA Cloud">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Deal Stage</label>
+            <div class="stage-selector">
+                <div class="stage-btn" data-stage="discovery">
+                    <div class="icon">🔍</div>
+                    <div class="label">Discovery</div>
+                </div>
+                <div class="stage-btn selected" data-stage="evaluation">
+                    <div class="icon">⚖️</div>
+                    <div class="label">Evaluation</div>
+                </div>
+                <div class="stage-btn" data-stage="negotiation">
+                    <div class="icon">🤝</div>
+                    <div class="label">Negotiation</div>
+                </div>
+                <div class="stage-btn" data-stage="closing">
+                    <div class="icon">🎯</div>
+                    <div class="label">Closing</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 2: Competitor Details -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Competitor Details</h2>
+        </div>
+        <p class="step-desc">Tell us about the competitive situation in this deal.</p>
+        
+        <div class="form-group">
+            <label>Primary Competitor</label>
+            <div class="chip-group" id="competitorChips">
+                <span class="chip" data-value="Oracle">Oracle</span>
+                <span class="chip" data-value="Microsoft">Microsoft</span>
+                <span class="chip" data-value="Salesforce">Salesforce</span>
+                <span class="chip" data-value="Workday">Workday</span>
+                <span class="chip" data-value="ServiceNow">ServiceNow</span>
+                <span class="chip" data-value="Snowflake">Snowflake</span>
+            </div>
+            <input type="text" id="customCompetitor" placeholder="Or enter competitor name..." style="margin-top: 0.75rem;">
+        </div>
+        
+        <div class="form-group">
+            <label>What's the customer's main buying criteria?</label>
+            <p class="hint">Select up to 3</p>
+            <div class="chip-group" id="criteriaChips">
+                <span class="chip" data-value="Total Cost">Total Cost</span>
+                <span class="chip" data-value="Time to Value">Time to Value</span>
+                <span class="chip" data-value="Integration">Integration</span>
+                <span class="chip" data-value="Industry Fit">Industry Fit</span>
+                <span class="chip" data-value="AI/Innovation">AI/Innovation</span>
+                <span class="chip" data-value="Support">Support</span>
+                <span class="chip" data-value="Scalability">Scalability</span>
+                <span class="chip" data-value="Security">Security</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>What objections have come up?</label>
+            <textarea id="objections" placeholder="e.g., Customer thinks SAP is too complex, competitor is offering aggressive pricing..."></textarea>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Generate CI Brief →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 3: Results -->
+    <section class="step-section" id="step3">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>📋 Competitive Intelligence Brief</h2>
+            </div>
+            
+            <!-- Brief Preview -->
+            <div class="brief-preview">
+                <div class="brief-header">
+                    <h3 id="briefTitle">CI Brief: Acme Corporation</h3>
+                    <div class="brief-meta">
+                        <div id="briefCompetitor">vs. Oracle</div>
+                        <div id="briefDate">Generated Today</div>
+                    </div>
+                </div>
+                
+                <div class="brief-section">
+                    <h4>🎯 Deal Context</h4>
+                    <div class="brief-section-content" id="contextSection">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="brief-section">
+                    <h4>💪 Our Strengths vs <span id="strengthsCompetitor">Competitor</span></h4>
+                    <div class="brief-section-content">
+                        <ul class="key-points" id="strengthsList">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="brief-section">
+                    <h4>⚠️ Watch Out For</h4>
+                    <div class="brief-section-content">
+                        <ul class="key-points" id="weaknessesList">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="brief-section">
+                    <h4>💬 Recommended Talk Track</h4>
+                    <div class="talk-track" id="talkTrack">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="brief-section">
+                    <h4>💣 Landmine Questions</h4>
+                    <div class="landmines" id="landminesList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the Competitive Analysis Skill</h3>
+                <p class="training-intro">Use this skill in Joule to generate deal-specific CI briefs in seconds.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <ul class="trigger-list">
+                            <li>"CI brief for [account]"</li>
+                            <li>"Competitive intel on [deal]"</li>
+                            <li>"How to beat [competitor]"</li>
+                            <li>"Deal coaching vs Oracle"</li>
+                            <li>"Sales brief for [opportunity]"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <div class="sample-prompt">"Create a CI brief for my deal with Acme Corp. They're in manufacturing, evaluating SAP S/4HANA vs Oracle Cloud. Deal size is $2M, currently in evaluation stage. Main concerns are implementation timeline and TCO."</div>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Deal-Specific Intel</strong> — Tailored to industry & stage</li>
+                            <li><strong>Talk Tracks</strong> — Ready-to-use messaging</li>
+                            <li><strong>Landmine Questions</strong> — Expose competitor weakness</li>
+                            <li><strong>Objection Handlers</strong> — Counter their strongest pitch</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Include objections</strong> — "They said we're too expensive"</li>
+                            <li><strong>Add deal stage</strong> — Messaging changes by stage</li>
+                            <li><strong>Mention champion</strong> — "My contact is the CFO"</li>
+                            <li><strong>Ask for references</strong> — "Similar wins in manufacturing"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Joule CTA -->
+            <div class="joule-cta">
+                <h3>🧩 Generate Briefs in Seconds</h3>
+                <p>Install the <strong>Competitive Analysis</strong> Skill to create deal-specific CI briefs directly in Joule.</p>
+                <a href="https://hub.joule.only.sap/skills/9cfbd344-7c54-42c4-95e9-f78454ed43de" target="_blank" class="btn">Install Competitive Analysis Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyBrief()">📋 Copy Brief</button>
+                <button class="action-btn" onclick="exportPDF()">📥 Export</button>
+                <button class="action-btn" onclick="saveBrief()">💾 Save</button>
+                <button class="action-btn" onclick="startOver()">🔄 New Brief</button>
+            </div>
+            
+            <div class="saved-section" id="savedSection" style="display: none;">
+                <h4>📁 Saved Briefs</h4>
+                <div id="savedList"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved. · Internal Use Only</footer>
+
+<script>
+// State
+let currentStep = 1;
+let dealContext = {};
+let selectedCompetitor = null;
+let selectedCriteria = [];
+let selectedStage = 'evaluation';
+
+// Competitive data
+const competitorData = {
+    'Oracle': {
+        strengths: ['Strong database heritage', 'Aggressive pricing tactics', 'Good autonomous features'],
+        weaknesses: ['Complex licensing', 'Integration challenges', 'Less industry depth'],
+        landmines: [
+            { q: 'Ask about total cost', why: 'Hidden fees often emerge' },
+            { q: 'Request customer references in your industry', why: 'Often lacking recent wins' }
+        ]
+    },
+    'Microsoft': {
+        strengths: ['Office 365 integration', 'Lower entry price', 'Familiar UI'],
+        weaknesses: ['Limited ERP depth', 'Less process coverage', 'Partner dependency'],
+        landmines: [
+            { q: 'Ask about complex manufacturing scenarios', why: 'D365 has gaps here' },
+            { q: 'Request roadmap for AI in operations', why: 'Behind SAP in business AI' }
+        ]
+    },
+    'Salesforce': {
+        strengths: ['CRM leader', 'Easy to deploy', 'Strong ecosystem'],
+        weaknesses: ['Not an ERP', 'Limited back-office', 'Data integration complexity'],
+        landmines: [
+            { q: 'Ask how they handle inventory or procurement', why: 'Not their strength' },
+            { q: 'Request end-to-end process demo', why: 'Requires many integrations' }
+        ]
+    },
+    'Workday': {
+        strengths: ['Modern UI', 'Strong HCM', 'Good financials'],
+        weaknesses: ['No supply chain', 'Limited manufacturing', 'Narrow functionality'],
+        landmines: [
+            { q: 'Ask about supply chain planning', why: 'No native capability' },
+            { q: 'Request industry-specific features', why: 'Generic approach' }
+        ]
+    },
+    'ServiceNow': {
+        strengths: ['Workflow automation', 'IT Service management', 'Growing platform'],
+        weaknesses: ['Not an ERP', 'Limited business processes', 'Expensive for enterprise'],
+        landmines: [
+            { q: 'Ask about financial close processes', why: 'Not their domain' },
+            { q: 'Request manufacturing or supply chain demo', why: 'Would need partners' }
+        ]
+    },
+    'Snowflake': {
+        strengths: ['Data warehouse leader', 'Easy data sharing', 'Cloud-native'],
+        weaknesses: ['Just data layer', 'No applications', 'Consumption pricing unpredictable'],
+        landmines: [
+            { q: 'Ask about business process automation', why: 'Data only, no apps' },
+            { q: 'Request predictable annual cost', why: 'Consumption model varies' }
+        ]
+    }
+};
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    setupStageSelector();
+    setupChips();
+    setupNavigation();
+    loadSaved();
+});
+
+function setupStageSelector() {
+    document.querySelectorAll('.stage-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedStage = btn.dataset.stage;
+        });
+    });
+}
+
+function setupChips() {
+    // Competitor chips (single select)
+    document.querySelectorAll('#competitorChips .chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('#competitorChips .chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            selectedCompetitor = chip.dataset.value;
+            document.getElementById('customCompetitor').value = '';
+        });
+    });
+    
+    // Custom competitor
+    document.getElementById('customCompetitor').addEventListener('input', (e) => {
+        if (e.target.value) {
+            document.querySelectorAll('#competitorChips .chip').forEach(c => c.classList.remove('selected'));
+            selectedCompetitor = e.target.value;
+        }
+    });
+    
+    // Criteria chips (multi select, max 3)
+    document.querySelectorAll('#criteriaChips .chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            if (chip.classList.contains('selected')) {
+                chip.classList.remove('selected');
+                selectedCriteria = selectedCriteria.filter(c => c !== chip.dataset.value);
+            } else if (selectedCriteria.length < 3) {
+                chip.classList.add('selected');
+                selectedCriteria.push(chip.dataset.value);
+            }
+        });
+    });
+}
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => { collectDealContext(); goToStep(2); });
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => { collectCompetitorDetails(); goToStep(3); });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i + 1 < step) el.classList.add('complete');
+        if (i + 1 === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === step);
+    });
+    if (step === 3) renderBrief();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectDealContext() {
+    dealContext = {
+        account: document.getElementById('accountName').value || 'Account',
+        industry: document.getElementById('industry').value || 'Technology',
+        dealSize: document.getElementById('dealSize').value,
+        solution: document.getElementById('ourSolution').value || 'SAP',
+        stage: selectedStage
+    };
+}
+
+function collectCompetitorDetails() {
+    dealContext.competitor = selectedCompetitor || document.getElementById('customCompetitor').value || 'Competitor';
+    dealContext.criteria = selectedCriteria;
+    dealContext.objections = document.getElementById('objections').value;
+}
+
+function renderBrief() {
+    const comp = dealContext.competitor;
+    const data = competitorData[comp] || {
+        strengths: ['Market presence', 'Brand recognition', 'Existing relationships'],
+        weaknesses: ['Less comprehensive', 'Integration challenges', 'Limited industry depth'],
+        landmines: [
+            { q: 'Ask about end-to-end processes', why: 'Often requires multiple vendors' },
+            { q: 'Request industry-specific references', why: 'May lack depth' }
+        ]
+    };
+    
+    // Header
+    document.getElementById('briefTitle').textContent = `CI Brief: ${dealContext.account}`;
+    document.getElementById('briefCompetitor').textContent = `vs. ${comp}`;
+    document.getElementById('briefDate').textContent = new Date().toLocaleDateString();
+    document.getElementById('strengthsCompetitor').textContent = comp;
+    
+    // Context section
+    const dealSizeLabels = { small: '$0-$250K', medium: '$250K-$1M', large: '$1M-$5M', enterprise: '$5M+' };
+    const stageLabels = { discovery: 'Discovery', evaluation: 'Evaluation', negotiation: 'Negotiation', closing: 'Closing' };
+    document.getElementById('contextSection').innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+            <div><strong>Industry:</strong> ${dealContext.industry}</div>
+            <div><strong>Deal Size:</strong> ${dealSizeLabels[dealContext.dealSize]}</div>
+            <div><strong>Stage:</strong> ${stageLabels[dealContext.stage]}</div>
+            <div><strong>Solution:</strong> ${dealContext.solution}</div>
+            ${dealContext.criteria.length ? `<div style="grid-column: span 2;"><strong>Key Criteria:</strong> ${dealContext.criteria.join(', ')}</div>` : ''}
+        </div>
+    `;
+    
+    // Strengths
+    const sapStrengths = [
+        'Deepest industry functionality across 25+ industries',
+        'True end-to-end processes from planning to execution',
+        'Business AI embedded in workflows, not bolted on',
+        'Single source of truth with real-time analytics',
+        'Proven enterprise scale with 80% of transactions'
+    ];
+    document.getElementById('strengthsList').innerHTML = sapStrengths.map(s => `
+        <li><span class="bullet strength"></span><span>${s}</span></li>
+    `).join('');
+    
+    // Weaknesses
+    document.getElementById('weaknessesList').innerHTML = data.strengths.map(s => `
+        <li><span class="bullet weakness"></span><span><strong>${comp}:</strong> ${s}</span></li>
+    `).join('');
+    
+    // Talk track
+    const talkTracks = {
+        discovery: `"I understand you're exploring options. What I hear from customers who've looked at <em>${comp}</em> is that the initial appeal fades when they dig into <em>${dealContext.criteria[0] || 'total cost of ownership'}</em>. Can I share what <em>${dealContext.industry}</em> leaders are prioritizing?"`,
+        evaluation: `"At this stage, the key question isn't just features—it's <em>total value over time</em>. When you compare ${comp}, I'd encourage you to look at <em>${dealContext.criteria[0] || 'integration complexity'}</em> and ask for references in <em>${dealContext.industry}</em> specifically."`,
+        negotiation: `"I know ${comp} may be offering aggressive terms. What we've seen is that <em>the real cost emerges post-go-live</em>. Let me connect you with a customer who evaluated both and can share their <em>3-year perspective</em>."`,
+        closing: `"As you finalize this decision, remember: you're not just buying software—you're choosing a <em>transformation partner</em>. Ask yourself: who will be there in year 3 when you need to innovate again?"`
+    };
+    document.getElementById('talkTrack').innerHTML = talkTracks[dealContext.stage];
+    
+    // Landmines
+    document.getElementById('landminesList').innerHTML = data.landmines.map(l => `
+        <div class="landmine-card">
+            <h5>💣 ${l.q}</h5>
+            <p>${l.why}</p>
+        </div>
+    `).join('');
+}
+
+function copyBrief() {
+    const comp = dealContext.competitor;
+    let text = `CI BRIEF: ${dealContext.account} vs ${comp}\n${'='.repeat(50)}\n\n`;
+    text += `Industry: ${dealContext.industry}\n`;
+    text += `Deal Size: ${dealContext.dealSize}\n`;
+    text += `Stage: ${dealContext.stage}\n`;
+    text += `Solution: ${dealContext.solution}\n`;
+    if (dealContext.criteria.length) text += `Key Criteria: ${dealContext.criteria.join(', ')}\n`;
+    text += `\nOUR STRENGTHS\n${'-'.repeat(20)}\n`;
+    text += `• Deepest industry functionality across 25+ industries\n`;
+    text += `• True end-to-end processes from planning to execution\n`;
+    text += `• Business AI embedded in workflows\n`;
+    text += `• Single source of truth with real-time analytics\n`;
+    text += `\nWATCH OUT FOR (${comp})\n${'-'.repeat(20)}\n`;
+    const data = competitorData[comp] || competitorData['Oracle'];
+    data.strengths.forEach(s => text += `• ${s}\n`);
+    text += `\nLANDMINE QUESTIONS\n${'-'.repeat(20)}\n`;
+    data.landmines.forEach(l => text += `• ${l.q} — ${l.why}\n`);
+    text += `\nGenerated by CI Brief Lab | Joule Skill:\nhttps://hub.joule.only.sap/skills/9cfbd344-7c54-42c4-95e9-f78454ed43de`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Brief', 2000);
+    });
+}
+
+function exportPDF() {
+    // For demo, export as text
+    copyBrief();
+    alert('Brief copied to clipboard. In production, this would generate a PDF.');
+}
+
+function saveBrief() {
+    const saved = JSON.parse(localStorage.getItem('pmmCIBriefs') || '[]');
+    saved.unshift({
+        date: new Date().toISOString(),
+        account: dealContext.account,
+        competitor: dealContext.competitor,
+        industry: dealContext.industry,
+        stage: dealContext.stage
+    });
+    localStorage.setItem('pmmCIBriefs', JSON.stringify(saved.slice(0, 10)));
+    loadSaved();
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save', 2000);
+}
+
+function loadSaved() {
+    const saved = JSON.parse(localStorage.getItem('pmmCIBriefs') || '[]');
+    const section = document.getElementById('savedSection');
+    const list = document.getElementById('savedList');
+    if (saved.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = saved.map(s => {
+            const date = new Date(s.date).toLocaleDateString();
+            return `
+                <div class="saved-item">
+                    <div>
+                        <div style="font-weight: 600;">${s.account} vs ${s.competitor}</div>
+                        <div style="font-size: 0.8rem; color: var(--ink-muted);">${s.industry} · ${s.stage} · ${date}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function startOver() {
+    dealContext = {};
+    selectedCompetitor = null;
+    selectedCriteria = [];
+    selectedStage = 'evaluation';
+    document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.stage-btn[data-stage="evaluation"]').classList.add('selected');
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>

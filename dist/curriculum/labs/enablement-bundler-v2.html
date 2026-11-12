@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Sales Enablement Bundler | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --blue-dark: #0054b4;
+            --teal: #14b8a6; --teal-light: #ccfbf1; --teal-dark: #0f766e;
+            --ink: #1e293b; --ink-muted: #64748b; --surface: #f8fafc; --line: #e2e8f0; --white: #ffffff;
+            --green: #10b981; --green-light: #d1fae5;
+            --yellow: #f59e0b; --yellow-light: #fef3c7;
+            --purple: #8b5cf6; --purple-light: #ede9fe;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--teal-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--teal); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--teal-light) 0%, #f0fdfa 100%); border: 1px solid #5eead4; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box a { color: var(--teal-dark); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; transition: background 0.3s; }
+        .progress-step.active { background: var(--teal); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--teal); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--teal); }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        /* Sample buttons */
+        .sample-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .sample-btn { background: var(--surface); border: 1px solid var(--line); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .sample-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+        
+        /* Asset checkboxes */
+        .asset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .asset-item { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 2px solid var(--line); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+        .asset-item:hover { border-color: var(--teal); }
+        .asset-item.selected { border-color: var(--teal); background: var(--teal-light); }
+        .asset-item input { display: none; }
+        .asset-icon { font-size: 1.5rem; }
+        .asset-info h4 { font-size: 0.9rem; margin-bottom: 0.15rem; }
+        .asset-info p { font-size: 0.75rem; color: var(--ink-muted); }
+        
+        /* Bundle preview cards */
+        .bundle-preview { display: grid; gap: 1rem; margin-bottom: 2rem; }
+        .bundle-card { background: var(--surface); border-radius: 10px; padding: 1.25rem; border-left: 4px solid var(--teal); }
+        .bundle-card h4 { font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .bundle-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .bundle-card ul { font-size: 0.85rem; margin-left: 1.25rem; }
+        .bundle-card li { margin-bottom: 0.35rem; }
+        
+        /* Context summary */
+        .context-summary { background: linear-gradient(135deg, var(--teal-light) 0%, #f0fdfa 100%); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
+        .context-summary h4 { font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--teal-dark); }
+        .context-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .context-item { font-size: 0.85rem; }
+        .context-item .label { color: var(--ink-muted); }
+        .context-item .value { font-weight: 600; }
+        
+        /* Results */
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--teal); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .results-header h2 { font-size: 1.4rem; }
+        
+        /* Skill Training */
+        .skill-training { background: linear-gradient(135deg, var(--teal-light) 0%, #f0fdfa 100%); border: 1px solid #5eead4; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .training-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--teal-dark); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; line-height: 1.5; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        .output-list li:last-child, .tips-list li:last-child { border-bottom: none; }
+        
+        /* Joule CTA */
+        .joule-cta { background: linear-gradient(135deg, #134e4a 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .joule-cta p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+        .joule-cta .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--teal); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .joule-cta .btn:hover { background: #0d9488; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; font-size: 1rem; }
+        .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
+        .btn-secondary:hover { border-color: var(--teal); }
+        .btn-primary { background: var(--teal); color: white; }
+        .btn-primary:hover { background: var(--teal-dark); }
+        .btn-primary:disabled { background: var(--line); cursor: not-allowed; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; font-family: inherit; }
+        .action-btn:hover { border-color: var(--teal); }
+        
+        .saved-section { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 10px; }
+        .saved-section h4 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--ink-muted); }
+        .saved-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; }
+        .saved-item .info { flex: 1; }
+        .saved-item .title { font-weight: 600; font-size: 0.9rem; }
+        .saved-item .meta { font-size: 0.8rem; color: var(--ink-muted); }
+        .saved-item .load-btn { background: var(--teal-light); color: var(--teal-dark); border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) {
+            .asset-grid, .training-grid, .context-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>📦</span> Interactive Lab</div>
+        <h1>Sales Enablement Bundler</h1>
+        <p>Build region- and persona-tuned sales enablement kits with talk tracks, proof points, and recommended assets—all offline.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/0a1725f1-dd92-4a5a-895e-91a843e2f89b" target="_blank">Sales Enablement ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active" data-step="1"></div>
+        <div class="progress-step" data-step="2"></div>
+        <div class="progress-step" data-step="3"></div>
+        <div class="progress-step" data-step="4"></div>
+    </div>
+    
+    <!-- STEP 1: Product & Deal -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Product & Deal Context</h2>
+        </div>
+        <p class="step-desc">Define the solution and deal stage to tailor your enablement bundle.</p>
+        
+        <div class="sample-btns">
+            <span style="font-size: 0.85rem; color: var(--ink-muted); margin-right: 0.5rem;">Try a sample:</span>
+            <button type="button" class="sample-btn" onclick="loadSample('ariba')">SAP Ariba</button>
+            <button type="button" class="sample-btn" onclick="loadSample('bdc')">Business Data Cloud</button>
+            <button type="button" class="sample-btn" onclick="loadSample('successfactors')">SuccessFactors</button>
+        </div>
+        
+        <div class="form-group">
+            <label for="product">Product/Solution</label>
+            <input type="text" id="product" placeholder="e.g., SAP Ariba, SAP Business Data Cloud">
+        </div>
+        
+        <div class="form-group">
+            <label for="dealStage">Deal Stage</label>
+            <select id="dealStage">
+                <option value="discovery">Discovery — Early qualification</option>
+                <option value="evaluation">Evaluation — Active comparison</option>
+                <option value="proposal">Proposal — Final decision</option>
+                <option value="negotiation">Negotiation — Contract stage</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="dealSize">Deal Size</label>
+            <select id="dealSize">
+                <option value="smb">SMB ($50K - $250K ACV)</option>
+                <option value="midmarket">Mid-Market ($250K - $1M ACV)</option>
+                <option value="enterprise">Enterprise ($1M - $5M ACV)</option>
+                <option value="strategic">Strategic ($5M+ ACV)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="painPoints">Key Pain Points</label>
+            <p class="hint">What's driving this opportunity?</p>
+            <textarea id="painPoints" placeholder="e.g., Manual processes, legacy systems, compliance concerns, limited visibility"></textarea>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 2: Region & Persona -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Region & Persona</h2>
+        </div>
+        <p class="step-desc">Specify the target audience to customize messaging and proof points.</p>
+        
+        <div class="form-group">
+            <label for="region">Target Region</label>
+            <select id="region">
+                <option value="north-america">North America</option>
+                <option value="emea-uk">EMEA — UK/Ireland</option>
+                <option value="emea-dach">EMEA — DACH</option>
+                <option value="emea-nordics">EMEA — Nordics</option>
+                <option value="emea-france">EMEA — France</option>
+                <option value="emea-southern">EMEA — Southern Europe</option>
+                <option value="apj-anz">APJ — ANZ</option>
+                <option value="apj-japan">APJ — Japan</option>
+                <option value="apj-india">APJ — India</option>
+                <option value="apj-sea">APJ — Southeast Asia</option>
+                <option value="latam">Latin America</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="persona">Primary Buyer Persona</label>
+            <select id="persona">
+                <option value="cfo">CFO / Chief Financial Officer</option>
+                <option value="cio">CIO / Chief Information Officer</option>
+                <option value="cpo">CPO / Chief Procurement Officer</option>
+                <option value="chro">CHRO / Chief Human Resources Officer</option>
+                <option value="cmo">CMO / Chief Marketing Officer</option>
+                <option value="coo">COO / Chief Operating Officer</option>
+                <option value="vp-it">VP IT / IT Director</option>
+                <option value="vp-finance">VP Finance / Controller</option>
+                <option value="vp-ops">VP Operations</option>
+                <option value="vp-supply-chain">VP Supply Chain</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="industry">Industry</label>
+            <select id="industry">
+                <option value="manufacturing">Manufacturing</option>
+                <option value="retail">Retail & Consumer Products</option>
+                <option value="healthcare">Healthcare & Life Sciences</option>
+                <option value="financial-services">Financial Services</option>
+                <option value="energy">Energy & Utilities</option>
+                <option value="technology">Technology</option>
+                <option value="public-sector">Public Sector</option>
+                <option value="professional-services">Professional Services</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="competitors">Competitive Situation</label>
+            <p class="hint">Who else is the customer evaluating?</p>
+            <textarea id="competitors" placeholder="e.g., Coupa, Workday, Snowflake, status quo"></textarea>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 3: Select Assets -->
+    <section class="step-section" id="step3">
+        <div class="step-header">
+            <div class="step-num">3</div>
+            <h2>Select Bundle Contents</h2>
+        </div>
+        <p class="step-desc">Choose what to include in your enablement kit. Select at least one item.</p>
+        
+        <div class="asset-grid" id="assetGrid">
+            <label class="asset-item selected">
+                <input type="checkbox" name="assets" value="executive-summary" checked>
+                <div class="asset-icon">📋</div>
+                <div class="asset-info">
+                    <h4>Executive Summary</h4>
+                    <p>One-page AE briefing</p>
+                </div>
+            </label>
+            <label class="asset-item selected">
+                <input type="checkbox" name="assets" value="talk-track" checked>
+                <div class="asset-icon">🎯</div>
+                <div class="asset-info">
+                    <h4>Talk Track</h4>
+                    <p>Stage-appropriate script</p>
+                </div>
+            </label>
+            <label class="asset-item">
+                <input type="checkbox" name="assets" value="proof-points">
+                <div class="asset-icon">📊</div>
+                <div class="asset-info">
+                    <h4>Proof Points</h4>
+                    <p>Region/industry evidence</p>
+                </div>
+            </label>
+            <label class="asset-item">
+                <input type="checkbox" name="assets" value="objection-handlers">
+                <div class="asset-icon">🛡️</div>
+                <div class="asset-info">
+                    <h4>Objection Handlers</h4>
+                    <p>Top 3 anticipated pushbacks</p>
+                </div>
+            </label>
+            <label class="asset-item">
+                <input type="checkbox" name="assets" value="competitive-positioning">
+                <div class="asset-icon">⚔️</div>
+                <div class="asset-info">
+                    <h4>Competitive Positioning</h4>
+                    <p>Key differentiators</p>
+                </div>
+            </label>
+            <label class="asset-item">
+                <input type="checkbox" name="assets" value="recommended-assets">
+                <div class="asset-icon">📁</div>
+                <div class="asset-info">
+                    <h4>Recommended Assets</h4>
+                    <p>Collateral by stage</p>
+                </div>
+            </label>
+            <label class="asset-item">
+                <input type="checkbox" name="assets" value="discovery-questions">
+                <div class="asset-icon">❓</div>
+                <div class="asset-info">
+                    <h4>Discovery Questions</h4>
+                    <p>Persona-specific probes</p>
+                </div>
+            </label>
+            <label class="asset-item">
+                <input type="checkbox" name="assets" value="roi-talking-points">
+                <div class="asset-icon">💰</div>
+                <div class="asset-info">
+                    <h4>ROI Talking Points</h4>
+                    <p>Value metrics & benchmarks</p>
+                </div>
+            </label>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep2">← Back</button>
+            <button class="btn btn-primary" id="toStep4">Generate Bundle →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 4: Results -->
+    <section class="step-section" id="step4">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>📦 Your Enablement Bundle</h2>
+            </div>
+            
+            <!-- Context Summary -->
+            <div class="context-summary" id="contextSummary">
+                <h4>📋 Bundle Context</h4>
+                <div class="context-grid">
+                    <div class="context-item"><span class="label">Product:</span> <span class="value" id="summaryProduct">—</span></div>
+                    <div class="context-item"><span class="label">Stage:</span> <span class="value" id="summaryStage">—</span></div>
+                    <div class="context-item"><span class="label">Region:</span> <span class="value" id="summaryRegion">—</span></div>
+                    <div class="context-item"><span class="label">Persona:</span> <span class="value" id="summaryPersona">—</span></div>
+                    <div class="context-item"><span class="label">Industry:</span> <span class="value" id="summaryIndustry">—</span></div>
+                    <div class="context-item"><span class="label">Deal Size:</span> <span class="value" id="summaryDealSize">—</span></div>
+                </div>
+            </div>
+            
+            <!-- Bundle Preview -->
+            <div class="bundle-preview" id="bundlePreview">
+                <!-- Populated by JS -->
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the Sales Enablement Skill</h3>
+                <p class="training-intro">Use this skill in Joule to generate complete, AI-powered sales enablement bundles tailored to your deals.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <p>Say any of these to Joule:</p>
+                        <ul class="trigger-list">
+                            <li>"Build a sales kit for [product]"</li>
+                            <li>"Create enablement bundle"</li>
+                            <li>"Generate talk track for CFO"</li>
+                            <li>"Sales materials for EMEA"</li>
+                            <li>"Objection handlers for [competitor]"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <p>Try this in Joule:</p>
+                        <div class="sample-prompt">"Create a sales enablement bundle for SAP Ariba targeting a CPO at a $2B manufacturing company in EMEA. We're in evaluation stage competing against Coupa. Include talk track, proof points, and objection handlers."</div>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Executive Brief</strong> — Deal summary for AE prep</li>
+                            <li><strong>Talk Tracks</strong> — Stage-specific conversation guides</li>
+                            <li><strong>Proof Points</strong> — Region & industry evidence</li>
+                            <li><strong>Objection Handlers</strong> — Ready responses to pushback</li>
+                            <li><strong>Asset Recommendations</strong> — What to share when</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Include competitors</strong> — "We're up against Coupa and Oracle"</li>
+                            <li><strong>Specify pain points</strong> — Joule tailors messaging</li>
+                            <li><strong>Mention stage</strong> — Discovery vs. negotiation = different content</li>
+                            <li><strong>Ask for follow-up</strong> — "Now give me email templates"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Joule CTA -->
+            <div class="joule-cta">
+                <h3>🧩 Ready to Enable at Scale?</h3>
+                <p>Install the <strong>Sales Enablement</strong> Skill to generate full bundles with live AI—personalized for every deal.</p>
+                <a href="https://hub.joule.only.sap/skills/0a1725f1-dd92-4a5a-895e-91a843e2f89b" target="_blank" class="btn">Install Sales Enablement Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyBundle()">📋 Copy Bundle</button>
+                <button class="action-btn" onclick="exportMarkdown()">📥 Export .md</button>
+                <button class="action-btn" onclick="saveBundle()">💾 Save Bundle</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+            
+            <div class="saved-section" id="savedSection" style="display: none;">
+                <h4>📁 Previous Bundles</h4>
+                <div id="savedList"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved. · Internal Use Only</footer>
+
+<script>
+// State
+let currentStep = 1;
+let bundleData = {};
+
+// Sample data
+const samples = {
+    ariba: {
+        product: 'SAP Ariba',
+        dealStage: 'evaluation',
+        dealSize: 'enterprise',
+        painPoints: 'Maverick spending (~25% off-contract), supplier adoption issues, need S/4HANA integration, CFO pushing for working capital optimization',
+        region: 'north-america',
+        persona: 'cpo',
+        industry: 'manufacturing',
+        competitors: 'Coupa (incumbent), Oracle (bundled ERP pitch), status quo'
+    },
+    bdc: {
+        product: 'SAP Business Data Cloud',
+        dealStage: 'discovery',
+        dealSize: 'strategic',
+        painPoints: 'Data scattered across 40+ systems, AI initiatives stalled, data team spending 80% on wrangling, board demanding sustainability reporting',
+        region: 'emea-dach',
+        persona: 'cio',
+        industry: 'manufacturing',
+        competitors: 'Snowflake + dbt, Databricks, internal data lake project'
+    },
+    successfactors: {
+        product: 'SAP SuccessFactors',
+        dealStage: 'proposal',
+        dealSize: 'midmarket',
+        painPoints: 'Outgrown legacy HRIS, remote workforce needs self-service, compliance across AU/NZ, M&A activity',
+        region: 'apj-anz',
+        persona: 'chro',
+        industry: 'professional-services',
+        competitors: 'Workday, Oracle HCM, Elmo (AU local)'
+    }
+};
+
+// Labels
+const labels = {
+    stage: { discovery: 'Discovery', evaluation: 'Evaluation', proposal: 'Proposal', negotiation: 'Negotiation' },
+    dealSize: { smb: 'SMB', midmarket: 'Mid-Market', enterprise: 'Enterprise', strategic: 'Strategic' },
+    region: { 'north-america': 'North America', 'emea-uk': 'EMEA (UK)', 'emea-dach': 'EMEA (DACH)', 'emea-nordics': 'EMEA (Nordics)', 'emea-france': 'EMEA (France)', 'emea-southern': 'EMEA (Southern)', 'apj-anz': 'APJ (ANZ)', 'apj-japan': 'APJ (Japan)', 'apj-india': 'APJ (India)', 'apj-sea': 'APJ (SEA)', 'latam': 'LATAM' },
+    persona: { cfo: 'CFO', cio: 'CIO', cpo: 'CPO', chro: 'CHRO', cmo: 'CMO', coo: 'COO', 'vp-it': 'VP IT', 'vp-finance': 'VP Finance', 'vp-ops': 'VP Ops', 'vp-supply-chain': 'VP Supply Chain' },
+    industry: { manufacturing: 'Manufacturing', retail: 'Retail', healthcare: 'Healthcare', 'financial-services': 'Financial Services', energy: 'Energy', technology: 'Technology', 'public-sector': 'Public Sector', 'professional-services': 'Professional Services' }
+};
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    setupNavigation();
+    setupAssetSelection();
+    loadSaved();
+});
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => goToStep(3));
+    document.getElementById('backToStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('toStep4').addEventListener('click', () => { collectData(); goToStep(4); });
+}
+
+function setupAssetSelection() {
+    document.querySelectorAll('.asset-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const checkbox = item.querySelector('input');
+            checkbox.checked = !checkbox.checked;
+            item.classList.toggle('selected', checkbox.checked);
+        });
+    });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i + 1 < step) el.classList.add('complete');
+        if (i + 1 === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === step);
+    });
+    if (step === 4) renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function loadSample(key) {
+    const s = samples[key];
+    document.getElementById('product').value = s.product;
+    document.getElementById('dealStage').value = s.dealStage;
+    document.getElementById('dealSize').value = s.dealSize;
+    document.getElementById('painPoints').value = s.painPoints;
+    document.getElementById('region').value = s.region;
+    document.getElementById('persona').value = s.persona;
+    document.getElementById('industry').value = s.industry;
+    document.getElementById('competitors').value = s.competitors;
+}
+
+function collectData() {
+    const selectedAssets = Array.from(document.querySelectorAll('input[name="assets"]:checked')).map(cb => cb.value);
+    bundleData = {
+        product: document.getElementById('product').value || 'SAP Solution',
+        dealStage: document.getElementById('dealStage').value,
+        dealSize: document.getElementById('dealSize').value,
+        painPoints: document.getElementById('painPoints').value,
+        region: document.getElementById('region').value,
+        persona: document.getElementById('persona').value,
+        industry: document.getElementById('industry').value,
+        competitors: document.getElementById('competitors').value,
+        assets: selectedAssets,
+        createdAt: new Date().toISOString()
+    };
+}
+
+function renderResults() {
+    // Update summary
+    document.getElementById('summaryProduct').textContent = bundleData.product;
+    document.getElementById('summaryStage').textContent = labels.stage[bundleData.dealStage];
+    document.getElementById('summaryRegion').textContent = labels.region[bundleData.region];
+    document.getElementById('summaryPersona').textContent = labels.persona[bundleData.persona];
+    document.getElementById('summaryIndustry').textContent = labels.industry[bundleData.industry];
+    document.getElementById('summaryDealSize').textContent = labels.dealSize[bundleData.dealSize];
+    
+    // Generate bundle preview cards
+    const preview = document.getElementById('bundlePreview');
+    const cards = [];
+    
+    if (bundleData.assets.includes('executive-summary')) {
+        cards.push({
+            icon: '📋',
+            title: 'Executive Summary',
+            desc: `One-page briefing for AEs on ${bundleData.product} opportunity.`,
+            items: [
+                `Target: ${labels.persona[bundleData.persona]} at ${labels.industry[bundleData.industry]} company`,
+                `Deal Stage: ${labels.stage[bundleData.dealStage]} | Size: ${labels.dealSize[bundleData.dealSize]}`,
+                `Key Pains: ${bundleData.painPoints.split(',')[0] || 'Multiple pain points identified'}`,
+                `Competitive Landscape: ${bundleData.competitors.split(',')[0] || 'Status quo'}`
+            ]
+        });
+    }
+    
+    if (bundleData.assets.includes('talk-track')) {
+        const stageGuidance = {
+            discovery: ['Probe for pain & urgency', 'Understand decision process', 'Identify stakeholders', 'Set next steps for demo'],
+            evaluation: ['Differentiate vs. alternatives', 'Address technical requirements', 'Build business case', 'Engage procurement'],
+            proposal: ['Summarize value delivered', 'Address final concerns', 'Confirm decision timeline', 'Prepare for negotiation'],
+            negotiation: ['Protect value', 'Bundle strategically', 'Confirm go-live timeline', 'Close & celebrate']
+        };
+        cards.push({
+            icon: '🎯',
+            title: 'Talk Track',
+            desc: `${labels.stage[bundleData.dealStage]}-stage conversation guide for ${labels.persona[bundleData.persona]}.`,
+            items: stageGuidance[bundleData.dealStage] || stageGuidance.discovery
+        });
+    }
+    
+    if (bundleData.assets.includes('proof-points')) {
+        cards.push({
+            icon: '📊',
+            title: 'Proof Points',
+            desc: `${labels.region[bundleData.region]} + ${labels.industry[bundleData.industry]} evidence.`,
+            items: [
+                `${labels.industry[bundleData.industry]} customer reference available`,
+                `ROI benchmark: 300%+ over 3 years`,
+                `Implementation timeline: 12-16 weeks typical`,
+                `${labels.region[bundleData.region]} support & compliance validated`
+            ]
+        });
+    }
+    
+    if (bundleData.assets.includes('objection-handlers')) {
+        const objections = bundleData.competitors.toLowerCase().includes('coupa') 
+            ? ['Coupa comparison: Highlight network scale & ERP integration', 'Implementation concerns: Reference fast-track methodology', 'Cost objection: Emphasize total value, not just license']
+            : ['Status quo: Quantify cost of inaction', 'Implementation risk: Reference methodology & partners', 'Budget timing: Propose phased approach'];
+        cards.push({
+            icon: '🛡️',
+            title: 'Objection Handlers',
+            desc: 'Anticipated pushbacks with ready responses.',
+            items: objections
+        });
+    }
+    
+    if (bundleData.assets.includes('competitive-positioning')) {
+        cards.push({
+            icon: '⚔️',
+            title: 'Competitive Positioning',
+            desc: `Key differentiators vs. ${bundleData.competitors.split(',')[0] || 'alternatives'}.`,
+            items: [
+                'Integration: Native S/4HANA connection',
+                'Scale: Largest business network globally',
+                'AI: Embedded intelligence throughout',
+                'Trust: Enterprise-grade security & compliance'
+            ]
+        });
+    }
+    
+    if (bundleData.assets.includes('recommended-assets')) {
+        const stageAssets = {
+            discovery: ['Solution brief (2-pager)', 'Customer success video', 'Discovery workshop offer'],
+            evaluation: ['Technical architecture guide', 'ROI calculator', 'Reference customer call'],
+            proposal: ['Business case template', 'Implementation roadmap', 'Contract summary'],
+            negotiation: ['Final proposal deck', 'Executive summary', 'Contract redlines']
+        };
+        cards.push({
+            icon: '📁',
+            title: 'Recommended Assets',
+            desc: `Collateral to share at ${labels.stage[bundleData.dealStage]} stage.`,
+            items: stageAssets[bundleData.dealStage] || stageAssets.discovery
+        });
+    }
+    
+    if (bundleData.assets.includes('discovery-questions')) {
+        const personaQs = {
+            cfo: ['What\'s your current cost of procurement/HR/data ops?', 'How does this initiative tie to board priorities?', 'What does success look like financially?'],
+            cio: ['How does this fit your cloud strategy?', 'What integration requirements are critical?', 'What\'s your timeline for technology decisions?'],
+            cpo: ['What\'s your current maverick spend rate?', 'How are you measuring supplier performance?', 'What compliance requirements drive your priorities?'],
+            chro: ['How is your workforce strategy evolving?', 'What employee experience gaps are you seeing?', 'How do you measure HR effectiveness?']
+        };
+        cards.push({
+            icon: '❓',
+            title: 'Discovery Questions',
+            desc: `Probes tailored for ${labels.persona[bundleData.persona]}.`,
+            items: personaQs[bundleData.persona] || personaQs.cfo
+        });
+    }
+    
+    if (bundleData.assets.includes('roi-talking-points')) {
+        cards.push({
+            icon: '💰',
+            title: 'ROI Talking Points',
+            desc: 'Value metrics and benchmarks for business case.',
+            items: [
+                'Average payback period: 8-12 months',
+                'Process efficiency gains: 40-60%',
+                'Compliance cost reduction: 25-35%',
+                'Employee/supplier satisfaction improvement: 30%+'
+            ]
+        });
+    }
+    
+    preview.innerHTML = cards.map(card => `
+        <div class="bundle-card">
+            <h4>${card.icon} ${card.title}</h4>
+            <p>${card.desc}</p>
+            <ul>${card.items.map(item => `<li>${item}</li>`).join('')}</ul>
+        </div>
+    `).join('');
+}
+
+function copyBundle() {
+    let text = `# Sales Enablement Bundle: ${bundleData.product}\n\n`;
+    text += `**Deal Context**\n`;
+    text += `- Stage: ${labels.stage[bundleData.dealStage]}\n`;
+    text += `- Size: ${labels.dealSize[bundleData.dealSize]}\n`;
+    text += `- Region: ${labels.region[bundleData.region]}\n`;
+    text += `- Persona: ${labels.persona[bundleData.persona]}\n`;
+    text += `- Industry: ${labels.industry[bundleData.industry]}\n\n`;
+    text += `**Pain Points**\n${bundleData.painPoints}\n\n`;
+    text += `**Competitors**\n${bundleData.competitors}\n\n`;
+    text += `---\n\n`;
+    text += `*Generated by NextGen PMM Enablement Bundler*\n`;
+    text += `*For full AI-powered bundles, use Joule: https://hub.joule.only.sap/skills/0a1725f1-dd92-4a5a-895e-91a843e2f89b*`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Bundle', 2000);
+    });
+}
+
+function exportMarkdown() {
+    let md = `# Sales Enablement Bundle: ${bundleData.product}\n\n`;
+    md += `## Deal Context\n\n`;
+    md += `| Field | Value |\n|-------|-------|\n`;
+    md += `| Product | ${bundleData.product} |\n`;
+    md += `| Stage | ${labels.stage[bundleData.dealStage]} |\n`;
+    md += `| Size | ${labels.dealSize[bundleData.dealSize]} |\n`;
+    md += `| Region | ${labels.region[bundleData.region]} |\n`;
+    md += `| Persona | ${labels.persona[bundleData.persona]} |\n`;
+    md += `| Industry | ${labels.industry[bundleData.industry]} |\n\n`;
+    md += `## Pain Points\n\n${bundleData.painPoints}\n\n`;
+    md += `## Competitive Situation\n\n${bundleData.competitors}\n\n`;
+    md += `---\n\n`;
+    md += `*Install the Joule Sales Enablement Skill for AI-powered bundles: https://hub.joule.only.sap/skills/0a1725f1-dd92-4a5a-895e-91a843e2f89b*\n`;
+    
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `enablement-bundle-${bundleData.product.toLowerCase().replace(/\s+/g, '-')}.md`;
+    a.click();
+}
+
+function saveBundle() {
+    const saved = JSON.parse(localStorage.getItem('pmmEnablementBundles') || '[]');
+    saved.unshift(bundleData);
+    localStorage.setItem('pmmEnablementBundles', JSON.stringify(saved.slice(0, 10)));
+    loadSaved();
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save Bundle', 2000);
+}
+
+function loadSaved() {
+    const saved = JSON.parse(localStorage.getItem('pmmEnablementBundles') || '[]');
+    const section = document.getElementById('savedSection');
+    const list = document.getElementById('savedList');
+    if (saved.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = saved.map((s, i) => {
+            const date = new Date(s.createdAt).toLocaleDateString();
+            return `
+                <div class="saved-item">
+                    <div class="info">
+                        <div class="title">${s.product}</div>
+                        <div class="meta">${labels.persona[s.persona]} · ${labels.region[s.region]} · ${date}</div>
+                    </div>
+                    <button class="load-btn" onclick="loadBundle(${i})">Load</button>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function loadBundle(index) {
+    const saved = JSON.parse(localStorage.getItem('pmmEnablementBundles') || '[]');
+    if (saved[index]) {
+        const s = saved[index];
+        document.getElementById('product').value = s.product;
+        document.getElementById('dealStage').value = s.dealStage;
+        document.getElementById('dealSize').value = s.dealSize;
+        document.getElementById('painPoints').value = s.painPoints;
+        document.getElementById('region').value = s.region;
+        document.getElementById('persona').value = s.persona;
+        document.getElementById('industry').value = s.industry;
+        document.getElementById('competitors').value = s.competitors;
+        
+        // Reset asset selection
+        document.querySelectorAll('input[name="assets"]').forEach(cb => {
+            cb.checked = s.assets.includes(cb.value);
+            cb.closest('.asset-item').classList.toggle('selected', cb.checked);
+        });
+        
+        goToStep(1);
+    }
+}
+
+function startOver() {
+    document.getElementById('product').value = '';
+    document.getElementById('dealStage').value = 'discovery';
+    document.getElementById('dealSize').value = 'smb';
+    document.getElementById('painPoints').value = '';
+    document.getElementById('region').value = 'north-america';
+    document.getElementById('persona').value = 'cfo';
+    document.getElementById('industry').value = 'manufacturing';
+    document.getElementById('competitors').value = '';
+    
+    // Reset assets to default
+    document.querySelectorAll('input[name="assets"]').forEach(cb => {
+        const defaultSelected = ['executive-summary', 'talk-track'].includes(cb.value);
+        cb.checked = defaultSelected;
+        cb.closest('.asset-item').classList.toggle('selected', defaultSelected);
+    });
+    
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>

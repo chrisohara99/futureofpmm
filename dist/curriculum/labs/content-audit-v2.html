@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Content Audit | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --blue-dark: #0054b4;
+            --ink: #1e293b; --ink-muted: #64748b; --surface: #f8fafc; --line: #e2e8f0; --white: #ffffff;
+            --green: #10b981; --green-light: #d1fae5;
+            --yellow: #f59e0b; --yellow-light: #fef3c7;
+            --purple: #8b5cf6; --purple-light: #ede9fe;
+            --orange: #f97316; --orange-light: #ffedd5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--orange-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--orange); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--orange-light) 0%, #fff7ed 100%); border: 1px solid #fdba74; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box a { color: var(--orange); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; transition: background 0.3s; }
+        .progress-step.active { background: var(--orange); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--orange); }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        /* Content Items */
+        .content-list { margin-bottom: 1rem; }
+        .content-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid var(--line); border-radius: 10px; margin-bottom: 0.75rem; background: white; }
+        .content-item:hover { border-color: var(--orange); }
+        .content-item .info { flex: 1; }
+        .content-item .title { font-weight: 600; margin-bottom: 0.25rem; }
+        .content-item .meta { font-size: 0.8rem; color: var(--ink-muted); }
+        .content-item .layer-select { width: 150px; }
+        
+        .add-content-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; border: 2px dashed var(--line); border-radius: 10px; background: transparent; cursor: pointer; color: var(--ink-muted); font-size: 0.9rem; width: 100%; justify-content: center; transition: all 0.2s; }
+        .add-content-btn:hover { border-color: var(--orange); color: var(--orange); }
+        
+        /* Layer Pills */
+        .layer-pill { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .layer-pill.commodity { background: var(--green-light); color: #047857; }
+        .layer-pill.strategic { background: var(--yellow-light); color: #b45309; }
+        .layer-pill.signature { background: var(--purple-light); color: #7c3aed; }
+        
+        /* Layer Summary */
+        .layer-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .layer-card { background: var(--surface); border-radius: 10px; padding: 1.25rem; text-align: center; border-left: 4px solid; }
+        .layer-card.commodity { border-color: var(--green); }
+        .layer-card.strategic { border-color: var(--yellow); }
+        .layer-card.signature { border-color: var(--purple); }
+        .layer-card .count { font-size: 2rem; font-weight: 700; }
+        .layer-card.commodity .count { color: var(--green); }
+        .layer-card.strategic .count { color: var(--yellow); }
+        .layer-card.signature .count { color: var(--purple); }
+        .layer-card .label { font-size: 0.85rem; color: var(--ink-muted); }
+        .layer-card .desc { font-size: 0.75rem; color: var(--ink-muted); margin-top: 0.25rem; }
+        
+        /* Results */
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--orange); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .results-header h2 { font-size: 1.4rem; }
+        
+        /* Recommendations */
+        .recommendations { margin-bottom: 2rem; }
+        .recommendations h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .rec-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; }
+        .rec-item.automate { background: var(--green-light); }
+        .rec-item.optimize { background: var(--yellow-light); }
+        .rec-item.invest { background: var(--purple-light); }
+        .rec-icon { font-size: 1.5rem; }
+        .rec-content { flex: 1; }
+        .rec-content h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .rec-content p { font-size: 0.85rem; color: var(--ink-muted); }
+        
+        /* Allocation Chart */
+        .allocation-chart { margin-bottom: 2rem; }
+        .allocation-chart h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .allocation-bar { display: flex; height: 40px; border-radius: 8px; overflow: hidden; margin-bottom: 0.75rem; }
+        .allocation-segment { display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem; font-weight: 600; transition: all 0.3s; }
+        .allocation-segment.commodity { background: var(--green); }
+        .allocation-segment.strategic { background: var(--yellow); }
+        .allocation-segment.signature { background: var(--purple); }
+        .allocation-legend { display: flex; gap: 1.5rem; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+        
+        /* Skill Training */
+        .skill-training { background: linear-gradient(135deg, var(--orange-light) 0%, #fff7ed 100%); border: 1px solid #fdba74; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .training-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--orange); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; line-height: 1.5; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        .output-list li:last-child, .tips-list li:last-child { border-bottom: none; }
+        
+        /* Joule CTA */
+        .joule-cta { background: linear-gradient(135deg, #7c2d12 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .joule-cta p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+        .joule-cta .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--orange); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .joule-cta .btn:hover { background: #ea580c; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
+        .btn-secondary:hover { border-color: var(--orange); }
+        .btn-primary { background: var(--orange); color: white; }
+        .btn-primary:hover { background: #ea580c; }
+        .btn-primary:disabled { background: var(--line); cursor: not-allowed; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { border-color: var(--orange); }
+        
+        .saved-section { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 10px; }
+        .saved-section h4 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--ink-muted); }
+        .saved-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) {
+            .layer-summary, .training-grid { grid-template-columns: 1fr; }
+            .content-item { flex-direction: column; align-items: flex-start; }
+            .content-item .layer-select { width: 100%; margin-top: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>📚</span> Interactive Lab</div>
+        <h1>Content Audit</h1>
+        <p>Classify your content into Commodity, Strategic, and Signature layers. Get AI-powered recommendations for what to automate, optimize, or invest in.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/0e78cdb2-7ec5-402f-817e-5c806c5fc7ee" target="_blank">AI Content Curation ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active" data-step="1"></div>
+        <div class="progress-step" data-step="2"></div>
+        <div class="progress-step" data-step="3"></div>
+    </div>
+    
+    <!-- STEP 1: Add Content -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Add Your Content Assets</h2>
+        </div>
+        <p class="step-desc">List the content assets you want to audit. Include blog posts, whitepapers, sales decks, videos, and more.</p>
+        
+        <div class="form-group">
+            <label>Product/Solution Focus</label>
+            <input type="text" id="productFocus" placeholder="e.g., SAP S/4HANA Cloud, SAP BTP">
+        </div>
+        
+        <div class="content-list" id="contentList">
+            <div class="content-item" data-id="1">
+                <div class="info">
+                    <input type="text" class="title-input" placeholder="Content title (e.g., Product Overview Deck)" style="border: none; font-weight: 600; width: 100%; padding: 0;">
+                    <div class="meta">
+                        <select class="type-select" style="border: none; font-size: 0.8rem; color: var(--ink-muted); padding: 0;">
+                            <option value="blog">Blog Post</option>
+                            <option value="whitepaper">Whitepaper</option>
+                            <option value="deck" selected>Sales Deck</option>
+                            <option value="video">Video</option>
+                            <option value="case-study">Case Study</option>
+                            <option value="datasheet">Datasheet</option>
+                            <option value="infographic">Infographic</option>
+                            <option value="webinar">Webinar</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-remove" onclick="removeContent(1)" style="background: none; border: none; cursor: pointer; font-size: 1.25rem; color: var(--ink-muted);">×</button>
+            </div>
+        </div>
+        
+        <button class="add-content-btn" onclick="addContent()">+ Add Content Asset</button>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2">Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 2: Classify Content -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Classify Into Layers</h2>
+        </div>
+        <p class="step-desc">Assign each content asset to a layer based on its strategic value and differentiation.</p>
+        
+        <div class="layer-summary">
+            <div class="layer-card commodity">
+                <div class="count" id="commodityCount">0</div>
+                <div class="label">Commodity</div>
+                <div class="desc">Table stakes, automate</div>
+            </div>
+            <div class="layer-card strategic">
+                <div class="count" id="strategicCount">0</div>
+                <div class="label">Strategic</div>
+                <div class="desc">Differentiated, optimize</div>
+            </div>
+            <div class="layer-card signature">
+                <div class="count" id="signatureCount">0</div>
+                <div class="label">Signature</div>
+                <div class="desc">Unique, invest heavily</div>
+            </div>
+        </div>
+        
+        <div class="content-list" id="classifyList">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Generate Recommendations →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 3: Results -->
+    <section class="step-section" id="step3">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>📊 Content Audit Results</h2>
+            </div>
+            
+            <!-- Allocation Chart -->
+            <div class="allocation-chart">
+                <h3>Content Portfolio Allocation</h3>
+                <div class="allocation-bar" id="allocationBar">
+                    <div class="allocation-segment commodity" style="width: 33%">33%</div>
+                    <div class="allocation-segment strategic" style="width: 33%">33%</div>
+                    <div class="allocation-segment signature" style="width: 34%">34%</div>
+                </div>
+                <div class="allocation-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--green);"></div> Commodity</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--yellow);"></div> Strategic</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--purple);"></div> Signature</div>
+                </div>
+            </div>
+            
+            <!-- Recommendations -->
+            <div class="recommendations">
+                <h3>🚀 Reallocation Recommendations</h3>
+                <div id="recList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the AI Content Curation Skill</h3>
+                <p class="training-intro">Use this skill in Joule to automate content classification and get AI-powered curation recommendations.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <p>Say any of these to Joule:</p>
+                        <ul class="trigger-list">
+                            <li>"Audit my content portfolio"</li>
+                            <li>"Classify content by layer"</li>
+                            <li>"What content should I automate?"</li>
+                            <li>"Content curation analysis"</li>
+                            <li>"Commodity vs signature content"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <p>Try this in Joule:</p>
+                        <div class="sample-prompt">"Audit my SAP S/4HANA content portfolio. I have 15 blog posts, 5 whitepapers, 8 sales decks, and 3 customer videos. Classify each into Commodity, Strategic, or Signature layers and recommend what to automate."</div>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Layer Classification</strong> — Each asset sorted by strategic value</li>
+                            <li><strong>Automation Candidates</strong> — Commodity content to AI-generate</li>
+                            <li><strong>Investment Priorities</strong> — Where human creativity matters most</li>
+                            <li><strong>Gap Analysis</strong> — Missing content types by layer</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Include metrics</strong> — Engagement, conversions, time on page</li>
+                            <li><strong>Note competitors</strong> — "Competitors all have this = Commodity"</li>
+                            <li><strong>Consider audience</strong> — Exec content often = Signature</li>
+                            <li><strong>Ask for gaps</strong> — "What Signature content am I missing?"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Joule CTA -->
+            <div class="joule-cta">
+                <h3>🧩 Ready to Curate Smarter?</h3>
+                <p>Install the <strong>AI Content Curation</strong> Skill to analyze your full content library and get personalized recommendations.</p>
+                <a href="https://hub.joule.only.sap/skills/0e78cdb2-7ec5-402f-817e-5c806c5fc7ee" target="_blank" class="btn">Install AI Content Curation Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyResults()">📋 Copy Results</button>
+                <button class="action-btn" onclick="exportCSV()">📥 Export CSV</button>
+                <button class="action-btn" onclick="saveAudit()">💾 Save Audit</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+            
+            <div class="saved-section" id="savedSection" style="display: none;">
+                <h4>📁 Previous Audits</h4>
+                <div id="savedList"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved. · Internal Use Only</footer>
+
+<script>
+// State
+let currentStep = 1;
+let contentItems = [{ id: 1, title: '', type: 'deck', layer: 'strategic' }];
+let nextId = 2;
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    setupNavigation();
+    loadSaved();
+});
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => { collectContent(); goToStep(2); });
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => { collectClassifications(); goToStep(3); });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i + 1 < step) el.classList.add('complete');
+        if (i + 1 === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === step);
+    });
+    if (step === 2) renderClassifyList();
+    if (step === 3) renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function addContent() {
+    const list = document.getElementById('contentList');
+    const html = `
+        <div class="content-item" data-id="${nextId}">
+            <div class="info">
+                <input type="text" class="title-input" placeholder="Content title" style="border: none; font-weight: 600; width: 100%; padding: 0;">
+                <div class="meta">
+                    <select class="type-select" style="border: none; font-size: 0.8rem; color: var(--ink-muted); padding: 0;">
+                        <option value="blog">Blog Post</option>
+                        <option value="whitepaper">Whitepaper</option>
+                        <option value="deck">Sales Deck</option>
+                        <option value="video">Video</option>
+                        <option value="case-study">Case Study</option>
+                        <option value="datasheet">Datasheet</option>
+                        <option value="infographic">Infographic</option>
+                        <option value="webinar">Webinar</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-remove" onclick="removeContent(${nextId})" style="background: none; border: none; cursor: pointer; font-size: 1.25rem; color: var(--ink-muted);">×</button>
+        </div>
+    `;
+    list.insertAdjacentHTML('beforeend', html);
+    contentItems.push({ id: nextId, title: '', type: 'blog', layer: 'strategic' });
+    nextId++;
+}
+
+function removeContent(id) {
+    document.querySelector(`.content-item[data-id="${id}"]`).remove();
+    contentItems = contentItems.filter(c => c.id !== id);
+}
+
+function collectContent() {
+    contentItems = [];
+    document.querySelectorAll('#contentList .content-item').forEach(el => {
+        const id = parseInt(el.dataset.id);
+        const title = el.querySelector('.title-input').value || `Content ${id}`;
+        const type = el.querySelector('.type-select').value;
+        contentItems.push({ id, title, type, layer: suggestLayer(type) });
+    });
+}
+
+function suggestLayer(type) {
+    const commodity = ['blog', 'datasheet', 'infographic'];
+    const signature = ['video', 'case-study'];
+    if (commodity.includes(type)) return 'commodity';
+    if (signature.includes(type)) return 'signature';
+    return 'strategic';
+}
+
+function renderClassifyList() {
+    const list = document.getElementById('classifyList');
+    list.innerHTML = contentItems.map(c => `
+        <div class="content-item" data-id="${c.id}">
+            <div class="info">
+                <div class="title">${c.title}</div>
+                <div class="meta">${formatType(c.type)}</div>
+            </div>
+            <select class="layer-select" data-id="${c.id}" onchange="updateLayer(${c.id}, this.value)">
+                <option value="commodity" ${c.layer === 'commodity' ? 'selected' : ''}>🟢 Commodity</option>
+                <option value="strategic" ${c.layer === 'strategic' ? 'selected' : ''}>🟡 Strategic</option>
+                <option value="signature" ${c.layer === 'signature' ? 'selected' : ''}>🟣 Signature</option>
+            </select>
+        </div>
+    `).join('');
+    updateCounts();
+}
+
+function formatType(type) {
+    const types = { blog: 'Blog Post', whitepaper: 'Whitepaper', deck: 'Sales Deck', video: 'Video', 'case-study': 'Case Study', datasheet: 'Datasheet', infographic: 'Infographic', webinar: 'Webinar' };
+    return types[type] || type;
+}
+
+function updateLayer(id, layer) {
+    const item = contentItems.find(c => c.id === id);
+    if (item) item.layer = layer;
+    updateCounts();
+}
+
+function updateCounts() {
+    const counts = { commodity: 0, strategic: 0, signature: 0 };
+    contentItems.forEach(c => counts[c.layer]++);
+    document.getElementById('commodityCount').textContent = counts.commodity;
+    document.getElementById('strategicCount').textContent = counts.strategic;
+    document.getElementById('signatureCount').textContent = counts.signature;
+}
+
+function collectClassifications() {
+    document.querySelectorAll('#classifyList .layer-select').forEach(sel => {
+        const id = parseInt(sel.dataset.id);
+        const item = contentItems.find(c => c.id === id);
+        if (item) item.layer = sel.value;
+    });
+}
+
+function renderResults() {
+    const total = contentItems.length || 1;
+    const counts = { commodity: 0, strategic: 0, signature: 0 };
+    contentItems.forEach(c => counts[c.layer]++);
+    
+    const pcts = {
+        commodity: Math.round((counts.commodity / total) * 100),
+        strategic: Math.round((counts.strategic / total) * 100),
+        signature: Math.round((counts.signature / total) * 100)
+    };
+    
+    // Update allocation bar
+    const bar = document.getElementById('allocationBar');
+    bar.innerHTML = `
+        <div class="allocation-segment commodity" style="width: ${pcts.commodity}%">${pcts.commodity}%</div>
+        <div class="allocation-segment strategic" style="width: ${pcts.strategic}%">${pcts.strategic}%</div>
+        <div class="allocation-segment signature" style="width: ${pcts.signature}%">${pcts.signature}%</div>
+    `;
+    
+    // Generate recommendations
+    const recs = [];
+    
+    // Commodity recommendations
+    const commodityItems = contentItems.filter(c => c.layer === 'commodity');
+    if (commodityItems.length > 0) {
+        recs.push({
+            type: 'automate',
+            icon: '🤖',
+            title: `Automate ${commodityItems.length} Commodity Assets`,
+            desc: `These can be AI-generated: ${commodityItems.slice(0, 3).map(c => c.title).join(', ')}${commodityItems.length > 3 ? '...' : ''}`
+        });
+    }
+    
+    // Strategic recommendations
+    const strategicItems = contentItems.filter(c => c.layer === 'strategic');
+    if (strategicItems.length > 0) {
+        recs.push({
+            type: 'optimize',
+            icon: '⚡',
+            title: `Optimize ${strategicItems.length} Strategic Assets`,
+            desc: `Use AI to enhance, personalize, or A/B test: ${strategicItems.slice(0, 3).map(c => c.title).join(', ')}${strategicItems.length > 3 ? '...' : ''}`
+        });
+    }
+    
+    // Signature recommendations
+    const signatureItems = contentItems.filter(c => c.layer === 'signature');
+    if (signatureItems.length > 0) {
+        recs.push({
+            type: 'invest',
+            icon: '💎',
+            title: `Invest in ${signatureItems.length} Signature Assets`,
+            desc: `Allocate premium resources: ${signatureItems.slice(0, 3).map(c => c.title).join(', ')}${signatureItems.length > 3 ? '...' : ''}`
+        });
+    }
+    
+    // Balance warning
+    if (pcts.commodity > 50) {
+        recs.push({
+            type: 'optimize',
+            icon: '⚠️',
+            title: 'Rebalance Portfolio',
+            desc: `${pcts.commodity}% Commodity is high. Consider elevating some to Strategic or creating more Signature content.`
+        });
+    }
+    
+    document.getElementById('recList').innerHTML = recs.map(r => `
+        <div class="rec-item ${r.type}">
+            <div class="rec-icon">${r.icon}</div>
+            <div class="rec-content">
+                <h4>${r.title}</h4>
+                <p>${r.desc}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function copyResults() {
+    const product = document.getElementById('productFocus').value || 'Content';
+    const counts = { commodity: 0, strategic: 0, signature: 0 };
+    contentItems.forEach(c => counts[c.layer]++);
+    
+    let text = `Content Audit: ${product}\n${'='.repeat(40)}\n\n`;
+    text += `Portfolio: ${contentItems.length} assets\n`;
+    text += `- Commodity: ${counts.commodity} (automate)\n`;
+    text += `- Strategic: ${counts.strategic} (optimize)\n`;
+    text += `- Signature: ${counts.signature} (invest)\n\n`;
+    text += `Assets:\n`;
+    contentItems.forEach(c => {
+        const layer = c.layer === 'commodity' ? '🟢' : c.layer === 'strategic' ? '🟡' : '🟣';
+        text += `${layer} ${c.title} (${formatType(c.type)})\n`;
+    });
+    text += `\nNext Step: Install Joule AI Content Curation Skill\nhttps://hub.joule.only.sap/skills/0e78cdb2-7ec5-402f-817e-5c806c5fc7ee`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Results', 2000);
+    });
+}
+
+function exportCSV() {
+    let csv = 'Title,Type,Layer\n';
+    contentItems.forEach(c => {
+        csv += `"${c.title}","${formatType(c.type)}","${c.layer}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'content-audit.csv';
+    a.click();
+}
+
+function saveAudit() {
+    const saved = JSON.parse(localStorage.getItem('pmmContentAudits') || '[]');
+    saved.unshift({
+        date: new Date().toISOString(),
+        product: document.getElementById('productFocus').value || 'Untitled',
+        items: contentItems.length,
+        breakdown: {
+            commodity: contentItems.filter(c => c.layer === 'commodity').length,
+            strategic: contentItems.filter(c => c.layer === 'strategic').length,
+            signature: contentItems.filter(c => c.layer === 'signature').length
+        }
+    });
+    localStorage.setItem('pmmContentAudits', JSON.stringify(saved.slice(0, 10)));
+    loadSaved();
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save Audit', 2000);
+}
+
+function loadSaved() {
+    const saved = JSON.parse(localStorage.getItem('pmmContentAudits') || '[]');
+    const section = document.getElementById('savedSection');
+    const list = document.getElementById('savedList');
+    if (saved.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = saved.map(s => {
+            const date = new Date(s.date).toLocaleDateString();
+            return `
+                <div class="saved-item">
+                    <div>
+                        <div style="font-weight: 600;">${s.product}</div>
+                        <div style="font-size: 0.8rem; color: var(--ink-muted);">${s.items} assets · ${date}</div>
+                    </div>
+                    <div style="font-size: 0.8rem;">
+                        <span class="layer-pill commodity">${s.breakdown.commodity}</span>
+                        <span class="layer-pill strategic">${s.breakdown.strategic}</span>
+                        <span class="layer-pill signature">${s.breakdown.signature}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function startOver() {
+    contentItems = [{ id: 1, title: '', type: 'deck', layer: 'strategic' }];
+    nextId = 2;
+    document.getElementById('productFocus').value = '';
+    document.getElementById('contentList').innerHTML = `
+        <div class="content-item" data-id="1">
+            <div class="info">
+                <input type="text" class="title-input" placeholder="Content title (e.g., Product Overview Deck)" style="border: none; font-weight: 600; width: 100%; padding: 0;">
+                <div class="meta">
+                    <select class="type-select" style="border: none; font-size: 0.8rem; color: var(--ink-muted); padding: 0;">
+                        <option value="blog">Blog Post</option>
+                        <option value="whitepaper">Whitepaper</option>
+                        <option value="deck" selected>Sales Deck</option>
+                        <option value="video">Video</option>
+                        <option value="case-study">Case Study</option>
+                        <option value="datasheet">Datasheet</option>
+                        <option value="infographic">Infographic</option>
+                        <option value="webinar">Webinar</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-remove" onclick="removeContent(1)" style="background: none; border: none; cursor: pointer; font-size: 1.25rem; color: var(--ink-muted);">×</button>
+        </div>
+    `;
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/assets/js/auth-guard.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: BattleCoach | NextGen PMM</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #0070f2; --blue-light: #e8f4fc; --blue-dark: #0054b4;
+            --ink: #1e293b; --ink-muted: #64748b; --surface: #f8fafc; --line: #e2e8f0; --white: #ffffff;
+            --green: #10b981; --green-light: #d1fae5;
+            --yellow: #f59e0b; --yellow-light: #fef3c7;
+            --red: #ef4444; --red-light: #fee2e2;
+            --purple: #8b5cf6; --purple-light: #ede9fe;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--surface); color: var(--ink); line-height: 1.6; }
+        
+        .site-header { background: white; border-bottom: 1px solid var(--line); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; color: var(--ink); }
+        .logo img { height: 28px; }
+        
+        .hero { background: linear-gradient(135deg, var(--red-light) 0%, #f1f5f9 100%); padding: 2.5rem 2rem; border-bottom: 1px solid var(--line); }
+        .hero-inner { max-width: 800px; margin: 0 auto; }
+        .lab-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--red); color: white; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.05rem; color: var(--ink-muted); max-width: 600px; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .joule-skill-box { display: flex; align-items: center; gap: 0.75rem; background: linear-gradient(135deg, var(--red-light) 0%, #fef2f2 100%); border: 1px solid #fca5a5; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
+        .joule-skill-box .icon { font-size: 1.25rem; }
+        .joule-skill-box a { color: var(--red); font-weight: 600; }
+        
+        .progress-bar { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .progress-step { flex: 1; height: 6px; background: var(--line); border-radius: 3px; transition: background 0.3s; }
+        .progress-step.active { background: var(--red); }
+        .progress-step.complete { background: var(--green); }
+        
+        .step-section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: none; }
+        .step-section.active { display: block; }
+        .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .step-num { width: 36px; height: 36px; background: var(--red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .step-header h2 { font-size: 1.25rem; }
+        .step-desc { color: var(--ink-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-group .hint { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        input[type="text"], select, textarea { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--line); border-radius: 8px; font-size: 1rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--red); }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        /* Competitor Cards */
+        .competitor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .competitor-card { border: 2px solid var(--line); border-radius: 10px; padding: 1.25rem; cursor: pointer; transition: all 0.2s; }
+        .competitor-card:hover { border-color: var(--red); }
+        .competitor-card.selected { border-color: var(--red); background: var(--red-light); }
+        .competitor-card h4 { font-size: 1rem; margin-bottom: 0.25rem; }
+        .competitor-card p { font-size: 0.8rem; color: var(--ink-muted); }
+        
+        .add-competitor { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .add-competitor input { flex: 1; }
+        .add-competitor button { padding: 0.75rem 1.25rem; background: var(--red); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        
+        /* Matrix Table */
+        .matrix-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+        .matrix-table th, .matrix-table td { padding: 0.75rem; border: 1px solid var(--line); text-align: left; }
+        .matrix-table th { background: var(--surface); font-weight: 600; }
+        .matrix-table th:first-child { width: 180px; }
+        .matrix-table td select { width: 100%; border: none; background: transparent; font-size: 0.85rem; }
+        .matrix-table .competitor-header { text-align: center; font-weight: 600; }
+        
+        .rating-cell { text-align: center; }
+        .rating { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .rating.strong { background: var(--green-light); color: #047857; }
+        .rating.neutral { background: var(--yellow-light); color: #b45309; }
+        .rating.weak { background: var(--red-light); color: #b91c1c; }
+        
+        /* Framework Tabs */
+        .framework-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .framework-tab { padding: 0.75rem 1.25rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .framework-tab:hover { border-color: var(--red); }
+        .framework-tab.active { background: var(--red); color: white; border-color: var(--red); }
+        
+        /* Framework Cards */
+        .framework-section { display: none; }
+        .framework-section.active { display: block; }
+        
+        .framework-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .framework-card { background: var(--surface); border-radius: 10px; padding: 1.25rem; border-left: 4px solid; }
+        .framework-card.area { border-color: var(--blue); }
+        .framework-card.idea { border-color: var(--green); }
+        .framework-card h4 { font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .framework-card h4 span { font-size: 1.25rem; }
+        .framework-card textarea { min-height: 80px; }
+        
+        /* Results */
+        .results-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 4px solid var(--red); }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .results-header h2 { font-size: 1.4rem; }
+        
+        /* Battle Card Preview */
+        .battle-card-preview { background: linear-gradient(135deg, var(--ink) 0%, #334155 100%); border-radius: 12px; padding: 1.5rem; color: white; margin-bottom: 2rem; }
+        .battle-card-preview h3 { font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .battle-card-preview .section { margin-bottom: 1rem; }
+        .battle-card-preview .section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; }
+        .battle-card-preview .section-content { font-size: 0.9rem; }
+        .battle-card-preview ul { margin-left: 1.25rem; }
+        .battle-card-preview li { margin-bottom: 0.25rem; }
+        
+        /* Skill Training */
+        .skill-training { background: linear-gradient(135deg, var(--red-light) 0%, #fef2f2 100%); border: 1px solid #fca5a5; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; }
+        .skill-training h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .training-intro { color: var(--ink-muted); margin-bottom: 1.5rem; }
+        .training-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .training-card { background: white; border-radius: 10px; padding: 1.25rem; border: 1px solid var(--line); }
+        .training-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .training-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .training-card p { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 0.75rem; }
+        .trigger-list { list-style: none; padding: 0; }
+        .trigger-list li { font-family: monospace; font-size: 0.8rem; background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.4rem; color: var(--red); }
+        .sample-prompt { font-size: 0.85rem; background: var(--ink); color: #e2e8f0; padding: 1rem; border-radius: 8px; font-family: monospace; line-height: 1.5; }
+        .output-list, .tips-list { list-style: none; padding: 0; }
+        .output-list li, .tips-list li { font-size: 0.85rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+        .output-list li:last-child, .tips-list li:last-child { border-bottom: none; }
+        
+        /* Joule CTA */
+        .joule-cta { background: linear-gradient(135deg, #7f1d1d 0%, #0f172a 100%); border-radius: 12px; padding: 2rem; color: white; text-align: center; }
+        .joule-cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .joule-cta p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+        .joule-cta .btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--red); color: white; padding: 0.875rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        .joule-cta .btn:hover { background: #dc2626; }
+        
+        .btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-secondary { background: var(--surface); color: var(--ink); border: 2px solid var(--line); }
+        .btn-secondary:hover { border-color: var(--red); }
+        .btn-primary { background: var(--red); color: white; }
+        .btn-primary:hover { background: #dc2626; }
+        .btn-primary:disabled { background: var(--line); cursor: not-allowed; }
+        
+        .action-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; }
+        .action-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1rem; border: 2px solid var(--line); border-radius: 8px; background: white; cursor: pointer; font-size: 0.85rem; }
+        .action-btn:hover { border-color: var(--red); }
+        
+        .saved-section { margin-top: 2rem; padding: 1.5rem; background: var(--surface); border-radius: 10px; }
+        .saved-section h4 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--ink-muted); }
+        .saved-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; }
+        
+        footer { text-align: center; padding: 2rem; color: var(--ink-muted); font-size: 0.85rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+        
+        @media (max-width: 640px) {
+            .competitor-grid, .framework-grid, .training-grid { grid-template-columns: 1fr; }
+            .matrix-table { font-size: 0.75rem; }
+            .matrix-table th, .matrix-table td { padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo"><img src="/assets/images/nextgen-pmm-logo.png" alt="NextGen PMM"></a>
+        <nav style="display: flex; gap: 1.5rem;">
+            <a href="/bow/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Book of Work</a>
+            <a href="/curriculum/" style="color: var(--ink-muted); text-decoration: none; font-size: 0.9rem;">Learn</a>
+            <a href="/community/labs/" style="color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Labs</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="lab-badge"><span>⚔️</span> Interactive Lab</div>
+        <h1>BattleCoach</h1>
+        <p>Build competitive battle cards with AREA (defensive) and IDEA (offensive) frameworks. Create a competitive matrix and arm your sales team to win.</p>
+    </div>
+</section>
+
+<main>
+    <a href="/community/labs/" class="back-link">← Back to Labs</a>
+    
+    <div class="joule-skill-box">
+        <span class="icon">🧩</span>
+        <span>This lab demos a <strong>Joule Skill</strong>: <a href="https://hub.joule.only.sap/skills/9cfbd344-7c54-42c4-95e9-f78454ed43de" target="_blank">Competitive Analysis ↗</a></span>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-step active" data-step="1"></div>
+        <div class="progress-step" data-step="2"></div>
+        <div class="progress-step" data-step="3"></div>
+        <div class="progress-step" data-step="4"></div>
+    </div>
+    
+    <!-- STEP 1: Select Competitor -->
+    <section class="step-section active" id="step1">
+        <div class="step-header">
+            <div class="step-num">1</div>
+            <h2>Select Your Competitor</h2>
+        </div>
+        <p class="step-desc">Choose the competitor you want to build a battle card for.</p>
+        
+        <div class="form-group">
+            <label>Your Product/Solution</label>
+            <input type="text" id="yourProduct" placeholder="e.g., SAP S/4HANA Cloud">
+        </div>
+        
+        <div class="form-group">
+            <label>Select Competitor</label>
+            <div class="competitor-grid" id="competitorGrid">
+                <div class="competitor-card" data-competitor="Oracle">
+                    <h4>Oracle</h4>
+                    <p>Oracle Cloud ERP, NetSuite</p>
+                </div>
+                <div class="competitor-card" data-competitor="Microsoft">
+                    <h4>Microsoft</h4>
+                    <p>Dynamics 365, Azure</p>
+                </div>
+                <div class="competitor-card" data-competitor="Salesforce">
+                    <h4>Salesforce</h4>
+                    <p>Sales Cloud, Service Cloud</p>
+                </div>
+                <div class="competitor-card" data-competitor="Workday">
+                    <h4>Workday</h4>
+                    <p>HCM, Financial Management</p>
+                </div>
+                <div class="competitor-card" data-competitor="ServiceNow">
+                    <h4>ServiceNow</h4>
+                    <p>ITSM, Workflow Automation</p>
+                </div>
+                <div class="competitor-card" data-competitor="Snowflake">
+                    <h4>Snowflake</h4>
+                    <p>Data Cloud, Analytics</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Or Add Custom Competitor</label>
+            <div class="add-competitor">
+                <input type="text" id="customCompetitor" placeholder="Competitor name">
+                <button onclick="addCustomCompetitor()">Add</button>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <div></div>
+            <button class="btn btn-primary" id="toStep2" disabled>Continue →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 2: Competitive Matrix -->
+    <section class="step-section" id="step2">
+        <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Build Competitive Matrix</h2>
+        </div>
+        <p class="step-desc">Rate capabilities across key dimensions. Be honest — this makes your battle card credible.</p>
+        
+        <table class="matrix-table">
+            <thead>
+                <tr>
+                    <th>Capability</th>
+                    <th id="sapHeader" class="competitor-header">SAP</th>
+                    <th id="competitorHeader" class="competitor-header">Competitor</th>
+                </tr>
+            </thead>
+            <tbody id="matrixBody">
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep1">← Back</button>
+            <button class="btn btn-primary" id="toStep3">Build Frameworks →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 3: AREA/IDEA Frameworks -->
+    <section class="step-section" id="step3">
+        <div class="step-header">
+            <div class="step-num">3</div>
+            <h2>Complete Battle Frameworks</h2>
+        </div>
+        <p class="step-desc">Use AREA for defensive plays (when competitor comes up) and IDEA for offensive plays (when you bring up competitor).</p>
+        
+        <div class="framework-tabs">
+            <button class="framework-tab active" data-framework="area">🛡️ AREA (Defensive)</button>
+            <button class="framework-tab" data-framework="idea">⚔️ IDEA (Offensive)</button>
+        </div>
+        
+        <!-- AREA Framework -->
+        <div class="framework-section active" id="areaSection">
+            <div class="framework-grid">
+                <div class="framework-card area">
+                    <h4><span>🔍</span> Acknowledge</h4>
+                    <p>Validate their concern. Don't dismiss the competitor.</p>
+                    <textarea id="area-acknowledge" placeholder="e.g., 'Yes, [Competitor] is well-known in this space and has some strong capabilities...'"></textarea>
+                </div>
+                <div class="framework-card area">
+                    <h4><span>🔄</span> Redirect</h4>
+                    <p>Pivot to what matters most for this customer.</p>
+                    <textarea id="area-redirect" placeholder="e.g., 'The key question is what matters most for YOUR business transformation...'"></textarea>
+                </div>
+                <div class="framework-card area">
+                    <h4><span>📊</span> Evidence</h4>
+                    <p>Provide proof points that support your position.</p>
+                    <textarea id="area-evidence" placeholder="e.g., 'Gartner ranks SAP #1 for... 80% of Fortune 500 run SAP...'"></textarea>
+                </div>
+                <div class="framework-card area">
+                    <h4><span>❓</span> Ask</h4>
+                    <p>Close with a discovery question to move forward.</p>
+                    <textarea id="area-ask" placeholder="e.g., 'What would make this decision easy for you? What criteria matter most?'"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <!-- IDEA Framework -->
+        <div class="framework-section" id="ideaSection">
+            <div class="framework-grid">
+                <div class="framework-card idea">
+                    <h4><span>💡</span> Introduce</h4>
+                    <p>Bring up the competitor strategically.</p>
+                    <textarea id="idea-introduce" placeholder="e.g., 'I imagine you're also looking at [Competitor]. Let me share what customers tell us...'"></textarea>
+                </div>
+                <div class="framework-card idea">
+                    <h4><span>🎯</span> Differentiate</h4>
+                    <p>Highlight your key differentiators.</p>
+                    <textarea id="idea-differentiate" placeholder="e.g., 'Where we differ is in our approach to... Our customers choose us because...'"></textarea>
+                </div>
+                <div class="framework-card idea">
+                    <h4><span>📈</span> Elevate</h4>
+                    <p>Raise the conversation to business outcomes.</p>
+                    <textarea id="idea-elevate" placeholder="e.g., 'Beyond features, let's talk about what this means for your business goals...'"></textarea>
+                </div>
+                <div class="framework-card idea">
+                    <h4><span>🤝</span> Advance</h4>
+                    <p>Propose a concrete next step.</p>
+                    <textarea id="idea-advance" placeholder="e.g., 'Would it help to connect you with a customer who evaluated both and chose us?'"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-row">
+            <button class="btn btn-secondary" id="backToStep2">← Back</button>
+            <button class="btn btn-primary" id="toStep4">Generate Battle Card →</button>
+        </div>
+    </section>
+    
+    <!-- STEP 4: Results -->
+    <section class="step-section" id="step4">
+        <div class="results-section">
+            <div class="results-header">
+                <h2>⚔️ Your Battle Card</h2>
+            </div>
+            
+            <!-- Battle Card Preview -->
+            <div class="battle-card-preview" id="battleCardPreview">
+                <h3>🎯 SAP vs <span id="previewCompetitor">Competitor</span></h3>
+                
+                <div class="section">
+                    <div class="section-title">Competitive Matrix</div>
+                    <div class="section-content" id="previewMatrix">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">🛡️ AREA - When They Bring Up Competitor</div>
+                    <div class="section-content" id="previewAREA">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">⚔️ IDEA - When You Bring Up Competitor</div>
+                    <div class="section-content" id="previewIDEA">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skill Training -->
+            <div class="skill-training">
+                <h3>🎓 How to Use the Competitive Analysis Skill</h3>
+                <p class="training-intro">Use this skill in Joule to generate complete battle cards and competitive intelligence.</p>
+                
+                <div class="training-grid">
+                    <div class="training-card">
+                        <div class="training-icon">💬</div>
+                        <h4>Trigger Phrases</h4>
+                        <ul class="trigger-list">
+                            <li>"Battle card for [competitor]"</li>
+                            <li>"How do we compete against..."</li>
+                            <li>"AREA framework for Oracle"</li>
+                            <li>"Competitive positioning vs..."</li>
+                            <li>"Win against [competitor]"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📝</div>
+                        <h4>Sample Prompt</h4>
+                        <div class="sample-prompt">"Create a battle card for SAP S/4HANA vs Oracle Cloud ERP. Include AREA defensive framework, IDEA offensive framework, and top 3 landmines to set. Focus on manufacturing industry."</div>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">📊</div>
+                        <h4>What You'll Get</h4>
+                        <ul class="output-list">
+                            <li><strong>Competitive Matrix</strong> — Side-by-side capability comparison</li>
+                            <li><strong>AREA Framework</strong> — Defensive talk track</li>
+                            <li><strong>IDEA Framework</strong> — Offensive positioning</li>
+                            <li><strong>Landmines</strong> — Questions that expose competitor weakness</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="training-card">
+                        <div class="training-icon">💡</div>
+                        <h4>Pro Tips</h4>
+                        <ul class="tips-list">
+                            <li><strong>Be specific</strong> — Include industry and deal size</li>
+                            <li><strong>Ask for objections</strong> — "Common objections and rebuttals"</li>
+                            <li><strong>Request proof points</strong> — "Customer references who switched"</li>
+                            <li><strong>Get landmines</strong> — "Questions to expose their weakness"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Joule CTA -->
+            <div class="joule-cta">
+                <h3>🧩 Ready to Win More Deals?</h3>
+                <p>Install the <strong>Competitive Analysis</strong> Skill to generate complete battle cards with real-time competitive intelligence.</p>
+                <a href="https://hub.joule.only.sap/skills/9cfbd344-7c54-42c4-95e9-f78454ed43de" target="_blank" class="btn">Install Competitive Analysis Skill →</a>
+            </div>
+            
+            <div class="action-btns">
+                <button class="action-btn" onclick="copyBattleCard()">📋 Copy Battle Card</button>
+                <button class="action-btn" onclick="exportMarkdown()">📥 Export Markdown</button>
+                <button class="action-btn" onclick="saveBattleCard()">💾 Save</button>
+                <button class="action-btn" onclick="startOver()">🔄 Start Over</button>
+            </div>
+            
+            <div class="saved-section" id="savedSection" style="display: none;">
+                <h4>📁 Saved Battle Cards</h4>
+                <div id="savedList"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© 2026 SAP SE. All rights reserved. · Internal Use Only</footer>
+
+<script>
+// State
+let currentStep = 1;
+let selectedCompetitor = null;
+let matrixRatings = {};
+let frameworks = { area: {}, idea: {} };
+
+const capabilities = [
+    { id: 'cloud', name: 'Cloud Architecture' },
+    { id: 'integration', name: 'Integration Capabilities' },
+    { id: 'ai', name: 'AI/ML Features' },
+    { id: 'industry', name: 'Industry Depth' },
+    { id: 'scale', name: 'Enterprise Scale' },
+    { id: 'tco', name: 'Total Cost of Ownership' },
+    { id: 'implementation', name: 'Implementation Speed' },
+    { id: 'support', name: 'Customer Support' }
+];
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    setupCompetitorCards();
+    setupNavigation();
+    setupFrameworkTabs();
+    renderMatrix();
+    loadSaved();
+});
+
+function setupCompetitorCards() {
+    document.querySelectorAll('.competitor-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.competitor-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedCompetitor = card.dataset.competitor;
+            document.getElementById('toStep2').disabled = false;
+        });
+    });
+}
+
+function addCustomCompetitor() {
+    const input = document.getElementById('customCompetitor');
+    const name = input.value.trim();
+    if (!name) return;
+    
+    const grid = document.getElementById('competitorGrid');
+    const card = document.createElement('div');
+    card.className = 'competitor-card selected';
+    card.dataset.competitor = name;
+    card.innerHTML = `<h4>${name}</h4><p>Custom competitor</p>`;
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.competitor-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedCompetitor = name;
+        document.getElementById('toStep2').disabled = false;
+    });
+    
+    document.querySelectorAll('.competitor-card').forEach(c => c.classList.remove('selected'));
+    grid.appendChild(card);
+    selectedCompetitor = name;
+    document.getElementById('toStep2').disabled = false;
+    input.value = '';
+}
+
+function setupNavigation() {
+    document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => { collectMatrix(); goToStep(3); });
+    document.getElementById('backToStep2').addEventListener('click', () => goToStep(2));
+    document.getElementById('toStep4').addEventListener('click', () => { collectFrameworks(); goToStep(4); });
+}
+
+function setupFrameworkTabs() {
+    document.querySelectorAll('.framework-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.framework-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.framework-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`${tab.dataset.framework}Section`).classList.add('active');
+        });
+    });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'complete');
+        if (i + 1 < step) el.classList.add('complete');
+        if (i + 1 === step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === step);
+    });
+    if (step === 2) {
+        document.getElementById('competitorHeader').textContent = selectedCompetitor;
+    }
+    if (step === 4) renderResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderMatrix() {
+    const tbody = document.getElementById('matrixBody');
+    tbody.innerHTML = capabilities.map(cap => `
+        <tr>
+            <td>${cap.name}</td>
+            <td class="rating-cell">
+                <select data-cap="${cap.id}" data-side="sap" onchange="updateRating(this)">
+                    <option value="strong">🟢 Strong</option>
+                    <option value="neutral" selected>🟡 Neutral</option>
+                    <option value="weak">🔴 Weak</option>
+                </select>
+            </td>
+            <td class="rating-cell">
+                <select data-cap="${cap.id}" data-side="competitor" onchange="updateRating(this)">
+                    <option value="strong">🟢 Strong</option>
+                    <option value="neutral" selected>🟡 Neutral</option>
+                    <option value="weak">🔴 Weak</option>
+                </select>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Initialize ratings
+    capabilities.forEach(cap => {
+        matrixRatings[cap.id] = { sap: 'neutral', competitor: 'neutral' };
+    });
+}
+
+function updateRating(select) {
+    const cap = select.dataset.cap;
+    const side = select.dataset.side;
+    matrixRatings[cap][side] = select.value;
+}
+
+function collectMatrix() {
+    document.querySelectorAll('#matrixBody select').forEach(sel => {
+        const cap = sel.dataset.cap;
+        const side = sel.dataset.side;
+        matrixRatings[cap][side] = sel.value;
+    });
+}
+
+function collectFrameworks() {
+    frameworks.area = {
+        acknowledge: document.getElementById('area-acknowledge').value,
+        redirect: document.getElementById('area-redirect').value,
+        evidence: document.getElementById('area-evidence').value,
+        ask: document.getElementById('area-ask').value
+    };
+    frameworks.idea = {
+        introduce: document.getElementById('idea-introduce').value,
+        differentiate: document.getElementById('idea-differentiate').value,
+        elevate: document.getElementById('idea-elevate').value,
+        advance: document.getElementById('idea-advance').value
+    };
+}
+
+function renderResults() {
+    const product = document.getElementById('yourProduct').value || 'SAP';
+    document.getElementById('previewCompetitor').textContent = selectedCompetitor;
+    
+    // Matrix preview
+    const strengths = [];
+    const weaknesses = [];
+    capabilities.forEach(cap => {
+        const r = matrixRatings[cap.id];
+        if (r.sap === 'strong' && r.competitor !== 'strong') strengths.push(cap.name);
+        if (r.sap === 'weak' || (r.sap === 'neutral' && r.competitor === 'strong')) weaknesses.push(cap.name);
+    });
+    
+    document.getElementById('previewMatrix').innerHTML = `
+        <div style="margin-bottom: 0.5rem;"><strong>Our Strengths:</strong> ${strengths.join(', ') || 'None identified'}</div>
+        <div><strong>Watch Out:</strong> ${weaknesses.join(', ') || 'None identified'}</div>
+    `;
+    
+    // AREA preview
+    document.getElementById('previewAREA').innerHTML = `
+        <ul>
+            <li><strong>Acknowledge:</strong> ${frameworks.area.acknowledge || 'Not specified'}</li>
+            <li><strong>Redirect:</strong> ${frameworks.area.redirect || 'Not specified'}</li>
+            <li><strong>Evidence:</strong> ${frameworks.area.evidence || 'Not specified'}</li>
+            <li><strong>Ask:</strong> ${frameworks.area.ask || 'Not specified'}</li>
+        </ul>
+    `;
+    
+    // IDEA preview
+    document.getElementById('previewIDEA').innerHTML = `
+        <ul>
+            <li><strong>Introduce:</strong> ${frameworks.idea.introduce || 'Not specified'}</li>
+            <li><strong>Differentiate:</strong> ${frameworks.idea.differentiate || 'Not specified'}</li>
+            <li><strong>Elevate:</strong> ${frameworks.idea.elevate || 'Not specified'}</li>
+            <li><strong>Advance:</strong> ${frameworks.idea.advance || 'Not specified'}</li>
+        </ul>
+    `;
+}
+
+function copyBattleCard() {
+    const product = document.getElementById('yourProduct').value || 'SAP';
+    let text = `BATTLE CARD: ${product} vs ${selectedCompetitor}\n${'='.repeat(50)}\n\n`;
+    
+    // Matrix
+    text += `COMPETITIVE MATRIX\n${'-'.repeat(30)}\n`;
+    capabilities.forEach(cap => {
+        const r = matrixRatings[cap.id];
+        const sapIcon = r.sap === 'strong' ? '🟢' : r.sap === 'weak' ? '🔴' : '🟡';
+        const compIcon = r.competitor === 'strong' ? '🟢' : r.competitor === 'weak' ? '🔴' : '🟡';
+        text += `${cap.name}: SAP ${sapIcon} | ${selectedCompetitor} ${compIcon}\n`;
+    });
+    
+    // AREA
+    text += `\n🛡️ AREA (DEFENSIVE)\n${'-'.repeat(30)}\n`;
+    text += `Acknowledge: ${frameworks.area.acknowledge || 'N/A'}\n`;
+    text += `Redirect: ${frameworks.area.redirect || 'N/A'}\n`;
+    text += `Evidence: ${frameworks.area.evidence || 'N/A'}\n`;
+    text += `Ask: ${frameworks.area.ask || 'N/A'}\n`;
+    
+    // IDEA
+    text += `\n⚔️ IDEA (OFFENSIVE)\n${'-'.repeat(30)}\n`;
+    text += `Introduce: ${frameworks.idea.introduce || 'N/A'}\n`;
+    text += `Differentiate: ${frameworks.idea.differentiate || 'N/A'}\n`;
+    text += `Elevate: ${frameworks.idea.elevate || 'N/A'}\n`;
+    text += `Advance: ${frameworks.idea.advance || 'N/A'}\n`;
+    
+    text += `\nGenerated by BattleCoach | Install Joule Skill:\nhttps://hub.joule.only.sap/skills/9cfbd344-7c54-42c4-95e9-f78454ed43de`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy Battle Card', 2000);
+    });
+}
+
+function exportMarkdown() {
+    const product = document.getElementById('yourProduct').value || 'SAP';
+    let md = `# Battle Card: ${product} vs ${selectedCompetitor}\n\n`;
+    
+    md += `## Competitive Matrix\n\n`;
+    md += `| Capability | ${product} | ${selectedCompetitor} |\n`;
+    md += `|------------|--------|-------------|\n`;
+    capabilities.forEach(cap => {
+        const r = matrixRatings[cap.id];
+        md += `| ${cap.name} | ${r.sap} | ${r.competitor} |\n`;
+    });
+    
+    md += `\n## 🛡️ AREA Framework (Defensive)\n\n`;
+    md += `- **Acknowledge:** ${frameworks.area.acknowledge || 'N/A'}\n`;
+    md += `- **Redirect:** ${frameworks.area.redirect || 'N/A'}\n`;
+    md += `- **Evidence:** ${frameworks.area.evidence || 'N/A'}\n`;
+    md += `- **Ask:** ${frameworks.area.ask || 'N/A'}\n`;
+    
+    md += `\n## ⚔️ IDEA Framework (Offensive)\n\n`;
+    md += `- **Introduce:** ${frameworks.idea.introduce || 'N/A'}\n`;
+    md += `- **Differentiate:** ${frameworks.idea.differentiate || 'N/A'}\n`;
+    md += `- **Elevate:** ${frameworks.idea.elevate || 'N/A'}\n`;
+    md += `- **Advance:** ${frameworks.idea.advance || 'N/A'}\n`;
+    
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `battlecard-${selectedCompetitor.toLowerCase()}.md`;
+    a.click();
+}
+
+function saveBattleCard() {
+    const saved = JSON.parse(localStorage.getItem('pmmBattleCards') || '[]');
+    saved.unshift({
+        date: new Date().toISOString(),
+        product: document.getElementById('yourProduct').value || 'SAP',
+        competitor: selectedCompetitor,
+        matrix: matrixRatings,
+        frameworks: frameworks
+    });
+    localStorage.setItem('pmmBattleCards', JSON.stringify(saved.slice(0, 10)));
+    loadSaved();
+    event.target.textContent = '✓ Saved!';
+    setTimeout(() => event.target.textContent = '💾 Save', 2000);
+}
+
+function loadSaved() {
+    const saved = JSON.parse(localStorage.getItem('pmmBattleCards') || '[]');
+    const section = document.getElementById('savedSection');
+    const list = document.getElementById('savedList');
+    if (saved.length > 0) {
+        section.style.display = 'block';
+        list.innerHTML = saved.map(s => {
+            const date = new Date(s.date).toLocaleDateString();
+            return `
+                <div class="saved-item">
+                    <div>
+                        <div style="font-weight: 600;">${s.product} vs ${s.competitor}</div>
+                        <div style="font-size: 0.8rem; color: var(--ink-muted);">${date}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function startOver() {
+    selectedCompetitor = null;
+    matrixRatings = {};
+    frameworks = { area: {}, idea: {} };
+    document.getElementById('yourProduct').value = '';
+    document.querySelectorAll('.competitor-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('toStep2').disabled = true;
+    document.querySelectorAll('textarea').forEach(t => t.value = '');
+    renderMatrix();
+    goToStep(1);
+}
+</script>
+
+</body>
+</html>
